@@ -1,0 +1,23 @@
+services:
+  evidencebase-fetch:
+    image: ${EVIDENCEBASE_FETCH_IMAGE:-mcp-evidencebase-app:latest}
+    entrypoint:
+      - python
+      - /workspace/docker/evidencebase-fetch/fetch_evidencebase_source.py
+    environment:
+      EVIDENCEBASE_QDRANT_HOST: ${EVIDENCEBASE_QDRANT_HOST:-evidencebase-qdrant}
+      EVIDENCEBASE_QDRANT_PORT: ${EVIDENCEBASE_QDRANT_PORT:-6333}
+      EVIDENCEBASE_REDIS_HOST: ${EVIDENCEBASE_REDIS_HOST:-evidencebase-redis}
+      EVIDENCEBASE_REDIS_PORT: ${EVIDENCEBASE_REDIS_PORT:-6379}
+      EVIDENCEBASE_REDIS_DB: ${EVIDENCEBASE_REDIS_DB:-2}
+      EVIDENCEBASE_REDIS_PASSWORD: ${EVIDENCEBASE_REDIS_PASSWORD:-}
+      EXPORT_ROOT: /workspace/data/evidencebase
+    volumes:
+      - ./:/workspace
+    networks:
+      - evidencebase
+
+networks:
+  evidencebase:
+    external: true
+    name: ${EVIDENCEBASE_NETWORK:-mcp-evidencebase_default}

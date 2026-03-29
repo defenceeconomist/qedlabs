@@ -1,0 +1,55 @@
+---
+title: "Quasi-Experimental Design Notes"
+---
+
+# Purpose
+
+This site is a working set of notes on quasi-experimental designs used in applied evaluation and policy analysis. The site is now organized into a dedicated synthetic control section and a separate section for the other core methods.
+
+# Sections
+
+## SCM
+
+The SCM section is where the synthetic control material lives:
+
+- synthetic control method notes
+- teaching datasets and implementation guides
+- source maps for papers, lecture notes, textbooks, and software manuals worth taking notes on
+
+## Other
+
+The other section contains the broader quasi-experimental design notes:
+
+- matching and weighting
+- difference-in-differences
+- regression discontinuity design
+
+Each method note follows the same structure so the series can be read either method-by-method or comparatively.
+
+# Common Note Template
+
+Each core note should cover:
+
+1. What the method is.
+2. When to use it.
+3. Core identifying assumptions.
+4. Required data structure.
+5. A practical workflow.
+6. Diagnostics and validity checks.
+7. Common failure modes.
+8. How to interpret the estimate.
+9. A short worked example.
+10. Suggested software and further reading.
+
+# Writing Order
+
+1. Matching and weighting
+2. Difference-in-differences
+3. Synthetic control
+4. Regression discontinuity
+5. Cross-method comparison
+6. Method selection guide
+
+# Notes
+
+The notes are intended to be practical rather than encyclopedic. The emphasis is on identification logic, diagnostics, and evaluator decision-making, not just estimation commands.

@@ -1,0 +1,37 @@
+---
+title: "Choosing A Method"
+---
+
+# Purpose
+
+This note will help readers move from a policy question and data situation to a defensible quasi-experimental design choice.
+
+# Decision Guide
+
+## Start With The Assignment Process
+
+Ask:
+
+- Is treatment assigned using an explicit threshold?
+- Does treatment start at different times across units?
+- Is there one main treated unit and a donor pool?
+- Is selection driven mainly by observed characteristics?
+
+## First-Pass Mapping
+
+- Use matching or weighting when the key problem is non-random selection on observed pre-treatment covariates.
+- Use difference-in-differences when treatment varies over time and untreated units can anchor the counterfactual trend.
+- Use synthetic control when a treated unit needs a transparent weighted comparator built from untreated units.
+- Use regression discontinuity when assignment changes at a known threshold and local comparison is credible.
+
+## Questions To Resolve Before Committing
+
+- What is the estimand?
+- What assumptions are doing the real work?
+- What diagnostics would most likely falsify the design?
+- Does the design answer the policy question for the right population?
+
+# Planned Extension
+
+This page should eventually include a short flowchart and worked examples of method choice under common evaluation scenarios.
+

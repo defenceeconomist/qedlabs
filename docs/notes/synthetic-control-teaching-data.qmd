@@ -1,0 +1,184 @@
+---
+title: "Synthetic Control Teaching Data"
+---
+
+# Scope
+
+This note lists datasets that are especially useful for teaching synthetic control methods, based on package documentation and online materials, with particular emphasis on `tidysynth` and related R packages [@tidysynth-package; @synth-package; @augsynth-package; @synthdid-package; @scpi-package; @sctools-package].
+
+# Short Answer
+
+If you want one dataset for a first synthetic control lesson, use `tidysynth::smoking`. It is bundled, well documented, tied to the canonical California Proposition 99 application, and easy to teach in a tidy workflow [@tidysynth-smoking-doc; @abadie2010synthetic].
+
+If you want a compact teaching sequence, use:
+
+1. `Synth::synth.data` for the mechanics.
+2. `tidysynth::smoking` for the first real application.
+3. `Synth::basque` for the original comparative case-study logic.
+4. `augsynth::kansas` or `synthdid::california_prop99` for modern extensions.
+5. `scpi::scpi_germany` or `microsynth::seattledmi` for advanced sessions on inference or nonstandard data structures.
+
+# Best Beginner Datasets
+
+## `tidysynth::smoking`
+
+This is the cleanest beginner dataset I found for teaching vanilla synthetic control in R [@tidysynth-smoking-doc].
+
+- Substantive case: California's Proposition 99 tobacco-control program.
+- Data shape: 1,209 rows, 39 states, 1970 to 2000.
+- Outcome: cigarette sales per capita, with a small set of intuitive predictors.
+- Why it teaches well: one treated unit, one clear intervention date, familiar policy story, and easy placebo exercises.
+- Why it is especially useful: students can stay inside a tidy pipeline and still learn the core SCM logic [@tidysynth-package].
+
+This is also the same canonical application used in the original JASA paper, which makes it useful for linking software, plots, and published results [@abadie2010synthetic].
+
+## `Synth::synth.data`
+
+This is an artificial toy dataset bundled with `Synth` specifically to demonstrate the method [@synth-synthdata-doc].
+
+- Substantive case: none; it is synthetic by design.
+- Data shape: 8 units over 21 time periods with 3 predictors and 1 treated unit.
+- Why it teaches well: it strips away real-world narrative complexity and lets you focus on `dataprep`, predictor balance, weights, and gap plots.
+- Main limitation: it is too artificial for teaching substantive interpretation or placebo logic.
+
+Use this when the goal is to explain the optimizer and data-prep structure before moving to a real application.
+
+## `Synth::basque`
+
+This is the classic Basque Country comparative case study bundled in `Synth` [@synth-basque-doc; @abadie2003economic].
+
+- Substantive case: the economic effects of political conflict in the Basque Country.
+- Data shape: 17 Spanish regions from 1955 to 1997.
+- Outcome: per-capita GDP, plus sectoral and demographic predictors.
+- Why it teaches well: long pre-treatment history, canonical SCM story, and clear comparison between treated region and weighted donor regions.
+- Main limitation: the economic and historical context is richer, but less immediately intuitive than the California smoking example.
+
+This is the best second dataset after `smoking` if you want students to see the original comparative case-study use case.
+
+# Good Datasets For Teaching Extensions
+
+## `synthdid::california_prop99`
+
+The `synthdid` package includes a simplified Proposition 99 dataset designed for synthetic difference-in-differences workflows [@synthdid-california-doc; @arkhangelsky2021synthetic].
+
+- Substantive case: same California tobacco-control intervention.
+- Why it teaches well: lets you reuse a familiar case while changing the estimator.
+- Data shape: minimal columns and a straightforward path into matrix form.
+- Best use: showing how SCM-style weighting and DiD-style differencing relate.
+
+This is particularly useful if you want to teach method comparison without changing the substantive example.
+
+## `augsynth::kansas`
+
+The `augsynth` package bundles a Kansas state tax-cut panel from 1990 to 2016 [@augsynth-kansas-doc; @benmichael2021augmented].
+
+- Substantive case: state-level economic effects of Kansas tax cuts.
+- Data shape: quarterly state panel with many economic indicators.
+- Why it teaches well: useful for showing why exact pre-treatment fit is often hard and why augmentation or bias correction becomes attractive.
+- Best use: teaching the transition from original SCM to augmented SCM.
+
+This is a better extension dataset than a beginner dataset because the panel and predictor structure are richer and less transparent at first pass.
+
+## `scpi::scpi_germany`
+
+The `scpi` package includes a replication dataset for German reunification [@scpi-germany-doc; @scpi-package].
+
+- Substantive case: the economic impact of German reunification.
+- Data shape: 17 OECD countries from 1960 to 2003.
+- Why it teaches well: very strong for inference discussions because `scpi` is built around prediction intervals and uncertainty quantification.
+- Best use: advanced modules on inference, interval estimation, and sensitivity to weight constraints.
+
+This is a strong choice when the lesson is not just point estimation, but how uncertainty should be communicated in SCM work.
+
+## `SCtools::alcohol`
+
+`SCtools` bundles a world alcohol-consumption panel used as an SCM case study around Russian policy changes after 2003 [@sctools-alcohol-doc; @sctools-package].
+
+- Substantive case: alcohol policy and consumption in the Russian Federation.
+- Why it teaches well: `SCtools` is useful for placebo generation, MSPE-ratio checks, and other post-estimation diagnostics layered on top of `Synth`.
+- Best use: teaching inference graphics and placebo workflows after students already know the core estimator.
+
+This is a good teaching dataset if the real objective is diagnostics rather than first exposure to SCM itself.
+
+## `microsynth::seattledmi`
+
+The `microsynth` package includes block-level Seattle crime data for a Drug Market Intervention in 2013 [@microsynth-seattledmi-doc; @robbins2017microsynth].
+
+- Substantive case: a neighborhood crime intervention in Seattle.
+- Data shape: 9,642 blocks with quarterly observations and multiple crime outcomes.
+- Why it teaches well: shows how the synthetic-control idea extends beyond country or state panels into micro- or meso-level intervention settings.
+- Main limitation: too large and complex for a first lesson.
+
+This works best in an advanced session that asks when standard aggregate-unit SCM stops being the right mental model.
+
+# What To Use For Different Teaching Goals
+
+## If The Goal Is To Teach The Original Algorithm
+
+Use:
+
+- `Synth::synth.data`
+- `tidysynth::smoking`
+- `Synth::basque`
+
+That sequence moves from mechanics to a simple real case to the canonical comparative case-study application.
+
+## If The Goal Is To Teach Modern SCM Variants
+
+Use:
+
+- `tidysynth::smoking` for baseline SCM
+- `augsynth::kansas` for augmented SCM
+- `synthdid::california_prop99` for synthetic DiD
+- `scpi::scpi_germany` for uncertainty quantification
+
+That keeps the lesson close to package workflows students can actually run.
+
+## If The Goal Is To Teach Diagnostics
+
+Use:
+
+- `tidysynth::smoking` for placebo and trend plots
+- `SCtools::alcohol` for placebo and MSPE-ratio workflows
+- `Synth::basque` if you want the original case-study framing
+
+# Recommended Teaching Sequence
+
+For a short workshop or note series, I would use the following order:
+
+1. `Synth::synth.data` to explain the setup, donor pool, predictors, and weights.
+2. `tidysynth::smoking` to teach a complete end-to-end SCM workflow.
+3. `Synth::basque` to connect the method to the classic comparative case-study literature.
+4. `augsynth::kansas` to show why imperfect fit pushes analysts toward augmentation.
+5. `synthdid::california_prop99` to compare SCM and synthetic DiD on a familiar case.
+6. `scpi::scpi_germany` or `microsynth::seattledmi` for advanced topics.
+
+# Minimal R Pointers
+
+```r
+library(tidysynth)
+data(smoking)
+
+library(Synth)
+data(synth.data)
+data(basque)
+
+library(augsynth)
+data(kansas)
+
+library(synthdid)
+data(california_prop99)
+
+library(scpi)
+data(scpi_germany)
+
+library(microsynth)
+data(seattledmi)
+
+library(SCtools)
+data(alcohol)
+```
+
+# Bottom Line
+
+After searching online package documentation, `tidysynth::smoking` stands out as the best single teaching dataset for synthetic control in R because it is canonical, bundled, tidy, and easy to explain. `Synth::basque` is the best follow-on dataset for teaching the original comparative case-study tradition, while `augsynth::kansas`, `synthdid::california_prop99`, `scpi::scpi_germany`, `SCtools::alcohol`, and `microsynth::seattledmi` are the best next step once the lesson shifts from vanilla SCM to diagnostics, augmentation, inference, or nonstandard data structures [@tidysynth-smoking-doc; @synth-basque-doc; @augsynth-kansas-doc; @synthdid-california-doc; @scpi-germany-doc; @sctools-alcohol-doc; @microsynth-seattledmi-doc].

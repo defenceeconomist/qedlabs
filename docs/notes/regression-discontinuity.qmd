@@ -1,0 +1,60 @@
+---
+title: "Regression Discontinuity"
+---
+
+# Scope
+
+This note will explain regression discontinuity design as a local comparison around a known treatment cutoff [@cunningham2018regression; @gertler2010ch6regression].
+
+# Planned Sections
+
+## What The Method Is
+
+- Running variable
+- Threshold-based assignment
+- Local average treatment effect at the cutoff
+
+## When To Use It
+
+- Treatment assignment changes sharply at a rule-based threshold
+- Units near the cutoff are plausibly comparable
+- The running variable is observed precisely
+
+## Core Assumptions
+
+- Continuity of potential outcomes at the cutoff
+- No precise manipulation of the running variable
+- Correct handling of bandwidth and functional form
+
+## Data Requirements
+
+- Running variable
+- Known cutoff
+- Sufficient density near the threshold
+- Outcome measured after assignment
+
+## Workflow
+
+1. Verify the assignment rule and cutoff.
+2. Plot outcomes against the running variable.
+3. Choose a bandwidth.
+4. Estimate local treatment effects.
+5. Check sensitivity to bandwidth and polynomial choices.
+
+## Diagnostics And Risks
+
+- Density tests near the cutoff
+- Covariate continuity checks
+- Bandwidth sensitivity
+- Local interpretation only
+
+## Worked Example
+
+Eligibility for a grant based on a score threshold, comparing units just above and below the cutoff.
+
+## Software
+
+- `rdrobust`
+- `rddensity`
+- `ggplot2`
+

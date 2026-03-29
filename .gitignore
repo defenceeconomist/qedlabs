@@ -1,0 +1,14 @@
+.DS_Store
+
+# Quarto build artifacts
+.quarto/
+docs/.quarto/
+docs/_site/
+
+# Editor and notebook noise
+.Rproj.user/
+.ipynb_checkpoints/
+
+# Python caches
+__pycache__/
+*.pyc

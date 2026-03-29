@@ -1,0 +1,40 @@
+project:
+  type: website
+  output-dir: _site
+
+website:
+  title: "QED Labs"
+  sidebar:
+    style: docked
+    search: true
+    contents:
+      - href: index.qmd
+        text: Overview
+      - section: SCM
+        contents:
+          - href: notes/synthetic-control.qmd
+            text: Synthetic Control
+          - href: notes/synthetic-control-teaching-data.qmd
+            text: Synthetic Control Teaching Data
+          - href: notes/synthetic-control-sources.qmd
+            text: Synthetic Control Sources
+      - section: Other
+        contents:
+          - href: notes/matching-and-weighting.qmd
+            text: Matching and Weighting
+          - href: notes/difference-in-differences.qmd
+            text: Difference-in-Differences
+          - href: notes/regression-discontinuity.qmd
+            text: Regression Discontinuity
+          - href: notes/comparing-methods.qmd
+            text: Comparing Methods
+          - href: notes/choosing-a-method.qmd
+            text: Choosing a Method
+
+format:
+  html:
+    theme: cosmo
+    toc: true
+    toc-depth: 3
+
+bibliography: ../evaluation-bibliography.bib

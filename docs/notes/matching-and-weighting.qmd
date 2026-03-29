@@ -1,0 +1,179 @@
+---
+title: "Matching and Weighting"
+---
+
+# What This Method Is
+
+Matching and weighting are design-stage methods for making treated and untreated groups more comparable on observed pre-treatment covariates. The basic aim is to reduce overt selection bias by constructing a comparison group that looks like the treated group on variables thought to shape treatment selection and potential outcomes [@cunningham2018matching; @gertler2010ch8matching].
+
+The key limitation is the same across all variants: these methods only address differences in observed covariates. If important confounders are unobserved or measured badly, balance on observed variables can still coexist with biased estimates.
+
+# When To Use It
+
+Matching or weighting is usually appropriate when:
+
+- treatment was not randomly assigned
+- treatment selection is believed to depend mainly on observed pre-treatment characteristics
+- the analyst has rich baseline covariates
+- there is enough overlap between treated and untreated units to construct a credible comparison set
+
+Typical applications include program take-up, school participation, grant receipt, and policy exposure where assignment is not random but administrative or survey data contain useful background covariates.
+
+# Main Variants
+
+## Matching
+
+Matching selects or groups untreated units so they resemble treated units on measured covariates. Common versions include:
+
+- exact matching
+- coarsened exact matching
+- nearest-neighbor propensity score matching
+- Mahalanobis matching
+- subclassification
+
+The tradeoff is usually between stricter comparability and sample retention. Tighter matching improves comparability but can drop many treated units or force the analyst to use a narrow support region.
+
+## Weighting
+
+Weighting keeps more of the sample but reweights observations so the weighted control group resembles the treated group, or so both groups resemble a target population. Common approaches include:
+
+- inverse probability weighting
+- overlap weighting
+- entropy balancing
+- calibration weighting
+
+Weighting is often preferable when a matched sample would discard too much information, but it can become unstable when propensity scores are close to zero or one.
+
+# Core Identifying Assumptions
+
+## Conditional Independence
+
+After conditioning on the included pre-treatment covariates, treatment assignment is assumed to be as good as random. This is often called selection on observables, ignorability, or unconfoundedness [@cunningham2018matching; @gertler2010ch8matching].
+
+This is a strong assumption. It means the analyst believes no omitted pre-treatment factor jointly affects treatment take-up and potential outcomes once the included covariates are controlled for.
+
+## Overlap
+
+Each treated unit must have a plausible counterpart among untreated units, and vice versa for the target estimand. If there is no overlap, the estimate becomes an extrapolation rather than a comparison.
+
+In practice, overlap problems usually show up through:
+
+- extreme propensity scores
+- poor balance after adjustment
+- a large share of treated units without good matches
+- highly variable or extreme weights
+
+## Stable Unit Treatment Value Assumption
+
+The treatment status of one unit should not change another unit's outcome, and the treatment under study should be well defined. Spillovers and treatment heterogeneity do not automatically invalidate the design, but they do require explicit handling.
+
+# Data Requirements
+
+Matching and weighting work best when the dataset includes:
+
+- a clearly defined binary or discrete treatment
+- outcome data measured after treatment
+- rich pre-treatment covariates
+- covariates measured before treatment assignment
+- enough untreated units to support common support
+
+The strongest designs also include substantive knowledge about the treatment assignment process. Covariate selection should be driven by causal reasoning, not by an indiscriminate search over all available variables.
+
+# Practical Workflow
+
+1. Define the treatment, outcome, target population, and estimand.
+2. List the pre-treatment confounders that plausibly affect both treatment and outcome.
+3. Inspect overlap before fitting the final design.
+4. Choose a matching or weighting strategy suited to the data and estimand.
+5. Diagnose covariate balance after adjustment.
+6. Revise the design if balance is poor.
+7. Estimate treatment effects only after the design is acceptable.
+8. Report the retained sample, balance metrics, and any trimming or exclusions.
+
+The important sequencing point is that outcome analysis should not drive design choices. Matching and weighting are most credible when treated as a pre-analysis design stage.
+
+# Diagnostics And Validity Checks
+
+## Balance Diagnostics
+
+Balance matters more than the predictive accuracy of a propensity score model. Useful checks include:
+
+- standardized mean differences before and after adjustment
+- variance ratios
+- empirical distribution checks for key covariates
+- balance within subgroups when effect heterogeneity is likely
+
+A common practical rule is to aim for absolute standardized mean differences below 0.1, but judgment still matters. A stricter threshold may be needed for especially important confounders.
+
+## Overlap Diagnostics
+
+Inspect:
+
+- propensity score distributions by treatment status
+- the share of units trimmed or unmatched
+- the distribution of final weights
+- effective sample size under weighting
+
+If the design requires many extreme weights or excludes a large portion of the treated group, the resulting estimand may differ materially from the original policy question.
+
+## Sensitivity To Design Choices
+
+Credible analyses usually show that the conclusions are not entirely driven by one arbitrary specification. Examples include:
+
+- changing matching ratios
+- changing calipers
+- comparing weighting schemes
+- trimming non-overlap more aggressively
+
+# Common Failure Modes
+
+- Including post-treatment covariates, which can induce bias.
+- Treating a well-predicted propensity score as evidence of causal validity.
+- Ignoring non-overlap and interpreting extrapolation as comparison.
+- Reporting effect estimates without reporting balance and sample retention.
+- Describing entropy balancing or inverse probability weighting as if they solved unobserved confounding.
+
+# Interpreting The Estimate
+
+The estimate is only interpretable for the population actually supported by the design. That may be:
+
+- the treated population, for ATT-oriented designs
+- the full population, for ATE-oriented designs with strong overlap
+- an overlap subpopulation, after trimming or overlap weighting
+
+That distinction should appear explicitly in the write-up. A precise local answer for a supported population is better than a broad but weakly supported claim.
+
+# Worked Example Sketch
+
+Suppose a training program is offered to unemployed jobseekers, but participation is voluntary. Treated units are program participants and controls are eligible non-participants. Rich baseline covariates are available, including age, education, prior earnings, region, and unemployment duration.
+
+A defensible workflow would be:
+
+1. Restrict the sample to eligible jobseekers measured before program entry.
+2. Estimate treatment assignment using baseline covariates chosen from a causal model of program take-up.
+3. Check common support and trim observations with no meaningful overlap.
+4. Compare a matched ATT design with an entropy-balancing ATT design.
+5. Check whether balance is acceptable on prior earnings, education, and unemployment duration in particular.
+6. Estimate the post-program employment effect only after design diagnostics are satisfactory.
+
+This would still rely on selection on observables. If motivation or job-search intensity are unmeasured and important, bias may remain even after excellent observed balance.
+
+# Software
+
+Useful tools include:
+
+- `MatchIt` for matching and subclassification
+- `WeightIt` for weighting approaches including entropy balancing
+- `cobalt` for balance diagnostics
+- `fixest` or base regression tools for outcome models after design
+
+# Reading List
+
+- Cunningham, *Causal Inference: The Mixtape*, chapter on matching and subclassification [@cunningham2018matching]
+- Gertler et al., *Impact Evaluation in Practice*, chapter on matching [@gertler2010ch8matching]
+- Magenta Book chapter on evaluation methods [@ch3evaluation]
+
+# Bottom Line
+
+Matching and weighting are useful when the design problem is selection on observables and the data support credible overlap. Their success depends less on the mechanics of the estimator than on disciplined covariate choice, transparent overlap assessment, and rigorous post-adjustment diagnostics.
+

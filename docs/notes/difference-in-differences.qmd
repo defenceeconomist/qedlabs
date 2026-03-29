@@ -1,0 +1,59 @@
+---
+title: "Difference-in-Differences"
+---
+
+# Scope
+
+This note will explain how difference-in-differences identifies causal effects by comparing changes over time in treated and untreated groups [@cunningham2018differences; @gertler2010ch7difference].
+
+# Planned Sections
+
+## What The Method Is
+
+- Two-period intuition
+- Group-by-time comparison
+- ATT interpretation in the canonical setup
+
+## When To Use It
+
+- Policy or program adoption observed over time
+- Treated and untreated units both observed before and after treatment
+- No credible cutoff design and no clearly random assignment
+
+## Core Assumptions
+
+- Parallel trends
+- No anticipatory behavior, or explicit treatment of anticipation
+- Stable group composition, or explicit handling of changes
+
+## Data Requirements
+
+- Panel or repeated cross-section data
+- Clear treatment timing
+- Meaningful pre-treatment outcome observations
+
+## Workflow
+
+1. Define treatment timing and comparison groups.
+2. Plot outcomes over time before estimation.
+3. Inspect whether pre-treatment trends are plausibly parallel.
+4. Estimate the baseline DiD model.
+5. Check robustness with event-study or alternative specifications.
+
+## Diagnostics And Risks
+
+- Pre-trend checks
+- Differential shocks
+- Composition changes
+- Staggered adoption complications
+
+## Worked Example
+
+A rollout of a local employment support policy across areas, with outcomes observed before and after implementation.
+
+## Software
+
+- `fixest`
+- `did`
+- `ggplot2`
+

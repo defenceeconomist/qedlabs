@@ -1,0 +1,49 @@
+---
+title: "Comparing The Main Methods"
+---
+
+# Purpose
+
+This note will compare the four main methods in the series on a common set of dimensions so readers can move from identification logic to design choice.
+
+# Comparison Dimensions
+
+## Identification Strategy
+
+- Matching and weighting: selection on observables
+- Difference-in-differences: change over time relative to comparison groups
+- Synthetic control: weighted counterfactual trajectory
+- Regression discontinuity: local comparison at a threshold
+
+## Main Assumption
+
+- Matching and weighting: no important unobserved confounding after conditioning
+- Difference-in-differences: parallel trends
+- Synthetic control: strong pre-treatment fit and no treated-unit-specific confounding shocks at treatment time
+- Regression discontinuity: continuity at the cutoff and no manipulation
+
+## Data Structure
+
+- Cross-sectional or panel for matching and weighting
+- Panel or repeated cross-section for DiD
+- Long panel for synthetic control
+- Cross-sectional or panel with a running variable for RD
+
+## Diagnostic Emphasis
+
+- Balance and overlap
+- Pre-trends
+- Pre-treatment fit and placebos
+- Density and continuity checks
+
+## Main Limitation
+
+- Matching and weighting: hidden bias
+- Difference-in-differences: trend violations
+- Synthetic control: poor donor support
+- Regression discontinuity: local external validity
+
+# Planned Output
+
+This page should eventually include a one-table summary plus short method-selection guidance linked to concrete evaluation scenarios.
+

@@ -1,0 +1,222 @@
+---
+title: "Synthetic Control Sources"
+---
+
+# Scope
+
+This note is a source map for synthetic control method reading. It is organized around the kinds of sources most worth taking notes on: surveys and textbooks, seminal articles, lecture materials, and software manuals [@abadie2021using; @cunningham2018synthetic; @mixtape-causal-inference-3; @mixtape-synthetic-control-and-clustering; @synth-package; @tidysynth-package; @augsynth-package; @synthdid-package; @scpi-package; @gsynth-package].
+
+# Start Here
+
+If you want a compact starting stack, I would begin with these three:
+
+1. Abadie (2021) for the best high-level methodological overview [@abadie2021using].
+2. Cunningham's *Causal Inference: The Mixtape* chapter plus Mixtape Sessions slides for intuition and pedagogy [@cunningham2018synthetic; @mixtape-sessions-synthtex].
+3. The `Synth` package paper and manual for implementation details [@hainmueller2011synth; @synth-package].
+
+That combination gives you design logic, identification intuition, and the original software workflow.
+
+# Textbooks And Broad Overviews
+
+## Abadie (2021), *Using Synthetic Controls: Feasibility, Data Requirements, and Methodological Aspects*
+
+This is the best single overview if the goal is to understand when SCM is credible and when it is not [@abadie2021using].
+
+Why it is worth notes:
+
+- it is a mature retrospective by one of the method's originators
+- it focuses on feasibility and failure conditions, not just estimation mechanics
+- it is a strong bridge from textbook intuition to actual applied design choices
+
+## Cunningham (2018), *Causal Inference: The Mixtape*, chapter on synthetic control
+
+This is the best textbook-style source for intuition-first notes [@cunningham2018synthetic].
+
+Why it is worth notes:
+
+- it is easier to read quickly than the original articles
+- it gives the method in causal-inference language rather than only optimization language
+- it pairs naturally with the Mixtape Sessions materials
+
+# Seminal Articles
+
+## Abadie and Gardeazabal (2003)
+
+This is the origin paper for the method and the Basque Country case study [@abadie2003economic].
+
+Why it is worth notes:
+
+- first clear comparative-case-study application
+- establishes the core SCM logic
+- useful for understanding what the method was trying to solve originally
+
+## Abadie, Diamond, and Hainmueller (2010)
+
+This is the canonical JASA article on California Proposition 99 [@abadie2010synthetic].
+
+Why it is worth notes:
+
+- formalizes the now-standard SCM setup
+- the smoking example is still the default teaching application
+- many software examples are built around this paper
+
+## Abadie, Diamond, and Hainmueller (2015)
+
+This paper is especially useful if you care about comparative case studies and the logic of bridging qualitative and quantitative work [@abadie2015comparative].
+
+Why it is worth notes:
+
+- emphasizes SCM as a design for small-sample comparative research
+- uses German reunification as a major application
+- helps clarify how SCM differs from ordinary regression-based comparisons
+
+# Modern Extensions Worth A Separate Round Of Notes
+
+## Ben-Michael, Feller, and Rothstein (2021)
+
+This is the key augmented SCM paper [@benmichael2021augmented].
+
+Why it is worth notes:
+
+- directly addresses imperfect pre-treatment fit
+- introduces outcome-model bias correction in a way that is practically important
+- underpins the `augsynth` workflow
+
+## Arkhangelsky et al. (2021)
+
+This is the synthetic DiD paper [@arkhangelsky2021synthetic].
+
+Why it is worth notes:
+
+- shows how SCM-style weighting and DiD-style differencing can be combined
+- especially useful for panels with more than one treated unit
+- important if you want to understand where SCM and DiD now overlap
+
+## Xu (2017)
+
+This is the generalized synthetic control paper [@xu2017generalized].
+
+Why it is worth notes:
+
+- extends SCM using interactive fixed effects
+- handles multiple treated units and more complex treatment timing
+- useful if you want to connect SCM to matrix-completion and factor-model approaches
+
+# Lecture Notes And Slide Decks
+
+## Mixtape Sessions: Causal Inference 3
+
+Scott Cunningham's `Causal-Inference-3` repository is one of the best open teaching resources for SCM [@mixtape-causal-inference-3; @mixtape-sessions-synthtex].
+
+Why it is worth notes:
+
+- long-form lecture treatment of original SCM and newer extensions
+- combines theory, applications, and software
+- especially good for note-taking on intuition and workflow
+
+## Mixtape Sessions: Synthetic Control and Clustering
+
+Alberto Abadie's Mixtape Sessions repository is a high-value source if you want notes closer to the frontier and closer to the original research perspective [@mixtape-synthetic-control-and-clustering].
+
+Why it is worth notes:
+
+- focuses on practical principles for empirical SCM work
+- includes estimation and inference guidance
+- good complement to the Cunningham materials
+
+## Jens Hainmueller's Synthetic Control Methods Project Page
+
+This is a compact hub tying together the major papers, software, and an explainer from one of the original developers [@hainmueller-scm-project].
+
+Why it is worth notes:
+
+- convenient source hub
+- useful for finding the original papers and package links quickly
+- good place to orient before drilling into specific papers
+
+# Software Manuals And Implementation Sources
+
+## `Synth`
+
+The foundational implementation source is the `Synth` package paper and the package manual [@hainmueller2011synth; @synth-package].
+
+Take notes on:
+
+- `dataprep`
+- predictor specification
+- donor weights and predictor weights
+- path plots, gap plots, and placebo workflows
+
+## `tidysynth`
+
+Use `tidysynth` if you want a tidyverse-oriented implementation that is easier to teach and inspect step by step [@tidysynth-package].
+
+Take notes on:
+
+- pipeline-based data preparation
+- inspectable balance, weights, and placebo outputs
+- the `smoking` teaching dataset
+
+## `augsynth`
+
+Use `augsynth` when your notes need to cover imperfect fit and augmentation [@augsynth-package].
+
+Take notes on:
+
+- ridge augmentation
+- simultaneous-adoption versus staggered-adoption workflows
+- how augmentation changes the interpretation of weights and fit
+
+## `synthdid`
+
+Use `synthdid` if your notes need to compare SCM to modern panel estimators [@synthdid-vignette].
+
+Take notes on:
+
+- unit and time weighting
+- the relationship to two-way fixed effects
+- event-study style visualization and inference choices
+
+## `scpi`
+
+Use `scpi` if your notes need a serious treatment of uncertainty and prediction intervals [@scpi-package].
+
+Take notes on:
+
+- uncertainty quantification
+- multiple treated units and staggered adoption
+- how interval estimation changes applied interpretation
+
+## `gsynth`
+
+Use `gsynth` for notes on generalized SCM and interactive fixed effects [@gsynth-package; @gsynth-manual].
+
+Take notes on:
+
+- factor-model formulation
+- handling unbalanced panels
+- cross-validation for factor selection
+
+# Suggested Note-Taking Order
+
+If you want a sequence that compounds well, use:
+
+1. `Causal Inference: The Mixtape` synthetic control chapter [@cunningham2018synthetic].
+2. Abadie and Gardeazabal (2003) [@abadie2003economic].
+3. Abadie, Diamond, and Hainmueller (2010) [@abadie2010synthetic].
+4. Abadie (2021) [@abadie2021using].
+5. `Synth` package paper and manual [@hainmueller2011synth; @synth-package].
+6. Mixtape Sessions lecture slides and SCM workshop repositories [@mixtape-sessions-synthtex; @mixtape-synthetic-control-and-clustering].
+7. Ben-Michael, Feller, and Rothstein (2021), Arkhangelsky et al. (2021), and Xu (2017) for extensions [@benmichael2021augmented; @arkhangelsky2021synthetic; @xu2017generalized].
+8. `augsynth`, `synthdid`, `scpi`, and `gsynth` package docs for implementation details [@augsynth-package; @synthdid-package; @scpi-package; @gsynth-package].
+
+# Bottom Line
+
+If I were deciding what to take notes on first, I would prioritize four source types:
+
+- one survey: Abadie (2021) [@abadie2021using]
+- one textbook treatment: Cunningham (2018) [@cunningham2018synthetic]
+- two seminal papers: Abadie and Gardeazabal (2003) and Abadie, Diamond, and Hainmueller (2010) [@abadie2003economic; @abadie2010synthetic]
+- the software manuals that match the estimators you actually plan to use, especially `Synth`, `augsynth`, `synthdid`, `scpi`, and `gsynth` [@synth-package; @augsynth-package; @synthdid-package; @scpi-package; @gsynth-package]
+
+That gives you a clean path from original idea, to canonical design, to practical implementation, to modern extensions.
