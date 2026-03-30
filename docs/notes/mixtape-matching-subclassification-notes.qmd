@@ -1,0 +1,404 @@
+---
+title: "Notes on The Mixtape: Matching and Subclassification"
+subtitle: "Detailed Study Notes for Chapter 5"
+author: "Luke Heley"
+date: 9 March 2026
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: false
+---
+
+## Purpose
+
+These are study notes on [*Causal Inference: The Mixtape*, Chapter 5 ("Matching and Subclassification")](https://mixtape.scunning.com/05-matching_and_subclassification). They are meant to support understanding and recall rather than reproduce the chapter. The structure follows the source chapter so the notes can be read alongside it.
+
+The aim here is to capture:
+
+- the main idea of each section
+- why the section matters for causal inference
+- what conceptual traps to watch for
+- how the chapter connects to this repo's teaching materials
+
+## Source Baseline
+
+- Source: [The Mixtape, Chapter 5 - Matching and Subclassification](https://mixtape.scunning.com/05-matching_and_subclassification)
+- Author: Scott Cunningham
+- Accessed for these notes: 9 March 2026
+- Current chapter sections observed in the live rendering:
+  - `5.1 Subclassification`
+  - `5.1.1 Some background`
+  - `5.1.2 Identifying assumptions`
+  - `5.1.3 Subclassification exercise: Titanic data set`
+  - `5.1.4 Curse of dimensionality`
+  - `5.2 Exact Matching`
+  - `5.3 Approximate Matching`
+  - `5.3.1 Nearest neighbor covariate matching`
+  - `5.3.2 Bias correction`
+  - `5.3.3 Propensity score methods`
+  - `5.3.4 Example: The NSW job training program`
+  - `5.3.5 Weighting on the propensity score`
+  - `5.3.6 Nearest-neighbor matching`
+  - `5.3.7 Coarsened exact matching`
+  - `5.4 Conclusion`
+
+## Executive Summary
+
+- The chapter starts with subclassification because it is the clearest way to see the logic of conditioning on observed covariates.
+- It then shows why exact stratification becomes difficult in realistic settings and uses that difficulty to motivate exact matching and then approximate matching methods.
+- A recurring theme is that all of these methods are trying to recover credible treated-control comparisons under selection on observables, but they differ in how they define similarity and how much information they discard or reweight.
+- The chapter is especially relevant to this repo because it connects directly to the repo's teaching emphasis on design before estimation, on the curse of dimensionality, and on balance-versus-retention tradeoffs.
+
+## Chapter Structure and Notes
+
+### 5.1 Subclassification
+
+Main idea:
+
+- Subclassification is introduced as the most straightforward way to make treated and control units comparable: divide the sample into groups defined by covariates, compare treated and untreated outcomes within those groups, and then aggregate those within-group comparisons.
+
+Why this matters:
+
+- This gives the reader the cleanest possible version of the matching idea before algorithms get involved.
+- It makes clear that causal adjustment is fundamentally about comparing like with like.
+- It also provides the bridge from the backdoor criterion to actual empirical practice.
+
+Key understanding points:
+
+- The treatment effect is built from within-stratum comparisons rather than a single raw comparison across the whole sample.
+- The final estimate is a weighted average of stratum-level effects.
+- Subclassification works best when the relevant confounders are discrete or can be made meaningfully discrete.
+
+What to remember:
+
+- This section is conceptually basic but methodologically important. If subclassification makes sense, the logic of later matching methods makes sense too.
+- Matching and weighting methods can often be read as more elaborate ways of doing what subclassification tries to do simply.
+
+#### 5.1.1 Some background
+
+Main idea:
+
+- The background discussion motivates subclassification by showing how crude mean comparisons can mix treated and untreated units that are not comparable because they differ systematically on pre-treatment variables.
+
+Why this matters:
+
+- This is where the chapter makes the inferential problem concrete: observed outcome differences may reflect selection into treatment rather than treatment itself.
+- Stratifying on a confounder is introduced as a direct fix for that comparability problem.
+
+What to remember:
+
+- The point of stratification is not elegance. It is to remove misleading comparisons that pool unlike units.
+- This section helps anchor the whole chapter in confounding rather than in software procedure.
+
+#### 5.1.2 Identifying assumptions
+
+Main idea:
+
+- The chapter ties subclassification to the identifying assumptions needed for observational causal inference, especially the idea that conditioning on the right observed covariates can block confounding pathways.
+
+Why this matters:
+
+- This section is the reminder that subclassification is not mechanically causal. It is causal only if the relevant identifying assumptions hold.
+- It frames the whole chapter as an exercise in achieving conditional comparability, not magical de-biasing.
+
+Key understanding points:
+
+- The central assumption is selection on observables or conditional independence after conditioning.
+- Exchangeability is being claimed within strata, not necessarily in the raw sample.
+- If important confounders are omitted, subclassification will not solve the problem.
+
+What to remember:
+
+- This section is the conceptual foundation for everything that follows.
+- The later matching methods are all ways of making this identifying logic more workable in high-dimensional settings.
+
+#### 5.1.3 Subclassification exercise: Titanic data set
+
+Main idea:
+
+- The Titanic example is used as a simple teaching case to show how subclassification works in practice with discrete support cells.
+
+Why this matters:
+
+- It gives the reader a hands-on version of the method before the chapter moves into more technical matching procedures.
+- It also shows that subclassification is not just theory; it can be implemented transparently with a familiar dataset.
+
+Key understanding points:
+
+- The example helps visualize support cells and weighted averaging across strata.
+- It shows how treatment comparisons can change materially once comparisons are made within more relevant groups.
+- It is a pedagogic stepping stone to exact matching because the logic is almost identical once strata become exact covariate profiles.
+
+What to remember:
+
+- This is a good section to revisit when the later methods start to feel too abstract.
+- The repo's `titanic` appendix is a natural companion to this part of the chapter.
+
+#### 5.1.4 Curse of dimensionality
+
+Main idea:
+
+- The curse of dimensionality explains why simple subclassification becomes hard to use once many covariates matter at once: the sample gets split into too many cells, many cells become sparse or empty, and credible within-cell comparisons disappear.
+
+Why this matters:
+
+- This is the pivot point of the chapter.
+- It explains why the simplest design logic cannot just be scaled up naïvely.
+- It motivates the move from exact stratification to exact matching and then to approximate methods.
+
+Key understanding points:
+
+- Every additional covariate or finer binning choice can multiply the number of required strata.
+- A design can become unusable not because the logic is wrong, but because the data do not support the required fine-grained comparisons.
+- Approximate matching methods are responses to this sparsity problem.
+
+What to remember:
+
+- The curse of dimensionality is not just a computational issue. It is a substantive overlap issue.
+- Whenever later methods relax exact comparability, this is the reason they do so.
+
+### 5.2 Exact Matching
+
+Main idea:
+
+- Exact matching takes the subclassification logic to its strict conclusion: treated and control units are compared only when they are identical on the chosen matching covariates.
+
+Why this matters:
+
+- Exact matching is conceptually clean and easy to explain.
+- It makes the design rule explicit and minimizes ambiguity about what counts as a valid comparison.
+
+Key understanding points:
+
+- Exact matching is strongest when the covariates are discrete, low-dimensional, or already naturally grouped.
+- Its main virtue is transparency: the analyst can say exactly which comparisons are allowed.
+- Its main weakness is feasibility: once the covariate set expands, many treated units may have no exact control counterpart.
+
+What to remember:
+
+- Exact matching is the benchmark for interpretability even when it is not feasible.
+- If exact matching fails badly, that often reveals something important about overlap in the data rather than a mere inconvenience.
+
+Useful caution:
+
+- Severe sample loss is not a side issue. It changes the target population and may turn the analysis into a very local statement about a subset with support.
+
+### 5.3 Approximate Matching
+
+Main idea:
+
+- Approximate matching methods relax the exact-comparison rule so the analyst can still construct usable treated-control comparisons when exact matching is too sparse.
+
+Why this matters:
+
+- This is where matching becomes practically useful in real observational data.
+- The section clarifies that approximation is not abandoning the design goal; it is trying to preserve as much comparability as the data allow.
+
+Key understanding points:
+
+- Different approximate methods relax the exactness requirement in different ways.
+- The central tradeoff is always between closeness of match, retained sample size, and the stability of the resulting design.
+- Approximate matching therefore requires more diagnostics and more analyst judgment than exact matching.
+
+What to remember:
+
+- Approximation is necessary because the data are limited, not because causal standards are lower.
+- Every approximate method should be judged by the design it produces, not by the elegance of the algorithm.
+
+#### 5.3.1 Nearest neighbor covariate matching
+
+Main idea:
+
+- Nearest-neighbor covariate matching defines similarity using a distance metric on the covariates and pairs treated units with the closest available controls.
+
+Why this matters:
+
+- This is a natural generalization of exact matching when exact equality is impossible.
+- It gives a practical rule for choosing among imperfect comparison units.
+
+Key understanding points:
+
+- The method depends heavily on how distance is measured.
+- "Nearest" is a relative statement, not a guarantee of good balance.
+- Match quality can vary a lot across treated units, especially where overlap is weak.
+
+What to remember:
+
+- Distance-based matching is intuitive, but it can hide poor design quality if the nearest available match is still very far away.
+- Closeness has to be judged substantively and diagnostically, not assumed.
+
+#### 5.3.2 Bias correction
+
+Main idea:
+
+- Bias correction is introduced because nearest-neighbor matches are rarely perfect. Even after matching, treated and control units may differ on important covariates.
+
+Why this matters:
+
+- This section acknowledges that approximate matching can leave residual imbalance.
+- It shows one way analysts try to reduce the remaining bias without abandoning the matched design.
+
+Key understanding points:
+
+- Bias correction is a post-match adjustment layered on top of the design.
+- It does not make poor matches good; it only tries to adjust for the remaining mismatch.
+- The need for bias correction is itself evidence that approximate matching alone may not fully solve the problem.
+
+What to remember:
+
+- Bias correction can help, but it should not be confused with a cure for bad overlap.
+- The more correction the design seems to need, the weaker the underlying matched comparison may be.
+
+#### 5.3.3 Propensity score methods
+
+Main idea:
+
+- Propensity score methods are presented as a way to reduce the dimensionality problem by summarizing many covariates into a single balancing score: the probability of treatment given the observed covariates.
+
+Why this matters:
+
+- This is one of the chapter's most important responses to the curse of dimensionality.
+- It explains why analysts often use propensity scores when direct matching on the full covariate vector is impractical.
+
+Key understanding points:
+
+- The attraction of the propensity score is dimensional reduction, not guaranteed success.
+- Units with similar propensity scores are meant to be similar in their observed treatment-assignment profile.
+- The propensity score is useful only if it actually produces acceptable covariate balance after implementation.
+
+What to remember:
+
+- The propensity score is a design device, not the estimand and not the final causal argument.
+- Good propensity score practice still requires overlap checks and balance diagnostics.
+
+Useful caution:
+
+- It is easy to mistake a well-specified treatment model for a good design. The chapter's structure implies these are not the same thing.
+
+#### 5.3.4 Example: The NSW job training program
+
+Main idea:
+
+- The NSW job training example is used as a benchmark setting for assessing how well observational adjustment methods can recover effects relative to a more credible experimental reference.
+
+Why this matters:
+
+- This example is central to the matching literature because it provides a way to judge whether a matching or weighting approach is actually getting close to a known benchmark.
+- It moves the discussion from abstract method comparison to empirical performance.
+
+Key understanding points:
+
+- The example is not only about one program; it is about whether observational adjustment can approximate an experimental benchmark.
+- It highlights how design choices can materially affect the estimated effect.
+- It also reinforces the need to assess methods comparatively rather than doctrinally.
+
+What to remember:
+
+- This is one of the strongest chapter links to current repo material because the repo already uses the NSW/CPS benchmark logic.
+- The value of the example is that it disciplines method evaluation with an external reference point.
+
+#### 5.3.5 Weighting on the propensity score
+
+Main idea:
+
+- Propensity scores can be used not only for matching but also for weighting, so the adjusted sample behaves like a pseudo-population in which treatment is less confounded by observed covariates.
+
+Why this matters:
+
+- This widens the chapter from pairwise or stratum-based comparisons into a broader weighting framework.
+- It also makes the link to estimands more explicit because different weights correspond to different target populations.
+
+Key understanding points:
+
+- Weighting changes the influence of observations rather than necessarily dropping them.
+- Weight instability becomes a central issue when estimated treatment probabilities are near zero or one.
+- Overlap problems show up here as extreme weights rather than only as failed matches.
+
+What to remember:
+
+- Weighting can preserve more units than strict matching, but it can still create fragile designs if a few observations carry too much influence.
+- Effective sample size matters as much as nominal sample size.
+
+#### 5.3.6 Nearest-neighbor matching
+
+Main idea:
+
+- The chapter then treats nearest-neighbor matching in its more operational form, where design decisions such as replacement, order, and implementation details affect the resulting matched sample.
+
+Why this matters:
+
+- This is where a seemingly simple idea becomes a real design workflow with choices that affect both bias and variance.
+- It reminds the reader that matching methods are not single fixed procedures.
+
+Key understanding points:
+
+- Matching with replacement can improve match quality but may concentrate influence on a small number of controls.
+- Matching without replacement may spread influence more evenly but can force worse matches later in the procedure.
+- Inference depends on the structure created by the design, not only on the eventual regression or mean difference formula.
+
+What to remember:
+
+- Operational choices in nearest-neighbor matching are not minor implementation details. They define the actual design.
+- Good matching is judged by the resulting balance and overlap, not by the label "nearest neighbor" alone.
+
+#### 5.3.7 Coarsened exact matching
+
+Main idea:
+
+- Coarsened exact matching is presented as a compromise: exact matching is performed, but on coarsened versions of the covariates rather than on the raw covariates themselves.
+
+Why this matters:
+
+- This gives the analyst direct control over what counts as meaningfully similar while avoiding the full sparsity problem of raw exact matching.
+- It is one of the clearest design-oriented methods in the chapter because its rules are explicit and interpretable.
+
+Key understanding points:
+
+- Coarsening is not a technical nuisance; it is the main design choice.
+- Different cutpoints can materially change both balance and sample retention.
+- CEM often makes the balance-retention tradeoff more visible than black-box distance methods.
+
+What to remember:
+
+- CEM is attractive because it keeps the matching rule understandable.
+- But it still requires iterative checking because overly fine coarsening can drop too much sample, while overly coarse binning can weaken comparability.
+
+### 5.4 Conclusion
+
+Main idea:
+
+- The conclusion appears to pull together subclassification, exact matching, and approximate matching as related attempts to recover credible counterfactual comparisons from observational data.
+
+Why this matters:
+
+- The chapter's ending is important because it clarifies what the methods are for and, equally, what they cannot do.
+
+What to remember:
+
+- The core lesson is not that one matching method wins universally.
+- The deeper lesson is that observational adjustment is a design problem shaped by overlap, dimensionality, and identifying assumptions.
+- Matching methods are useful when they make comparisons more credible and more transparent, not when they hide weak support behind technical language.
+
+## Implications for This Repo
+
+- The chapter overlaps strongly with the repo's existing main report, the `titanic` teaching appendix, and the NSW/CPS benchmark lab.
+- The subclassification and curse-of-dimensionality sections are especially useful because they explain why the repo emphasizes design tradeoffs rather than presenting methods as plug-and-play tools.
+- The NSW example provides the clearest direct bridge to current benchmark materials already in the repo.
+- A gap relative to the chapter is that the repo does not yet have a compact note page devoted specifically to subclassification as the conceptual precursor to matching.
+
+## High-Level Takeaways
+
+- Subclassification is the cleanest entry point for understanding matching because it makes the conditioning logic visible.
+- The curse of dimensionality is the main reason exact stratification breaks down in realistic settings.
+- Exact matching is transparent but often infeasible once the design involves multiple meaningful covariates.
+- Approximate matching methods differ mainly in how they relax exactness and how they manage the balance-retention tradeoff.
+- Propensity score methods solve a dimensionality problem only if they actually improve balance and maintain overlap.
+- Benchmark examples such as NSW matter because they let analysts evaluate designs against a stronger reference than intuition alone.
+
+## Follow-Up Build Plan
+
+1. Add direct links from subclassification, exact matching, and NSW sections to the relevant repo reports and labs.
+2. Add a small glossary for recurring terms such as subclassification, balancing score, and common support.
+3. Optionally add a short "Mixtape versus current repo emphasis" section, especially on diagnostics and retained sample size.
+4. If needed, add a separate note that isolates the NSW benchmark workflow from the rest of the chapter.

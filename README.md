@@ -19,14 +19,19 @@ scripts/fetch_evidencebase_source.sh evaluation gertler_ch8.pdf
 
 This writes the exported files under `data/evidencebase/<collection>/<source-stem>/`.
 
-## Notes Site
+## Site Structure
 
-A Quarto notes scaffold now lives under `docs/` for the main quasi-experimental design topics:
+A Quarto site now lives under `docs/` with three top-level sections:
 
-- matching and weighting
-- difference-in-differences
-- synthetic control
-- regression discontinuity
+- `notes`
+- `reports`
+- `labs`
+
+Current content includes:
+
+- matching and weighting notes plus migrated matching labs
+- synthetic-control notes plus report and lab skeletons
+- additional notes on difference-in-differences and regression discontinuity
 
 Render it with:
 

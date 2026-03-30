@@ -1,0 +1,65 @@
+---
+title: "Matching Report Draft"
+---
+
+## Purpose
+
+This is a skeleton draft for a longer report on matching and weighting in applied evaluation.
+
+## Intended Scope
+
+- when matching is a credible design repair
+- how to compare exact matching, coarsened exact matching, and weighting
+- how overlap, balance, retention, and weight concentration affect the design judgement
+
+## Planned Structure
+
+### 1. Policy Question And Estimand
+
+Draft notes:
+
+- define the target population
+- state whether the report is centered on `ATT`, `ATE`, or another estimand
+
+### 2. Identification Logic
+
+Draft notes:
+
+- conditional independence
+- overlap and support
+- why observed balance is necessary but not sufficient
+
+### 3. Design Options
+
+Draft notes:
+
+- exact matching
+- coarsened exact matching
+- entropy balancing and related weighting approaches
+
+### 4. Diagnostics
+
+Draft notes:
+
+- balance checks
+- overlap checks
+- retained sample size
+- effective sample size and extreme weights
+
+### 5. Worked Example
+
+Draft notes:
+
+- connect to the LaLonde benchmark and the matching labs
+
+### 6. Reporting Checklist
+
+Draft notes:
+
+- what an evaluator should report before presenting an estimate
+
+## Related Material
+
+- [Matching and Weighting](../notes/matching-and-weighting.qmd)
+- [LaLonde Matching Lab](../labs/lalonde-matching-lab.qmd)
+- [NSW and CPS Benchmark Lab](../labs/nsw-cps-benchmark-lab.qmd)

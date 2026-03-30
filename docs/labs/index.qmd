@@ -1,0 +1,25 @@
+---
+title: "Labs"
+---
+
+This section collects worksheet-style pages for hands-on design practice.
+
+## Matching Labs
+
+The matching labs were migrated from `../matching-trg` and adapted to fit this repo's section structure.
+
+- [LaLonde Matching Lab](lalonde-matching-lab.qmd)
+- [Black Politicians Lab](black-politicians-lab.qmd)
+- [NSW and CPS Benchmark Lab](nsw-cps-benchmark-lab.qmd)
+- [HISP IE Practice Lab](hisp-ie-practice-lab.qmd)
+
+## Synthetic Control Design Labs
+
+These are draft lab skeletons for synthetic-control work:
+
+- [Synthetic Control Design Lab](synthetic-control-design-lab.qmd)
+- [Synthetic Control Donor Pool Lab](synthetic-control-donor-pool-lab.qmd)
+
+## Working Rule
+
+Keep the same standard across all labs: define the design before estimating, document the tradeoffs introduced by the design, and state clearly what the resulting comparison can and cannot support.

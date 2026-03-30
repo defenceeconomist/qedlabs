@@ -1,0 +1,325 @@
+---
+title: "Notes on Gertler et al.: Matching"
+subtitle: "Detailed Study Notes for Chapter 8"
+author: "Luke Heley"
+date: 9 March 2026
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: false
+---
+
+## Purpose
+
+These notes summarize Chapter 8 ("Matching") in *Impact Evaluation in Practice* using the recently extracted export in `data/evidencebase_exports/gertler_ch8/`. They are meant to capture the chapter's actual argument and worked examples rather than only the bookmark structure.
+
+The aim here is to capture:
+
+- what matching is doing conceptually
+- the specific conditions Gertler et al. place on credible matching
+- how the HISP worked example is used to motivate propensity-score matching
+- where the chapter says matching should be combined with stronger designs
+
+## Source Baseline
+
+- Source file in the export: `data/evidencebase_exports/gertler_ch8/`
+- Underlying source key: `evaluation/gertler_ch8.pdf`
+- Book metadata in the export:
+  - *Impact Evaluation in Practice*
+  - Gertler, Martinez, Premand, Rawlings, and Vermeersch
+  - World Bank, 2010
+  - DOI: `10.1596/978-0-8213-8541-8`
+- Accessed for these notes: 9 March 2026
+- Main extracted sections used here:
+  - `Constructing an Artificial Comparison Group`
+  - `Key Concept`
+  - `Propensity Score Matching`
+  - `Combining Matching with Other Methods`
+  - `Matched Difference-in-Differences`
+  - `The Synthetic Control Method`
+  - `Evaluating the Impact of HISP: Using Matching Techniques`
+  - `Limitations of the Matching Method`
+  - `Checklist: Matching`
+
+## Executive Summary
+
+- Matching = build an artificial comparison group from untreated units that resemble treated units on observed baseline characteristics.
+- Exact matching is conceptually clean but quickly runs into the curse of dimensionality.
+- Propensity-score matching is the chapter's main practical workaround.
+- The non-negotiables are baseline covariates, common support, and the absence of important unobserved selection.
+- The HISP example shows that richer baseline covariates produce more credible matches.
+- The chapter's strongest practical advice is to combine matching with difference-in-differences when baseline outcomes exist.
+
+## Study Notes
+
+### Constructing an Artificial Comparison Group
+
+Main idea:
+
+- Matching is for settings where treatment assignment was not randomized and there is no clean eligibility rule to lean on.
+- The evaluator tries to find untreated units that look as similar as possible to treated units before treatment.
+
+Why this matters:
+
+- The whole method is trying to approximate the counterfactual using design choices inside the data.
+- The target is not "similarity" in a vague sense. The target is similarity on characteristics that help explain enrollment.
+
+What to remember:
+
+- Matching is a selection-process method.
+- The quality of the comparison group depends on whether the data capture the variables that drove take-up.
+
+### Key Concept: Observed Characteristics Only
+
+Main idea:
+
+- The chapter's short definition is that matching uses large data sets and statistical techniques to construct the best possible comparison group based on observed characteristics.
+
+Implications:
+
+- Matching can only adjust for what is measured.
+- Bigger, richer baseline data sets help.
+- Unobserved confounding remains the core vulnerability.
+
+Watch for:
+
+- The chapter's exact-matching example is there to show why this gets hard fast once many relevant covariates matter at the same time.
+
+## Propensity-Score Matching
+
+### Why the Chapter Moves Beyond Exact Matching
+
+Main idea:
+
+- Propensity-score matching is introduced as the fix for the curse of dimensionality.
+- Instead of exact agreement on every covariate, units are matched on estimated enrollment probabilities.
+
+What to remember:
+
+- The propensity score is a design tool, not the estimand.
+- The point is to produce a matched sample with better covariate comparability.
+
+### Baseline Covariates Are Non-Negotiable
+
+Main idea:
+
+- Only pre-treatment observed characteristics should go into the propensity score.
+
+Why:
+
+- Post-treatment variables may already contain treatment effects.
+- Matching on them can make treated and control units look artificially similar for the wrong reason.
+
+What to remember:
+
+- Pre-treatment measurement is part of the identification logic, not a nice-to-have.
+
+### Common Support
+
+Main idea:
+
+- Matching only works where treated and untreated units overlap in propensity-score space.
+
+Why this matters:
+
+- No overlap means no credible counterfactual for some treated units.
+- In that case the estimate only applies to the subset on common support.
+
+Watch for:
+
+- weak overlap at the tails
+- forced matches that look mathematical but not substantive
+- sample restriction changing the target population
+
+Evaluator workflow in the chapter:
+
+1. Obtain representative, comparable data on enrolled and nonenrolled units.
+2. Pool the samples and estimate enrollment probabilities from observed characteristics.
+3. Restrict to the region of common support.
+4. Match each enrolled unit to similar nonenrolled units.
+5. Compare outcomes for treated units and their matched comparisons.
+6. Average those unit-level impacts to obtain an overall effect estimate.
+
+### What Matching Can and Cannot Do
+
+Recurring cautions:
+
+- matching only accounts for observed characteristics
+- matching should not rely on post-treatment covariates
+- the choice of matching variables matters most when those variables actually determine enrollment
+
+Bottom line:
+
+- Good software cannot rescue a bad covariate set or weak knowledge of the assignment process.
+
+## Combining Matching with Other Methods
+
+### Matched Difference-in-Differences
+
+Main idea:
+
+- If baseline outcomes exist, the chapter prefers matching plus DiD over matching alone.
+
+Why this matters:
+
+- Matching handles comparability on observables.
+- DiD helps remove bias from unobserved differences that are fixed over time.
+
+Workflow:
+
+1. Match on observed baseline characteristics.
+2. Compute before-after outcome changes for treated units.
+3. Compute before-after outcome changes for their matched comparisons.
+4. Subtract the two changes.
+5. Average the resulting double differences.
+
+What to remember:
+
+- Matching alone is relatively weak.
+- Matching plus DiD is stronger because it adds a second identification layer.
+
+### Synthetic Control
+
+Main idea:
+
+- Synthetic control is the single-treated-unit extension of the chapter's matching logic.
+
+What it does:
+
+- It builds a weighted synthetic comparison unit rather than choosing one untreated match.
+
+What to remember:
+
+- It needs a long pre-treatment time series.
+- The Basque Country example shows why naive comparisons can fail when pre-treatment determinants already differ.
+
+## HISP Worked Example
+
+### Enrollment Model
+
+Main idea:
+
+- HISP is the chapter's worked example for how matching is actually implemented.
+
+Baseline predictors used in the richer specification:
+
+- age of the household head and spouse
+- head and spouse education
+- whether the household head is female
+- indigenous status
+- household size
+- dirt floor
+- bathroom access
+- hectares of land
+- distance to hospital
+
+What the table suggests:
+
+- HISP appears to be targeted toward poorer and less-educated households.
+- Enrollment is more likely for indigenous households, larger households, households with dirt floors, and households farther from hospitals.
+- Enrollment is less likely for older, more educated households and households with bathrooms or more land.
+
+### Common Support and Match Construction
+
+Main idea:
+
+- With the full covariate set, the chapter reports full common support for enrolled households.
+- The example uses nearest-neighbor matching.
+
+What to remember:
+
+- In this worked example, every enrolled household gets a matched nonenrolled household.
+- That is a property of this sample and specification, not a general guarantee.
+
+### Effect Estimates Reported in the Export
+
+Keep these figures in mind:
+
+- Matched comparison of means:
+  - enrolled household health expenditures: `7.84`
+  - matched comparison household health expenditures: `17.79`
+  - estimated effect: `-9.95` US dollars
+- Matched regression:
+  - full explanatory set: `-9.95**` with standard error `(0.24)`
+  - limited explanatory set: `-11.35**` with standard error `(0.22)`
+- Matched DiD:
+  - baseline difference: `0.54`
+  - follow-up difference: `-9.95`
+  - matched DiD estimate: `-9.41**` with standard error `(0.19)`
+
+Study note:
+
+- The full covariate set is the more credible design in the chapter's own logic.
+- The matched DiD result being close to the simple matched estimate is a useful consistency check inside the example.
+
+### Why the Limited Covariate Set Matters
+
+Main idea:
+
+- The chapter uses a thin specification to show that "using matching" is not the same as "having a credible design."
+
+What this example teaches:
+
+- it shows why substantive knowledge of enrollment is essential
+- it warns against treating propensity-score matching as a push-button correction for selection bias
+
+### HISP Study Questions
+
+The chapter ends by pushing the reader to ask:
+
+- What assumptions are needed to accept the matching estimates?
+- Why do results differ between the full and limited explanatory-variable sets?
+- How do the matching results compare with randomized assignment, and why?
+- Should HISP be scaled up nationally on this basis?
+
+Why these questions matter:
+
+- They force a shift from software output to design credibility.
+
+## Limitations and Checklist
+
+### Limitations of Matching
+
+Main idea:
+
+- The chapter is blunt that matching has serious weaknesses.
+
+Main limits:
+
+- it requires large, information-rich data sets
+- it may fail because of limited common support
+- it cannot adjust for unobserved determinants of both participation and outcomes
+- the key identifying assumption about no relevant unobserved differences is strong and untestable
+
+What to remember:
+
+- Matching is treated as weaker than randomized assignment, IV, and RDD.
+- The authors present it as a fallback or complement, not a first-best design.
+- Ex post matching is especially risky if baseline covariates must be reconstructed after treatment starts.
+
+### Checklist: Matching
+
+Use this as the quick recall test:
+
+1. Is participation driven by unobserved variables that also affect outcomes?
+2. Are observed baseline characteristics well balanced after matching?
+3. Can a matched comparison unit be found for each treated unit, indicating adequate common support?
+
+Quick interpretation:
+
+- If any of these answers look weak, the matching design is weak.
+
+## Implications for This Repo
+
+- Matching should be framed here as a design-repair tool under selection on observables, not as a generic causal estimator.
+- Any matching workflow should make baseline measurement rules explicit and refuse post-treatment covariates by default.
+- Diagnostics should be treated as core outputs, especially overlap and balance checks, not as optional appendix material.
+- When baseline outcomes are available, the repo should prefer matched DiD over matching alone.
+- Cases with a single treated unit or a small number of aggregate units are better mapped to synthetic-control logic than to household-level nearest-neighbor matching.
+
+## High-Level Takeaways
+
+- Matching can improve comparability, but it does not eliminate selection bias by itself.
+- The credibility of the design depends on baseline covariates, overlap, and knowledge of the enrollment process.
+- The chapter consistently points toward combination designs, especially matched DiD, when the data allow it.

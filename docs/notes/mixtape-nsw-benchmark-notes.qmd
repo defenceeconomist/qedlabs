@@ -1,0 +1,437 @@
+---
+title: "Mixtape Notes: NSW Benchmark From Section 5.3.4 Onward"
+subtitle: "Observational versus experimental evidence, with R code"
+author: "Luke Heley"
+date: 9 March 2026
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: false
+execute:
+  echo: true
+  eval: false
+---
+
+## Purpose
+
+These notes condense section `5.3.4` onward of Cunningham's *Matching and Subclassification* chapter into a teaching sequence that is easy to run in R.
+
+The goal is narrow:
+
+- show why the NSW experimental estimate is the benchmark
+- show why the observational NSW-treated-versus-CPS-controls comparison is biased
+- show how propensity-score weighting, nearest-neighbor matching, and coarsened exact matching perform against that benchmark
+
+This page is intentionally shorter and more didactic than the broader [Matching and Weighting](matching-and-weighting.qmd) overview and is meant to give the NSW benchmark its own runnable teaching note.
+
+## What Section 5.3.4 Onward Is Doing
+
+From `5.3.4` onward, the chapter stops talking about matching in the abstract and asks a harder question:
+
+Can an observational design recover an effect that we already know from an experiment?
+
+That is why the NSW example matters so much [@lalonde1986evaluating; @dehejia1999causal; @cunningham2021subclassification]:
+
+- the NSW sample contains a randomized treatment-control comparison
+- the CPS sample gives a non-experimental control pool
+- the analyst can therefore compare observational estimates against an experimental reference rather than against intuition alone
+
+This is the key teaching lesson:
+
+- experimental data solve the comparison problem by design
+- observational data do not
+- matching and weighting are attempts to repair that problem using observed covariates only
+- the repair should be judged by balance, overlap, retention, and closeness to the experimental benchmark
+
+## Core Design Logic
+
+The NSW benchmark exercise should be read as a sequence of four comparisons:
+
+1. Experimental benchmark: NSW treated versus NSW controls.
+2. Raw observational estimate: NSW treated versus CPS controls with no adjustment.
+3. Adjusted observational estimates: weighting or matching on observed covariates.
+4. Benchmark gap: how far each observational estimate remains from the randomized NSW result.
+
+If the raw observational estimate is far away from the benchmark, that is evidence that the treated and untreated groups were not initially comparable.
+
+If an adjusted observational estimate moves closer, that suggests the design repair helped.
+
+If it still misses badly, that is a reminder that conditioning on observables is not the same thing as randomization.
+
+## Step 1: Load Packages And Build The Two Samples
+
+```{r}
+required_packages <- c(
+  "causaldata",
+  "MatchIt",
+  "WeightIt",
+  "cobalt",
+  "dplyr",
+  "ggplot2"
+)
+
+missing_packages <- required_packages[!vapply(
+  required_packages,
+  requireNamespace,
+  logical(1),
+  quietly = TRUE
+)]
+
+if (length(missing_packages) > 0) {
+  install.packages(missing_packages, repos = "https://cloud.r-project.org")
+}
+
+invisible(lapply(required_packages, library, character.only = TRUE))
+
+nsw <- causaldata::nsw_mixtape |>
+  mutate(
+    treat = as.integer(treat),
+    outcome = re78
+  )
+
+cps <- causaldata::cps_mixtape |>
+  mutate(
+    treat = as.integer(treat),
+    outcome = re78
+  )
+
+design_covariates <- c(
+  "age", "educ", "black", "hisp", "marr", "nodegree", "re74", "re75"
+)
+
+benchmark_dat <- nsw
+
+obs_dat <- bind_rows(
+  nsw |> filter(treat == 1L) |> mutate(source = "NSW treated"),
+  cps |> filter(treat == 0L) |> mutate(source = "CPS controls")
+)
+
+obs_dat |>
+  count(source, treat)
+```
+
+Interpretation:
+
+- `benchmark_dat` is the experimental comparison
+- `obs_dat` is the observational comparison that creates the identification problem
+
+## Step 2: Estimate The Experimental Benchmark
+
+This is the reference effect. It uses only the randomized NSW sample.
+
+```{r}
+benchmark_summary <- benchmark_dat |>
+  group_by(treat) |>
+  summarise(
+    n = n(),
+    mean_re78 = mean(outcome, na.rm = TRUE),
+    mean_re74 = mean(re74, na.rm = TRUE),
+    mean_re75 = mean(re75, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  mutate(group = if_else(treat == 1L, "NSW treated", "NSW controls")) |>
+  select(group, n, mean_re78, mean_re74, mean_re75)
+
+benchmark_fit <- lm(outcome ~ treat, data = benchmark_dat)
+benchmark_est <- unname(coef(benchmark_fit)["treat"])
+
+benchmark_summary
+summary(benchmark_fit)
+benchmark_est
+```
+
+What this means:
+
+- the `treat` coefficient is the benchmark `ATT`
+- every later observational estimate should be compared back to this value
+
+## Step 3: Show Why Raw Observational Data Are Problematic
+
+Now switch to the harder comparison: NSW treated units against CPS controls.
+
+```{r}
+raw_summary <- obs_dat |>
+  group_by(treat) |>
+  summarise(
+    n = n(),
+    mean_re78 = mean(outcome, na.rm = TRUE),
+    mean_age = mean(age, na.rm = TRUE),
+    mean_educ = mean(educ, na.rm = TRUE),
+    prop_black = mean(black == 1, na.rm = TRUE),
+    prop_married = mean(marr == 1, na.rm = TRUE),
+    mean_re74 = mean(re74, na.rm = TRUE),
+    mean_re75 = mean(re75, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  mutate(group = if_else(treat == 1L, "NSW treated", "CPS controls")) |>
+  select(group, n, mean_re78, mean_age, mean_educ, prop_black, prop_married, mean_re74, mean_re75)
+
+raw_fit <- lm(outcome ~ treat, data = obs_dat)
+raw_est <- unname(coef(raw_fit)["treat"])
+
+raw_summary
+summary(raw_fit)
+raw_est
+```
+
+Why this estimate is not credible on its own:
+
+- CPS controls were not randomized against NSW treated units
+- the groups differ on pre-treatment covariates
+- they also differ on prior earnings, which are strong proxies for labor-market position before treatment
+- the raw treated-control gap therefore mixes treatment effects with selection effects
+
+## Step 4: Diagnose Imbalance And Overlap Before Any Adjustment
+
+The most important design check is whether treated and control units look even remotely comparable.
+
+```{r}
+m_raw <- matchit(
+  treat ~ age + educ + black + hisp + marr + nodegree + re74 + re75,
+  data = obs_dat,
+  method = NULL,
+  estimand = "ATT"
+)
+
+summary(m_raw, un = TRUE)
+
+cobalt::bal.tab(
+  m_raw,
+  un = TRUE,
+  binary = "std",
+  m.threshold = 0.1
+)
+
+cobalt::love.plot(
+  m_raw,
+  abs = TRUE,
+  thresholds = c(m = 0.1),
+  stars = "raw"
+)
+```
+
+Quick overlap check:
+
+```{r}
+ps_fit <- glm(
+  treat ~ age + educ + black + hisp + marr + nodegree + re74 + re75,
+  data = obs_dat,
+  family = binomial()
+)
+
+obs_dat <- obs_dat |>
+  mutate(ps = predict(ps_fit, type = "response"))
+
+ggplot(obs_dat, aes(x = ps, fill = factor(treat))) +
+  geom_density(alpha = 0.4) +
+  labs(
+    x = "Estimated propensity score",
+    y = "Density",
+    fill = "Treat",
+    title = "Propensity-score overlap: NSW treated versus CPS controls"
+  )
+```
+
+What to look for:
+
+- large standardized mean differences before adjustment
+- weak common support in the propensity-score distribution
+- evidence that some treated units have no close untreated analogs in CPS
+
+This is the basic observational-data problem. The issue is not just omitted variables in theory. It is visible non-comparability in the realized sample.
+
+## Step 5: Weighting On The Propensity Score
+
+Section `5.3.5` moves from matching to weighting. The idea is to reweight controls so they better resemble the treated group on observed covariates [@greifer2025weightit].
+
+```{r}
+w_att <- weightit(
+  treat ~ age + educ + black + hisp + marr + nodegree + re74 + re75,
+  data = obs_dat,
+  method = "ps",
+  estimand = "ATT"
+)
+
+summary(w_att)
+
+cobalt::bal.tab(
+  w_att,
+  un = TRUE,
+  binary = "std",
+  m.threshold = 0.1
+)
+
+weighted_fit <- lm(outcome ~ treat, data = obs_dat, weights = w_att$weights)
+weighted_est <- unname(coef(weighted_fit)["treat"])
+
+summary(weighted_fit)
+weighted_est
+```
+
+Teaching point:
+
+- weighting often keeps more units than strict matching
+- but poor overlap shows up as extreme weights
+- if a few control units receive huge weight, the design may still be fragile
+
+## Step 6: Nearest-Neighbor Matching
+
+Section `5.3.6` turns to nearest-neighbor matching in its practical form. This is where operational choices such as replacement start to matter [@abadie2011biascorrected; @ho2011matchit].
+
+```{r}
+m_nearest <- matchit(
+  treat ~ age + educ + black + hisp + marr + nodegree + re74 + re75,
+  data = obs_dat,
+  method = "nearest",
+  distance = "glm",
+  estimand = "ATT",
+  replace = TRUE
+)
+
+summary(m_nearest, un = TRUE)
+
+cobalt::bal.tab(
+  m_nearest,
+  un = TRUE,
+  binary = "std",
+  m.threshold = 0.1
+)
+
+matched_nearest <- match.data(m_nearest)
+
+nearest_fit <- lm(
+  outcome ~ treat,
+  data = matched_nearest,
+  weights = weights
+)
+
+nearest_est <- unname(coef(nearest_fit)["treat"])
+
+summary(nearest_fit)
+nearest_est
+```
+
+What nearest-neighbor matching teaches:
+
+- the label "nearest" does not guarantee a good design
+- matching with replacement usually improves match quality for hard-to-match treated cases
+- balance diagnostics matter more than the algorithm name
+
+## Step 7: Coarsened Exact Matching
+
+Section `5.3.7` presents coarsened exact matching as a more transparent compromise: exact matching, but on coarsened versions of the covariates [@iacus2012cem].
+
+```{r}
+m_cem <- matchit(
+  treat ~ age + educ + black + hisp + marr + nodegree + re74 + re75,
+  data = obs_dat,
+  method = "cem",
+  estimand = "ATT",
+  cutpoints = list(
+    age = c(25, 35, 45),
+    educ = c(10, 12, 14),
+    re74 = c(0, 5000, 10000),
+    re75 = c(0, 5000, 10000)
+  )
+)
+
+summary(m_cem, un = TRUE)
+
+cobalt::bal.tab(
+  m_cem,
+  un = TRUE,
+  binary = "std",
+  m.threshold = 0.1
+)
+
+matched_cem <- match.data(m_cem)
+
+cem_fit <- lm(
+  outcome ~ treat,
+  data = matched_cem,
+  weights = weights
+)
+
+cem_est <- unname(coef(cem_fit)["treat"])
+
+summary(cem_fit)
+cem_est
+```
+
+What CEM makes especially clear:
+
+- coarsening is the design decision
+- tighter bins improve comparability but can discard more treated units
+- looser bins retain more data but may weaken balance
+
+That visibility is why CEM is often useful for teaching. The design tradeoff is much easier to see than in more opaque distance-based approaches.
+
+## Step 8: Compare Every Observational Design Back To The Experiment
+
+The benchmark comparison is the whole point of the exercise.
+
+```{r}
+results_tbl <- tibble::tibble(
+  method = c(
+    "Experimental benchmark",
+    "Raw observational difference",
+    "Propensity-score weighting",
+    "Nearest-neighbor matching",
+    "Coarsened exact matching"
+  ),
+  estimate = c(
+    benchmark_est,
+    raw_est,
+    weighted_est,
+    nearest_est,
+    cem_est
+  )
+) |>
+  mutate(
+    benchmark_gap = estimate - benchmark_est,
+    abs_benchmark_gap = abs(benchmark_gap)
+  )
+
+results_tbl
+```
+
+How to interpret the table:
+
+- the experimental row is the target
+- the raw observational row shows how misleading untreated observational comparisons can be
+- the adjusted rows show whether design repair moved the estimate toward the randomized answer
+- no method should be judged only by closeness to the benchmark; you still need to inspect balance, overlap, and sample retention
+
+## The Main Lesson About Observational Versus Experimental Data
+
+The NSW example is useful because it separates two questions that often get blurred together.
+
+Question 1:
+Can I compute an adjusted observational estimate?
+
+Yes. Matching and weighting make that easy.
+
+Question 2:
+Can I defend that estimate as a credible stand-in for the experimental answer?
+
+Only sometimes, and only after checking:
+
+- whether the treated and control groups overlap on relevant covariates
+- whether balance actually improved after adjustment
+- whether the adjusted design depends on a thin or unusual subset of controls
+- whether the benchmark gap is small enough to inspire confidence
+
+The broader lesson from section `5.3.4` onward is not that one matching method "wins." It is that observational estimators should be stress-tested against better evidence whenever a benchmark exists.
+
+## Short Takeaways For Teaching
+
+- Randomization is the benchmark because it creates comparability by design.
+- Observational data start with a comparability problem, not just an estimation problem.
+- Matching and weighting are design repairs based on observables, not substitutes for an experiment.
+- A better-looking estimate is not enough; you need better balance and plausible overlap.
+- The NSW example is powerful because it lets you compare observational methods against a known experimental reference rather than against vague plausibility.
+
+## Next Step In This Repo
+
+If you want the broader design framing around these benchmark comparisons, continue to the [Matching and Weighting](matching-and-weighting.qmd) overview.

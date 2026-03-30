@@ -1,0 +1,434 @@
+---
+title: "Lab: HISP IE in Practice"
+format:
+  html: default
+execute:
+  echo: true
+  eval: false
+---
+
+## How To Use This Page
+
+Use this page as a guided replication worksheet for the HISP case-study material from *Impact Evaluation in Practice*.
+
+- Run the sections in the same order as the original Stata do-file.
+- Treat the early methods as design contrasts, not as equally credible estimates.
+- Keep notes on how the estimate moves as the design gets stronger.
+- Use the in-page code blocks as the primary worksheet sequence in this repo.
+
+::: {.callout-note}
+Unlike the other labs in this repository, this page is organized to follow the logic of `docs/data/hisp_ie_in_practice/HISP Book replication.do` as closely as possible. The aim is to translate that Stata workflow into R, not to rewrite it into a different teaching sequence.
+:::
+
+## Source Baseline
+
+This lab uses the tracked build bundle in `docs/data/hisp_ie_in_practice`:
+
+- primary workflow baseline: [HISP Book replication.do](../data/hisp_ie_in_practice/HISP%20Book%20replication.do)
+- Stata input dataset: [evaluation.dta](../data/hisp_ie_in_practice/evaluation.dta)
+- CSV analysis dataset used for rendering: [evaluation.csv](../data/hisp_ie_in_practice/evaluation.csv)
+
+The renderable bundle lives under `docs/` so the site can build without depending on ignored raw-data paths in the repository root.
+
+## Step 1: Convert The Stata Files And Load The HISP Data
+
+```{r}
+required_packages <- c(
+  "haven",
+  "readr",
+  "dplyr",
+  "ggplot2",
+  "MatchIt",
+  "sandwich",
+  "boot",
+  "broom",
+  "nlme"
+)
+
+missing_packages <- required_packages[!vapply(
+  required_packages,
+  requireNamespace,
+  logical(1),
+  quietly = TRUE
+)]
+
+if (length(missing_packages) > 0) {
+  install.packages(missing_packages, repos = "https://cloud.r-project.org")
+}
+
+invisible(lapply(required_packages, library, character.only = TRUE))
+
+data_dir <- "../data/hisp_ie_in_practice"
+dta_files <- list.files(data_dir, pattern = "[.]dta$", full.names = TRUE)
+
+csv_export_manifest <- dplyr::bind_rows(lapply(dta_files, function(dta_path) {
+  csv_path <- sub("[.]dta$", ".csv", dta_path)
+  csv_exists <- file.exists(csv_path)
+  dat <- haven::read_dta(dta_path)
+
+  if (!csv_exists) {
+    readr::write_csv(dat, csv_path)
+  }
+
+  data.frame(
+    dta_file = basename(dta_path),
+    csv_file = basename(csv_path),
+    csv_status = ifelse(csv_exists, "tracked_existing", "exported_from_dta"),
+    rows = nrow(dat),
+    columns = ncol(dat)
+  )
+}))
+
+dat <- readr::read_csv(file.path(data_dir, "evaluation.csv"), show_col_types = FALSE)
+
+controls <- c(
+  "age_hh",
+  "age_sp",
+  "educ_hh",
+  "educ_sp",
+  "female_hh",
+  "indigenous",
+  "hhsize",
+  "dirtfloor",
+  "bathroom",
+  "land",
+  "hospital_distance"
+)
+
+dat |>
+  dplyr::select(
+    household_identifier,
+    locality_identifier,
+    treatment_locality,
+    promotion_locality,
+    eligible,
+    enrolled,
+    round,
+    health_expenditures
+  ) |>
+  head(10)
+```
+
+Checkpoint:
+
+- Does the tracked `evaluation.csv` keep the same `19,827` rows and `22` columns as the Stata source?
+- If any CSV file was missing, did the export manifest recreate it from the bundled `.dta` file?
+
+## Step 2: Method 1, Before-After Among Enrolled Households
+
+The Stata do-file starts with the simplest comparison: enrolled households in treatment localities, before versus after.
+
+```{r}
+method_1_dat <- dat |>
+  dplyr::filter(treatment_locality == 1, enrolled == 1)
+
+t.test(
+  health_expenditures ~ factor(round, levels = c(0, 1)),
+  data = method_1_dat,
+  var.equal = TRUE
+)
+
+fit_m1_raw <- lm(health_expenditures ~ round, data = method_1_dat)
+sandwich::vcovCL(fit_m1_raw, cluster = method_1_dat$locality_identifier, type = "HC1")
+
+fit_m1_controls <- lm(
+  health_expenditures ~ round + age_hh + age_sp + educ_hh + educ_sp +
+    female_hh + indigenous + hhsize + dirtfloor + bathroom + land + hospital_distance,
+  data = method_1_dat
+)
+```
+
+What to note:
+
+- This estimate is easy to compute but vulnerable to time trends.
+- The control-adjusted version follows the do-file, but it does not solve the design problem.
+
+## Step 3: Method 2, Enrolled Versus Not Enrolled At Follow-Up
+
+This is the second naive comparison in the book replication script: follow-up outcomes in treatment localities, comparing enrolled and nonenrolled households.
+
+```{r}
+method_2_dat <- dat |>
+  dplyr::filter(treatment_locality == 1, round == 1)
+
+t.test(
+  health_expenditures ~ factor(enrolled, levels = c(0, 1)),
+  data = method_2_dat,
+  var.equal = TRUE
+)
+
+fit_m2_raw <- lm(health_expenditures ~ enrolled, data = method_2_dat)
+fit_m2_controls <- lm(
+  health_expenditures ~ enrolled + age_hh + age_sp + educ_hh + educ_sp +
+    female_hh + indigenous + hhsize + dirtfloor + bathroom + land + hospital_distance,
+  data = method_2_dat
+)
+```
+
+## Step 4: Method 3, Randomized Assignment Among Eligible Households
+
+The book then moves to the randomized-assignment case, using eligible households and comparing treatment versus comparison villages.
+
+```{r}
+method_3_dat <- dat |>
+  dplyr::filter(eligible == 1)
+
+t.test(
+  health_expenditures ~ factor(treatment_locality, levels = c(0, 1)),
+  data = dplyr::filter(method_3_dat, round == 0),
+  var.equal = TRUE
+)
+
+balance_controls <- dplyr::bind_rows(lapply(controls, function(var_name) {
+  t.test(
+    method_3_dat[[var_name]][method_3_dat$round == 0] ~
+      factor(method_3_dat$treatment_locality[method_3_dat$round == 0], levels = c(0, 1)),
+    var.equal = TRUE
+  ) |>
+    broom::tidy() |>
+    dplyr::mutate(variable = var_name)
+}))
+
+fit_m3_raw <- lm(
+  health_expenditures ~ treatment_locality,
+  data = dplyr::filter(method_3_dat, round == 1)
+)
+
+fit_m3_controls <- lm(
+  health_expenditures ~ treatment_locality + age_hh + age_sp + educ_hh + educ_sp +
+    female_hh + indigenous + hhsize + dirtfloor + bathroom + land + hospital_distance,
+  data = dplyr::filter(method_3_dat, round == 1)
+)
+```
+
+## Step 5: Method 4, Instrumental Variables Under Random Promotion
+
+The IV branch uses `promotion_locality` as the instrument for `enrolled_rp` at follow-up.
+
+```{r}
+method_4_dat <- dat |>
+  dplyr::filter(round == 1)
+
+t.test(
+  enrolled_rp ~ factor(promotion_locality, levels = c(0, 1)),
+  data = method_4_dat,
+  var.equal = TRUE
+)
+
+first_stage <- lm(
+  enrolled_rp ~ promotion_locality + age_hh + age_sp + educ_hh + educ_sp +
+    female_hh + indigenous + hhsize + dirtfloor + bathroom + land + hospital_distance,
+  data = method_4_dat
+)
+
+# Draft placeholder:
+# replace this with an in-repo helper or inline 2SLS workflow once the
+# full HISP execution bundle is migrated.
+# method_4_iv_regressions
+```
+
+## Step 6: Method 5, Regression Discontinuity
+
+The do-file normalizes the poverty index around the `58` cutoff and estimates a piecewise-linear discontinuity model in treatment localities.
+
+```{r}
+method_5_dat <- dat |>
+  dplyr::filter(treatment_locality == 1) |>
+  dplyr::mutate(
+    poverty_index_left = ifelse(poverty_index <= 58, poverty_index - 58, 0),
+    poverty_index_right = ifelse(poverty_index > 58, poverty_index - 58, 0)
+  )
+
+fit_rdd_followup <- lm(
+  health_expenditures ~ poverty_index_left + poverty_index_right + eligible,
+  data = dplyr::filter(method_5_dat, round == 1)
+)
+
+fit_rdd_controls <- lm(
+  health_expenditures ~ eligible + poverty_index_left + poverty_index_right +
+    age_hh + age_sp + educ_hh + educ_sp + female_hh + indigenous +
+    hhsize + dirtfloor + bathroom + land + hospital_distance,
+  data = dplyr::filter(method_5_dat, round == 1)
+)
+
+ggplot2::ggplot(
+  dplyr::filter(method_5_dat, round == 1, health_expenditures < 60),
+  ggplot2::aes(x = poverty_index, y = health_expenditures)
+) +
+  ggplot2::geom_point(alpha = 0.12) +
+  ggplot2::geom_vline(xintercept = 58, linetype = "dashed")
+```
+
+## Step 7: Method 6, Difference-in-Differences
+
+The DiD branch stays in treatment localities and adds the `enrolled * round` interaction.
+
+```{r}
+method_6_dat <- dat |>
+  dplyr::filter(treatment_locality == 1) |>
+  dplyr::mutate(enrolled_round = enrolled * round)
+
+t.test(
+  health_expenditures ~ factor(round, levels = c(0, 1)),
+  data = dplyr::filter(method_6_dat, enrolled == 0),
+  var.equal = TRUE
+)
+
+t.test(
+  health_expenditures ~ factor(round, levels = c(0, 1)),
+  data = dplyr::filter(method_6_dat, enrolled == 1),
+  var.equal = TRUE
+)
+
+fit_did_raw <- lm(
+  health_expenditures ~ enrolled_round + round + enrolled,
+  data = method_6_dat
+)
+
+fit_did_controls <- lm(
+  health_expenditures ~ enrolled_round + round + enrolled +
+    age_hh + age_sp + educ_hh + educ_sp + female_hh + indigenous +
+    hhsize + dirtfloor + bathroom + land + hospital_distance,
+  data = method_6_dat
+)
+```
+
+## Step 8: Method 7, Propensity-Score Matching
+
+The matching section in the do-file reshapes the panel to wide form, estimates a probit propensity score, randomizes row order, and runs nearest-neighbor matching first on a restricted covariate set and then on the full control set.
+
+```{r}
+wide_dat <- reshape(
+  as.data.frame(dat),
+  direction = "wide",
+  idvar = "household_identifier",
+  timevar = "round",
+  sep = ""
+)
+
+coalesce_pair <- function(left, right) ifelse(is.na(left), right, left)
+
+for (var_name in c(
+  "enrolled", "age_hh", "age_sp", "educ_hh", "educ_sp", "female_hh",
+  "indigenous", "hhsize", "dirtfloor", "bathroom", "land", "hospital_distance"
+)) {
+  wide_dat[[var_name]] <- coalesce_pair(wide_dat[[paste0(var_name, "0")]], wide_dat[[paste0(var_name, "1")]])
+}
+
+matching_dat <- wide_dat[
+  complete.cases(wide_dat[, c(
+    "enrolled",
+    "health_expenditures0",
+    "health_expenditures1",
+    "age_hh",
+    "educ_hh",
+    "age_sp",
+    "educ_sp",
+    "female_hh",
+    "indigenous",
+    "hhsize",
+    "dirtfloor",
+    "bathroom",
+    "land",
+    "hospital_distance"
+  )]),
+]
+
+probit_fit <- glm(
+  enrolled ~ age_hh + educ_hh,
+  data = matching_dat,
+  family = binomial(link = "probit")
+)
+
+matching_dat$pscore <- predict(probit_fit, type = "response")
+
+set.seed(100)
+m_restricted <- MatchIt::matchit(
+  enrolled ~ age_hh + educ_hh,
+  data = matching_dat,
+  method = "nearest",
+  distance = "glm",
+  link = "probit",
+  ratio = 1,
+  replace = FALSE,
+  m.order = "random",
+  estimand = "ATT",
+  normalize = FALSE
+)
+
+matched_restricted <- MatchIt::match.data(m_restricted)
+lm(health_expenditures1 ~ enrolled, data = matched_restricted, weights = weights)
+
+set.seed(100)
+m_full <- MatchIt::matchit(
+  enrolled ~ age_hh + age_sp + educ_hh + educ_sp + female_hh + indigenous +
+    hhsize + dirtfloor + bathroom + land + hospital_distance,
+  data = matching_dat,
+  method = "nearest",
+  distance = "glm",
+  link = "probit",
+  ratio = 1,
+  replace = FALSE,
+  m.order = "random",
+  estimand = "ATT",
+  normalize = FALSE
+)
+```
+
+For the full-set branch, swap `age_hh + educ_hh` for the full control list used earlier.
+
+## Step 9: Matched Difference-in-Differences
+
+The do-file closes the matching chapter by computing a matched DiD on the full matched sample.
+
+```{r}
+matched_full <- MatchIt::match.data(m_full)
+
+matched_pairs <- matched_full |>
+  dplyr::arrange(subclass, dplyr::desc(enrolled)) |>
+  dplyr::group_by(subclass) |>
+  dplyr::summarise(
+    matched_dd = (health_expenditures1[enrolled == 1] - health_expenditures0[enrolled == 1]) -
+      (health_expenditures1[enrolled == 0] - health_expenditures0[enrolled == 0]),
+    .groups = "drop"
+  )
+
+matched_full |>
+  dplyr::mutate(diff = health_expenditures1 - health_expenditures0) |>
+  lm(diff ~ enrolled, data = _, weights = weights)
+```
+
+## Step 10: Power Calculations
+
+The final branch follows the book's power-calculation logic using follow-up treated means, standard deviations, and ICC estimates.
+
+```{r}
+two_sample_n_per_arm <- function(sd_outcome, minimum_detectable_effect, power, alpha = 0.05) {
+  z_alpha <- qnorm(1 - alpha / 2)
+  z_beta <- qnorm(power)
+  ceiling(((z_alpha + z_beta)^2 * (sd_outcome^2 + sd_outcome^2)) / minimum_detectable_effect^2)
+}
+
+power_dat <- dat |>
+  dplyr::filter(eligible == 1, round == 1, treatment_locality == 1)
+
+m1 <- mean(power_dat$health_expenditures, na.rm = TRUE)
+sd1 <- sd(power_dat$health_expenditures, na.rm = TRUE)
+
+data.frame(
+  minimum_detectable_effect = c(1, 2, 3),
+  target_mean = m1 - c(1, 2, 3),
+  n_per_arm_90 = vapply(c(1, 2, 3), two_sample_n_per_arm, numeric(1), sd_outcome = sd1, power = 0.9),
+  n_per_arm_80 = vapply(c(1, 2, 3), two_sample_n_per_arm, numeric(1), sd_outcome = sd1, power = 0.8)
+)
+```
+
+## Comparison Question
+
+After running the full sequence, compare the main effect terms across methods:
+
+- Which branches are obviously biased because the design is too weak?
+- Which branches move closest to the more credible design-based estimates?
+- How much do the estimates shift once the workflow reaches RDD, DiD, IV, and matching?
+
+The evaluated-code page collects those outputs into one place, and the QA log documents where the R workflow intentionally mirrors the Stata source.

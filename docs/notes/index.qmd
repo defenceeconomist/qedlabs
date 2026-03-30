@@ -1,0 +1,31 @@
+---
+title: "Notes"
+---
+
+This section collects the method notes and source-based reading notes that support the rest of the site.
+
+## Matching
+
+Use this group when you want the conceptual and literature background for matching and weighting:
+
+- [Matching and Weighting](matching-and-weighting.qmd) for the high-level method overview
+- [LaLonde Background Appendix](lalonde-background-appendix.qmd) for benchmark context
+- [Entropy-Based Weighting with WeightIt](weightit-entropy-balancing-notes.qmd) for weighting-specific design notes
+- the source notes on *The Mixtape*, *The Effect*, and Gertler for detailed chapter-by-chapter recall
+
+## Synthetic Control
+
+Use this group for synthetic-control concepts, teaching data, and source mapping:
+
+- [Synthetic Control](synthetic-control.qmd)
+- [Synthetic Control Teaching Data](synthetic-control-teaching-data.qmd)
+- [Synthetic Control Sources](synthetic-control-sources.qmd)
+
+## Other Methods
+
+The remaining notes cover the broader quasi-experimental toolkit:
+
+- [Difference-in-Differences](difference-in-differences.qmd)
+- [Regression Discontinuity](regression-discontinuity.qmd)
+- [Comparing Methods](comparing-methods.qmd)
+- [Choosing a Method](choosing-a-method.qmd)

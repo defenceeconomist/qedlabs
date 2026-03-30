@@ -1,0 +1,132 @@
+---
+title: "LaLonde Background Appendix"
+subtitle: "Notes on what the LaLonde benchmark still teaches matching four decades later"
+author: "Luke Heley"
+date: 9 March 2026
+format:
+  html:
+    toc: true
+    toc-depth: 2
+    number-sections: false
+---
+
+## Purpose
+
+This appendix gives background notes on why the `lalonde` dataset remains central in causal-inference teaching and matching practice. It is based primarily on *Comparing Experimental and Nonexperimental Methods: What Lessons Have We Learned Four Decades After LaLonde (1986)?* [@imbens2025comparingexperimentalnonexperimentalmethods], and is meant to help readers of the main report and labs understand why this dataset is not just a convenient package example.
+
+## Why LaLonde Still Matters
+
+LaLonde's original comparison asked a hard question: if we already know the answer from an experiment, can nonexperimental methods recover something close to that answer using observational controls? [@lalonde1986evaluating] That question gave the later matching literature a disciplined benchmark rather than a vague success story.
+
+The `lalonde`-style benchmark matters because it combines three things:
+
+- an experimental training-study result that serves as a reference point
+- observational comparison groups that create the harder design problem
+- public data that allow repeated methodological reanalysis
+
+That combination turned the LaLonde-Dehejia-Wahba setup into a benchmark case for evaluating matching, propensity-score adjustment, trimming, weighting, and validation exercises [@dehejia1999causal; @imbens2025comparingexperimentalnonexperimentalmethods].
+
+## The Basic Historical Arc
+
+The paper's historical story is straightforward [@imbens2025comparingexperimentalnonexperimentalmethods]:
+
+1. LaLonde (1986) showed that many standard nonexperimental estimators performed poorly when compared with the experimental benchmark.
+2. Heckman and Hotz argued that specification tests and validation exercises could help diagnose when nonexperimental estimates were more credible.
+3. Dehejia and Wahba reframed the case around design choices, especially covariate selection and propensity-score-based adjustment.
+4. Later work, including Abadie and Imbens, formalized how matching estimators behave and clarified when bias correction and overlap diagnostics matter.
+
+This is why LaLonde remains useful in teaching. The dataset does not tell a story of one method winning forever. It tells a story about design discipline, assumptions, and validation.
+
+## What LaLonde Originally Showed
+
+LaLonde used the National Supported Work training experiment together with nonexperimental comparison groups and found that many regression-based observational estimators were unstable and often far from the experimental estimate [@lalonde1986evaluating; @imbens2025comparingexperimentalnonexperimentalmethods].
+
+The important lesson is not only that old estimators performed badly. The deeper lesson is that observational adjustment is fragile when treated and untreated groups are not naturally comparable, and when the analyst has too much modeling discretion.
+
+That is exactly why the dataset fits this repo. The whole design-first workflow in the main report exists to reduce that fragility.
+
+## Five Lessons Emphasized In The Recent Reassessment
+
+The 2025 reassessment organizes the post-LaLonde literature around five broad lessons [@imbens2025comparingexperimentalnonexperimentalmethods].
+
+### 1. Unconfoundedness Must Be Defended, Not Assumed
+
+Modern matching and weighting methods usually rely on some version of unconfoundedness: after conditioning on the right observed pre-treatment covariates, treatment assignment is as good as random. The paper emphasizes that this is a substantive design claim, not a software default.
+
+For this repo, that means covariates belong in the design because of the treatment-assignment story, not because they are available in the dataset.
+
+### 2. Overlap Is A First-Order Design Problem
+
+The paper emphasizes that overlap is not a technical footnote. If treated units and controls occupy very different parts of the covariate distribution, estimates become model-dependent and sensitive to design choices.
+
+That is closely aligned with the main report's focus on retention, pruning, and effective sample size. Weak overlap does not disappear because a matching algorithm ran successfully. It reappears as a design cost.
+
+### 3. Propensity Scores Help Summarize The Design Problem, But They Do Not Solve It Alone
+
+The reassessment treats propensity scores as useful tools for diagnosing overlap and structuring comparisons, not as magic balancing numbers [@imbens2025comparingexperimentalnonexperimentalmethods]. That is consistent with the repo's decision not to treat propensity-score matching as the core introductory method.
+
+The key lesson is that propensity scores can help organize a design, but they still depend on covariate choice, overlap, and the plausibility of unconfoundedness.
+
+### 4. Treatment Effects May Be Heterogeneous
+
+The paper highlights that the average treatment effect on the treated can hide meaningful variation across units. Later methods therefore look beyond a single average and examine conditional or subgroup effects when the design supports it [@imbens2025comparingexperimentalnonexperimentalmethods].
+
+This matters for teaching because it stops matching from being framed as a single-number machine. A design can change the target population, and the estimand may drift as overlap restrictions tighten.
+
+### 5. Validation Exercises Still Matter
+
+One of the paper's strongest messages is that modern estimators are not enough by themselves. Researchers still need validation exercises, including placebo outcomes, benchmark comparisons, and sensitivity checks, to assess whether the underlying identifying assumptions are plausible [@imbens2025comparingexperimentalnonexperimentalmethods].
+
+That point fits directly with the repo's broader workflow: diagnose first, estimate second, and then test how defensible the design really is.
+
+## Reanalysis Themes Most Relevant To This Repo
+
+The paper's reanalysis emphasizes three themes that are especially useful for the materials here [@imbens2025comparingexperimentalnonexperimentalmethods].
+
+### Overlap Improvement Reduces Model Dependence
+
+When overlap is improved through trimming or more disciplined design restrictions, estimates become less variable across methods. This does not prove the design is valid, but it does reduce how much the answer depends on arbitrary modeling choices.
+
+That is one reason the repo reports balance and retention together rather than treating balance alone as the success criterion.
+
+### Modern Estimators Cannot Rescue Bad Design Assumptions
+
+The paper shows that even after improving overlap, placebo checks can still suggest problems with unconfoundedness. In other words, better estimation does not eliminate the need for a credible assignment story.
+
+That is why the `why matching` deck keeps repeating that matching is a design repair, not a guarantee of identification.
+
+### Placebo Outcomes Remain Informative
+
+The reassessment continues the older LaLonde tradition of asking whether nonexperimental designs generate implausible effects on outcomes that should not have been affected. That kind of placebo reasoning is still useful because it tests the broader credibility of the design, not just whether a balance table looks good.
+
+## What This Means For Using `lalonde` In This Repo
+
+The repo uses `MatchIt::lalonde` because it is an unusually good teaching dataset for design-first causal inference.
+
+- It has a clear treatment and outcome structure.
+- It makes raw imbalance visible quickly.
+- It connects directly to the benchmark literature on observational adjustment.
+- It supports discussion of exact matching, coarsened exact matching, weighting, overlap, pruning, and estimand drift.
+- It reminds readers that diagnostics are necessary but not sufficient.
+
+That last point matters most. The modern lesson from LaLonde is not simply "matching works" or "matching fails." The stronger lesson is that credibility depends on overlap, assignment knowledge, validation, and honest reporting of what the design can and cannot support [@imbens2025comparingexperimentalnonexperimentalmethods].
+
+## Practical Takeaways
+
+For applied matching work, the appendix suggests five practical rules:
+
+1. Learn the assignment process before choosing a method.
+2. Inspect overlap before trusting any adjusted estimate.
+3. Treat balance as necessary but not sufficient.
+4. Check whether the estimand has shifted after trimming or pruning.
+5. Use placebo or benchmark-style validation whenever the setting allows it.
+
+## How To Use This Appendix
+
+- Read it beside the [Matching and Weighting](matching-and-weighting.qmd) note if you want the benchmark history alongside the main method overview.
+- Use it with the [Mixtape Notes: NSW Benchmark From Section 5.3.4 Onward](mixtape-nsw-benchmark-notes.qmd) page if you want a compact worked example anchored to the benchmark logic.
+- Pair it with [Entropy-Based Weighting with WeightIt](weightit-entropy-balancing-notes.qmd) if you want the historical background plus a weighting-specific design note.
+
+## Bottom Line
+
+Four decades after LaLonde, the core lesson is more nuanced than either optimism or pessimism about nonexperimental methods. Good observational adjustment is possible only when the design can make unconfoundedness plausible, overlap usable, and validation informative. The LaLonde benchmark remains valuable because it forces all three questions into the open [@lalonde1986evaluating; @dehejia1999causal; @abadie2011biascorrected; @imbens2025comparingexperimentalnonexperimentalmethods].

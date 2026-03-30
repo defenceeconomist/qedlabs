@@ -1,0 +1,65 @@
+---
+title: "Lab: Synthetic Control Design"
+format:
+  html: default
+execute:
+  echo: true
+  eval: false
+---
+
+## How To Use This Page
+
+Use this page as a skeleton worksheet for planning a synthetic-control study before writing full implementation code.
+
+## Draft Goal
+
+Build a design memo that answers:
+
+1. what the treated unit is
+2. when treatment begins
+3. which donor units are credible candidates
+4. which predictors and outcomes define pre-treatment fit
+5. how the design will be stress-tested
+
+## Suggested Workflow
+
+### Step 1: Define The Treated Unit
+
+Draft prompts:
+
+- What is the treated jurisdiction, organization, or system?
+- Is there a single intervention date or a phased rollout?
+
+### Step 2: Define The Outcome Series
+
+Draft prompts:
+
+- Which outcome will anchor the design?
+- Is the pre-treatment series long enough to support a meaningful fit exercise?
+
+### Step 3: Draft The Donor Pool
+
+Draft prompts:
+
+- Which units are plausible comparisons?
+- Which units should be excluded for contamination or non-comparability?
+
+### Step 4: Plan Predictors And Pre-Treatment Windows
+
+Draft prompts:
+
+- Which lagged outcomes and covariates belong in the design?
+- Which pre-treatment years are most defensible?
+
+### Step 5: Plan Diagnostics
+
+Draft prompts:
+
+- placebo checks
+- pre-treatment fit thresholds
+- donor-pool sensitivity
+- leave-one-out checks
+
+## Next Build Step
+
+Expand this draft into a fully runnable lab once a concrete case and dataset are selected.

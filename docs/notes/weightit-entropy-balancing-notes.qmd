@@ -1,0 +1,584 @@
+---
+title: "Entropy-Based Weighting with WeightIt"
+subtitle: "Detailed Notes on Entropy Balancing and Parameter Tuning"
+author: "Luke Heley"
+date: 16 March 2026
+link-citations: true
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: false
+execute:
+  echo: false
+  eval: false
+---
+
+## Purpose
+
+These notes explain what entropy-based weighting is, how `WeightIt::weightit(..., method = "ebal")` implements it, and how to tune the design without treating the method as a black box. The emphasis is practical: what to balance, which arguments matter most, and how to decide when a more aggressive specification is helping versus simply concentrating weight on a small number of units.
+
+## Source Baseline
+
+- Main source article: [Using WeightIt to Estimate Balancing Weights](https://ngreifer.github.io/WeightIt/articles/WeightIt.html)
+- Core reference pages:
+  - [`weightit()`](https://ngreifer.github.io/WeightIt/reference/weightit.html)
+  - [`method = "ebal"` / `method_ebal`](https://ngreifer.github.io/WeightIt/reference/method_ebal.html)
+  - [`glm_weightit()` and `lm_weightit()`](https://ngreifer.github.io/WeightIt/reference/glm_weightit.html)
+- WeightIt site version displayed on the live documentation pages: `1.5.1.9000`
+- Main article date displayed on the source page: `2026-01-30`
+- Accessed for these notes: `16 March 2026`
+- Related repo materials:
+  - [Matching and Weighting](matching-and-weighting.qmd)
+  - [LaLonde Background Appendix](lalonde-background-appendix.qmd)
+  - [Mixtape Notes: NSW Benchmark From Section 5.3.4 Onward](mixtape-nsw-benchmark-notes.qmd)
+
+## Executive Summary
+
+- Entropy balancing is a weighting method, not a pair-matching method. It keeps the sample but changes how much influence each unit has.
+- In `WeightIt`, `method = "ebal"` solves an optimization problem that finds weights as close as possible to base weights while forcing exact balance on specified covariate moments.
+- For binary `ATT` designs, the focal treated group keeps weight `1` and the control group is reweighted to look like the treated group on the chosen balance constraints.
+- The main tuning levers are not obscure optimizer settings. They are the design choices about which covariates, powers, interactions, and quantiles must be balanced.
+- The biggest practical risk is not failure to hit the balance target. It is hitting the target by creating very uneven weights, weak effective sample size, and a fragile weighted comparison.
+- A good entropy-balancing workflow therefore alternates between two checks after every tuning step: `did balance improve where I needed it to?` and `did weight concentration become too costly?`
+
+## What Entropy-Based Weighting Is
+
+### Core Idea
+
+Entropy balancing is a reweighting method for observational studies [@hainmueller2012entropy]. The goal is to make the weighted covariate distribution in one group resemble the target distribution of another group. Instead of estimating a propensity score first and hoping the resulting inverse-probability weights balance the sample, entropy balancing imposes the balance requirements directly.
+
+In plain language:
+
+- choose which pre-treatment covariate summaries must match
+- let the software find weights that satisfy those constraints exactly
+- prefer weights that stay as close as possible to a baseline set of weights
+
+That last step is where the "entropy" part comes in. The optimization is set up so that the weights satisfy the balance constraints while deviating as little as possible from the starting weights under an entropy-based distance measure.
+
+### What Is Being Balanced
+
+For binary and multi-category treatments, `WeightIt` documents entropy balancing as minimizing negative entropy subject to exact moment balance constraints on the included terms. The default is exact balance on covariate means, because `moments = 1` unless you ask for more on the [`method_ebal` page](https://ngreifer.github.io/WeightIt/reference/method_ebal.html).
+
+That means:
+
+- if a variable enters linearly and you do nothing else, you are balancing its mean
+- if you add second moments, you are also balancing its square, which helps align spread and curvature
+- if you add interactions, you are also balancing cross-variable structure
+- if you add quantiles, you are pushing balance further into the distribution, not just the center
+
+Entropy balancing therefore becomes a design language: every tuning choice is really a statement about what kinds of distributional mismatch you are willing to tolerate.
+
+### Why It Often Feels Attractive
+
+Entropy balancing is attractive because the balance target is explicit. You are not inferring design quality from a fitted propensity-score model that happened to produce acceptable diagnostics. You are telling the optimizer which summaries must line up and then checking what the cost of those requirements is in terms of weight dispersion and effective sample size.
+
+This directness is especially useful in evaluator training because it keeps attention on the design question:
+
+- which population am I trying to represent?
+- which covariates must be comparable for that comparison to be credible?
+- how much instability am I willing to accept to get that balance?
+
+### What It Does Not Solve
+
+Entropy balancing is still an observational-adjustment method. It does not fix:
+
+- omitted confounders
+- bad controls
+- post-treatment covariates mistakenly included in the design
+- structural non-overlap between treated and untreated units
+
+It can also hide a weak design if the analyst looks only at the balance table. Exact weighted balance on observed terms does not guarantee a stable or substantively credible comparison.
+
+## How `WeightIt` Implements It
+
+### The Main Call
+
+For most binary-treatment applications, the starting point is the standard `weightit()` interface:
+
+```{r}
+library(WeightIt)
+library(cobalt)
+
+w_ebal <- weightit(
+  treat ~ age + educ + race + married + nodegree + re74 + re75,
+  data = lalonde,
+  method = "ebal",
+  estimand = "ATT"
+)
+```
+
+The key design inputs are:
+
+- the treatment on the left-hand side
+- the covariates to be balanced on the right-hand side
+- the weighting method, here `method = "ebal"`
+- the target estimand, often `ATT` in programme-evaluation settings
+
+The live `WeightIt` documentation notes that formula terms can include functions and interactions. That means you can tune entropy balancing in two ways:
+
+- directly in the formula, for example `I(re74^2)` or `age:married`
+- through dedicated arguments like `moments`, `int`, and `quantile`
+
+### What Happens Under `ATT`
+
+For binary treatments with `estimand = "ATT"`, `WeightIt` treats one group as focal and reweights the other group to resemble it. The [`weightit()` reference](https://ngreifer.github.io/WeightIt/reference/weightit.html) states that weights are set to `1` for the focal group under `ATT` and `ATC`.
+
+In the common `0/1` coding where `1` means treated:
+
+- treated units typically keep weight `1`
+- controls are reweighted so their weighted covariate distribution matches the treated group
+
+This is why entropy balancing often feels like "keep the treated group fixed and build a synthetic control group around it."
+
+### What Diagnostics Matter Immediately
+
+After fitting the weights, the first two diagnostics are:
+
+```{r}
+summary(w_ebal)
+
+bal.tab(
+  w_ebal,
+  un = TRUE,
+  binary = "std",
+  m.threshold = 0.1
+)
+```
+
+The WeightIt article uses `summary()` to inspect weight variability and especially effective sample size. That is the right first instinct. A design with exact mean balance but collapsed control-side ESS is not automatically a good design.
+
+## A Practical Workflow for Applying Entropy Balancing
+
+### Step 1: Define the Estimand Before You Tune Anything
+
+Start by deciding whether the target is `ATT`, `ATE`, or `ATC`. This is not a software detail. It changes which group is kept fixed and what population the weighted comparison is trying to represent.
+
+In many programme settings:
+
+- `ATT` is the most natural target because the question is about participants
+- `ATE` is harder because both groups may need meaningful reweighting
+- `ATC` is less common unless the policy question is explicitly about nonparticipants
+
+If your treatment coding is not obvious, use `focal =` explicitly rather than relying on heuristics.
+
+### Step 2: Start With The Simplest Design That Could Work
+
+The disciplined starting point is usually:
+
+```{r}
+w_ebal_1 <- weightit(
+  treat ~ age + educ + race + married + nodegree + re74 + re75,
+  data = lalonde,
+  method = "ebal",
+  estimand = "ATT"
+)
+```
+
+This means:
+
+- balance means only
+- no automatic interactions
+- no extra quantile constraints
+
+This is a baseline, not a final answer. It tells you how much the data can do before you begin tightening the design.
+
+### Step 3: Diagnose More Than The Default Mean Balance
+
+If you only inspect adjusted mean differences on the variables in the formula, you can miss the reason a design still feels wrong. A means-only entropy-balancing fit can have:
+
+- perfect mean balance
+- poor balance on variance or higher-order shape
+- severe weight concentration
+
+A better check is to inspect both the fitted terms and a few substantively important derived terms:
+
+```{r}
+bal.tab(
+  w_ebal_1,
+  un = TRUE,
+  binary = "std",
+  disp.v.ratio = TRUE,
+  addl = ~ I(age^2) + I(re74^2) + I(re75^2)
+)
+```
+
+If the weighted sample balances means but still shows poor balance on key squared terms or severe variance-ratio problems, that is your signal to tune the specification.
+
+### Step 4: Tighten Constraints Gradually
+
+A good tuning sequence is:
+
+1. means only
+2. add second moments for the continuous variables that matter most
+3. add selected interactions if imbalance is clearly joint rather than marginal
+4. add quantile constraints only when center-of-distribution balance is still hiding tail mismatch
+
+Do not jump straight to a maximal specification unless the covariate set is tiny and overlap is strong. Every extra constraint makes the optimizer work harder and can force weights to become more extreme.
+
+### Step 5: Lock The Design Before Looking For A Better Effect Estimate
+
+Tuning should be driven by design diagnostics, not by whether the treatment estimate moves toward a preferred value or becomes "significant." Entropy balancing is a design-stage method. If the outcome is steering the tuning, the design is no longer honest.
+
+### Step 6: Fit The Outcome Model With Weight-Aware Inference
+
+Once the design is fixed, estimate the effect with `lm_weightit()` or `glm_weightit()` rather than dropping straight to a naive weighted regression:
+
+```{r}
+fit_ebal <- lm_weightit(
+  re78 ~ treat,
+  data = lalonde,
+  weightit = w_ebal_1
+)
+
+summary(fit_ebal)
+```
+
+The [`glm_weightit()` documentation](https://ngreifer.github.io/WeightIt/reference/glm_weightit.html) explains that these functions use M-estimation to account for weight estimation when available and otherwise fall back to robust variance calculations. That is one reason to leave `keep.mparts = TRUE` at its default when you plan to estimate effects after weighting.
+
+## The Main Tuning Parameters
+
+### `estimand` and `focal`
+
+What they do:
+
+- `estimand` tells `WeightIt` which target distribution to represent
+- `focal` explicitly identifies the focal group for `ATT` or `ATC`
+
+Why they matter:
+
+- they determine which side is reweighted
+- they determine whether weights of `1` are assigned to a focal group
+- they change the interpretation of the final estimate
+
+Tuning advice:
+
+- for a standard treated-versus-untreated evaluation, start with `ATT`
+- code treatment as `0` and `1` if you can
+- if treatment labels are unusual, set `focal =` explicitly rather than trusting automatic detection
+
+Watch for:
+
+- analysts comparing an `ATT` result and an `ATE` result as if they were directly interchangeable
+- target-population drift when switching estimands without rethinking the policy question
+
+### `moments`
+
+What it does:
+
+- `moments` controls the highest power of each covariate to be balanced
+- default is `1`, which means mean balance only
+- it can be a single integer or a named vector such as `c(age = 2, re74 = 2, re75 = 2)`
+
+Why it matters:
+
+- means-only balance can still leave serious differences in spread or curvature
+- adding second moments often helps when prior outcomes or earnings are heavily skewed or when treated and control groups differ in the shape of the distribution, not just the center
+
+Typical tuning move:
+
+```{r}
+w_ebal_2 <- weightit(
+  treat ~ age + educ + race + married + nodegree + re74 + re75,
+  data = lalonde,
+  method = "ebal",
+  estimand = "ATT",
+  moments = c(age = 2, re74 = 2, re75 = 2)
+)
+```
+
+Best-practice guidance:
+
+- do not automatically raise all continuous variables to second or third moments
+- start with the variables that are most important to selection and outcome prediction
+- use a named vector so the tuning stays interpretable
+- remember that values above `1` are ignored for categorical covariates
+
+What usually goes wrong:
+
+- the analyst turns `moments = 2` or `3` on for everything
+- balance improves mechanically
+- control-side ESS collapses or max weights explode
+
+That is not free improvement. It is a design tradeoff that must be defended.
+
+### `int`
+
+What it does:
+
+- `int = TRUE` asks `WeightIt` to balance first-order interactions among the covariates
+- default is `FALSE`
+
+Why it matters:
+
+- sometimes marginal balance on each covariate is fine, but the joint structure is still wrong
+- this matters when assignment depended on combinations such as prior earnings by education, age by marital status, or geography by baseline deprivation
+
+Tuning advice:
+
+- treat `int = TRUE` as a late-stage escalation, not a default
+- if only one or two interactions matter substantively, it is often cleaner to add them directly in the formula instead of asking for all first-order interactions
+
+Manual alternative:
+
+```{r}
+w_ebal_3 <- weightit(
+  treat ~ age + educ + race + married + nodegree + re74 + re75 + age:married + educ:re74,
+  data = lalonde,
+  method = "ebal",
+  estimand = "ATT"
+)
+```
+
+Why manual interactions are often better:
+
+- they keep the constraint set legible
+- they reduce the risk of overfitting the balance problem
+- they make it easier to explain why a given interaction was included
+
+### `quantile`
+
+What it does:
+
+- `quantile` adds constraints tied to selected quantiles of continuous covariates
+- it is available for binary and multi-category treatments
+
+Why it matters:
+
+- means and variances can line up while tails still differ materially
+- this is especially relevant for skewed covariates such as earnings, deprivation scores, wait times, or prior service use
+
+Example:
+
+```{r}
+w_ebal_4 <- weightit(
+  treat ~ age + educ + race + married + nodegree + re74 + re75,
+  data = lalonde,
+  method = "ebal",
+  estimand = "ATT",
+  moments = c(re74 = 2, re75 = 2),
+  quantile = list(
+    re74 = c(.25, .5, .75),
+    re75 = c(.25, .5, .75)
+  )
+)
+```
+
+Tuning advice:
+
+- use quantiles when a few important continuous covariates still show distributional mismatch after means and second moments are handled
+- start with a small set like `.25`, `.5`, `.75` rather than a dense grid
+- apply them only to the variables where tail behavior actually matters
+
+What to avoid:
+
+- adding quantiles to every continuous variable by default
+- using quantiles as a substitute for thinking about overlap
+
+If the treated group lives in parts of the covariate space with almost no comparable controls, extra quantile constraints will often show up as much more uneven weights rather than as a robust design.
+
+### `base.weights` Versus `s.weights`
+
+What they do:
+
+- `base.weights` supplies an initial set of weights that the entropy-balancing solution should stay close to
+- `s.weights` supplies sampling weights
+
+Why the distinction matters:
+
+- the [`method_ebal` documentation](https://ngreifer.github.io/WeightIt/reference/method_ebal.html) is explicit that sampling weights should not be passed as `base.weights`
+- `base.weights` are for calibration relative to prior balancing or design weights
+- `s.weights` are for survey or sampling-weight information
+
+Use cases for `base.weights`:
+
+- calibrating entropy balancing on top of previously estimated weights
+- preserving some properties of an earlier design while imposing new balance constraints
+
+Use cases for `s.weights`:
+
+- complex-survey or administrative sampling designs
+- analyses where the original sample already has design weights that matter substantively
+
+### `solver`, `reltol`, `maxit`, and `include.obj`
+
+What they do:
+
+- `solver` chooses the numerical method
+- `reltol` controls relative convergence tolerance
+- `maxit` controls the maximum number of iterations
+- `include.obj = TRUE` keeps the optimization output for inspection
+
+What the docs say:
+
+- `solver = "multiroot"` is the default when `rootSolve` is installed and is documented as faster and more accurate
+- otherwise `solver = "optim"` is used
+- `reltol` defaults to `1e-10`
+- `maxit` defaults to `1000` for binary and multi-category treatments
+
+Practical advice:
+
+- do not start tuning entropy balancing by changing optimizer settings
+- first simplify or rethink the balance constraints if the fit is unstable
+- only after that, consider raising `maxit` or inspecting the optimizer object
+
+Debugging example:
+
+```{r}
+w_ebal_debug <- weightit(
+  treat ~ age + educ + race + married + nodegree + re74 + re75,
+  data = lalonde,
+  method = "ebal",
+  estimand = "ATT",
+  moments = c(age = 2, re74 = 2, re75 = 2),
+  include.obj = TRUE,
+  maxit = 5000
+)
+```
+
+A convergence problem is often telling you something substantive:
+
+- too many constraints for the available overlap
+- poor scaling because the formula is too ambitious
+- a design target that the data can only satisfy with extreme weights
+
+### `missing`
+
+What it does:
+
+- controls how missing covariate data are handled
+
+What the docs emphasize:
+
+- for `method = "ebal"`, the allowed built-in approach is `missing = "ind"`
+- missingness indicators are added and missing values are replaced with medians
+- the general `weightit()` documentation notes that multiple imputation will usually outperform the available built-in missing-data approaches
+
+Tuning advice:
+
+- if missingness is minor and you need a quick design-stage fit, the default indicator method is usable
+- if missingness is nontrivial and the analysis matters, move to multiple imputation rather than pretending the weighting method solved the missing-data problem
+
+### `keep.mparts`
+
+What it does:
+
+- retains the components needed for M-estimation-based standard errors in `glm_weightit()` and `lm_weightit()`
+
+Practical advice:
+
+- leave it at the default unless object size is a real problem
+- if you switch it off, later outcome-model inference may treat the weighting stage less appropriately
+
+## Tuning Strategy That Usually Works Best
+
+### Recommended Escalation Ladder
+
+1. Start with a means-only `ATT` design.
+2. Check weighted mean balance, ESS, coefficient of variation, and max weights.
+3. Add second moments only for the continuous covariates most central to selection and outcome risk.
+4. Recheck ESS and inspect added squared terms explicitly in `bal.tab(..., addl = ...)`.
+5. Add one or two substantively justified interactions if joint imbalance is still a concern.
+6. Add a small number of quantile constraints only for skewed variables that still show distributional mismatch.
+7. Stop once balance is acceptable and the weight distribution remains defensible.
+
+### A Good Rule Of Thumb
+
+Prefer the least aggressive specification that gets you to an acceptable design. In most applications, that means:
+
+- do not maximize balance statistics for their own sake
+- do not add constraints that you cannot explain substantively
+- do not ignore a large ESS collapse just because the balance table now looks perfect
+
+## What To Monitor After Every Tuning Change
+
+### Minimum Diagnostic Set
+
+After each revision, inspect:
+
+- `summary(w_ebal)` for weight spread and effective sample size
+- `bal.tab(w_ebal, un = TRUE, ...)` for weighted balance
+- selected higher-order or distributional terms using `addl =` when they matter substantively
+- the maximum weight in the reweighted group
+- whether the focal group's interpretation has changed because the non-focal group now depends on a tiny weighted subset
+
+### Red Flags
+
+- control or comparison-group ESS collapses sharply after a small tuning change
+- a handful of units carry very large weights
+- balance improves only on the exact constraints you added while nearby diagnostics still look bad
+- you feel pressure to keep tuning because the treatment estimate is not yet in the direction you expected
+- the only way to satisfy the constraints is to keep adding optimizer iterations rather than simplifying the design
+
+Those are signs that the overlap problem may be stronger than the balance table suggests.
+
+## Common Mistakes
+
+### Mistake 1: Thinking Exact Balance Means Global Success
+
+Entropy balancing gives exact balance on the included terms. It does not promise balance on everything you forgot to include.
+
+### Mistake 2: Treating `moments`, `int`, and `quantile` As Harmless Extras
+
+They are not cosmetic. Each one adds constraints, which can materially change the weight distribution.
+
+### Mistake 3: Using Post-Treatment Covariates
+
+Entropy balancing is still a design-stage causal method. The covariates must be pre-treatment.
+
+### Mistake 4: Ignoring Overlap Because The Optimizer Converged
+
+Convergence is not the same thing as a credible design. Sometimes the optimizer is telling you only that it found a mathematical way to satisfy the constraints.
+
+### Mistake 5: Estimating Outcomes With Naive Weighted Models By Default
+
+Once the design is fixed, use the post-weighting inference tools `WeightIt` provides rather than pretending the estimated weights were known in advance.
+
+## Short Applied Template
+
+The following template is a reasonable starting point for a binary-treatment ATT analysis:
+
+```{r}
+library(WeightIt)
+library(cobalt)
+
+w_ebal <- weightit(
+  treat ~ age + educ + race + married + nodegree + re74 + re75,
+  data = lalonde,
+  method = "ebal",
+  estimand = "ATT",
+  moments = c(re74 = 2, re75 = 2)
+)
+
+summary(w_ebal)
+
+bal.tab(
+  w_ebal,
+  un = TRUE,
+  binary = "std",
+  disp.v.ratio = TRUE,
+  addl = ~ I(re74^2) + I(re75^2),
+  m.threshold = 0.1
+)
+
+fit_ebal <- lm_weightit(
+  re78 ~ treat,
+  data = lalonde,
+  weightit = w_ebal
+)
+
+summary(fit_ebal)
+```
+
+This is only a starting template. In a real evaluation, the right formula and tuning choices should come from the treatment-assignment story, not from copying a generic LaLonde specification.
+
+## Scope Notes From The Current WeightIt Docs
+
+- `method = "ebal"` is documented for binary, multi-category, and continuous treatments.
+- For continuous treatments, tuning introduces `d.moments`, which is a separate problem from the standard binary-treatment case.
+- The current `method_ebal` documentation explicitly warns that entropy balancing with longitudinal treatments has not been validated and should not be used.
+- The `stabilize` argument is ignored for entropy balancing. If the goal is to minimize variance subject to balance constraints, the docs direct users toward `method = "optweight"` instead.
+
+## Bottom Line
+
+Entropy-based weighting in `WeightIt` is best understood as a transparent balancing design rather than as a black-box estimator. The method is strong when you can state clearly which covariate features need to match and when the data have enough overlap for those constraints to be met without extreme weights. The practical art is not discovering a secret optimizer setting. It is choosing the smallest set of balance constraints that makes the treated and untreated groups meaningfully comparable while keeping the weighted design stable enough to trust.

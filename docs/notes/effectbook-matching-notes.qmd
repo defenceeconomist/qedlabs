@@ -1,0 +1,391 @@
+---
+title: "Notes on The Effect: Matching"
+subtitle: "Detailed Study Notes for Chapter 14"
+author: "Luke Heley"
+date: 9 March 2026
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: false
+---
+
+## Purpose
+
+These are study notes on [*The Effect*, Chapter 14 ("Matching")](https://theeffectbook.net/ch-Matching.html). They are meant to help with understanding and recall, not to reproduce the chapter. The structure follows the chapter so that each section can be read alongside the source.
+
+The aim here is to capture:
+
+- the main idea of each section
+- why the section matters for causal inference
+- what conceptual traps to watch for
+- how the chapter connects to this repo's design-first framing
+
+## Source Baseline
+
+- Source: [The Effect, Chapter 14 - Matching](https://theeffectbook.net/ch-Matching.html)
+- Author: Nick Huntington-Klein
+- Accessed for these notes: 9 March 2026
+- Current chapter sections observed in the live rendering:
+  - `14.1 Another Way to Close Back Doors`
+  - `14.2 Weighted Averages`
+  - `14.3 Matching in Concept: A Single Matching Variable`
+  - `14.4 Multiple Matching Variables`
+  - `14.5 Propensity Score Weighting with Multiple Matching Variables`
+  - `14.6 Assumptions for Matching`
+  - `14.7 Estimation with Matched Data`
+  - `14.8 Matching and Treatment Effects`
+
+## Executive Summary
+
+- The chapter presents matching as one way to make treated and untreated groups more comparable when treatment was not randomly assigned.
+- A core theme is that matching is easier to understand if it is seen as a weighting and design problem rather than as a mysterious algorithm.
+- The chapter gradually shifts from intuition to practical implementation: first why matching might help, then how weights arise, then how multivariate matching works, then what assumptions still remain.
+- The most important takeaway is that matching does not "create" causal identification by itself. It can make observed groups more comparable, but only under strong assumptions about observed confounding, overlap, and acceptable balance.
+- For this repo, the chapter is especially useful because it aligns with the argument that design comes before estimation and that diagnostics must be taken seriously.
+
+## Chapter Structure and Notes
+
+### 14.1 Another Way to Close Back Doors
+
+Main idea:
+
+- The chapter introduces matching as another strategy for closing back-door paths.^[A back-door path is a non-causal route of association between treatment and outcome that runs through one or more common causes. In practice, it is the pathway that creates confounding: treatment and outcome move together not because treatment caused the outcome, but because both are related to prior factors.] Instead of using regression to adjust for confounders parametrically, the analyst tries to compare treated and untreated units that are similar on observed covariates.
+
+Why this matters:
+
+- This is a useful reframing because it reminds the reader that causal identification is about comparability, not about any one model class.
+- It also helps explain why matching often feels more intuitive to applied researchers: "find comparable cases" is easier to picture than "correctly specify a regression surface."
+
+Key understanding points:
+
+- Matching is still trying to address confounding, not avoid it.
+- The basic promise of matching is design transparency: the comparison is made more explicit.
+- The basic risk is that matching can look credible even when key confounders are missing or overlap is weak.
+
+What to remember:
+
+- Regression and matching are not enemies here; they are different tools for the same underlying causal problem.
+- The chapter uses matching to teach causal design logic, not to argue that regression is obsolete.
+
+Useful caution:
+
+- It is easy to overstate what matching buys you. Matching can improve observed comparability, but if the important back doors are not measured, the core problem remains.
+
+### 14.2 Weighted Averages
+
+Main idea:
+
+- The chapter emphasizes that many matching procedures can be understood in terms of weighted averages. Some observations get more influence, some get less, and some may effectively drop out.
+
+Why this matters:
+
+- This is a strong conceptual move because it unifies several methods that otherwise seem unrelated.
+- Once matching is understood as a way of constructing weights, later sections on entropy balancing and weighted estimation become much easier to follow.
+
+Key understanding points:
+
+- A matched analysis is often not just "keep these rows and drop those rows."
+- Even nearest-neighbor or subclassification approaches often imply weights.
+- Thinking in weights clarifies what population is being represented after matching.
+
+What to remember:
+
+- Weighting is not just a separate method family; it is also a language for understanding matching outputs.
+- This section helps prevent the common mistake of treating matched data as if the design stage were conceptually disconnected from the estimation stage.
+
+Useful caution:
+
+- If one small set of units carries very large implied weight, apparent balance may hide fragility. The weighted-average framing makes this easier to see.
+
+### 14.3 Matching in Concept: A Single Matching Variable
+
+Main idea:
+
+- The chapter first explains matching in a simple one-variable case. This strips away the multivariate complexity and lets the reader focus on what it means to find "close" controls for treated units.
+
+Why this matters:
+
+- This is where the intuition for distance, closeness, and tradeoffs becomes concrete.
+- A one-variable example helps explain why exact matches are sometimes possible, why approximate matches may be needed, and why bad matches can still bias results.
+
+Key understanding points:
+
+- Matching requires a notion of similarity.
+- Better similarity usually reduces bias, but often at the cost of dropping observations or relying on fewer controls.
+- Calipers or match restrictions are really design decisions about how much mismatch is tolerable.
+
+What to remember:
+
+- Matching is always a compromise between comparability and information retention.
+- Even in the simplest case, there is no free lunch: strict matching improves comparability but may leave too little data.
+
+Useful caution:
+
+- The single-variable example is pedagogically clean, but real applications are harder because relevant confounders are rarely one-dimensional.
+
+### 14.4 Multiple Matching Variables
+
+Main idea:
+
+- Once several relevant covariates matter at once, matching becomes a multivariate design problem. The chapter moves from intuition to practical methods that define multivariate similarity in different ways.
+
+Why this matters:
+
+- This is the section where matching becomes a serious applied tool rather than just a toy example.
+- It also shows why method choice matters: different matching schemes solve different parts of the multivariate problem and imply different tradeoffs.
+
+Key methods highlighted in the chapter:
+
+- Mahalanobis-distance matching:
+  - Uses a distance metric based on the joint covariance structure of the covariates.
+  - Useful when "closeness" should reflect scale and correlation across variables.
+  - Important limitation: close distance does not guarantee strong balance on every variable.
+- Coarsened exact matching:
+  - Coarsens variables into bins, then performs exact matching on the coarsened version.
+  - Attractive because it is interpretable and lets the analyst control what counts as meaningfully similar.
+  - Important limitation: results depend on coarsening choices, and aggressive coarsening or strict variable sets can drop many units.
+- Entropy balancing:
+  - Chooses weights to force exact balance on selected covariate moments.
+  - Attractive because the balance target is explicit rather than left to emerge from a search algorithm.
+  - Important limitation: exact balance can be achieved by concentrating weight on a small number of control units.
+
+Worked-example note:
+
+- The chapter uses `causaldata::black_politicians`, which is already familiar from this repo's lab material.
+
+What to remember:
+
+- The main question is not "which algorithm is best in general?"
+- The real question is "which method gives an acceptable balance-retention-overlap tradeoff for this design?"
+
+Useful caution:
+
+- Multivariate matching creates more opportunities for hidden design drift. If units are heavily pruned or weights become extreme, the estimate may stop representing the population the analyst thought they were studying.
+
+### 14.5 Propensity Score Weighting with Multiple Matching Variables
+
+Main idea:
+
+- The chapter then introduces propensity-score weighting as another way to handle many covariates at once. Instead of matching directly on the full covariate vector, the analyst models treatment assignment and uses the resulting score to construct weights.
+
+Why this matters:
+
+- This section helps connect matching logic to a broader balancing framework.
+- It also shows why the propensity score is appealing: it compresses many covariates into a single object that can guide weighting or adjustment.
+
+Key understanding points:
+
+- The propensity score is not the causal estimand; it is a design device.
+- The score is useful only to the extent that it succeeds in creating acceptable covariate balance.
+- Modeling treatment assignment does not remove the need for diagnostics.
+
+What to remember:
+
+- The chapter's use of propensity scores is practical rather than reverential.
+- The point is not that propensity scores are magic; the point is that they are one way of building a better comparison.
+
+Useful caution:
+
+- Propensity-score methods are easy to treat as a black box. That is dangerous because a well-fitting treatment model can still produce poor balance, poor overlap, or unstable weights.
+
+### 14.6 Assumptions for Matching
+
+Main idea:
+
+- This is the chapter's most important corrective section. After building intuition for matching methods, it states clearly that matching still relies on strong assumptions.
+
+Why this matters:
+
+- Readers often absorb the mechanics of matching more quickly than its assumptions.
+- This section pushes back against the common misunderstanding that a matched sample is automatically a credible causal design.
+
+Key understanding points:
+
+- Matching changes the design, but not the fundamental identification logic.
+- A good match on observables is not the same thing as random assignment.
+- The chapter's assumptions section should be read as a warning label for everything before it.
+
+#### 14.6.1 Conditional Independence Assumption
+
+Main idea:
+
+- Conditional independence means that once the observed covariates are controlled for, treatment assignment is as good as independent of the potential outcomes.
+
+Why this matters:
+
+- This is the core identification assumption behind most observational matching strategies.
+- Without it, matching only makes the treated and control groups look similar on the variables you measured, not necessarily on the variables that actually drive selection.
+
+What to remember:
+
+- This assumption is fundamentally about omitted confounding.
+- It cannot be verified just by looking at the matched sample.
+- Rich covariates help, but they do not prove the assumption.
+
+Useful caution:
+
+- Matching can make an analysis look disciplined while still failing on the most important unobserved variables.
+
+#### 14.6.2 Common Support
+
+Main idea:
+
+- Common support means there must be overlap between treated and control units on the relevant covariate patterns or balancing score.
+
+Why this matters:
+
+- If no comparable controls exist for some treated units, the causal question for those units is not answerable with the available data.
+- In practice, poor support often shows up as discarded observations, poor matches, or extreme weights.
+
+What to remember:
+
+- Lack of overlap is not a technical inconvenience; it is a design failure relative to the target comparison.
+- Trimming to improve overlap can be sensible, but it changes the population being studied.
+
+Useful caution:
+
+- Analysts sometimes talk about trimming as if it only improves quality. It also narrows the estimand unless that shift is made explicit.
+
+#### 14.6.3 Balance
+
+Main idea:
+
+- Balance is the empirical check that treated and control groups look similar on observed covariates after adjustment.
+
+Why this matters:
+
+- Balance is the main observable standard by which a matching or weighting design is judged.
+- Without good balance, the adjustment has not done the job it was meant to do.
+
+What to remember:
+
+- Balance is necessary, not sufficient.
+- Better balance supports the design, but it does not prove causal identification.
+- A balance table should be read alongside overlap, retention, and weight dispersion.
+
+Useful caution:
+
+- It is easy to focus on a single threshold like absolute standardized mean differences below `0.1` and treat that as the whole story. The deeper question is whether the adjusted comparison is substantively credible.
+
+### 14.7 Estimation with Matched Data
+
+Main idea:
+
+- After the design has been adjusted and checked, the chapter turns to estimation. This ordering matters: estimation should come after acceptable design work, not before.
+
+Why this matters:
+
+- The section reinforces the principle that matching is preprocessing for causal estimation.
+- It also helps distinguish between the role of weights and the role of the outcome model.
+
+Key understanding points:
+
+- The simplest post-matching estimate is often a weighted difference in means.
+- Regression can still be used after matching or weighting to improve precision or account for remaining structure.
+- Post-design modeling should not be used to excuse poor design-stage adjustment.
+
+#### 14.7.1 Estimating Mean Differences
+
+Main idea:
+
+- Once weights or matched samples are in place, the treatment effect can often be estimated with a simple comparison of adjusted group means.
+
+Why this matters:
+
+- This keeps the causal interpretation tied closely to the design.
+- It also shows that complicated outcome models are not always required if the design has done enough of the comparability work.
+
+What to remember:
+
+- Simple estimators are attractive when the design is strong.
+- But inference is still not trivial because the weights or matching structure were estimated rather than fixed in advance.
+
+Useful caution:
+
+- A simple mean difference after a weak design is still weak. Simplicity in estimation is not a substitute for credibility in design.
+
+#### 14.7.2 Combining Matching and Regression
+
+Main idea:
+
+- The chapter explicitly allows matching and regression to work together. Matching can improve design, and regression can then model the outcome within the adjusted sample.
+
+Why this matters:
+
+- This is often how applied work is actually done.
+- It avoids the false dichotomy that one must choose either matching or regression.
+
+What to remember:
+
+- Matching can reduce model dependence by making treated and control units more comparable before regression.
+- Regression after matching is most credible when it is modest cleanup after a reasonable design, not a rescue mission for bad overlap or poor balance.
+
+Useful caution:
+
+- If the estimate changes dramatically with small changes to the post-match model, that is a warning sign that the design is doing too little on its own.
+
+### 14.8 Matching and Treatment Effects
+
+Main idea:
+
+- Matching is not just about reducing bias. It also shapes which treatment effect is being estimated.
+
+Why this matters:
+
+- This is the link between design mechanics and substantive interpretation.
+- Two analyses can both be "well matched" and still answer different causal questions if they target different populations.
+
+Key understanding points:
+
+- Many matching workflows naturally target the `ATT` because they prioritize finding controls for treated units.
+- Other weighting or matching choices can be structured toward the `ATE` or other estimands.
+- Sample pruning and weighting concentration can shift the effective target population even when the nominal estimand label stays the same.
+
+What to remember:
+
+- Always ask: "effect for whom?"
+- Estimand choice should guide the design, not be inferred after the algorithm runs.
+
+#### 14.8.1 Getting Other Treatment Effects from Matching
+
+Main idea:
+
+- The chapter closes by noting that matching can be adapted to different treatment-effect targets, not just the `ATT`.
+
+Why this matters:
+
+- This is a reminder that weighting and matching procedures are not neutral preprocessing steps. They encode decisions about the comparison population.
+
+What to remember:
+
+- Treatment-effect language should be explicit from the start.
+- If a design keeps all treated units but heavily reweights controls, it is often telling an `ATT` story.
+- If the design instead tries to build a population-representative pseudo-sample, it is closer to an `ATE` story.
+
+Useful caution:
+
+- In practice, the declared estimand and the effective estimand can diverge. Trimming, failed overlap, and extreme weights are common reasons.
+
+## Implications for This Repo
+
+- The strongest overlap with current repo material is still the `black_politicians` example, especially for CEM and entropy balancing.
+- The chapter supports the repo's existing design-first emphasis, especially the idea that balance, overlap, and retained sample size should be evaluated together.
+- One gap in the repo relative to the chapter is that propensity-score weighting is not yet given its own compact explainer.
+- Another useful extension would be a short note on how the chapter's conceptual language maps onto `MatchIt`, `WeightIt`, and `cobalt` diagnostics in practice.
+
+## High-Level Takeaways
+
+- Matching is best thought of as a way to improve comparability, not a guarantee of causal validity.
+- Weighting is a useful unifying language for understanding what many matching procedures actually do.
+- Multivariate matching methods differ mainly in how they define acceptable similarity and how they trade off balance against information retention.
+- The assumptions section is the intellectual center of the chapter: conditional independence, overlap, and balance are the real constraints on credibility.
+- Estimation after matching should be simple when the design is good and treated with caution when the design is fragile.
+- Matching methods always imply a target population, whether the analyst states that clearly or not.
+
+## Follow-Up Build Plan
+
+1. Add a short companion section linking each chapter block to relevant repo files or outputs.
+2. Add a compact glossary for terms the chapter uses repeatedly, especially common support, balance, and estimand.
+3. Optionally add a "chapter vs repo emphasis" section showing where this repo goes further on diagnostics, retention, and auditability.
+4. If needed, add a separate replication note for the chapter's `black_politicians` workflow using the strict book-default specification.

@@ -1,0 +1,384 @@
+---
+title: "Lab: Black Politicians"
+format:
+  html: default
+execute:
+  echo: true
+  eval: false
+---
+
+## How To Use This Page
+
+Use this page as a guided worksheet rather than as a finished report.
+
+- Read the short framing note for each step.
+- Run the starter code in your own R session.
+- Write down what you learn before moving to the next section.
+- Fill in the comparison table near the end so you can compare designs side by side.
+
+::: {.callout-note}
+The code is shown but not executed when the website is rendered. That keeps the page readable even if `causaldata` is not installed yet.
+:::
+
+## Training Goal
+
+Practice the design-first workflow from the matching report on a second dataset:
+
+1. define the estimand before choosing a method
+2. map treatment, outcome, and covariates clearly
+3. diagnose raw imbalance
+4. compare exact matching, CEM, and entropy balancing
+5. interpret the tradeoff between balance, retention, and weight concentration
+
+## Dataset At A Glance
+
+`causaldata::black_politicians` comes from Broockman (2013), a U.S. field experiment on legislator responsiveness that is also used in the *Matching* chapter of *The Effect*.
+
+- Observations: `5,593`
+- Variables: `14`
+- Unit of analysis: one email-to-legislator observation
+- Built-in randomized factor: `treat_out` (whether the email was out-of-district)
+
+The important design feature is that this dataset contains both:
+
+- an experimental component: `treat_out`, which was randomized in the original study
+- an observational comparison: legislator characteristics such as `leg_black`, `leg_democrat`, and district composition
+
+That makes it useful for training because you can separate two different questions:
+
+1. what the original experiment randomized
+2. what you are doing when you instead compare observed groups of legislators
+
+In this lab, we deliberately focus on the second question. We are **not** estimating the effect of the randomized out-of-district email treatment. Instead, we treat `leg_black` as the focal training comparison and ask whether Black and non-Black legislators can be made more comparable on a compact set of pre-outcome covariates.
+
+For this training version, we use:
+
+- focal training comparison: `leg_black`
+- binary outcome: `responded`
+- core design covariates: `medianhhincom`, `blackpercent`, `leg_democrat`
+- extension covariates for later rounds: `leg_senator`, `south`, `urbanpercent`, `totalpop`
+
+These variables work well for a matching lab because they mix:
+
+- legislator attributes such as party and chamber
+- district composition measures such as racial composition, income, population, and urbanicity
+- an observable behavioral outcome, `responded`
+
+That structure supports a clear design-first sequence: inspect raw imbalance, test whether literal exact matching is feasible, then compare CEM and entropy balancing under a shared `ATT` target.
+
+::: {.callout-warning}
+This is best treated as a training example for matching logic, not as a literal policy treatment that could be assigned. `leg_black` is an observed attribute, so the main teaching value here is design transparency: what comparability would have to mean, where overlap is thin, and how the matched estimand changes as you tighten the design.
+:::
+
+## Core Design Choice For This Training Aid
+
+For a first pass, keep the exercise simple and explicit.
+
+| Role | Variable | Why it is used here |
+|---|---|---|
+| Treatment | `leg_black` | Focal comparison for the matching exercise |
+| Outcome | `responded` | Whether the legislator replied |
+| Estimand | `ATT` | Average difference for the Black-legislator group |
+| Core covariates | `medianhhincom`, `blackpercent`, `leg_democrat` | Compact set that captures district resources, district racial composition, and party |
+| Extension covariates | `leg_senator`, `south`, `urbanpercent`, `totalpop` | Useful once the basic workflow is clear |
+| Post-design modeling variable | `treat_out` | Part of the original study design; add it after you understand the basic matched comparison |
+
+Why not start with every variable at once? Because this page is meant to train judgement, not to hide the design behind a long formula.
+
+## Suggested Session Flow
+
+If you are teaching this live, a simple `35-45` minute structure works well:
+
+1. `5 minutes`: frame the question and walk through the variable map
+2. `10 minutes`: run raw descriptives and balance diagnostics
+3. `5 minutes`: try exact matching and discuss why it struggles
+4. `10 minutes`: run CEM and inspect the retention-versus-balance tradeoff
+5. `10 minutes`: run entropy balancing and inspect effective sample size
+6. `5 minutes`: compare designs and decide which one you would defend
+
+## Step 1: Load The Data
+
+Start by loading the packages, bringing in the data, and creating a compact analysis object.
+
+```{r}
+required_packages <- c(
+  "causaldata",
+  "MatchIt",
+  "WeightIt",
+  "cobalt",
+  "dplyr",
+  "ggplot2"
+)
+
+missing_packages <- required_packages[!vapply(
+  required_packages,
+  requireNamespace,
+  logical(1),
+  quietly = TRUE
+)]
+
+if (length(missing_packages) > 0) {
+  install.packages(missing_packages, repos = "https://cloud.r-project.org")
+}
+
+invisible(lapply(required_packages, library, character.only = TRUE))
+
+dat <- causaldata::black_politicians |>
+  mutate(
+    treat = as.integer(leg_black),
+    outcome = as.integer(responded)
+  )
+
+design_covariates <- c("medianhhincom", "blackpercent", "leg_democrat")
+
+dat |>
+  select(treat, outcome, treat_out, all_of(design_covariates)) |>
+  glimpse()
+```
+
+Checkpoint:
+
+- Is the treatment binary?
+- Is the outcome binary?
+- Are the matching covariates measured before the outcome?
+
+## Step 2: Describe The Raw Comparison
+
+Do not start with a matching algorithm. First check whether the untreated group looks remotely comparable to the treated group on the covariates you care about.
+
+```{r}
+raw_summary <- dat |>
+  group_by(treat) |>
+  summarise(
+    n = n(),
+    response_rate = mean(outcome, na.rm = TRUE),
+    mean_income = mean(medianhhincom, na.rm = TRUE),
+    mean_blackpercent = mean(blackpercent, na.rm = TRUE),
+    prop_democrat = mean(leg_democrat == 1, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  mutate(group = if_else(treat == 1L, "Black legislators", "Non-Black legislators")) |>
+  select(group, n, response_rate, mean_income, mean_blackpercent, prop_democrat)
+
+raw_summary
+```
+
+What to look for:
+
+- large differences in `medianhhincom`
+- large differences in `blackpercent`
+- major party imbalance on `leg_democrat`
+
+If the raw groups are far apart, that does not mean matching will fail, but it does mean the burden on the design is real.
+
+## Step 3: Baseline Balance Diagnostics
+
+Use `MatchIt` with `method = NULL` to get a formal pre-adjustment balance benchmark.
+
+```{r}
+m_raw <- matchit(
+  treat ~ medianhhincom + blackpercent + leg_democrat,
+  data = dat,
+  method = NULL,
+  estimand = "ATT"
+)
+
+summary(m_raw, un = TRUE)
+
+cobalt::bal.tab(m_raw, un = TRUE, m.threshold = 0.1)
+
+cobalt::love.plot(
+  m_raw,
+  abs = TRUE,
+  thresholds = c(m = 0.1),
+  stars = "raw"
+)
+```
+
+Checkpoint:
+
+- Which covariate is least balanced?
+- Are any absolute standardized mean differences already below `0.1`?
+- If balance is poor, is the problem modest or structural?
+
+## Step 4: Exact Matching Feasibility Check
+
+Exact matching is easiest to explain, but it becomes restrictive quickly. Use a reduced discrete specification to show both its appeal and its limits.
+
+```{r}
+m_exact <- matchit(
+  treat ~ leg_democrat + leg_senator + south,
+  data = dat,
+  method = "exact",
+  estimand = "ATT"
+)
+
+summary(m_exact, un = TRUE)
+
+exact_dat <- match.data(m_exact)
+
+exact_dat |>
+  count(treat) |>
+  mutate(group = if_else(treat == 1L, "Treated", "Control"))
+```
+
+What to discuss:
+
+- Exact matching is transparent because every retained comparison is literal on the chosen variables.
+- It will usually ignore important continuous differences unless you bin them first.
+- If many treated units are dropped, the estimand begins to drift toward "the treated units for whom exact matches exist."
+
+## Step 5: Build A CEM Version
+
+CEM relaxes exact matching by coarsening continuous covariates into bins. That usually improves feasibility while keeping the matching logic visible.
+
+```{r}
+create_even_breaks <- function(x, n) {
+  min_x <- min(x, na.rm = TRUE)
+  max_x <- max(x, na.rm = TRUE)
+  min_x + ((0:n) / n) * (max_x - min_x)
+}
+
+cem_cutpoints <- list(
+  medianhhincom = quantile(dat$medianhhincom, probs = (0:6) / 6, na.rm = TRUE),
+  blackpercent = create_even_breaks(dat$blackpercent, 6)
+)
+
+m_cem <- matchit(
+  treat ~ medianhhincom + blackpercent + leg_democrat + leg_senator + south,
+  data = dat,
+  method = "cem",
+  estimand = "ATT",
+  cutpoints = cem_cutpoints
+)
+
+summary(m_cem, un = TRUE)
+
+cobalt::bal.tab(m_cem, un = TRUE, m.threshold = 0.1)
+
+cobalt::love.plot(
+  m_cem,
+  abs = TRUE,
+  thresholds = c(m = 0.1),
+  stars = "raw"
+)
+```
+
+Questions to answer after running it:
+
+1. How much better is balance than in the raw sample?
+2. How many treated units are retained?
+3. Which binning choices matter most for the result?
+
+## Step 6: Try Entropy Balancing
+
+Entropy balancing keeps the treated group intact and reweights the controls. That often gives excellent balance, but the price can be concentrated weights and a smaller effective control sample.
+
+```{r}
+w_ebal <- weightit(
+  treat ~ medianhhincom + I(medianhhincom^2) +
+    blackpercent + I(blackpercent^2) +
+    leg_democrat + leg_senator + south,
+  data = dat,
+  method = "ebal",
+  estimand = "ATT"
+)
+
+summary(w_ebal)
+
+cobalt::bal.tab(w_ebal, un = TRUE, m.threshold = 0.1)
+
+cobalt::love.plot(
+  w_ebal,
+  abs = TRUE,
+  thresholds = c(m = 0.1),
+  stars = "raw"
+)
+
+ess <- function(w) {
+  (sum(w)^2) / sum(w^2)
+}
+
+dat_ebal <- dat |>
+  mutate(w = w_ebal$weights)
+
+dat_ebal |>
+  group_by(treat) |>
+  summarise(
+    raw_n = n(),
+    ess = ess(w),
+    max_weight = max(w),
+    mean_weight = mean(w),
+    .groups = "drop"
+  )
+```
+
+Interpretation prompt:
+
+- If balance looks excellent but control-side ESS collapses, would you still prefer this design?
+
+## Step 7: Estimate And Compare
+
+Keep the outcome model simple for the training version. The point is to compare designs, not to hide differences behind a complicated specification.
+
+```{r}
+raw_fit <- lm(outcome ~ treat, data = dat)
+
+exact_fit <- lm(outcome ~ treat, data = exact_dat, weights = weights)
+
+cem_dat <- match.data(m_cem)
+cem_fit <- lm(outcome ~ treat, data = cem_dat, weights = weights)
+
+ebal_fit <- lm(outcome ~ treat, data = dat_ebal, weights = w)
+
+coef(summary(raw_fit))
+coef(summary(exact_fit))
+coef(summary(cem_fit))
+coef(summary(ebal_fit))
+```
+
+You can stop here for an introductory session. If you want to connect the lab back to the original study design, add `treat_out` and relevant controls after the design stage rather than mixing everything together at the start.
+
+## Comparison Table To Fill In
+
+Use this table as the main training record.
+
+| Design | Worst abs. SMD | Treated retained | Control ESS | Estimated effect | Your judgement |
+|---|---|---|---|---|---|
+| Raw sample |  |  |  |  |  |
+| Exact matching |  |  |  |  |  |
+| CEM |  |  |  |  |  |
+| Entropy balancing |  |  |  |  |  |
+
+## Debrief Questions
+
+1. Which design gave the best balance on the covariates you actually care about?
+2. Which design preserved the clearest connection to the original `ATT`?
+3. Did better balance come from pruning observations, reweighting heavily, or both?
+4. If you had to explain your preferred design to a non-technical policy audience, which one would be easiest to defend?
+
+## Optional Extension
+
+Once the core exercise is complete, extend the outcome model to reflect the original study more closely.
+This same interaction model is now included in the evaluated-code artifact so you can compare your local run with the QA checks directly.
+
+```{r}
+final_fit <- lm(
+  outcome ~ treat * treat_out +
+    nonblacknonwhite +
+    black_medianhh +
+    white_medianhh +
+    statessquireindex +
+    totalpop +
+    urbanpercent,
+  data = cem_dat,
+  weights = weights
+)
+
+summary(final_fit)
+```
+
+This extension is useful because it separates two tasks:
+
+- design the comparison first
+- fit the richer substantive model second

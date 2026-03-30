@@ -1,0 +1,539 @@
+---
+title: "Lab: LaLonde Matching"
+format:
+  html: default
+execute:
+  echo: true
+  eval: false
+---
+
+## How To Use This Page
+
+Use this page as the guided lab version of the main report.
+
+- Keep the [Matching Report Draft](../reports/matching-report.qmd) open in another tab.
+- Run each step in order rather than skipping to the estimates.
+- Record balance, retention, and weighting cost as you go.
+- End with a design judgement, not just a preferred coefficient.
+
+::: {.callout-note}
+The code is shown but not executed when the site is rendered. That keeps the page readable while preserving the main-report workflow for live teaching and self-study.
+:::
+
+## Training Goal
+
+Turn the report's `lalonde` comparison into a repeatable lab exercise:
+
+1. define the `ATT` before any adjustment choice
+2. inspect the raw treated-versus-control comparison
+3. compare exact matching, `CEM`, and entropy balancing on the same covariate set
+4. judge each method on balance, overlap, retention, and weight concentration
+5. decide which design you would defend for programme participants
+
+## Dataset At A Glance
+
+This lab uses `MatchIt::lalonde`, the same dataset used in the main report.
+
+- Treated group: National Supported Work programme participants
+- Comparison group: observational controls
+- Outcome: `re78`
+- Design covariates: `age`, `educ`, `race`, `married`, `nodegree`, `re74`, `re75`
+- Target estimand: `ATT`
+
+This is the cleanest place to practice the repo's design-first workflow because the data are already familiar from the report and the tradeoffs are visible quickly.
+
+## What To Hand Back
+
+By the end of the lab, you should be able to report:
+
+- the worst raw imbalance before adjustment
+- the strongest exact-matching result you can defend
+- the `CEM` retention-versus-balance tradeoff
+- the entropy-balancing control `ESS` and maximum control weight
+- the design you would defend, plus one limitation you would still state clearly
+
+## Step 1: Load Packages And Prepare The Data
+
+```{r}
+required_packages <- c(
+  "MatchIt",
+  "WeightIt",
+  "cobalt",
+  "dplyr",
+  "ggplot2"
+)
+
+missing_packages <- required_packages[!vapply(
+  required_packages,
+  requireNamespace,
+  logical(1),
+  quietly = TRUE
+)]
+
+if (length(missing_packages) > 0) {
+  install.packages(missing_packages, repos = "https://cloud.r-project.org")
+}
+
+invisible(lapply(required_packages, library, character.only = TRUE))
+
+data("lalonde", package = "MatchIt")
+
+dat <- lalonde |>
+  mutate(
+    treat = as.integer(treat),
+    outcome = re78,
+    married = factor(married, levels = c(0, 1), labels = c("not_married", "married")),
+    nodegree = factor(nodegree, levels = c(0, 1), labels = c("has_degree", "no_degree"))
+  )
+
+design_covariates <- c(
+  "age", "educ", "race", "married", "nodegree", "re74", "re75"
+)
+
+dat |>
+  select(treat, outcome, all_of(design_covariates)) |>
+  glimpse()
+```
+
+Checkpoint:
+
+- Is the estimand clear before any method is chosen?
+- Are all design covariates measured before the outcome?
+
+## Step 2: Describe The Raw Comparison
+
+```{r}
+pre_match_summary <- dat |>
+  group_by(treat) |>
+  summarise(
+    n = n(),
+    mean_outcome = mean(outcome, na.rm = TRUE),
+    mean_age = mean(age, na.rm = TRUE),
+    mean_educ = mean(educ, na.rm = TRUE),
+    prop_married = mean(married == "married", na.rm = TRUE),
+    prop_no_degree = mean(nodegree == "no_degree", na.rm = TRUE),
+    mean_re74 = mean(re74, na.rm = TRUE),
+    mean_re75 = mean(re75, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  mutate(group = if_else(treat == 1L, "Treated", "Control")) |>
+  select(
+    group, n, mean_outcome, mean_age, mean_educ,
+    prop_married, prop_no_degree, mean_re74, mean_re75
+  ) |>
+  mutate(across(-c(group, n), ~ round(.x, 3)))
+
+pre_match_summary
+```
+
+What to look for:
+
+- lower prior earnings in the treated group
+- lower marriage rates in the treated group
+- whether the untreated group looks remotely usable without design work
+
+## Step 3: Build The Baseline Balance Benchmark
+
+```{r}
+m_out0 <- matchit(
+  treat ~ age + educ + race + married + nodegree + re74 + re75,
+  data = dat,
+  method = NULL,
+  estimand = "ATT"
+)
+
+summary(m_out0, un = TRUE)
+
+unadjusted_balance <- bal.tab(
+  m_out0,
+  un = TRUE,
+  binary = "std",
+  disp.v.ratio = TRUE,
+  m.threshold = 0.1
+)
+
+unadjusted_balance
+```
+
+```{r fig.height=5.5}
+love.plot(
+  m_out0,
+  stats = "mean.diffs",
+  abs = TRUE,
+  binary = "std",
+  thresholds = c(m = 0.1),
+  var.order = "unadjusted"
+)
+```
+
+Checkpoint:
+
+- Which covariates are most imbalanced before adjustment?
+- Does the raw sample fail on one variable or on most of the design?
+
+## Step 4: Exact Matching On A Reduced Discrete Set
+
+```{r}
+m_exact <- matchit(
+  treat ~ race + married + nodegree + educ,
+  data = dat,
+  method = "exact",
+  estimand = "ATT"
+)
+
+matched_exact <- match.data(m_exact)
+
+exact_retention <- tibble(
+  metric = c(
+    "Treated units in full sample",
+    "Treated units retained",
+    "Control units in full sample",
+    "Control units retained",
+    "Matched subclasses"
+  ),
+  value = c(
+    sum(dat$treat == 1),
+    sum(matched_exact$treat == 1),
+    sum(dat$treat == 0),
+    sum(matched_exact$treat == 0),
+    dplyr::n_distinct(matched_exact$subclass)
+  )
+)
+
+exact_retention
+```
+
+```{r}
+summary(m_exact, un = TRUE)
+
+exact_balance <- bal.tab(
+  m_exact,
+  data = dat,
+  un = TRUE,
+  binary = "std",
+  disp.v.ratio = TRUE,
+  m.threshold = 0.1,
+  addl = ~ age + re74 + re75
+)
+
+exact_balance
+```
+
+```{r}
+fit_exact <- lm(outcome ~ treat, data = matched_exact, weights = weights)
+
+exact_effect <- {
+  exact_coef <- coef(summary(fit_exact))["treat", ]
+  tibble(
+    method = "Exact matching",
+    estimate = unname(exact_coef["Estimate"]),
+    std_error = unname(exact_coef["Std. Error"]),
+    p_value = unname(exact_coef["Pr(>|t|)"])
+  )
+} |>
+  mutate(across(c(estimate, std_error, p_value), ~ round(.x, 3)))
+
+exact_effect
+```
+
+What to discuss:
+
+- Exact matching is transparent because the rules are visible.
+- The price is that important continuous variables still sit outside the exact constraints.
+- If `re74` remains above `0.1`, exact matching has not fully solved the design problem.
+
+## Step 5: Compare Two CEM Specifications
+
+```{r}
+m_cem_default <- matchit(
+  treat ~ age + educ + race + married + nodegree + re74 + re75,
+  data = dat,
+  method = "cem",
+  estimand = "ATT"
+)
+
+matched_cem_default <- match.data(m_cem_default)
+
+cem_cutpoints <- list(
+  age = "q5",
+  educ = 4,
+  re74 = "q4",
+  re75 = "q4"
+)
+
+m_cem <- matchit(
+  treat ~ age + educ + race + married + nodegree + re74 + re75,
+  data = dat,
+  method = "cem",
+  estimand = "ATT",
+  cutpoints = cem_cutpoints
+)
+
+matched_cem <- match.data(m_cem)
+
+cem_default_balance <- bal.tab(
+  m_cem_default,
+  un = TRUE,
+  binary = "std",
+  disp.v.ratio = TRUE,
+  m.threshold = 0.1
+)
+
+cem_balance <- bal.tab(
+  m_cem,
+  un = TRUE,
+  binary = "std",
+  disp.v.ratio = TRUE,
+  m.threshold = 0.1
+)
+
+cem_comparison <- tibble(
+  specification = c("Default CEM", "Documented custom cutpoints"),
+  treated_retained = c(
+    sum(matched_cem_default$treat == 1),
+    sum(matched_cem$treat == 1)
+  ),
+  control_retained = c(
+    sum(matched_cem_default$treat == 0),
+    sum(matched_cem$treat == 0)
+  ),
+  matched_subclasses = c(
+    dplyr::n_distinct(matched_cem_default$subclass),
+    dplyr::n_distinct(matched_cem$subclass)
+  ),
+  max_abs_adjusted_smd = c(
+    max(abs(cem_default_balance$Balance$Diff.Adj), na.rm = TRUE),
+    max(abs(cem_balance$Balance$Diff.Adj), na.rm = TRUE)
+  )
+) |>
+  mutate(across(where(is.numeric), ~ round(.x, 3)))
+
+cem_comparison
+```
+
+```{r}
+fit_cem <- lm(outcome ~ treat, data = matched_cem, weights = weights)
+
+cem_effect <- {
+  cem_coef <- coef(summary(fit_cem))["treat", ]
+  tibble(
+    method = "Coarsened exact matching",
+    estimate = unname(cem_coef["Estimate"]),
+    std_error = unname(cem_coef["Std. Error"]),
+    p_value = unname(cem_coef["Pr(>|t|)"])
+  )
+} |>
+  mutate(across(c(estimate, std_error, p_value), ~ round(.x, 3)))
+
+cem_effect
+```
+
+Checkpoint:
+
+- Which `CEM` version would you defend?
+- How much treated retention are you willing to lose for stronger balance?
+
+## Step 6: Compare Entropy-Balancing Specifications
+
+```{r}
+w_ebal_default <- weightit(
+  treat ~ age + educ + race + married + nodegree + re74 + re75,
+  data = dat,
+  method = "ebal",
+  estimand = "ATT"
+)
+
+w_ebal_moments <- weightit(
+  treat ~ age + educ + race + married + nodegree + re74 + re75,
+  data = dat,
+  method = "ebal",
+  estimand = "ATT",
+  moments = c(age = 2, re74 = 2, re75 = 2)
+)
+
+ebal_default_summary <- summary(w_ebal_default)
+ebal_moments_summary <- summary(w_ebal_moments)
+
+ebal_default_tuning_balance <- bal.tab(
+  w_ebal_default,
+  un = TRUE,
+  binary = "std",
+  addl = ~ I(age^2) + I(re74^2) + I(re75^2)
+)
+
+ebal_moments_tuning_balance <- bal.tab(
+  w_ebal_moments,
+  un = TRUE,
+  binary = "std",
+  addl = ~ I(age^2) + I(re74^2) + I(re75^2)
+)
+
+second_moment_terms <- c("I(age^2)", "I(re74^2)", "I(re75^2)")
+
+ebal_tuning_comparison <- tibble(
+  specification = c(
+    "Default means only",
+    "Tuned squares for age and prior earnings"
+  ),
+  control_ess = c(
+    ebal_default_summary$effective.sample.size["Weighted", "Control"],
+    ebal_moments_summary$effective.sample.size["Weighted", "Control"]
+  ),
+  max_control_weight = c(
+    max(w_ebal_default$weights[dat$treat == 0]),
+    max(w_ebal_moments$weights[dat$treat == 0])
+  ),
+  max_abs_adj_smd_means = c(
+    max(abs(ebal_default_tuning_balance$Balance[setdiff(rownames(ebal_default_tuning_balance$Balance), second_moment_terms), "Diff.Adj"]), na.rm = TRUE),
+    max(abs(ebal_moments_tuning_balance$Balance[setdiff(rownames(ebal_moments_tuning_balance$Balance), second_moment_terms), "Diff.Adj"]), na.rm = TRUE)
+  ),
+  max_abs_adj_smd_selected_squares = c(
+    max(abs(ebal_default_tuning_balance$Balance[second_moment_terms, "Diff.Adj"]), na.rm = TRUE),
+    max(abs(ebal_moments_tuning_balance$Balance[second_moment_terms, "Diff.Adj"]), na.rm = TRUE)
+  )
+) |>
+  mutate(across(where(is.numeric), ~ round(.x, 3)))
+
+ebal_tuning_comparison
+```
+
+```{r}
+w_ebal <- w_ebal_default
+ebal_summary <- ebal_default_summary
+
+dat_ebal <- dat |>
+  mutate(ebal_weight = w_ebal$weights)
+
+ebal_weight_diagnostics <- tibble(
+  metric = c(
+    "Treated units",
+    "Control units",
+    "Treated effective sample size",
+    "Control effective sample size",
+    "Maximum control weight",
+    "Control coefficient of variation"
+  ),
+  value = c(
+    sum(dat$treat == 1),
+    sum(dat$treat == 0),
+    ebal_summary$effective.sample.size["Weighted", "Treated"],
+    ebal_summary$effective.sample.size["Weighted", "Control"],
+    max(dat_ebal$ebal_weight[dat_ebal$treat == 0]),
+    unname(ebal_summary$coef.of.var["control"])
+  )
+) |>
+  mutate(value = round(value, 3))
+
+ebal_weight_diagnostics
+
+ebal_balance <- bal.tab(
+  w_ebal,
+  un = TRUE,
+  binary = "std",
+  disp.v.ratio = TRUE,
+  m.threshold = 0.1
+)
+
+ebal_balance
+```
+
+```{r}
+fit_ebal <- lm_weightit(
+  outcome ~ treat,
+  data = dat,
+  weightit = w_ebal
+)
+
+ebal_effect <- {
+  ebal_coef <- coef(summary(fit_ebal))["treat", ]
+  tibble(
+    method = "Entropy balancing",
+    estimate = unname(ebal_coef["Estimate"]),
+    std_error = unname(ebal_coef["Std. Error"]),
+    p_value = unname(ebal_coef[4])
+  )
+} |>
+  mutate(across(c(estimate, std_error, p_value), ~ round(.x, 3)))
+
+ebal_effect
+```
+
+What to discuss:
+
+- Entropy balancing can preserve the treated population while shrinking the control information.
+- The weighting design is only defensible if the balance gain is worth the `ESS` loss and weight concentration.
+
+## Step 7: Compare The Methods Side By Side
+
+```{r}
+comparison_balance <- tibble(
+  method = c("Raw sample", "Exact matching", "CEM", "Entropy balancing"),
+  max_abs_smd = c(
+    max(abs(unadjusted_balance$Balance$Diff.Un), na.rm = TRUE),
+    max(abs(exact_balance$Balance$Diff.Adj), na.rm = TRUE),
+    max(abs(cem_balance$Balance$Diff.Adj), na.rm = TRUE),
+    max(abs(ebal_balance$Balance$Diff.Adj), na.rm = TRUE)
+  ),
+  covariates_above_0_1 = c(
+    sum(abs(unadjusted_balance$Balance$Diff.Un) > 0.1, na.rm = TRUE),
+    sum(abs(exact_balance$Balance$Diff.Adj) > 0.1, na.rm = TRUE),
+    sum(abs(cem_balance$Balance$Diff.Adj) > 0.1, na.rm = TRUE),
+    sum(abs(ebal_balance$Balance$Diff.Adj) > 0.1, na.rm = TRUE)
+  )
+) |>
+  mutate(across(where(is.numeric), ~ round(.x, 3)))
+
+comparison_balance
+```
+
+```{r}
+comparison_information <- tibble(
+  method = c("Exact matching", "CEM", "Entropy balancing"),
+  treated_units_used = c(
+    sum(matched_exact$treat == 1),
+    sum(matched_cem$treat == 1),
+    sum(dat$treat == 1)
+  ),
+  control_units_used = c(
+    sum(matched_exact$treat == 0),
+    sum(matched_cem$treat == 0),
+    sum(dat$treat == 0)
+  ),
+  control_information = c(
+    sum(matched_exact$treat == 0),
+    sum(matched_cem$treat == 0),
+    ebal_summary$effective.sample.size["Weighted", "Control"]
+  )
+) |>
+  mutate(across(where(is.numeric), ~ round(.x, 3)))
+
+comparison_information
+```
+
+```{r}
+treatment_effect_summary <- bind_rows(
+  exact_effect,
+  cem_effect,
+  ebal_effect
+)
+
+treatment_effect_summary
+```
+
+## Step 8: Write The Design Judgement
+
+Use your outputs to answer all five:
+
+1. Which method gave the strongest observed balance?
+2. Which method stayed closest to the original treated population?
+3. Which method paid the highest information cost?
+4. Which design would you defend for an evaluator-facing `ATT`?
+5. What limitation would you still state even after adjustment?
+
+## Suggested Close
+
+If you want to go deeper after this page:
+
+- read the [Matching Report Draft](../reports/matching-report.qmd) for the long-form scaffold
+- review the [Matching and Weighting](../notes/matching-and-weighting.qmd) note for the method overview
+- move next to the [Black Politicians Lab](black-politicians-lab.qmd) for the first dataset extension

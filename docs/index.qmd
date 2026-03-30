@@ -1,55 +1,27 @@
 ---
-title: "Quasi-Experimental Design Notes"
+title: "QED Labs"
 ---
 
-# Purpose
+This site is organized into three top-level sections:
 
-This site is a working set of notes on quasi-experimental designs used in applied evaluation and policy analysis. The site is now organized into a dedicated synthetic control section and a separate section for the other core methods.
+- [Notes](notes/index.qmd) for method overviews and source-based study notes
+- [Reports](reports/index.qmd) for longer evaluator-facing report drafts
+- [Labs](labs/index.qmd) for worksheet-style design exercises
 
-# Sections
+## Current Emphasis
 
-## SCM
+The strongest current coverage is in matching and weighting, where the site now combines:
 
-The SCM section is where the synthetic control material lives:
+- a notes section with both overview and source-specific reading notes
+- a report draft that can be expanded into a full matching writeup
+- a migrated lab set built from the earlier `matching-trg` material
 
-- synthetic control method notes
-- teaching datasets and implementation guides
-- source maps for papers, lecture notes, textbooks, and software manuals worth taking notes on
+Synthetic control now has:
 
-## Other
+- a notes section
+- a report skeleton draft
+- two design-lab skeletons for future build-out
 
-The other section contains the broader quasi-experimental design notes:
+## Working Rule
 
-- matching and weighting
-- difference-in-differences
-- regression discontinuity design
-
-Each method note follows the same structure so the series can be read either method-by-method or comparatively.
-
-# Common Note Template
-
-Each core note should cover:
-
-1. What the method is.
-2. When to use it.
-3. Core identifying assumptions.
-4. Required data structure.
-5. A practical workflow.
-6. Diagnostics and validity checks.
-7. Common failure modes.
-8. How to interpret the estimate.
-9. A short worked example.
-10. Suggested software and further reading.
-
-# Writing Order
-
-1. Matching and weighting
-2. Difference-in-differences
-3. Synthetic control
-4. Regression discontinuity
-5. Cross-method comparison
-6. Method selection guide
-
-# Notes
-
-The notes are intended to be practical rather than encyclopedic. The emphasis is on identification logic, diagnostics, and evaluator decision-making, not just estimation commands.
+Across all three sections, the standard is the same: define the design first, document diagnostics clearly, and separate what the design supports from what the analyst would like it to say.

@@ -1,0 +1,58 @@
+---
+title: "Lab: Synthetic Control Donor Pool Design"
+format:
+  html: default
+execute:
+  echo: true
+  eval: false
+---
+
+## How To Use This Page
+
+Use this page as a skeleton worksheet focused specifically on donor-pool design for synthetic control.
+
+## Draft Goal
+
+Pressure-test whether the untreated units available in a case study can support a credible synthetic comparison.
+
+## Suggested Workflow
+
+### Step 1: List Candidate Donor Units
+
+Draft prompts:
+
+- Which units look substantively comparable before any optimization?
+- Which units are likely to be contaminated by similar policy changes?
+
+### Step 2: Screen For Structural Exclusions
+
+Draft prompts:
+
+- Are any units too small, too large, or too institutionally different?
+- Are there missing-data or measurement-break problems that rule units out?
+
+### Step 3: Compare Pre-Treatment Trajectories
+
+Draft prompts:
+
+- Which units already track the treated case reasonably well?
+- Which units diverge so much that they would force extrapolation through weights?
+
+### Step 4: Plan Sensitivity Checks
+
+Draft prompts:
+
+- leave-one-donor-out checks
+- restricted donor-pool variants
+- predictor-set variants
+
+### Step 5: Record The Final Donor-Pool Rationale
+
+Draft prompts:
+
+- Why is the final donor pool defensible?
+- What residual weaknesses remain even after screening?
+
+## Next Build Step
+
+Expand this draft into a runnable comparison exercise once a specific synthetic-control case is added to the repo.

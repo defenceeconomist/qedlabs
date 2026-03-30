@@ -4,32 +4,90 @@ project:
 
 website:
   title: "QED Labs"
+  navbar:
+    left:
+      - href: notes/index.qmd
+        text: Notes
+      - href: reports/index.qmd
+        text: Reports
+      - href: labs/index.qmd
+        text: Labs
   sidebar:
-    style: docked
-    search: true
-    contents:
-      - href: index.qmd
-        text: Overview
-      - section: SCM
-        contents:
-          - href: notes/synthetic-control.qmd
-            text: Synthetic Control
-          - href: notes/synthetic-control-teaching-data.qmd
-            text: Synthetic Control Teaching Data
-          - href: notes/synthetic-control-sources.qmd
-            text: Synthetic Control Sources
-      - section: Other
-        contents:
-          - href: notes/matching-and-weighting.qmd
-            text: Matching and Weighting
-          - href: notes/difference-in-differences.qmd
-            text: Difference-in-Differences
-          - href: notes/regression-discontinuity.qmd
-            text: Regression Discontinuity
-          - href: notes/comparing-methods.qmd
-            text: Comparing Methods
-          - href: notes/choosing-a-method.qmd
-            text: Choosing a Method
+    - id: notes
+      title: "Notes"
+      style: docked
+      search: true
+      contents:
+        - href: notes/index.qmd
+          text: Notes Overview
+        - section: Matching
+          contents:
+            - href: notes/matching-and-weighting.qmd
+              text: Matching and Weighting Overview
+            - href: notes/lalonde-background-appendix.qmd
+              text: LaLonde Background Appendix
+            - href: notes/weightit-entropy-balancing-notes.qmd
+              text: WeightIt Entropy Balancing
+            - href: notes/mixtape-matching-subclassification-notes.qmd
+              text: Mixtape Matching and Subclassification
+            - href: notes/mixtape-nsw-benchmark-notes.qmd
+              text: Mixtape NSW Benchmark
+            - href: notes/effectbook-matching-notes.qmd
+              text: The Effect Matching
+            - href: notes/gertler-matching-notes.qmd
+              text: Gertler Matching
+        - section: Synthetic Control
+          contents:
+            - href: notes/synthetic-control.qmd
+              text: Synthetic Control
+            - href: notes/synthetic-control-teaching-data.qmd
+              text: Synthetic Control Teaching Data
+            - href: notes/synthetic-control-sources.qmd
+              text: Synthetic Control Sources
+        - section: Other Methods
+          contents:
+            - href: notes/difference-in-differences.qmd
+              text: Difference-in-Differences
+            - href: notes/regression-discontinuity.qmd
+              text: Regression Discontinuity
+            - href: notes/comparing-methods.qmd
+              text: Comparing Methods
+            - href: notes/choosing-a-method.qmd
+              text: Choosing a Method
+    - id: reports
+      title: "Reports"
+      style: docked
+      search: true
+      contents:
+        - href: reports/index.qmd
+          text: Reports Overview
+        - href: reports/matching-report.qmd
+          text: Matching Report Draft
+        - href: reports/synthetic-control-report.qmd
+          text: Synthetic Control Report Draft
+    - id: labs
+      title: "Labs"
+      style: docked
+      search: true
+      contents:
+        - href: labs/index.qmd
+          text: Labs Overview
+        - section: Matching
+          contents:
+            - href: labs/lalonde-matching-lab.qmd
+              text: LaLonde Matching Lab
+            - href: labs/black-politicians-lab.qmd
+              text: Black Politicians Lab
+            - href: labs/nsw-cps-benchmark-lab.qmd
+              text: NSW and CPS Benchmark Lab
+            - href: labs/hisp-ie-practice-lab.qmd
+              text: HISP IE Practice Lab
+        - section: Synthetic Control Design
+          contents:
+            - href: labs/synthetic-control-design-lab.qmd
+              text: Synthetic Control Design Lab
+            - href: labs/synthetic-control-donor-pool-lab.qmd
+              text: Synthetic Control Donor Pool Lab
 
 format:
   html:

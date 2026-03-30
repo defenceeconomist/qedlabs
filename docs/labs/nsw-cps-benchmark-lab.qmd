@@ -1,0 +1,453 @@
+---
+title: "Lab: NSW and CPS Benchmark"
+format:
+  html: default
+execute:
+  echo: true
+  eval: false
+---
+
+## How To Use This Page
+
+Use this page as a guided benchmark worksheet.
+
+- Read the benchmark framing before running any model.
+- Run each design branch in order: raw, exact, CEM, entropy balancing.
+- Track retention, balance, and benchmark gap together.
+- Treat the experimental NSW estimate as the reference target.
+
+::: {.callout-note}
+Code is shown but not executed when this page is rendered. That keeps the page readable even if your local R library is incomplete.
+:::
+
+## Training Goal
+
+This lab focuses on one practical question:
+
+Can observational adjustment recover the known NSW experimental result when the control pool comes from CPS?
+
+In *Causal Inference: The Mixtape*, this example matters because it sits inside a longer debate about whether matching and propensity-score methods can recover credible programme effects from observational data. The NSW experiment gives a randomized benchmark, while the CPS comparison pool creates the harder observational problem. That makes the exercise more than a coding drill: it is a direct test of whether a design built on observed covariates can get back to something close to the experimental answer.
+
+The workflow mirrors the main report's design-first sequence:
+
+1. define the estimand
+2. isolate benchmark versus observational datasets
+3. diagnose raw imbalance and overlap
+4. compare exact matching, CEM, and entropy balancing
+5. evaluate each estimate against the experimental benchmark
+
+## Dataset At A Glance
+
+We use two `causaldata` datasets:
+
+- `nsw_mixtape`: treated and control units from the **National Supported Work Demonstration (NSW)** job-training experiment
+- `cps_mixtape`: observational controls drawn from the **Current Population Survey (CPS)**
+
+### Acronyms And Background
+
+- **NSW = National Supported Work Demonstration.**
+  This was a U.S. randomized employment and training demonstration used as a benchmark in later causal-inference comparisons.  
+  Background and evaluation context:
+  [MDRC summary report (1980)](https://www.mdrc.org/work/publications/summary-and-findings-national-supported-work-demonstration),
+  [LaLonde (1986), *American Economic Review* metadata](https://econpapers.repec.org/RePEc%3Aaea%3Aaecrev%3Av%3A76%3Ay%3A1986%3Ai%3A4%3Ap%3A604-20).
+
+- **CPS = Current Population Survey.**
+  This is the monthly household labor-force survey jointly run by the U.S. Census Bureau and the U.S. Bureau of Labor Statistics.  
+  Official background:
+  [Census CPS program page](https://www.census.gov/programs-surveys/cps.html),
+  [BLS CPS overview](https://www.bls.gov/opub/hom/cps/).
+
+### Dataset Provenance For This Lab
+
+- `nsw_mixtape` documentation and variable definitions:
+  [CRAN reference](https://search.r-project.org/CRAN/refmans/causaldata/html/nsw_mixtape.html) (`445` rows, `11` variables).
+- `cps_mixtape` documentation and variable definitions:
+  [CRAN reference](https://search.r-project.org/CRAN/refmans/causaldata/html/cps_mixtape.html) (`15,992` rows, `11` variables).
+- The benchmark-comparison framing (NSW experiment versus observational controls) is tied to:
+  [Dehejia and Wahba (1998/1999) NBER working-paper version](https://www.nber.org/papers/w6586) and its published *JASA* article listed there.
+
+### Why This Example Matters In The Mixtape
+
+The Mixtape uses the NSW setting to illustrate a core matching problem: a randomized study can tell us what the programme did in the experimental sample, but analysts often have to work with non-experimental control groups in practice. LaLonde's comparison between the experimental NSW estimate and observational alternatives made this dataset a benchmark case because many standard non-experimental estimators performed poorly against the experimental result. Later work, especially Dehejia and Wahba, argued that design choices such as covariate selection and propensity-score-based adjustment could do better.
+
+For study purposes, the important context is:
+
+- NSW gives the benchmark because treatment and control were randomly assigned inside that sample.
+- CPS gives the observational challenge because those controls were not randomized against the NSW treated group.
+- The exercise is therefore not "estimate a treatment effect from scratch." It is "see how close different observational designs get to a reference effect that is already available from the experiment."
+- This is why balance, overlap, retained sample size, and benchmark gap should all be interpreted together.
+
+Core setup:
+
+- experimental benchmark: `ATT` from NSW treated versus NSW controls
+- observational design: NSW treated versus CPS controls
+- outcome: `re78` (post-program earnings)
+- covariates: `age`, `educ`, `black`, `hisp`, `marr`, `nodegree`, `re74`, `re75`
+
+## Step 1: Load Packages And Build Analysis Datasets
+
+```{r}
+required_packages <- c(
+  "causaldata",
+  "MatchIt",
+  "WeightIt",
+  "cobalt",
+  "dplyr",
+  "ggplot2"
+)
+
+missing_packages <- required_packages[!vapply(
+  required_packages,
+  requireNamespace,
+  logical(1),
+  quietly = TRUE
+)]
+
+if (length(missing_packages) > 0) {
+  install.packages(missing_packages, repos = "https://cloud.r-project.org")
+}
+
+invisible(lapply(required_packages, library, character.only = TRUE))
+
+nsw <- causaldata::nsw_mixtape |>
+  mutate(
+    treat = as.integer(treat),
+    outcome = re78
+  )
+
+cps <- causaldata::cps_mixtape |>
+  mutate(
+    treat = as.integer(treat),
+    outcome = re78
+  )
+
+# Experimental benchmark sample: NSW treated + NSW controls.
+benchmark_dat <- nsw
+
+# Observational sample: NSW treated + CPS controls.
+obs_dat <- bind_rows(
+  nsw |> filter(treat == 1L) |> mutate(source = "NSW treated"),
+  cps |> filter(treat == 0L) |> mutate(source = "CPS controls")
+)
+
+design_covariates <- c("age", "educ", "black", "hisp", "marr", "nodegree", "re74", "re75")
+
+obs_dat |>
+  select(source, treat, outcome, all_of(design_covariates)) |>
+  glimpse()
+```
+
+Checkpoint:
+
+- Is the benchmark estimate coming only from NSW randomized groups?
+- Is the observational sample restricted to NSW treated plus CPS controls?
+
+## Step 2: Compute The Experimental Benchmark
+
+```{r}
+benchmark_summary <- benchmark_dat |>
+  group_by(treat) |>
+  summarise(
+    n = n(),
+    mean_re78 = mean(outcome, na.rm = TRUE),
+    mean_re74 = mean(re74, na.rm = TRUE),
+    mean_re75 = mean(re75, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  mutate(group = if_else(treat == 1L, "NSW treated", "NSW controls")) |>
+  select(group, n, mean_re78, mean_re74, mean_re75)
+
+benchmark_fit <- lm(outcome ~ treat, data = benchmark_dat)
+benchmark_att <- coef(summary(benchmark_fit))["treat", ]
+
+benchmark_summary
+benchmark_att
+```
+
+This `treat` coefficient is the reference effect we try to recover with observational adjustment.
+
+## Step 3: Raw Observational Estimate (NSW Treated Vs CPS Controls)
+
+```{r}
+raw_summary <- obs_dat |>
+  group_by(treat) |>
+  summarise(
+    n = n(),
+    mean_re78 = mean(outcome, na.rm = TRUE),
+    mean_age = mean(age, na.rm = TRUE),
+    mean_educ = mean(educ, na.rm = TRUE),
+    prop_black = mean(black == 1, na.rm = TRUE),
+    mean_re74 = mean(re74, na.rm = TRUE),
+    mean_re75 = mean(re75, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  mutate(group = if_else(treat == 1L, "NSW treated", "CPS controls")) |>
+  select(group, n, mean_re78, mean_age, mean_educ, prop_black, mean_re74, mean_re75)
+
+raw_fit <- lm(outcome ~ treat, data = obs_dat)
+raw_obs_att <- coef(summary(raw_fit))["treat", ]
+
+raw_summary
+raw_obs_att
+```
+
+Compare this raw observational estimate with the benchmark from Step 2.
+
+## Step 4: Baseline Balance And Overlap Diagnostics
+
+```{r}
+m_raw <- matchit(
+  treat ~ age + educ + black + hisp + marr + nodegree + re74 + re75,
+  data = obs_dat,
+  method = NULL,
+  estimand = "ATT"
+)
+
+summary(m_raw, un = TRUE)
+
+cobalt::bal.tab(
+  m_raw,
+  un = TRUE,
+  binary = "std",
+  m.threshold = 0.1
+)
+
+cobalt::love.plot(
+  m_raw,
+  abs = TRUE,
+  thresholds = c(m = 0.1),
+  stars = "raw"
+)
+```
+
+```{r}
+# Quick propensity-score overlap check.
+ps_fit <- glm(
+  treat ~ age + educ + black + hisp + marr + nodegree + re74 + re75,
+  data = obs_dat,
+  family = binomial()
+)
+
+obs_dat <- obs_dat |>
+  mutate(ps = predict(ps_fit, type = "response"))
+
+overlap_bounds <- obs_dat |>
+  group_by(treat) |>
+  summarise(
+    min_ps = min(ps, na.rm = TRUE),
+    max_ps = max(ps, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+common_support_low <- max(overlap_bounds$min_ps)
+common_support_high <- min(overlap_bounds$max_ps)
+
+overlap_summary <- obs_dat |>
+  group_by(treat) |>
+  summarise(
+    n = n(),
+    min_ps = min(ps, na.rm = TRUE),
+    p10_ps = quantile(ps, 0.10, na.rm = TRUE),
+    p50_ps = quantile(ps, 0.50, na.rm = TRUE),
+    p90_ps = quantile(ps, 0.90, na.rm = TRUE),
+    max_ps = max(ps, na.rm = TRUE),
+    in_common_support = mean(ps >= common_support_low & ps <= common_support_high),
+    .groups = "drop"
+  ) |>
+  mutate(group = if_else(treat == 1L, "NSW treated", "CPS controls")) |>
+  select(group, n, min_ps, p10_ps, p50_ps, p90_ps, max_ps, in_common_support)
+
+overlap_summary
+```
+
+Questions:
+
+1. Which covariates are most imbalanced before adjustment?
+2. How much treated-support mass lies in thin CPS-support regions?
+
+## Step 5: Exact Matching Branch
+
+```{r}
+m_exact <- matchit(
+  treat ~ black + hisp + marr + nodegree + educ,
+  data = obs_dat,
+  method = "exact",
+  estimand = "ATT"
+)
+
+summary(m_exact, un = TRUE)
+
+exact_dat <- match.data(m_exact)
+
+exact_dat |>
+  count(treat) |>
+  mutate(group = if_else(treat == 1L, "Treated", "Control"))
+
+cobalt::bal.tab(
+  m_exact,
+  data = obs_dat,
+  un = TRUE,
+  binary = "std",
+  m.threshold = 0.1,
+  addl = ~ age + re74 + re75
+)
+```
+
+Interpretation prompt:
+
+- Exact matching can preserve transparency, but does it solve imbalance on prior earnings?
+
+## Step 6: CEM Branch
+
+```{r}
+cem_cutpoints <- list(
+  age = "q5",
+  educ = 4,
+  re74 = "q6",
+  re75 = "q6"
+)
+
+m_cem <- matchit(
+  treat ~ age + educ + black + hisp + marr + nodegree + re74 + re75,
+  data = obs_dat,
+  method = "cem",
+  estimand = "ATT",
+  cutpoints = cem_cutpoints
+)
+
+summary(m_cem, un = TRUE)
+
+cobalt::bal.tab(
+  m_cem,
+  un = TRUE,
+  binary = "std",
+  m.threshold = 0.1
+)
+
+cobalt::love.plot(
+  m_cem,
+  abs = TRUE,
+  thresholds = c(m = 0.1),
+  stars = "raw"
+)
+
+cem_dat <- match.data(m_cem)
+
+cem_dat |>
+  count(treat) |>
+  mutate(group = if_else(treat == 1L, "Treated", "Control"))
+```
+
+Track whether CEM improves balance while retaining enough treated units to keep the `ATT` target credible.
+
+## Step 7: Entropy Balancing Branch
+
+```{r}
+w_ebal <- weightit(
+  treat ~ age + I(age^2) +
+    educ + I(educ^2) +
+    black + hisp + marr + nodegree +
+    re74 + I(re74^2) +
+    re75 + I(re75^2),
+  data = obs_dat,
+  method = "ebal",
+  estimand = "ATT"
+)
+
+summary(w_ebal)
+
+cobalt::bal.tab(
+  w_ebal,
+  un = TRUE,
+  binary = "std",
+  m.threshold = 0.1
+)
+
+cobalt::love.plot(
+  w_ebal,
+  abs = TRUE,
+  thresholds = c(m = 0.1),
+  stars = "raw"
+)
+
+ess <- function(w) {
+  (sum(w)^2) / sum(w^2)
+}
+
+obs_ebal <- obs_dat |>
+  mutate(w = w_ebal$weights)
+
+obs_ebal |>
+  group_by(treat) |>
+  summarise(
+    raw_n = n(),
+    ess = ess(w),
+    max_weight = max(w),
+    mean_weight = mean(w),
+    .groups = "drop"
+)
+```
+
+If balance is excellent but control ESS collapses, note that as a design cost.
+
+## Step 8: Compare Against The Experimental Benchmark
+
+```{r}
+exact_fit <- lm(outcome ~ treat, data = exact_dat, weights = weights)
+cem_fit <- lm(outcome ~ treat, data = cem_dat, weights = weights)
+ebal_fit <- lm(outcome ~ treat, data = obs_ebal, weights = w)
+
+get_treat_row <- function(fit, design_name) {
+  out <- coef(summary(fit))
+  data.frame(
+    design = design_name,
+    estimate = unname(out["treat", "Estimate"]),
+    std_error = unname(out["treat", "Std. Error"]),
+    p_value = unname(out["treat", "Pr(>|t|)"]),
+    row.names = NULL,
+    check.names = FALSE
+  )
+}
+
+experimental_estimate <- unname(benchmark_att["Estimate"])
+
+estimate_comparison <- bind_rows(
+  get_treat_row(benchmark_fit, "Experimental benchmark (NSW RCT)"),
+  get_treat_row(raw_fit, "Raw observational (NSW treated vs CPS)"),
+  get_treat_row(exact_fit, "Exact matching"),
+  get_treat_row(cem_fit, "CEM"),
+  get_treat_row(ebal_fit, "Entropy balancing")
+) |>
+  mutate(
+    benchmark_gap = estimate - experimental_estimate,
+    abs_benchmark_gap = abs(benchmark_gap)
+  )
+
+estimate_comparison
+```
+
+This table is the core benchmark output for the lab.
+
+## Comparison Table To Fill In
+
+| Design | Worst abs. SMD | Treated retained | Control ESS | Estimate | Gap vs benchmark | Your judgement |
+|---|---|---|---|---|---|---|
+| Raw observational |  |  |  |  |  |  |
+| Exact matching |  |  |  |  |  |  |
+| CEM |  |  |  |  |  |  |
+| Entropy balancing |  |  |  |  |  |  |
+
+## Debrief Questions
+
+1. Which method got closest to the NSW benchmark?
+2. Which method's benchmark closeness depended most on aggressive reweighting?
+3. Did better benchmark recovery come from tighter matching, richer balance constraints, or both?
+4. If you had to defend one design to a policy audience, which would you choose and why?
+
+## Optional Extension
+
+Add one sensitivity branch and compare benchmark drift:
+
+- trim extreme entropy weights (`trim()` in `WeightIt`)
+- rerun CEM with slightly coarser and finer `re74`/`re75` bins
+- report how benchmark gap and control ESS move under each choice
