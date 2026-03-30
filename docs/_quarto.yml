@@ -1,6 +1,11 @@
 project:
   type: website
   output-dir: _site
+  pre-render:
+    - python3 scripts/extract_link_graph.py
+  resources:
+    - data/link_graph_payload.js
+    - assets/**
 
 website:
   title: "QED Labs"
@@ -92,6 +97,8 @@ website:
 format:
   html:
     theme: cosmo
+    css:
+      - assets/css/link_network.css
     toc: true
     toc-depth: 3
 
