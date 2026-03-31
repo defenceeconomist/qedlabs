@@ -1,0 +1,29 @@
+---
+title: "Other Methods"
+---
+
+# Scope
+
+This page groups the remaining core quasi-experimental methods in the notes section. Use it when matching is not the main candidate design and the real question is whether the evaluation is better framed around time variation, a threshold, or a cross-method comparison.
+
+# Main Routes
+
+## [Difference-in-Differences](difference-in-differences.qmd)
+
+Use this when treated and untreated units are both observed over time and the design depends on a credible parallel-trends argument.
+
+## [Regression Discontinuity](regression-discontinuity.qmd)
+
+Use this when treatment assignment is governed by a rule or threshold and units close to the cutoff can support a local comparison.
+
+## [Comparing The Main Methods](comparing-methods.qmd)
+
+Use this page when several designs are still plausible and you need to compare them on assumptions, data structure, diagnostics, and limits.
+
+## [Choosing A Method](choosing-a-method.qmd)
+
+Use this page when the practical task is to move from a policy problem and observed data structure to a defensible design choice.
+
+# Working Rule
+
+The method should be chosen by the assignment process and the data-generating structure, not by which estimator is most familiar or easiest to run.

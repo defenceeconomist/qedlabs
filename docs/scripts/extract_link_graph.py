@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import argparse
 import json
 import re
 from collections import defaultdict
@@ -9,23 +10,67 @@ from urllib.parse import urlparse, urlunparse
 import yaml
 
 
-ROOT = Path(__file__).resolve().parent.parent
-CONFIG_PATH = ROOT / "_quarto.yml"
-PAYLOAD_PATH = ROOT / "data" / "link_graph_payload.js"
+DEFAULT_ROOT = Path(__file__).resolve().parent.parent
 EXCLUDE_PARTS = {".quarto", "_site", "site_libs", "assets", "data", "scripts"}
 MARKDOWN_LINK_RE = re.compile(r"\[[^\]]+\]\(([^)]+)\)")
 URL_RE = re.compile(r"https?://[^\s<>{}\"')]+")
 
 
-def load_config() -> dict:
-    return yaml.safe_load(CONFIG_PATH.read_text(encoding="utf-8"))
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Build the Quasi-Experimental Design Labs link graph payload from the docs source tree."
+    )
+    parser.add_argument(
+        "--root",
+        type=Path,
+        default=DEFAULT_ROOT,
+        help="Docs project root containing _quarto.yml and the .qmd files.",
+    )
+    parser.add_argument(
+        "--config",
+        type=Path,
+        help="Optional Quarto config path. Defaults to <root>/_quarto.yml.",
+    )
+    parser.add_argument(
+        "--output",
+        type=Path,
+        help="Optional output path. Defaults to <root>/data/notes_link_graph_payload.json.",
+    )
+    parser.add_argument(
+        "--include-prefix",
+        action="append",
+        default=[],
+        help="Restrict internal pages to paths beginning with this prefix. May be provided multiple times.",
+    )
+    return parser.parse_args()
 
 
-def iter_qmd_files() -> list[Path]:
+def resolve_path(root: Path, path: Path | None, fallback: str) -> Path:
+    if path is None:
+        return root / fallback
+    return path if path.is_absolute() else root / path
+
+
+def load_config(config_path: Path) -> dict:
+    return yaml.safe_load(config_path.read_text(encoding="utf-8"))
+
+
+def normalize_prefix(prefix: str) -> str:
+    normalized = prefix.strip().lstrip("./")
+    return normalized.rstrip("/")
+
+
+def iter_qmd_files(root: Path, include_prefixes: list[str] | None = None) -> list[Path]:
     files: list[Path] = []
-    for path in ROOT.rglob("*.qmd"):
-        rel = path.relative_to(ROOT)
+    normalized_prefixes = [normalize_prefix(prefix) for prefix in include_prefixes or [] if prefix.strip()]
+    for path in root.rglob("*.qmd"):
+        rel = path.relative_to(root)
         if any(part in EXCLUDE_PARTS for part in rel.parts):
+            continue
+        rel_posix = rel.as_posix()
+        if normalized_prefixes and not any(
+            rel_posix == prefix or rel_posix.startswith(f"{prefix}/") for prefix in normalized_prefixes
+        ):
             continue
         files.append(path)
     return sorted(files)
@@ -42,10 +87,6 @@ def parse_front_matter(text: str) -> tuple[dict, str]:
     return front, body
 
 
-def qmd_to_html(rel_path: Path) -> str:
-    return rel_path.with_suffix(".html").as_posix()
-
-
 def title_case(value: str) -> str:
     parts = re.split(r"[-_]", value)
     return " ".join(part[:1].upper() + part[1:] for part in parts if part)
@@ -53,7 +94,7 @@ def title_case(value: str) -> str:
 
 def label_from_rel(rel_path: Path) -> str:
     if rel_path.as_posix() == "index.qmd":
-        return "QED Labs"
+        return "Quasi-Experimental Design Labs"
     if rel_path.name == "index.qmd":
         return title_case(rel_path.parent.name)
     return title_case(rel_path.stem)
@@ -64,13 +105,13 @@ def clean_url(url: str) -> str:
     return urlunparse((parsed.scheme, parsed.netloc, parsed.path, "", parsed.query, ""))
 
 
-def normalize_internal_target(source_rel: Path, target: str) -> str | None:
+def normalize_internal_target(root: Path, source_rel: Path, target: str) -> str | None:
     cleaned = target.strip().strip("<>").split("#", 1)[0].split("?", 1)[0]
     if not cleaned or cleaned.startswith(("http://", "https://", "mailto:", "javascript:")):
         return None
-    candidate = (source_rel.parent / cleaned).resolve()
+    candidate = (root / source_rel.parent / cleaned).resolve()
     try:
-        rel = candidate.relative_to(ROOT.resolve())
+        rel = candidate.relative_to(root.resolve())
     except ValueError:
         return None
     if any(part in EXCLUDE_PARTS for part in rel.parts):
@@ -125,14 +166,14 @@ def add_edge(edges: dict[tuple[str, str], dict], source: str, target: str, kind:
     edges[(source, target)] = {"source": source, "target": target, "kind": kind}
 
 
-def main() -> None:
-    config = load_config()
+def build_payload(root: Path, config: dict, include_prefixes: list[str] | None = None) -> dict:
     page_nodes: dict[str, dict] = {}
     external_nodes: dict[str, dict] = {}
     edges: dict[tuple[str, str], dict] = {}
+    normalized_prefixes = [normalize_prefix(prefix) for prefix in include_prefixes or [] if prefix.strip()]
 
-    for path in iter_qmd_files():
-        rel = path.relative_to(ROOT)
+    for path in iter_qmd_files(root, normalized_prefixes):
+        rel = path.relative_to(root)
         front, body = parse_front_matter(path.read_text(encoding="utf-8"))
         linkable_body = extract_linkable_text(body)
         node_id = rel.as_posix()
@@ -158,8 +199,14 @@ def main() -> None:
                 add_edge(edges, node_id, url, "external")
                 continue
 
-            internal_target = normalize_internal_target(rel, raw_target)
-            if internal_target:
+            internal_target = normalize_internal_target(root, rel, raw_target)
+            if internal_target and (
+                not normalized_prefixes
+                or any(
+                    internal_target == prefix or internal_target.startswith(f"{prefix}/")
+                    for prefix in normalized_prefixes
+                )
+            ):
                 add_edge(edges, node_id, internal_target, "internal")
 
         for url in URL_RE.findall(linkable_body):
@@ -176,21 +223,19 @@ def main() -> None:
             add_edge(edges, node_id, cleaned, "external")
 
     website = config.get("website", {})
-    for nav_item in website.get("navbar", {}).get("left", []):
-        if not isinstance(nav_item, dict) or not nav_item.get("href"):
-            continue
-        target = normalize_internal_target(Path("index.qmd"), nav_item["href"])
-        if target and target in page_nodes:
-            add_edge(edges, "index.qmd", target, "internal")
-
     for sidebar in website.get("sidebar", []):
         contents = sidebar.get("contents", [])
-        overview = next((item.get("href") for item in contents if isinstance(item, dict) and item.get("href")), None)
-        overview_target = normalize_internal_target(Path("index.qmd"), overview) if overview else None
+        overview = next(
+            (item.get("href") for item in contents if isinstance(item, dict) and item.get("href")),
+            None,
+        )
+        overview_target = (
+            normalize_internal_target(root, Path("index.qmd"), overview) if overview else None
+        )
         if not overview_target:
             continue
         for href in extract_hrefs(contents):
-            target = normalize_internal_target(Path("index.qmd"), href)
+            target = normalize_internal_target(root, Path("index.qmd"), href)
             if target and target in page_nodes and overview_target in page_nodes:
                 add_edge(edges, overview_target, target, "internal")
 
@@ -234,17 +279,30 @@ def main() -> None:
 
     nodes.sort(key=lambda item: (item["kind"], item["label"].lower(), item["id"]))
     edge_list = sorted(edges.values(), key=lambda item: (item["source"], item["target"]))
+    return {"nodes": nodes, "edges": edge_list}
 
-    payload = {
-        "nodes": nodes,
-        "edges": edge_list,
-    }
 
-    PAYLOAD_PATH.parent.mkdir(parents=True, exist_ok=True)
-    PAYLOAD_PATH.write_text(
-        "window.__LINK_GRAPH__ = " + json.dumps(payload, ensure_ascii=False, indent=2) + ";\n",
-        encoding="utf-8",
-    )
+def serialize_payload(payload: dict, output_path: Path) -> str:
+    serialized = json.dumps(payload, ensure_ascii=False, indent=2)
+    if output_path.suffix.lower() == ".js":
+        return f"window.__LINK_GRAPH__ = {serialized};\n"
+    return serialized + "\n"
+
+
+def write_payload(payload: dict, output_path: Path) -> None:
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(serialize_payload(payload, output_path), encoding="utf-8")
+
+
+def main() -> None:
+    args = parse_args()
+    root = args.root.resolve()
+    config_path = resolve_path(root, args.config, "_quarto.yml")
+    output_path = resolve_path(root, args.output, "data/notes_link_graph_payload.json")
+
+    config = load_config(config_path)
+    payload = build_payload(root, config, args.include_prefix)
+    write_payload(payload, output_path)
 
 
 if __name__ == "__main__":

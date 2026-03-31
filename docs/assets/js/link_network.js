@@ -17,46 +17,37 @@ const palette = {
 };
 
 const shell = document.getElementById("link-graph-shell");
-const root = document.getElementById("link-graph-root");
 const svgHost = document.getElementById("link-graph-svg");
-const details = document.getElementById("link-graph-details");
 const internalToggle = document.getElementById("toggle-internal");
 const externalToggle = document.getElementById("toggle-external");
-const fullscreenButton = document.getElementById("toggle-fullscreen");
 const resetButton = document.getElementById("reset-link-graph");
 const searchInput = document.getElementById("link-graph-search");
 const nodeOptions = document.getElementById("link-graph-node-options");
 
-if (
-  shell &&
-  root &&
-  svgHost &&
-  details &&
-  internalToggle &&
-  externalToggle &&
-  fullscreenButton &&
-  resetButton &&
-  searchInput &&
-  nodeOptions
-) {
+if (shell && svgHost && internalToggle && externalToggle && resetButton && searchInput && nodeOptions) {
   initialise().catch((error) => {
-    details.innerHTML = `
-      <h3>Node Details</h3>
-      <p>Unable to load the QED Labs network graph.</p>
-      <p><code>${String(error.message || error)}</code></p>
-    `;
+    svgHost.innerHTML = `<p><code>${String(error.message || error)}</code></p>`;
   });
 }
 
 async function initialise() {
-  const graph = window.__LINK_GRAPH__;
+  const graphSource = shell.dataset.graphSrc;
+  if (!graphSource) {
+    throw new Error("Link graph source is missing.");
+  }
+
+  const response = await fetch(graphSource, { cache: "no-store" });
+  if (!response.ok) {
+    throw new Error(`Link graph request failed (${response.status}).`);
+  }
+
+  const graph = await response.json();
   if (!graph || !Array.isArray(graph.nodes) || !Array.isArray(graph.edges)) {
     throw new Error("Link graph payload is missing.");
   }
 
   let viewportWidth = DEFAULT_WIDTH;
   let viewportHeight = DEFAULT_HEIGHT;
-  const shellPlaceholder = document.createComment("link-graph-shell-placeholder");
 
   const svg = d3
     .select(svgHost)
@@ -64,7 +55,7 @@ async function initialise() {
     .attr("viewBox", `0 0 ${viewportWidth} ${viewportHeight}`)
     .attr("class", "link-graph-svg-inner")
     .attr("role", "img")
-    .attr("aria-label", "Interactive QED Labs link network");
+    .attr("aria-label", "Interactive Quasi-Experimental Design Labs link network");
 
   const nodes = graph.nodes.map((node) => ({ ...node }));
   const links = graph.edges.map((edge) => ({ ...edge }));
@@ -165,25 +156,17 @@ async function initialise() {
       event.stopPropagation();
       selectedId = datum.id;
       highlight(datum.id);
-      renderDetails(datum, nodes, links);
     });
 
   svg.on("click", () => {
     selectedId = null;
     clearHighlight();
-    details.innerHTML = `
-      <h3>Node Details</h3>
-      <p>Select a node to inspect its links.</p>
-    `;
   });
 
   internalToggle.addEventListener("change", applyVisibility);
   externalToggle.addEventListener("change", applyVisibility);
-  fullscreenButton.addEventListener("click", toggleModal);
   resetButton.addEventListener("click", () => resetView(true));
   searchInput.addEventListener("input", onSearchInput);
-  details.addEventListener("click", onDetailsClick);
-  document.addEventListener("keydown", onKeydown);
 
   const resizeObserver = new ResizeObserver(() => {
     updateViewport();
@@ -194,7 +177,6 @@ async function initialise() {
   applyVisibility();
   clearHighlight();
   updateViewport(true);
-  syncExpandButton();
 
   function applyVisibility() {
     const visibleKinds = new Set();
@@ -258,7 +240,6 @@ async function initialise() {
     if (!found) return;
     selectedId = found.id;
     highlight(found.id);
-    renderDetails(found, nodes, links);
     if (zoomToNode) {
       centerOnNode(found);
     }
@@ -327,43 +308,6 @@ async function initialise() {
     }
   }
 
-  function onDetailsClick(event) {
-    if (event.target.closest("a[href]")) return;
-    const button = event.target.closest("[data-node-id]");
-    if (!button) return;
-    const nodeId = button.getAttribute("data-node-id");
-    if (!nodeId) return;
-    focusNode(nodeId, true);
-  }
-
-  function toggleModal() {
-    const opening = !shell.classList.contains("is-modal-open");
-    if (opening) {
-      if (!shellPlaceholder.parentNode && shell.parentNode) {
-        shell.parentNode.insertBefore(shellPlaceholder, shell);
-      }
-      shell.classList.remove("page-columns", "page-full");
-      root.classList.remove("page-columns", "page-full");
-      document.body.appendChild(shell);
-    } else if (shellPlaceholder.parentNode) {
-      shell.classList.add("page-columns", "page-full");
-      root.classList.add("page-columns", "page-full");
-      shellPlaceholder.parentNode.insertBefore(shell, shellPlaceholder);
-      shellPlaceholder.remove();
-    }
-
-    shell.classList.toggle("is-modal-open", opening);
-    document.body.classList.toggle("link-graph-modal-open", opening);
-    syncExpandButton();
-    requestAnimationFrame(() => updateViewport(true));
-  }
-
-  function syncExpandButton() {
-    const expanded = shell.classList.contains("is-modal-open");
-    fullscreenButton.textContent = expanded ? "Close expanded view" : "Expand visual";
-    fullscreenButton.setAttribute("aria-pressed", expanded ? "true" : "false");
-  }
-
   function updateViewport(restart = false) {
     const nextWidth = Math.max(Math.round(svgHost.clientWidth), 320);
     const nextHeight = Math.max(Math.round(svgHost.clientHeight), 420);
@@ -379,12 +323,6 @@ async function initialise() {
     requestAnimationFrame(() => fitGraphToViewport(restart ? 250 : 0));
   }
 
-  function onKeydown(event) {
-    if (event.key === "Escape" && shell.classList.contains("is-modal-open")) {
-      toggleModal();
-    }
-  }
-
   function populateNodeOptions(items) {
     const markup = items
       .slice()
@@ -397,6 +335,15 @@ async function initialise() {
 
 function nodeRadius(node) {
   return 6 + Math.min(node.degree * 0.9, 18);
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
 }
 
 function nodeKind(nodeOrId) {
@@ -431,7 +378,6 @@ function internalRenderPath(node) {
     }
   };
   if (node.path === "knowledge-base/index.qmd") return withOffset("knowledge-base/index.html");
-  if (node.path === "reports/index.qmd") return withOffset("reports/index.html");
   if (node.path.endsWith(".qmd")) {
     if (node.path.endsWith("/index.qmd")) {
       return withOffset(node.path.replace(/index\.qmd$/, "index.html"));
@@ -456,55 +402,6 @@ function nodeTitle(node) {
   const target = clickableUrl(node);
   const path = node.path || node.url || "";
   return `${node.label}\n${path}${target ? `\nTarget: ${target}` : ""}`;
-}
-
-function renderDetails(node, nodes, links) {
-  const related = links
-    .filter((link) => {
-      const sourceId = edgeEndpointId(link.source);
-      const targetId = edgeEndpointId(link.target);
-      return sourceId === node.id || targetId === node.id;
-    })
-    .map((link) => {
-      const sourceId = edgeEndpointId(link.source);
-      const targetId = edgeEndpointId(link.target);
-      const otherId = sourceId === node.id ? targetId : sourceId;
-      return nodes.find((item) => item.id === otherId);
-    })
-    .filter(Boolean)
-    .sort((a, b) => {
-      if (b.degree !== a.degree) return b.degree - a.degree;
-      return a.label.localeCompare(b.label);
-    });
-
-  const target = clickableUrl(node);
-  const meta = node.kind === "internal" ? (node.path || "") : (node.url || "");
-
-  const relatedMarkup = related.length
-    ? `<ul>${related
-        .slice(0, 16)
-        .map(
-          (item) =>
-            `<li><button class="link-graph-related-button" type="button" data-node-id="${escapeHtml(item.id)}"><span class="kind-pill ${item.kind}">${item.kind}</span> ${escapeHtml(item.label)}</button></li>`
-        )
-        .join("")}</ul>`
-    : "<p>No related links recorded.</p>";
-
-  details.innerHTML = `
-    <h3>${escapeHtml(node.label)}</h3>
-    <p><span class="kind-pill ${node.kind}">${node.kind}</span></p>
-    <p class="detail-meta"><strong>ID:</strong> <code>${escapeHtml(meta)}</code></p>
-    <p class="detail-meta"><strong>Degree:</strong> ${node.degree} (${node.incoming} incoming, ${node.outgoing} outgoing)</p>
-    ${
-      target
-        ? `<p class="detail-actions"><a href="${escapeHtml(target)}"${
-            node.kind === "external" ? ' target="_blank" rel="noopener noreferrer"' : ""
-          }>Open target</a></p>`
-        : ""
-    }
-    <h4>Connected nodes</h4>
-    ${relatedMarkup}
-  `;
 }
 
 function nodeBounds(nodes) {
@@ -540,13 +437,4 @@ function drag(simulation) {
   }
 
   return d3.drag().on("start", dragstarted).on("drag", dragged).on("end", dragended);
-}
-
-function escapeHtml(value) {
-  return String(value)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#39;");
 }

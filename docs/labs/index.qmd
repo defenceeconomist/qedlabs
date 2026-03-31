@@ -1,25 +1,79 @@
 ---
 title: "Labs"
+page-layout: full
+toc: false
 ---
 
-This section collects worksheet-style pages for hands-on design practice.
+<div class="landing-stack">
 
-## Matching Labs
+::: {.landing-hero}
+<span class="hero-eyebrow">Applied labs</span>
 
-The matching labs were migrated from `../matching-trg` and adapted to fit this repo's section structure.
+# Practice the design choices, not just the estimator
 
-- [LaLonde Matching Lab](lalonde-matching-lab.qmd)
-- [Black Politicians Lab](black-politicians-lab.qmd)
-- [NSW and CPS Benchmark Lab](nsw-cps-benchmark-lab.qmd)
-- [HISP IE Practice Lab](hisp-ie-practice-lab.qmd)
+This section collects worksheet-style pages for hands-on design work. Use it when you want to move from abstract method guidance into benchmark examples, tradeoff decisions, and concrete diagnostics.
 
-## Synthetic Control Design Labs
+<div class="page-metadata">
+  <span>Hands-on exercises</span>
+  <span>Benchmark examples</span>
+  <span>Design-first workflow</span>
+</div>
+:::
 
-These are draft lab skeletons for synthetic-control work:
+## Matching Labs {#matching-labs .section-heading}
+
+<p class="section-intro">These are the strongest practical pages on the site.</p>
+
+::: {.section-grid}
+::: {.section-card}
+<span class="page-badge badge-lab">Core lab</span>
+
+### [LaLonde Matching Lab](lalonde-matching-lab.qmd)
+
+Best first practical exercise for understanding matching design, overlap, and benchmark logic.
+:::
+
+::: {.section-card}
+<span class="page-badge badge-applied">Applied case</span>
+
+### [Black Politicians Lab](black-politicians-lab.qmd)
+
+Use this when you want a more context-specific exercise.
+:::
+
+::: {.section-card}
+<span class="page-badge badge-lab">Benchmark</span>
+
+### [NSW and CPS Benchmark Lab](nsw-cps-benchmark-lab.qmd)
+
+Best for stress-testing matching choices against a canonical benchmark comparison.
+:::
+:::
+
+::: {.path-grid}
+::: {.path-card}
+<span class="page-badge badge-applied">Applied case</span>
+
+### [HISP IE Practice Lab](hisp-ie-practice-lab.qmd)
+
+Use this when you want a more open-ended practice page.
+:::
+
+::: {.path-card}
+<span class="page-badge badge-skeleton">Build-out route</span>
+
+### Synthetic control design labs
 
 - [Synthetic Control Design Lab](synthetic-control-design-lab.qmd)
 - [Synthetic Control Donor Pool Lab](synthetic-control-donor-pool-lab.qmd)
 
-## Working Rule
+Treat these as structured lab skeletons.
+:::
+:::
 
-Keep the same standard across all labs: define the design before estimating, document the tradeoffs introduced by the design, and state clearly what the resulting comparison can and cannot support.
+<div class="principle-banner">
+  <h2>Working rule</h2>
+  <p>Define the design before estimating, document the tradeoffs introduced by the design, and state clearly what the resulting comparison can and cannot support.</p>
+</div>
+
+</div>

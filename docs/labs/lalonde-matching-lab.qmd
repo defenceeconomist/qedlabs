@@ -9,20 +9,20 @@ execute:
 
 ## How To Use This Page
 
-Use this page as the guided lab version of the main report.
+Use this page as the guided lab version of the main matching overview.
 
-- Keep the [Matching Report Draft](../reports/matching-report.qmd) open in another tab.
+- Keep the [Matching and Weighting](../notes/matching/matching-and-weighting.qmd) note open in another tab.
 - Run each step in order rather than skipping to the estimates.
 - Record balance, retention, and weighting cost as you go.
 - End with a design judgement, not just a preferred coefficient.
 
 ::: {.callout-note}
-The code is shown but not executed when the site is rendered. That keeps the page readable while preserving the main-report workflow for live teaching and self-study.
+The code is shown but not executed when the site is rendered. That keeps the page readable while preserving the main workflow for live teaching and self-study.
 :::
 
 ## Training Goal
 
-Turn the report's `lalonde` comparison into a repeatable lab exercise:
+Turn the `lalonde` comparison into a repeatable lab exercise:
 
 1. define the `ATT` before any adjustment choice
 2. inspect the raw treated-versus-control comparison
@@ -32,7 +32,7 @@ Turn the report's `lalonde` comparison into a repeatable lab exercise:
 
 ## Dataset At A Glance
 
-This lab uses `MatchIt::lalonde`, the same dataset used in the main report.
+This lab uses `MatchIt::lalonde`, the same dataset used in the main matching overview.
 
 - Treated group: National Supported Work programme participants
 - Comparison group: observational controls
@@ -40,7 +40,7 @@ This lab uses `MatchIt::lalonde`, the same dataset used in the main report.
 - Design covariates: `age`, `educ`, `race`, `married`, `nodegree`, `re74`, `re75`
 - Target estimand: `ATT`
 
-This is the cleanest place to practice the repo's design-first workflow because the data are already familiar from the report and the tradeoffs are visible quickly.
+This is the cleanest place to practice the repo's design-first workflow because the data are already familiar from the notes and the tradeoffs are visible quickly.
 
 ## What To Hand Back
 
@@ -534,6 +534,5 @@ Use your outputs to answer all five:
 
 If you want to go deeper after this page:
 
-- read the [Matching Report Draft](../reports/matching-report.qmd) for the long-form scaffold
-- review the [Matching and Weighting](../notes/matching-and-weighting.qmd) note for the method overview
+- review the [Matching and Weighting](../notes/matching/matching-and-weighting.qmd) note for the method overview
 - move next to the [Black Politicians Lab](black-politicians-lab.qmd) for the first dataset extension

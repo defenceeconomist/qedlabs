@@ -1,6 +1,6 @@
-# QED Labs
+# Quasi-Experimental Design Labs
 
-The goals of QED Labs is to compile and disseminate guidance on running quasi-experimental designs.
+The goals of Quasi-Experimental Design Labs is to compile and disseminate guidance on running quasi-experimental designs.
 
 ## Evidence Base Docker Access
 

@@ -1,72 +1,20 @@
 ---
-title: "QED Labs"
+title: "Quasi-Experimental Design Labs"
 page-layout: full
+toc: false
 ---
 
-QED Labs is organized around three working sections:
+<div class="landing-stack">
 
-- [Notes](notes/index.qmd) for method overviews and source-based reading notes
-- [Reports](reports/index.qmd) for longer evaluator-facing report drafts
-- [Labs](labs/index.qmd) for worksheet-style design exercises
+::: {.hero-panel}
+<span class="hero-eyebrow">Evaluation design knowledge base</span>
 
-## Site Map
+# Build the design before you estimate
 
-This network map shows internal pages in blue and linked external sources in orange.
+Quasi-Experimental Design Labs organizes working material for quasi-experimental evaluation into two practical routes: concise method notes and worksheet-style labs. The aim is to move from method selection to design discipline without losing the thread of the original policy question.
 
-```{=html}
-<div id="link-graph-shell" class="link-graph-shell">
-  <div class="link-graph-controls" role="group" aria-label="Link graph controls">
-    <label class="link-graph-search" for="link-graph-search">
-      <span class="link-graph-control-label">Find node</span>
-      <input id="link-graph-search" type="search" placeholder="Search by label or path" list="link-graph-node-options" />
-    </label>
-    <label class="link-graph-toggle" for="toggle-internal">
-      <input id="toggle-internal" type="checkbox" checked />
-      <span>Internal nodes</span>
-    </label>
-    <label class="link-graph-toggle" for="toggle-external">
-      <input id="toggle-external" type="checkbox" checked />
-      <span>External nodes</span>
-    </label>
-    <button id="reset-link-graph" class="link-graph-button link-graph-button-secondary" type="button">Reset view</button>
-    <button id="toggle-fullscreen" class="link-graph-button" type="button" aria-pressed="false">Expand visual</button>
-    <datalist id="link-graph-node-options"></datalist>
-  </div>
-  <div class="link-graph-legend">
-    <span class="link-graph-legend-item link-graph-legend-item-internal"><span class="kind-pill internal">internal</span> QED Labs pages</span>
-    <span class="link-graph-legend-item link-graph-legend-item-external"><span class="kind-pill external">external</span> Linked external sources</span>
-    <span class="link-graph-legend-note">Click a node for details, drag to reposition, and scroll to zoom.</span>
-  </div>
-  <div id="link-graph-root" class="link-graph-root">
-    <div class="link-graph-canvas-wrap">
-      <div id="link-graph-svg" class="link-graph-svg" role="img" aria-label="Interactive QED Labs site map"></div>
-    </div>
-    <aside id="link-graph-details" class="link-graph-details">
-      <h3>Node Details</h3>
-      <p>Select a node to inspect its links.</p>
-    </aside>
-  </div>
-</div>
-
-<script src="assets/vendor/d3.min.js"></script>
-<script src="data/link_graph_payload.js"></script>
-<script src="assets/js/link_network.js"></script>
-```
-
-## Current Emphasis
-
-The strongest current coverage is in matching and weighting, where the site now combines:
-
-- a notes section with both overview and source-specific reading notes
-- a report draft that can be expanded into a full matching writeup
-- a migrated lab set built from the earlier `matching-trg` material
-
-Synthetic control now has:
-
-- a notes section
-- a report skeleton draft
-- two design-lab skeletons for future build-out
-
-## Working Rule
-
-Across all three sections, the standard is the same: define the design first, document diagnostics clearly, and separate what the design supports from what the analyst would like it to say.
+::: {.cta-row}
+[Start with Notes](notes/index.qmd){.cta-button}
+[Open Labs](labs/index.qmd){.cta-button .secondary}
+:::
+:::

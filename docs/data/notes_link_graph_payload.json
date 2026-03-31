@@ -1,0 +1,364 @@
+{
+  "nodes": [
+    {
+      "id": "https://mixtape.scunning.com/05-matching_and_subclassification",
+      "label": "mixtape.scunning.com: 05 matching a...",
+      "kind": "external",
+      "url": "https://mixtape.scunning.com/05-matching_and_subclassification",
+      "incoming": 1,
+      "outgoing": 0,
+      "degree": 1
+    },
+    {
+      "id": "https://ngreifer.github.io/WeightIt/reference/glm_weightit.html",
+      "label": "ngreifer.github.io: glm weightit",
+      "kind": "external",
+      "url": "https://ngreifer.github.io/WeightIt/reference/glm_weightit.html",
+      "incoming": 1,
+      "outgoing": 0,
+      "degree": 1
+    },
+    {
+      "id": "https://ngreifer.github.io/WeightIt/reference/method_ebal.html",
+      "label": "ngreifer.github.io: method ebal",
+      "kind": "external",
+      "url": "https://ngreifer.github.io/WeightIt/reference/method_ebal.html",
+      "incoming": 1,
+      "outgoing": 0,
+      "degree": 1
+    },
+    {
+      "id": "https://ngreifer.github.io/WeightIt/articles/WeightIt.html",
+      "label": "ngreifer.github.io: WeightIt",
+      "kind": "external",
+      "url": "https://ngreifer.github.io/WeightIt/articles/WeightIt.html",
+      "incoming": 1,
+      "outgoing": 0,
+      "degree": 1
+    },
+    {
+      "id": "https://ngreifer.github.io/WeightIt/reference/weightit.html",
+      "label": "ngreifer.github.io: weightit",
+      "kind": "external",
+      "url": "https://ngreifer.github.io/WeightIt/reference/weightit.html",
+      "incoming": 1,
+      "outgoing": 0,
+      "degree": 1
+    },
+    {
+      "id": "https://theeffectbook.net/ch-Matching.html",
+      "label": "theeffectbook.net: ch Matching",
+      "kind": "external",
+      "url": "https://theeffectbook.net/ch-Matching.html",
+      "incoming": 1,
+      "outgoing": 0,
+      "degree": 1
+    },
+    {
+      "id": "notes/other-methods/choosing-a-method.qmd",
+      "label": "Choosing A Method",
+      "kind": "internal",
+      "path": "notes/other-methods/choosing-a-method.qmd",
+      "incoming": 2,
+      "outgoing": 0,
+      "degree": 2
+    },
+    {
+      "id": "notes/other-methods/comparing-methods.qmd",
+      "label": "Comparing The Main Methods",
+      "kind": "internal",
+      "path": "notes/other-methods/comparing-methods.qmd",
+      "incoming": 2,
+      "outgoing": 0,
+      "degree": 2
+    },
+    {
+      "id": "notes/other-methods/difference-in-differences.qmd",
+      "label": "Difference-in-Differences",
+      "kind": "internal",
+      "path": "notes/other-methods/difference-in-differences.qmd",
+      "incoming": 2,
+      "outgoing": 0,
+      "degree": 2
+    },
+    {
+      "id": "notes/matching/weightit-entropy-balancing-notes.qmd",
+      "label": "Entropy-Based Weighting with WeightIt",
+      "kind": "internal",
+      "path": "notes/matching/weightit-entropy-balancing-notes.qmd",
+      "incoming": 2,
+      "outgoing": 7,
+      "degree": 8
+    },
+    {
+      "id": "notes/matching/lalonde-background-appendix.qmd",
+      "label": "LaLonde Background Appendix",
+      "kind": "internal",
+      "path": "notes/matching/lalonde-background-appendix.qmd",
+      "incoming": 2,
+      "outgoing": 3,
+      "degree": 4
+    },
+    {
+      "id": "notes/matching/matching-and-weighting.qmd",
+      "label": "Matching and Weighting",
+      "kind": "internal",
+      "path": "notes/matching/matching-and-weighting.qmd",
+      "incoming": 4,
+      "outgoing": 0,
+      "degree": 4
+    },
+    {
+      "id": "notes/matching/mixtape-nsw-benchmark-notes.qmd",
+      "label": "Mixtape Notes: NSW Benchmark From Section 5.3.4 Onward",
+      "kind": "internal",
+      "path": "notes/matching/mixtape-nsw-benchmark-notes.qmd",
+      "incoming": 3,
+      "outgoing": 1,
+      "degree": 4
+    },
+    {
+      "id": "notes/index.qmd",
+      "label": "Notes",
+      "kind": "internal",
+      "path": "notes/index.qmd",
+      "incoming": 0,
+      "outgoing": 15,
+      "degree": 15
+    },
+    {
+      "id": "notes/matching/gertler-matching-notes.qmd",
+      "label": "Notes on Gertler et al.: Matching",
+      "kind": "internal",
+      "path": "notes/matching/gertler-matching-notes.qmd",
+      "incoming": 1,
+      "outgoing": 0,
+      "degree": 1
+    },
+    {
+      "id": "notes/matching/effectbook-matching-notes.qmd",
+      "label": "Notes on The Effect: Matching",
+      "kind": "internal",
+      "path": "notes/matching/effectbook-matching-notes.qmd",
+      "incoming": 1,
+      "outgoing": 1,
+      "degree": 2
+    },
+    {
+      "id": "notes/matching/mixtape-matching-subclassification-notes.qmd",
+      "label": "Notes on The Mixtape: Matching and Subclassification",
+      "kind": "internal",
+      "path": "notes/matching/mixtape-matching-subclassification-notes.qmd",
+      "incoming": 1,
+      "outgoing": 1,
+      "degree": 2
+    },
+    {
+      "id": "notes/other-methods/index.qmd",
+      "label": "Other Methods",
+      "kind": "internal",
+      "path": "notes/other-methods/index.qmd",
+      "incoming": 1,
+      "outgoing": 4,
+      "degree": 5
+    },
+    {
+      "id": "notes/other-methods/regression-discontinuity.qmd",
+      "label": "Regression Discontinuity",
+      "kind": "internal",
+      "path": "notes/other-methods/regression-discontinuity.qmd",
+      "incoming": 2,
+      "outgoing": 0,
+      "degree": 2
+    },
+    {
+      "id": "notes/scm/synthetic-control.qmd",
+      "label": "Synthetic Control",
+      "kind": "internal",
+      "path": "notes/scm/synthetic-control.qmd",
+      "incoming": 1,
+      "outgoing": 0,
+      "degree": 1
+    },
+    {
+      "id": "notes/scm/synthetic-control-sources.qmd",
+      "label": "Synthetic Control Sources",
+      "kind": "internal",
+      "path": "notes/scm/synthetic-control-sources.qmd",
+      "incoming": 1,
+      "outgoing": 0,
+      "degree": 1
+    },
+    {
+      "id": "notes/scm/synthetic-control-teaching-data.qmd",
+      "label": "Synthetic Control Teaching Data",
+      "kind": "internal",
+      "path": "notes/scm/synthetic-control-teaching-data.qmd",
+      "incoming": 1,
+      "outgoing": 0,
+      "degree": 1
+    }
+  ],
+  "edges": [
+    {
+      "source": "notes/index.qmd",
+      "target": "notes/matching/effectbook-matching-notes.qmd",
+      "kind": "internal"
+    },
+    {
+      "source": "notes/index.qmd",
+      "target": "notes/matching/gertler-matching-notes.qmd",
+      "kind": "internal"
+    },
+    {
+      "source": "notes/index.qmd",
+      "target": "notes/matching/lalonde-background-appendix.qmd",
+      "kind": "internal"
+    },
+    {
+      "source": "notes/index.qmd",
+      "target": "notes/matching/matching-and-weighting.qmd",
+      "kind": "internal"
+    },
+    {
+      "source": "notes/index.qmd",
+      "target": "notes/matching/mixtape-matching-subclassification-notes.qmd",
+      "kind": "internal"
+    },
+    {
+      "source": "notes/index.qmd",
+      "target": "notes/matching/mixtape-nsw-benchmark-notes.qmd",
+      "kind": "internal"
+    },
+    {
+      "source": "notes/index.qmd",
+      "target": "notes/matching/weightit-entropy-balancing-notes.qmd",
+      "kind": "internal"
+    },
+    {
+      "source": "notes/index.qmd",
+      "target": "notes/other-methods/choosing-a-method.qmd",
+      "kind": "internal"
+    },
+    {
+      "source": "notes/index.qmd",
+      "target": "notes/other-methods/comparing-methods.qmd",
+      "kind": "internal"
+    },
+    {
+      "source": "notes/index.qmd",
+      "target": "notes/other-methods/difference-in-differences.qmd",
+      "kind": "internal"
+    },
+    {
+      "source": "notes/index.qmd",
+      "target": "notes/other-methods/index.qmd",
+      "kind": "internal"
+    },
+    {
+      "source": "notes/index.qmd",
+      "target": "notes/other-methods/regression-discontinuity.qmd",
+      "kind": "internal"
+    },
+    {
+      "source": "notes/index.qmd",
+      "target": "notes/scm/synthetic-control-sources.qmd",
+      "kind": "internal"
+    },
+    {
+      "source": "notes/index.qmd",
+      "target": "notes/scm/synthetic-control-teaching-data.qmd",
+      "kind": "internal"
+    },
+    {
+      "source": "notes/index.qmd",
+      "target": "notes/scm/synthetic-control.qmd",
+      "kind": "internal"
+    },
+    {
+      "source": "notes/matching/effectbook-matching-notes.qmd",
+      "target": "https://theeffectbook.net/ch-Matching.html",
+      "kind": "external"
+    },
+    {
+      "source": "notes/matching/lalonde-background-appendix.qmd",
+      "target": "notes/matching/matching-and-weighting.qmd",
+      "kind": "internal"
+    },
+    {
+      "source": "notes/matching/lalonde-background-appendix.qmd",
+      "target": "notes/matching/mixtape-nsw-benchmark-notes.qmd",
+      "kind": "internal"
+    },
+    {
+      "source": "notes/matching/lalonde-background-appendix.qmd",
+      "target": "notes/matching/weightit-entropy-balancing-notes.qmd",
+      "kind": "internal"
+    },
+    {
+      "source": "notes/matching/mixtape-matching-subclassification-notes.qmd",
+      "target": "https://mixtape.scunning.com/05-matching_and_subclassification",
+      "kind": "external"
+    },
+    {
+      "source": "notes/matching/mixtape-nsw-benchmark-notes.qmd",
+      "target": "notes/matching/matching-and-weighting.qmd",
+      "kind": "internal"
+    },
+    {
+      "source": "notes/matching/weightit-entropy-balancing-notes.qmd",
+      "target": "https://ngreifer.github.io/WeightIt/articles/WeightIt.html",
+      "kind": "external"
+    },
+    {
+      "source": "notes/matching/weightit-entropy-balancing-notes.qmd",
+      "target": "https://ngreifer.github.io/WeightIt/reference/glm_weightit.html",
+      "kind": "external"
+    },
+    {
+      "source": "notes/matching/weightit-entropy-balancing-notes.qmd",
+      "target": "https://ngreifer.github.io/WeightIt/reference/method_ebal.html",
+      "kind": "external"
+    },
+    {
+      "source": "notes/matching/weightit-entropy-balancing-notes.qmd",
+      "target": "https://ngreifer.github.io/WeightIt/reference/weightit.html",
+      "kind": "external"
+    },
+    {
+      "source": "notes/matching/weightit-entropy-balancing-notes.qmd",
+      "target": "notes/matching/lalonde-background-appendix.qmd",
+      "kind": "internal"
+    },
+    {
+      "source": "notes/matching/weightit-entropy-balancing-notes.qmd",
+      "target": "notes/matching/matching-and-weighting.qmd",
+      "kind": "internal"
+    },
+    {
+      "source": "notes/matching/weightit-entropy-balancing-notes.qmd",
+      "target": "notes/matching/mixtape-nsw-benchmark-notes.qmd",
+      "kind": "internal"
+    },
+    {
+      "source": "notes/other-methods/index.qmd",
+      "target": "notes/other-methods/choosing-a-method.qmd",
+      "kind": "internal"
+    },
+    {
+      "source": "notes/other-methods/index.qmd",
+      "target": "notes/other-methods/comparing-methods.qmd",
+      "kind": "internal"
+    },
+    {
+      "source": "notes/other-methods/index.qmd",
+      "target": "notes/other-methods/difference-in-differences.qmd",
+      "kind": "internal"
+    },
+    {
+      "source": "notes/other-methods/index.qmd",
+      "target": "notes/other-methods/regression-discontinuity.qmd",
+      "kind": "internal"
+    }
+  ]
+}

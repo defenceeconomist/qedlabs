@@ -1,20 +1,23 @@
 project:
   type: website
   output-dir: _site
+  render:
+    - index.qmd
+    - notes/index.qmd
+    - notes/**/*.qmd
+    - labs/*.qmd
   pre-render:
-    - python3 scripts/extract_link_graph.py
+    - python3 scripts/extract_link_graph.py --output data/notes_link_graph_payload.json --include-prefix notes/
   resources:
-    - data/link_graph_payload.js
+    - data/notes_link_graph_payload.json
     - assets/**
 
 website:
-  title: "QED Labs"
+  title: "Quasi-Experimental Design Labs"
   navbar:
     left:
       - href: notes/index.qmd
         text: Notes
-      - href: reports/index.qmd
-        text: Reports
       - href: labs/index.qmd
         text: Labs
   sidebar:
@@ -26,50 +29,38 @@ website:
         - href: notes/index.qmd
           text: Notes Overview
         - section: Matching
+          href: notes/matching/matching-and-weighting.qmd
           contents:
-            - href: notes/matching-and-weighting.qmd
-              text: Matching and Weighting Overview
-            - href: notes/lalonde-background-appendix.qmd
+            - href: notes/matching/lalonde-background-appendix.qmd
               text: LaLonde Background Appendix
-            - href: notes/weightit-entropy-balancing-notes.qmd
+            - href: notes/matching/weightit-entropy-balancing-notes.qmd
               text: WeightIt Entropy Balancing
-            - href: notes/mixtape-matching-subclassification-notes.qmd
+            - href: notes/matching/mixtape-matching-subclassification-notes.qmd
               text: Mixtape Matching and Subclassification
-            - href: notes/mixtape-nsw-benchmark-notes.qmd
+            - href: notes/matching/mixtape-nsw-benchmark-notes.qmd
               text: Mixtape NSW Benchmark
-            - href: notes/effectbook-matching-notes.qmd
+            - href: notes/matching/effectbook-matching-notes.qmd
               text: The Effect Matching
-            - href: notes/gertler-matching-notes.qmd
+            - href: notes/matching/gertler-matching-notes.qmd
               text: Gertler Matching
         - section: Synthetic Control
+          href: notes/scm/synthetic-control.qmd
           contents:
-            - href: notes/synthetic-control.qmd
-              text: Synthetic Control
-            - href: notes/synthetic-control-teaching-data.qmd
+            - href: notes/scm/synthetic-control-teaching-data.qmd
               text: Synthetic Control Teaching Data
-            - href: notes/synthetic-control-sources.qmd
+            - href: notes/scm/synthetic-control-sources.qmd
               text: Synthetic Control Sources
         - section: Other Methods
+          href: notes/other-methods/index.qmd
           contents:
-            - href: notes/difference-in-differences.qmd
+            - href: notes/other-methods/difference-in-differences.qmd
               text: Difference-in-Differences
-            - href: notes/regression-discontinuity.qmd
+            - href: notes/other-methods/regression-discontinuity.qmd
               text: Regression Discontinuity
-            - href: notes/comparing-methods.qmd
+            - href: notes/other-methods/comparing-methods.qmd
               text: Comparing Methods
-            - href: notes/choosing-a-method.qmd
+            - href: notes/other-methods/choosing-a-method.qmd
               text: Choosing a Method
-    - id: reports
-      title: "Reports"
-      style: docked
-      search: true
-      contents:
-        - href: reports/index.qmd
-          text: Reports Overview
-        - href: reports/matching-report.qmd
-          text: Matching Report Draft
-        - href: reports/synthetic-control-report.qmd
-          text: Synthetic Control Report Draft
     - id: labs
       title: "Labs"
       style: docked
@@ -98,6 +89,7 @@ format:
   html:
     theme: cosmo
     css:
+      - assets/css/site.css
       - assets/css/link_network.css
     toc: true
     toc-depth: 3

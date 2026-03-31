@@ -1,31 +1,92 @@
 ---
 title: "Notes"
+page-layout: full
+toc: false
 ---
 
-This section collects the method notes and source-based reading notes that support the rest of the site.
+<div class="landing-stack">
 
-## Matching
+::: {.landing-hero}
+<span class="hero-eyebrow">Method notes</span>
 
-Use this group when you want the conceptual and literature background for matching and weighting:
+# Start with the overview, then drop into sources
 
-- [Matching and Weighting](matching-and-weighting.qmd) for the high-level method overview
-- [LaLonde Background Appendix](lalonde-background-appendix.qmd) for benchmark context
-- [Entropy-Based Weighting with WeightIt](weightit-entropy-balancing-notes.qmd) for weighting-specific design notes
-- the source notes on *The Mixtape*, *The Effect*, and Gertler for detailed chapter-by-chapter recall
+This section collects the method notes and source-based reading pages that support the rest of the site. Use it to orient to a design, compare alternatives, and then move into specific source notes only when you need more detail.
 
-## Synthetic Control
+<div class="page-metadata">
+  <span>Method overviews</span>
+  <span>Source notes</span>
+  <span>Notes map</span>
+</div>
+:::
 
-Use this group for synthetic-control concepts, teaching data, and source mapping:
+## Main Sections {#main-sections .section-heading}
 
-- [Synthetic Control](synthetic-control.qmd)
-- [Synthetic Control Teaching Data](synthetic-control-teaching-data.qmd)
-- [Synthetic Control Sources](synthetic-control-sources.qmd)
+<p class="section-intro">The section headers in the sidebar now serve as the overview pages for each method group.</p>
 
-## Other Methods
+::: {.section-grid}
+::: {.section-card}
+<span class="page-badge badge-overview">Overview</span>
 
-The remaining notes cover the broader quasi-experimental toolkit:
+### [Matching](matching/matching-and-weighting.qmd)
 
-- [Difference-in-Differences](difference-in-differences.qmd)
-- [Regression Discontinuity](regression-discontinuity.qmd)
-- [Comparing Methods](comparing-methods.qmd)
-- [Choosing a Method](choosing-a-method.qmd)
+Use this route for matching and weighting concepts, assumptions, diagnostics, and source-specific notes.
+:::
+
+::: {.section-card}
+<span class="page-badge badge-overview">Overview</span>
+
+### [Synthetic Control](scm/synthetic-control.qmd)
+
+Use this route for synthetic-control concepts, teaching data, and source mapping.
+:::
+
+::: {.section-card}
+<span class="page-badge badge-overview">Overview</span>
+
+### [Other Methods](other-methods/index.qmd)
+
+Use this route for difference-in-differences, regression discontinuity, and cross-method comparison.
+:::
+:::
+
+## Notes Map {#notes-map .section-heading}
+
+<p class="section-intro">Internal pages are limited to the Notes section. External nodes show the sources those notes link to.</p>
+
+
+```{=html}
+<div id="link-graph-shell" class="link-graph-shell graph-section" data-graph-src="../data/notes_link_graph_payload.json">
+  <div class="link-graph-controls" role="group" aria-label="Link graph controls">
+    <label class="link-graph-search" for="link-graph-search">
+      <span class="link-graph-control-label">Find node</span>
+      <input id="link-graph-search" type="search" placeholder="Search by label or path" list="link-graph-node-options" />
+    </label>
+    <label class="link-graph-toggle" for="toggle-internal">
+      <input id="toggle-internal" type="checkbox" checked />
+      <span>Notes pages</span>
+    </label>
+    <label class="link-graph-toggle" for="toggle-external">
+      <input id="toggle-external" type="checkbox" checked />
+      <span>External sources</span>
+    </label>
+    <button id="reset-link-graph" class="link-graph-button link-graph-button-secondary" type="button">Reset view</button>
+    <datalist id="link-graph-node-options"></datalist>
+  </div>
+  <div class="link-graph-legend">
+    <span class="link-graph-legend-item link-graph-legend-item-internal"><span class="kind-pill internal">internal</span> Notes pages</span>
+    <span class="link-graph-legend-item link-graph-legend-item-external"><span class="kind-pill external">external</span> Linked external sources</span>
+    <span class="link-graph-legend-note">Hover or click a node to highlight its links, then drag to reposition or scroll to zoom.</span>
+  </div>
+  <div id="link-graph-root" class="link-graph-root">
+    <div class="link-graph-canvas-wrap">
+      <div id="link-graph-svg" class="link-graph-svg" role="img" aria-label="Interactive Notes section map"></div>
+    </div>
+  </div>
+</div>
+
+<script src="../assets/vendor/d3.min.js"></script>
+<script src="../assets/js/link_network.js"></script>
+```
+
+</div>
