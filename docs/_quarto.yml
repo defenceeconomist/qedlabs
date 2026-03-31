@@ -31,6 +31,10 @@ website:
         - section: Matching and Weighting
           href: notes/matching/matching-and-weighting.qmd
           contents:
+            - href: notes/matching/matching-teaching-data.qmd
+              text: Matching Teaching Data
+            - href: notes/matching/matching-and-weighting-sources.qmd
+              text: Matching and Weighting Sources
             - href: notes/matching/mixtape-matching-subclassification-notes.qmd
               text: Mixtape Matching and Subclassification
             - href: notes/matching/effectbook-matching-notes.qmd

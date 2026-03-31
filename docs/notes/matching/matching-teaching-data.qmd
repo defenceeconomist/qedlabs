@@ -1,0 +1,114 @@
+---
+title: "Matching Teaching Data"
+---
+
+# Scope
+
+This note lists datasets that are especially useful for teaching matching and weighting, based on the benchmark literature, package documentation, and the current lab materials in the repo [@lalonde1986evaluating; @dehejia1999causal; @imbens2025comparingexperimentalnonexperimentalmethods; @ho2011matchit; @greifer2025weightit].
+
+# Short Answer
+
+If you want one dataset for a first matching lesson, use `MatchIt::lalonde`. It is small enough to inspect directly, central to the benchmark literature, and already supports exact matching, `CEM`, and weighting workflows in R [@lalonde1986evaluating; @dehejia1999causal; @ho2011matchit].
+
+If you want a compact teaching sequence, use:
+
+1. `MatchIt::lalonde` for the first matching and weighting lesson.
+2. `causaldata::black_politicians` for a second exercise on design transparency and overlap.
+3. `causaldata::nsw_mixtape` plus `causaldata::cps_mixtape` for a benchmark-validation exercise against an experimental reference.
+
+# Best Beginner Dataset
+
+## `MatchIt::lalonde`
+
+This is the cleanest beginner dataset I found for teaching matching and weighting in R [@lalonde1986evaluating; @dehejia1999causal; @ho2011matchit].
+
+- Substantive case: job training, earnings, and the classic LaLonde benchmark problem.
+- Outcome: `re78`, with familiar pre-treatment earnings and demographic covariates.
+- Why it teaches well: raw imbalance is obvious, overlap is discussable, and the tradeoff between balance, retention, and weight concentration appears quickly.
+- Why it is especially useful: the same data work for exact matching, coarsened exact matching, nearest-neighbor matching, and entropy balancing inside one workflow.
+
+This is the strongest first teaching dataset because it links directly to the benchmark literature rather than only to package documentation [@lalonde1986evaluating; @dehejia1999causal; @imbens2025comparingexperimentalnonexperimentalmethods].
+
+# Strong Follow-On Datasets
+
+## `causaldata::black_politicians`
+
+This is a strong second dataset once students understand the mechanics of matching and need a more context-specific exercise. In the repo it is already used in the [Black Politicians Lab](../../labs/black-politicians-lab.qmd).
+
+- Substantive case: legislator responsiveness and district characteristics.
+- Why it teaches well: it supports a clear discussion of what comparability would mean when the focal comparison is observational rather than randomized.
+- Best use: showing how exact matching, `CEM`, and entropy balancing behave when overlap is imperfect and treatment is an observed attribute rather than a clean policy assignment.
+
+This is especially useful when the lesson is less about benchmark recovery and more about design judgement.
+
+## `causaldata::nsw_mixtape` and `causaldata::cps_mixtape`
+
+This pair is the best dataset combination if the teaching goal is benchmark validation rather than first exposure. In the repo it powers the [NSW and CPS Benchmark Lab](../../labs/nsw-cps-benchmark-lab.qmd).
+
+- Substantive case: experimental NSW treatment sample compared with observational CPS controls.
+- Why it teaches well: students can compare a raw observational estimate and adjusted observational estimates against an experimental reference effect.
+- Best use: showing how weighting and matching should be judged by benchmark gap, overlap, retention, and diagnostics together [@lalonde1986evaluating; @dehejia1999causal; @imbens2025comparingexperimentalnonexperimentalmethods].
+
+This is more demanding than `lalonde`, but it is the best benchmark-focused teaching exercise in the current materials.
+
+# What To Use For Different Teaching Goals
+
+## If The Goal Is To Teach The First Matching Workflow
+
+Use:
+
+- `MatchIt::lalonde`
+
+This is still the best first dataset because it keeps the design problem simple enough to see directly.
+
+## If The Goal Is To Teach Benchmark Logic
+
+Use:
+
+- `MatchIt::lalonde`
+- `causaldata::nsw_mixtape`
+- `causaldata::cps_mixtape`
+
+That sequence moves from the classic benchmark dataset to a fuller experimental-versus-observational comparison exercise.
+
+## If The Goal Is To Teach Design Tradeoffs Beyond One Canonical Dataset
+
+Use:
+
+- `MatchIt::lalonde`
+- `causaldata::black_politicians`
+
+That gives one canonical benchmark case and one second dataset where overlap, estimand drift, and design transparency matter more than benchmark recovery.
+
+## If The Goal Is To Teach Weighting Specifically
+
+Use:
+
+- `MatchIt::lalonde` with `WeightIt`
+- `causaldata::black_politicians` with `WeightIt`
+
+These are the cleanest routes for teaching entropy balancing and effective sample size checks because control-side weight concentration is easy to inspect [@greifer2025weightit; @hainmueller2012entropy].
+
+# Recommended Teaching Sequence
+
+For a short workshop or note series, I would use the following order:
+
+1. `MatchIt::lalonde` to teach the core matching and weighting workflow.
+2. `causaldata::black_politicians` to stress-test the same workflow on a different design problem.
+3. `causaldata::nsw_mixtape` plus `causaldata::cps_mixtape` to teach benchmark recovery and validation against experimental evidence.
+
+# Minimal R Pointers
+
+```r
+library(MatchIt)
+data("lalonde", package = "MatchIt")
+
+library(causaldata)
+data("black_politicians")
+data("nsw_mixtape")
+data("cps_mixtape")
+```
+
+# Bottom Line
+
+For teaching matching and weighting, `MatchIt::lalonde` remains the best single dataset because it is canonical, compact, and benchmark-rich. `causaldata::black_politicians` is the best follow-on dataset for teaching design judgement beyond the standard benchmark, and `causaldata::nsw_mixtape` plus `causaldata::cps_mixtape` are the best next step once the lesson shifts from “how matching works” to “how observational adjustment should be validated against better evidence” [@lalonde1986evaluating; @dehejia1999causal; @imbens2025comparingexperimentalnonexperimentalmethods].

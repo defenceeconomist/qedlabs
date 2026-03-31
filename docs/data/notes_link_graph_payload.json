@@ -73,9 +73,9 @@
       "title": "Bias-Corrected Matching Estimators for Average Treatment Effects",
       "id": "cite:abadie2011biascorrected",
       "kind": "external",
-      "incoming": 2,
+      "incoming": 3,
       "outgoing": 0,
-      "degree": 2
+      "degree": 3
     },
     {
       "label": "california_prop99: California Proposition 99",
@@ -95,9 +95,9 @@
       "title": "Causal Effects in Non-Experimental Studies: Re-Evaluating the Evaluation of Training Programs",
       "id": "cite:dehejia1999causal",
       "kind": "external",
-      "incoming": 2,
+      "incoming": 4,
       "outgoing": 0,
-      "degree": 2
+      "degree": 4
     },
     {
       "label": "Causal Inference without Balance Checking:...",
@@ -106,9 +106,9 @@
       "title": "Causal Inference without Balance Checking: Coarsened Exact Matching",
       "id": "cite:iacus2012cem",
       "kind": "external",
-      "incoming": 1,
+      "incoming": 2,
       "outgoing": 0,
-      "degree": 1
+      "degree": 2
     },
     {
       "label": "Chapter 3 Evaluation methods",
@@ -117,9 +117,9 @@
       "title": "Chapter 3 Evaluation methods",
       "id": "cite:ch3evaluation",
       "kind": "external",
-      "incoming": 1,
+      "incoming": 2,
       "outgoing": 0,
-      "degree": 1
+      "degree": 2
     },
     {
       "label": "Chapter 6. Regression Discontinuity Design",
@@ -150,9 +150,9 @@
       "title": "Chapter 8. Matching",
       "id": "cite:gertler2010ch8matching",
       "kind": "external",
-      "incoming": 1,
+      "incoming": 2,
       "outgoing": 0,
-      "degree": 1
+      "degree": 2
     },
     {
       "label": "Comparative Politics and the Synthetic Cont...",
@@ -183,9 +183,9 @@
       "title": "Comparing Experimental and Nonexperimental Methods: What Lessons Have We Learned Four Decades After LaLonde (1986)?",
       "id": "cite:imbens2025comparingexperimentalnonexperimentalmethods",
       "kind": "external",
-      "incoming": 2,
+      "incoming": 4,
       "outgoing": 0,
-      "degree": 2
+      "degree": 4
     },
     {
       "label": "Differences-in-differences",
@@ -216,9 +216,9 @@
       "title": "Entropy Balancing for Causal Effects: A Multivariate Reweighting Method to Produce Balanced Samples in Observational Studies",
       "id": "cite:hainmueller2012entropy",
       "kind": "external",
-      "incoming": 2,
+      "incoming": 4,
       "outgoing": 0,
-      "degree": 2
+      "degree": 4
     },
     {
       "label": "Evaluating the Econometric Evaluations of T...",
@@ -227,9 +227,9 @@
       "title": "Evaluating the Econometric Evaluations of Training Programs with Experimental Data",
       "id": "cite:lalonde1986evaluating",
       "kind": "external",
-      "incoming": 2,
+      "incoming": 4,
       "outgoing": 0,
-      "degree": 2
+      "degree": 4
     },
     {
       "label": "Evaluation of Clear, Hold, Build: A Local R...",
@@ -326,9 +326,9 @@
       "title": "Matching and subclassification",
       "id": "cite:cunningham2018matching",
       "kind": "external",
-      "incoming": 1,
+      "incoming": 2,
       "outgoing": 0,
-      "degree": 1
+      "degree": 2
     },
     {
       "label": "Mixtape Sessions: Causal Inference 3",
@@ -743,9 +743,9 @@
       "title": "WeightIt: Weighting for Covariate Balance in Observational Studies",
       "id": "cite:greifer2025weightit",
       "kind": "external",
-      "incoming": 1,
+      "incoming": 3,
       "outgoing": 0,
-      "degree": 1
+      "degree": 3
     },
     {
       "label": "{MatchIt}: Nonparametric Preprocessing for...",
@@ -754,9 +754,9 @@
       "title": "{MatchIt}: Nonparametric Preprocessing for Parametric Causal Inference",
       "id": "cite:ho2011matchit",
       "kind": "external",
-      "incoming": 1,
+      "incoming": 3,
       "outgoing": 0,
-      "degree": 1
+      "degree": 3
     },
     {
       "id": "notes/other-methods/choosing-a-method.qmd",
@@ -813,13 +813,31 @@
       "degree": 14
     },
     {
+      "id": "notes/matching/matching-and-weighting-sources.qmd",
+      "label": "Matching and Weighting Sources",
+      "kind": "internal",
+      "path": "notes/matching/matching-and-weighting-sources.qmd",
+      "incoming": 1,
+      "outgoing": 11,
+      "degree": 12
+    },
+    {
+      "id": "notes/matching/matching-teaching-data.qmd",
+      "label": "Matching Teaching Data",
+      "kind": "internal",
+      "path": "notes/matching/matching-teaching-data.qmd",
+      "incoming": 1,
+      "outgoing": 6,
+      "degree": 7
+    },
+    {
       "id": "notes/index.qmd",
       "label": "Notes",
       "kind": "internal",
       "path": "notes/index.qmd",
       "incoming": 0,
-      "outgoing": 14,
-      "degree": 14
+      "outgoing": 16,
+      "degree": 16
     },
     {
       "id": "notes/matching/gertler-matching-notes.qmd",
@@ -912,7 +930,17 @@
     },
     {
       "source": "notes/index.qmd",
+      "target": "notes/matching/matching-and-weighting-sources.qmd",
+      "kind": "internal"
+    },
+    {
+      "source": "notes/index.qmd",
       "target": "notes/matching/matching-and-weighting.qmd",
+      "kind": "internal"
+    },
+    {
+      "source": "notes/index.qmd",
+      "target": "notes/matching/matching-teaching-data.qmd",
       "kind": "internal"
     },
     {
@@ -1001,6 +1029,61 @@
       "kind": "internal"
     },
     {
+      "source": "notes/matching/matching-and-weighting-sources.qmd",
+      "target": "cite:abadie2011biascorrected",
+      "kind": "external"
+    },
+    {
+      "source": "notes/matching/matching-and-weighting-sources.qmd",
+      "target": "cite:ch3evaluation",
+      "kind": "external"
+    },
+    {
+      "source": "notes/matching/matching-and-weighting-sources.qmd",
+      "target": "cite:cunningham2018matching",
+      "kind": "external"
+    },
+    {
+      "source": "notes/matching/matching-and-weighting-sources.qmd",
+      "target": "cite:dehejia1999causal",
+      "kind": "external"
+    },
+    {
+      "source": "notes/matching/matching-and-weighting-sources.qmd",
+      "target": "cite:gertler2010ch8matching",
+      "kind": "external"
+    },
+    {
+      "source": "notes/matching/matching-and-weighting-sources.qmd",
+      "target": "cite:greifer2025weightit",
+      "kind": "external"
+    },
+    {
+      "source": "notes/matching/matching-and-weighting-sources.qmd",
+      "target": "cite:hainmueller2012entropy",
+      "kind": "external"
+    },
+    {
+      "source": "notes/matching/matching-and-weighting-sources.qmd",
+      "target": "cite:ho2011matchit",
+      "kind": "external"
+    },
+    {
+      "source": "notes/matching/matching-and-weighting-sources.qmd",
+      "target": "cite:iacus2012cem",
+      "kind": "external"
+    },
+    {
+      "source": "notes/matching/matching-and-weighting-sources.qmd",
+      "target": "cite:imbens2025comparingexperimentalnonexperimentalmethods",
+      "kind": "external"
+    },
+    {
+      "source": "notes/matching/matching-and-weighting-sources.qmd",
+      "target": "cite:lalonde1986evaluating",
+      "kind": "external"
+    },
+    {
       "source": "notes/matching/matching-and-weighting.qmd",
       "target": "cite:abadie2011biascorrected",
       "kind": "external"
@@ -1052,6 +1135,36 @@
     },
     {
       "source": "notes/matching/matching-and-weighting.qmd",
+      "target": "cite:lalonde1986evaluating",
+      "kind": "external"
+    },
+    {
+      "source": "notes/matching/matching-teaching-data.qmd",
+      "target": "cite:dehejia1999causal",
+      "kind": "external"
+    },
+    {
+      "source": "notes/matching/matching-teaching-data.qmd",
+      "target": "cite:greifer2025weightit",
+      "kind": "external"
+    },
+    {
+      "source": "notes/matching/matching-teaching-data.qmd",
+      "target": "cite:hainmueller2012entropy",
+      "kind": "external"
+    },
+    {
+      "source": "notes/matching/matching-teaching-data.qmd",
+      "target": "cite:ho2011matchit",
+      "kind": "external"
+    },
+    {
+      "source": "notes/matching/matching-teaching-data.qmd",
+      "target": "cite:imbens2025comparingexperimentalnonexperimentalmethods",
+      "kind": "external"
+    },
+    {
+      "source": "notes/matching/matching-teaching-data.qmd",
       "target": "cite:lalonde1986evaluating",
       "kind": "external"
     },

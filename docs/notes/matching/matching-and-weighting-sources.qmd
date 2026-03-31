@@ -1,0 +1,161 @@
+---
+title: "Matching and Weighting Sources"
+---
+
+# Scope
+
+This note is a source map for matching and weighting reading. It is organized around the kinds of sources most worth taking notes on: overviews, benchmark papers, method papers, and software manuals [@cunningham2018matching; @gertler2010ch8matching; @ch3evaluation; @lalonde1986evaluating; @dehejia1999causal; @abadie2011biascorrected; @iacus2012cem; @hainmueller2012entropy; @ho2011matchit; @greifer2025weightit; @imbens2025comparingexperimentalnonexperimentalmethods].
+
+# Start Here
+
+If you want a compact starting stack, I would begin with these four:
+
+1. Cunningham, *Causal Inference: The Mixtape*, for the best intuition-first overview [@cunningham2018matching].
+2. Gertler et al., *Impact Evaluation in Practice*, for the clearest evaluator-facing workflow [@gertler2010ch8matching].
+3. LaLonde (1986) and Dehejia and Wahba (1999), because the benchmark debate still structures how matching designs are judged [@lalonde1986evaluating; @dehejia1999causal].
+4. One implementation pair: the `MatchIt` paper for matching workflows and the `WeightIt` package manual for weighting workflows [@ho2011matchit; @greifer2025weightit].
+
+That combination gives you design logic, benchmark discipline, and practical software entry points.
+
+# Textbooks And Broad Overviews
+
+## Cunningham (2018), *Causal Inference: The Mixtape*, chapter on matching and subclassification
+
+This is the best single overview if the goal is to understand what matching is trying to do conceptually and why it is a design-stage method rather than a button-click exercise [@cunningham2018matching].
+
+Why it is worth notes:
+
+- it explains matching in causal-inference language rather than only as an optimization problem
+- it is shorter and easier to absorb quickly than the formal estimator papers
+- it connects naturally to the benchmark examples used elsewhere in the repo
+
+## Gertler et al. (2010), *Impact Evaluation in Practice*, chapter on matching
+
+This is the strongest practical overview if the audience is evaluator-facing rather than econometrics-facing [@gertler2010ch8matching].
+
+Why it is worth notes:
+
+- it explains matching as constructing an artificial comparison group
+- it emphasizes overlap, covariate choice, and unobserved-confounding risk
+- it is a good bridge from basic matching to matched DiD and synthetic control
+
+## Magenta Book, chapter on evaluation methods
+
+This is not a deep matching source, but it is useful if the notes need a UK-government framing of where matching and weighting sit among quasi-experimental methods [@ch3evaluation].
+
+Why it is worth notes:
+
+- it places matching and weighting inside a broader method-choice workflow
+- it is useful for evaluator-facing explanation rather than technical depth
+- it connects method selection to practical policy evaluation
+
+# Benchmark Papers And Reassessments
+
+## LaLonde (1986)
+
+This is the canonical benchmark source for thinking seriously about observational adjustment [@lalonde1986evaluating].
+
+Why it is worth notes:
+
+- it made the benchmark problem concrete rather than abstract
+- it shows why naive nonexperimental adjustment can fail badly
+- it still anchors later debates about whether matching actually recovers credible treatment effects
+
+## Dehejia and Wahba (1999)
+
+This is the classic paper for the “design can improve observational estimates” side of the LaLonde debate [@dehejia1999causal].
+
+Why it is worth notes:
+
+- it made propensity-score-based design central to the benchmark literature
+- it shows how covariate choice and overlap discipline affect results
+- it is a useful entry point into the post-LaLonde reanalysis tradition
+
+## Imbens and Xu (2025)
+
+This is the best recent reassessment if the goal is to understand what the LaLonde benchmark still teaches now [@imbens2025comparingexperimentalnonexperimentalmethods].
+
+Why it is worth notes:
+
+- it summarizes four decades of matching and weighting debates
+- it keeps the focus on overlap, validation, and design assumptions rather than estimator branding
+- it is especially useful for notes on what modern practice should still learn from benchmark exercises
+
+# Matching-Specific Method Papers
+
+## Abadie and Imbens (2011)
+
+This is the key paper if your notes need to move from intuition to the statistical behavior of matching estimators [@abadie2011biascorrected].
+
+Why it is worth notes:
+
+- it clarifies why bias correction matters for matching estimators
+- it helps distinguish simple nearest-neighbor practice from more careful estimation
+- it is important once the notes need to say more than “find similar units”
+
+## Iacus, King, and Porro (2012)
+
+This is the main source to read if you want a serious note on coarsened exact matching [@iacus2012cem].
+
+Why it is worth notes:
+
+- it gives `CEM` its clearest methodological statement
+- it is useful for explaining why coarsening can make matching more transparent
+- it helps separate exact-style design logic from propensity-score workflows
+
+# Weighting-Specific Method Papers
+
+## Hainmueller (2012)
+
+This is the key entropy-balancing paper [@hainmueller2012entropy].
+
+Why it is worth notes:
+
+- it states the method clearly as a balance-constrained reweighting problem
+- it is the main source if you want to explain weighting without reducing everything to propensity scores
+- it is especially relevant for ATT-style “build a weighted control group” workflows
+
+# Software Manuals And Implementation Sources
+
+## `MatchIt`
+
+The foundational implementation source for matching workflows in R is the `MatchIt` paper [@ho2011matchit].
+
+Take notes on:
+
+- matching as preprocessing before outcome analysis
+- exact matching, nearest-neighbor matching, and subclassification workflows
+- the role of balance diagnostics rather than estimator-brand loyalty
+
+## `WeightIt`
+
+Use `WeightIt` when your notes need to cover weighting workflows in a unified interface [@greifer2025weightit].
+
+Take notes on:
+
+- estimands such as `ATT`, `ATE`, and `ATC`
+- inverse probability weighting, overlap weighting, and entropy balancing
+- effective sample size and weight concentration diagnostics
+
+# Suggested Note-Taking Order
+
+If you want a sequence that compounds well, use:
+
+1. Cunningham on matching and subclassification [@cunningham2018matching].
+2. Gertler et al. on matching [@gertler2010ch8matching].
+3. LaLonde (1986) and Dehejia-Wahba (1999) [@lalonde1986evaluating; @dehejia1999causal].
+4. Imbens and Xu (2025) for the modern benchmark reassessment [@imbens2025comparingexperimentalnonexperimentalmethods].
+5. `MatchIt` and Abadie-Imbens for matching implementation and estimator behavior [@ho2011matchit; @abadie2011biascorrected].
+6. Hainmueller (2012) and `WeightIt` for weighting workflows [@hainmueller2012entropy; @greifer2025weightit].
+7. Iacus, King, and Porro (2012) if you want a separate note on `CEM` [@iacus2012cem].
+
+# Bottom Line
+
+If I were deciding what to take notes on first for matching and weighting, I would prioritize four source types:
+
+- one intuition-first overview: Cunningham [@cunningham2018matching]
+- one evaluator-facing overview: Gertler et al. [@gertler2010ch8matching]
+- one benchmark thread: LaLonde, Dehejia-Wahba, and Imbens-Xu [@lalonde1986evaluating; @dehejia1999causal; @imbens2025comparingexperimentalnonexperimentalmethods]
+- one implementation pair: `MatchIt` for matching and `WeightIt` for weighting [@ho2011matchit; @greifer2025weightit]
+
+That gives you a clean path from design intuition, to benchmark discipline, to practical workflow, to specific matching and weighting implementations.
