@@ -28,21 +28,19 @@ website:
       contents:
         - href: notes/index.qmd
           text: Notes Overview
-        - section: Matching
+        - section: Matching and Weighting
           href: notes/matching/matching-and-weighting.qmd
           contents:
-            - href: notes/matching/lalonde-background-appendix.qmd
-              text: LaLonde Background Appendix
-            - href: notes/matching/weightit-entropy-balancing-notes.qmd
-              text: WeightIt Entropy Balancing
             - href: notes/matching/mixtape-matching-subclassification-notes.qmd
               text: Mixtape Matching and Subclassification
-            - href: notes/matching/mixtape-nsw-benchmark-notes.qmd
-              text: Mixtape NSW Benchmark
             - href: notes/matching/effectbook-matching-notes.qmd
               text: The Effect Matching
             - href: notes/matching/gertler-matching-notes.qmd
               text: Gertler Matching
+            - href: notes/matching/lalonde-background-appendix.qmd
+              text: LaLonde Background Appendix
+            - href: notes/matching/weightit-entropy-balancing-notes.qmd
+              text: WeightIt Entropy Balancing
         - section: Synthetic Control
           href: notes/scm/synthetic-control.qmd
           contents:

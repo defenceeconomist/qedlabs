@@ -124,7 +124,7 @@ For applied matching work, the appendix suggests five practical rules:
 ## How To Use This Appendix
 
 - Read it beside the [Matching and Weighting](matching-and-weighting.qmd) note if you want the benchmark history alongside the main method overview.
-- Use it with the [Mixtape Notes: NSW Benchmark From Section 5.3.4 Onward](mixtape-nsw-benchmark-notes.qmd) page if you want a compact worked example anchored to the benchmark logic.
+- Use it with the [NSW and CPS Benchmark Lab](../../labs/nsw-cps-benchmark-lab.qmd) page if you want a guided worked example anchored to the benchmark logic.
 - Pair it with [Entropy-Based Weighting with WeightIt](weightit-entropy-balancing-notes.qmd) if you want the historical background plus a weighting-specific design note.
 
 ## Bottom Line

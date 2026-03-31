@@ -14,6 +14,8 @@ DEFAULT_ROOT = Path(__file__).resolve().parent.parent
 EXCLUDE_PARTS = {".quarto", "_site", "site_libs", "assets", "data", "scripts"}
 MARKDOWN_LINK_RE = re.compile(r"\[[^\]]+\]\(([^)]+)\)")
 URL_RE = re.compile(r"https?://[^\s<>{}\"')]+")
+CITATION_RE = re.compile(r"(?<![\w/])@([A-Za-z0-9_:.+-]+)")
+BIB_ENTRY_RE = re.compile(r"@(?P<entry_type>[A-Za-z]+)\s*\{\s*(?P<key>[^,\s]+)\s*,", re.M)
 
 
 def parse_args() -> argparse.Namespace:
@@ -105,6 +107,15 @@ def clean_url(url: str) -> str:
     return urlunparse((parsed.scheme, parsed.netloc, parsed.path, "", parsed.query, ""))
 
 
+def clean_text(value: str) -> str:
+    compact = re.sub(r"\s+", " ", value.replace("\n", " ")).strip()
+    while len(compact) >= 2 and compact[0] == "{" and compact[-1] == "}":
+        compact = compact[1:-1].strip()
+    while len(compact) >= 2 and compact[0] == '"' and compact[-1] == '"':
+        compact = compact[1:-1].strip()
+    return compact
+
+
 def normalize_internal_target(root: Path, source_rel: Path, target: str) -> str | None:
     cleaned = target.strip().strip("<>").split("#", 1)[0].split("?", 1)[0]
     if not cleaned or cleaned.startswith(("http://", "https://", "mailto:", "javascript:")):
@@ -134,6 +145,214 @@ def extract_linkable_text(body: str) -> str:
             continue
         kept_lines.append(line)
     return "\n".join(kept_lines)
+
+
+def extract_citable_text(body: str) -> str:
+    without_fences = re.sub(r"```.*?```", "", body, flags=re.S)
+    without_inline_code = re.sub(r"`[^`]*`", "", without_fences)
+    without_scripts = re.sub(r"<script\b.*?</script>", "", without_inline_code, flags=re.S | re.I)
+    without_styles = re.sub(r"<style\b.*?</style>", "", without_scripts, flags=re.S | re.I)
+    return without_styles
+
+
+def bibliography_paths(root: Path, source_rel: Path, front: dict, config: dict) -> list[Path]:
+    candidates: list[Path] = []
+
+    global_bib = config.get("bibliography")
+    if isinstance(global_bib, str):
+        candidates.append(Path(global_bib) if Path(global_bib).is_absolute() else (root / global_bib).resolve())
+    elif isinstance(global_bib, list):
+        for item in global_bib:
+            if isinstance(item, str):
+                candidates.append(Path(item) if Path(item).is_absolute() else (root / item).resolve())
+
+    local_bib = front.get("bibliography")
+    if isinstance(local_bib, str):
+        candidates.append(
+            Path(local_bib)
+            if Path(local_bib).is_absolute()
+            else (root / source_rel.parent / local_bib).resolve()
+        )
+    elif isinstance(local_bib, list):
+        for item in local_bib:
+            if isinstance(item, str):
+                candidates.append(
+                    Path(item) if Path(item).is_absolute() else (root / source_rel.parent / item).resolve()
+                )
+
+    resolved: list[Path] = []
+    seen: set[Path] = set()
+    for path in candidates:
+        if path.exists() and path not in seen:
+            seen.add(path)
+            resolved.append(path)
+    return resolved
+
+
+def parse_balanced_value(text: str, start: int) -> tuple[str, int]:
+    depth = 0
+    chars: list[str] = []
+    index = start
+    while index < len(text):
+        char = text[index]
+        if char == "{":
+            depth += 1
+            if depth > 1:
+                chars.append(char)
+        elif char == "}":
+            depth -= 1
+            if depth == 0:
+                return "".join(chars), index + 1
+            chars.append(char)
+        else:
+            chars.append(char)
+        index += 1
+    return "".join(chars), index
+
+
+def parse_quoted_value(text: str, start: int) -> tuple[str, int]:
+    chars: list[str] = []
+    index = start + 1
+    escaped = False
+    while index < len(text):
+        char = text[index]
+        if escaped:
+            chars.append(char)
+            escaped = False
+        elif char == "\\":
+            escaped = True
+            chars.append(char)
+        elif char == '"':
+            return "".join(chars), index + 1
+        else:
+            chars.append(char)
+        index += 1
+    return "".join(chars), index
+
+
+def parse_bib_entry_fields(body: str) -> dict[str, str]:
+    fields: dict[str, str] = {}
+    index = 0
+    while index < len(body):
+        while index < len(body) and body[index] in " \t\r\n,":
+            index += 1
+        if index >= len(body):
+            break
+
+        field_start = index
+        while index < len(body) and re.match(r"[A-Za-z0-9_-]", body[index]):
+            index += 1
+        field_name = body[field_start:index].strip().lower()
+        if not field_name:
+            index += 1
+            continue
+
+        while index < len(body) and body[index].isspace():
+            index += 1
+        if index >= len(body) or body[index] != "=":
+            next_comma = body.find(",", index)
+            if next_comma == -1:
+                break
+            index = next_comma + 1
+            continue
+        index += 1
+
+        while index < len(body) and body[index].isspace():
+            index += 1
+        if index >= len(body):
+            break
+
+        if body[index] == "{":
+            raw_value, index = parse_balanced_value(body, index)
+        elif body[index] == '"':
+            raw_value, index = parse_quoted_value(body, index)
+        else:
+            value_start = index
+            while index < len(body) and body[index] not in ",\r\n":
+                index += 1
+            raw_value = body[value_start:index]
+
+        cleaned = clean_text(raw_value)
+        if cleaned:
+            fields[field_name] = cleaned
+
+    return fields
+
+
+def parse_bibtex_entries(bib_path: Path) -> dict[str, dict]:
+    text = bib_path.read_text(encoding="utf-8")
+    entries: dict[str, dict] = {}
+    for match in BIB_ENTRY_RE.finditer(text):
+        key = clean_text(match.group("key"))
+        depth = 1
+        index = match.end()
+        while index < len(text):
+            char = text[index]
+            if char == "{":
+                depth += 1
+            elif char == "}":
+                depth -= 1
+                if depth == 0:
+                    body = text[match.end() : index]
+                    fields = parse_bib_entry_fields(body)
+                    fields["entry_type"] = match.group("entry_type").lower()
+                    fields["key"] = key
+                    entries[key] = fields
+                    break
+            index += 1
+    return entries
+
+
+def load_bibliography_entries(bib_paths: list[Path], cache: dict[Path, dict[str, dict]]) -> dict[str, dict]:
+    entries: dict[str, dict] = {}
+    for bib_path in bib_paths:
+        if bib_path.suffix.lower() != ".bib":
+            continue
+        if bib_path not in cache:
+            cache[bib_path] = parse_bibtex_entries(bib_path)
+        entries.update(cache[bib_path])
+    return entries
+
+
+def bibliography_id(entry: dict, citation_key: str) -> str:
+    return f"cite:{citation_key}"
+
+
+def truncate_label(label: str, limit: int = 46) -> str:
+    if len(label) <= limit:
+        return label
+    return f"{label[: limit - 3].rstrip()}..."
+
+
+def bibliography_label(entry: dict, citation_key: str) -> str:
+    title = clean_text(entry.get("title", ""))
+    if title:
+        return truncate_label(title)
+
+    author = clean_text(entry.get("author", ""))
+    year = clean_text(entry.get("year", ""))
+    fallback = " ".join(part for part in [author, year] if part).strip()
+    if fallback:
+        return truncate_label(fallback)
+    return citation_key
+
+
+def bibliography_url(entry: dict) -> str | None:
+    url = clean_text(entry.get("url", ""))
+    if url:
+        return clean_url(url)
+    doi = clean_text(entry.get("doi", ""))
+    if doi:
+        return clean_url(f"https://doi.org/{doi}")
+    return None
+
+
+def merge_external_node(external_nodes: dict[str, dict], node_id: str, payload: dict) -> None:
+    existing = external_nodes.get(node_id, {})
+    merged = {**existing, **payload}
+    merged["id"] = node_id
+    merged["kind"] = "external"
+    external_nodes[node_id] = merged
 
 
 def extract_hrefs(items: list | None) -> list[str]:
@@ -170,12 +389,15 @@ def build_payload(root: Path, config: dict, include_prefixes: list[str] | None =
     page_nodes: dict[str, dict] = {}
     external_nodes: dict[str, dict] = {}
     edges: dict[tuple[str, str], dict] = {}
+    bibliography_cache: dict[Path, dict[str, dict]] = {}
     normalized_prefixes = [normalize_prefix(prefix) for prefix in include_prefixes or [] if prefix.strip()]
 
     for path in iter_qmd_files(root, normalized_prefixes):
         rel = path.relative_to(root)
         front, body = parse_front_matter(path.read_text(encoding="utf-8"))
         linkable_body = extract_linkable_text(body)
+        citable_body = extract_citable_text(body)
+        citation_entries = load_bibliography_entries(bibliography_paths(root, rel, front, config), bibliography_cache)
         node_id = rel.as_posix()
         page_nodes[node_id] = {
             "id": node_id,
@@ -187,12 +409,11 @@ def build_payload(root: Path, config: dict, include_prefixes: list[str] | None =
         for raw_target in MARKDOWN_LINK_RE.findall(linkable_body):
             if raw_target.startswith(("http://", "https://")):
                 url = clean_url(raw_target)
-                external_nodes.setdefault(
+                merge_external_node(
+                    external_nodes,
                     url,
                     {
-                        "id": url,
                         "label": external_label(url),
-                        "kind": "external",
                         "url": url,
                     },
                 )
@@ -211,16 +432,32 @@ def build_payload(root: Path, config: dict, include_prefixes: list[str] | None =
 
         for url in URL_RE.findall(linkable_body):
             cleaned = clean_url(url)
-            external_nodes.setdefault(
+            merge_external_node(
+                external_nodes,
                 cleaned,
                 {
-                    "id": cleaned,
                     "label": external_label(cleaned),
-                    "kind": "external",
                     "url": cleaned,
                 },
             )
             add_edge(edges, node_id, cleaned, "external")
+
+        for citation_key in sorted(set(CITATION_RE.findall(citable_body))):
+            entry = citation_entries.get(citation_key)
+            if not entry:
+                continue
+            external_id = bibliography_id(entry, citation_key)
+            merge_external_node(
+                external_nodes,
+                external_id,
+                {
+                    "label": bibliography_label(entry, citation_key),
+                    "url": bibliography_url(entry),
+                    "citation_key": citation_key,
+                    "title": clean_text(entry.get("title", "")),
+                },
+            )
+            add_edge(edges, node_id, external_id, "external")
 
     website = config.get("website", {})
     for sidebar in website.get("sidebar", []):

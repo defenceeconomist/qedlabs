@@ -31,7 +31,7 @@ These notes explain what entropy-based weighting is, how `WeightIt::weightit(...
 - Related repo materials:
   - [Matching and Weighting](matching-and-weighting.qmd)
   - [LaLonde Background Appendix](lalonde-background-appendix.qmd)
-  - [Mixtape Notes: NSW Benchmark From Section 5.3.4 Onward](mixtape-nsw-benchmark-notes.qmd)
+  - [NSW and CPS Benchmark Lab](../../labs/nsw-cps-benchmark-lab.qmd)
 
 ## Executive Summary
 

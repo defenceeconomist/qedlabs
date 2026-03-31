@@ -28,7 +28,7 @@ This section collects the method notes and source-based reading pages that suppo
 ::: {.section-card}
 <span class="page-badge badge-overview">Overview</span>
 
-### [Matching](matching/matching-and-weighting.qmd)
+### [Matching and Weighting](matching/matching-and-weighting.qmd)
 
 Use this route for matching and weighting concepts, assumptions, diagnostics, and source-specific notes.
 :::
