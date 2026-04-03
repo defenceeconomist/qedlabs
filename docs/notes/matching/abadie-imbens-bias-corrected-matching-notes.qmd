@@ -1,0 +1,197 @@
+---
+title: "Bias-Corrected Matching Estimators"
+subtitle: "Notes on Abadie and Imbens (2011)"
+author: "Luke Heley"
+date: 3 April 2026
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: false
+---
+
+## Purpose
+
+These notes summarize Abadie and Imbens (2011) [@abadie2011biascorrected] using the MCP evidence-base record retrieved for this repo on 3 April 2026. The goal is not to restate the proofs line by line. The goal is to capture what problem the paper is actually solving, why the problem matters for matching practice, and how its argument should change the way this repo talks about nearest-neighbor matching.
+
+The aim here is to capture:
+
+- the matching estimator setup the paper studies
+- why ordinary matching carries a conditional bias term in finite samples
+- how the bias-correction adjustment is constructed
+- which assumptions do the real work
+- what the asymptotic results do and do not buy you
+- how the paper should change practical matching guidance in this repo
+
+## Source Baseline
+
+- Source retrieved from the MCP evidence base on 3 April 2026.
+- Evidence-base bucket / collection: `evaluation`
+- Evidence-base document id: `25c5016dcb5b4be059c79baa98b249b36e60cba769a2dbdbd1cdd8e9463a5ce4`
+- Matched filename returned by MCP: `Bias-Corrected Matching Estimators for.pdf`
+- Source key / bucket path returned by MCP: `evaluation/Bias-Corrected Matching Estimators for.pdf`
+- Resolver link surfaced by MCP: [paper resolver](/resolver.html?bucket=evaluation&file_path=Bias-Corrected%20Matching%20Estimators%20for.pdf&page=1)
+- Citation metadata observed in the retrieved record:
+  - Abadie, Alberto and Imbens, Guido W.
+  - *Journal of Business & Economic Statistics* 29(1), 2011
+  - DOI: `10.1198/jbes.2009.07333`
+- Main MCP sections used for these notes:
+  - `1. INTRODUCTION`
+  - `2.1 Setting and Notation`
+  - `2.2 Estimators`
+  - `2.3 Large Sample Properties of Matching Estimators`
+  - `3. BIAS CORRECTED MATCHING`
+  - `4. AN APPLICATION TO THE EVALUATION OF A LABOR MARKET PROGRAM`
+  - `5. A MONTE CARLO STUDY`
+  - `6. CONCLUSION`
+
+## Executive Summary
+
+- The paper studies fixed-`M` nearest-neighbor matching estimators with replacement for average treatment effects under selection on observables [@abadie2011biascorrected].
+- Its central point is that ordinary matching is not just imperfect because matches are never exact. It carries a conditional bias term that can vanish too slowly for standard root-`N` asymptotics when matching is done on multiple continuous covariates.
+- The proposed fix is a regression-style adjustment inside the matched comparison: after choosing matches, correct each matched outcome for the remaining covariate gap using an estimate of the regression surface.
+- The paper's payoff is specific. Bias correction restores root-`N` consistency and asymptotic normality under stronger smoothness conditions, but it does not make matching fully efficient and it does not rescue bad identification.
+- For this repo, the main lesson is that nearest-neighbor matching should not be described as if "close enough" matches automatically imply estimator reliability. Bias behavior, overlap, and benchmark validation still matter.
+
+## Study Notes
+
+### Estimator Setup
+
+The paper stays in the potential-outcomes framework and focuses on treatment effects under selection on observables [@abadie2011biascorrected]. In the body of the article the target is the population average treatment effect, with the average treatment effect on the treated handled separately in Appendix B.
+
+The estimator family is deliberately narrow:
+
+- binary treatment
+- nearest-neighbor matching
+- a fixed number of matches `M` as sample size grows
+- matching with replacement
+- continuous covariates, with discrete covariates handled by conditioning on them
+
+The basic estimator imputes each unit's missing potential outcome from the average outcome of the `M` nearest units in the opposite treatment group. That makes the estimator look like a nonparametric imputation rule rather than a balance score theorem in disguise. The paper is about what happens to that imputation rule when the matched covariates are close but not equal.
+
+This matters for the repo because it is a note about estimator behavior after a design has been chosen. It sits downstream from the broader design framing in [Matching and Weighting](matching-and-weighting.qmd), not upstream of it.
+
+### Why Ordinary Matching Carries Conditional Bias
+
+The paper's key move is to separate the simple matching estimator into three parts: heterogeneity in treatment effects across covariate values, a zero-mean stochastic term, and a conditional bias term [@abadie2011biascorrected]. The first two behave like standard large-sample noise. The third is the problem.
+
+That conditional bias appears because nearest-neighbor matches are only approximate. If treated and control units still differ on `X`, then the matched comparison inherits bias from the slope of the outcome regression surface. In one dimension that mismatch shrinks fast enough that ordinary matching can still achieve root-`N` behavior. In multiple continuous covariates, the mismatch shrinks more slowly, so the bias can dominate the standard central-limit scaling.
+
+That is the paper's correction to intuition-only matching summaries:
+
+- poor finite-sample performance is not just an unlucky-data story
+- residual covariate mismatch is not only a diagnostic nuisance
+- simple nearest-neighbor matching is not generically root-`N` once matching is multivariate
+
+In repo terms, this is why the benchmark thread matters. The [NSW and CPS Benchmark Lab](../../labs/nsw-cps-benchmark-lab.qmd) is not only about whether matching "looks balanced." It is about whether an observational design-plus-estimator combination behaves sensibly when compared to an experimental reference.
+
+### How The Bias-Correction Adjustment Is Constructed
+
+The bias-corrected estimator keeps the matching step but adjusts each matched comparison for the remaining covariate distance using an estimated regression function [@abadie2011biascorrected]. The intuition is straightforward:
+
+1. pick the nearest matches as usual
+2. estimate the outcome regression surface for treated and control units
+3. adjust the matched outcome by the difference between the fitted value at the target unit's covariates and the fitted value at the matched unit's covariates
+
+So the correction is not "switch to regression instead of matching." Matching still determines the local comparison set. Regression is used only to account for the mismatch that remains inside that comparison set.
+
+The paper studies a formal nonparametric series version of this correction, but the empirical sections deliberately look at a much simpler implementation based on linear least squares. That is an important practical clue. The argument is not that one needs an elaborate high-order nonparametric estimator in everyday work. The argument is that even a simple adjustment can materially stabilize nearest-neighbor estimates when the unadjusted estimator is sensitive to residual mismatch.
+
+The paper also contrasts this estimator with pure regression imputation:
+
+- compared with simple matching, bias correction can eliminate the slow-vanishing bias term
+- compared with pure regression imputation, matching still provides protection because the estimator remains anchored to local comparisons rather than relying entirely on global functional-form accuracy
+
+### Assumptions Doing The Work
+
+The identifying and regularity assumptions are stronger than the intuitive matching story many applied overviews stop at [@abadie2011biascorrected].
+
+The baseline assumptions include:
+
+- selection on observables conditional on `X`
+- overlap away from zero and one
+- independent sampling
+- continuous covariates on compact support with density bounded away from zero
+- Lipschitz outcome regression and variance functions
+- bounded fourth moments and nondegenerate conditional variances
+
+The bias-corrected asymptotic result adds more structure:
+
+- the support is a Cartesian product of compact intervals
+- the regression approximation uses a sequence of series terms that grows at a restricted rate
+- the regression functions are smooth enough to justify the approximation
+
+For the ATT case, the appendix shows that weaker assumptions are enough because only the untreated potential outcome for treated units must be recovered. That distinction matters for practice: the paper does not say every estimand demands the same support conditions.
+
+What the paper does not relax is equally important:
+
+- it does not relax ignorability
+- it does not relax overlap
+- it does not say bias correction fixes omitted confounding
+- it does not say matching can ignore weak support if the regression adjustment is clever enough
+
+### Main Asymptotic Results
+
+The practical theorem structure is simple once the notation is stripped back [@abadie2011biascorrected].
+
+First, the paper recalls the Abadie-Imbens (2006) result for simple matching. After removing the conditional bias term, the estimator is asymptotically normal. Without doing that, root-`N` behavior generally fails in multivariate continuous matching. The paper notes the special case where matching is done on a single covariate, such as the true propensity score, because then the bias shrinks fast enough.
+
+Second, the paper proves that the bias-corrected estimator restores root-`N` consistency and asymptotic normality for any covariate dimension, provided the stronger smoothness conditions hold. The striking point is that the bias can be estimated fast enough to disappear under root-`N` scaling because the correction targets differences between nearby regression-function evaluations, not arbitrary function levels.
+
+Third, the corrected estimator keeps the same normalized asymptotic variance as the simple matching estimator. That is a gain and a limitation:
+
+- gain: the correction removes the bad bias term without inflating the asymptotic variance
+- limitation: the estimator is still generally not fully efficient relative to strong regression-imputation or weighting estimators
+
+So the paper is not a proof that matching wins. It is a proof that one particular matching estimator can be repaired enough to have standard asymptotic behavior.
+
+### Application And Simulation Results
+
+The empirical sections are not decorative. They are part of the paper's practical argument [@abadie2011biascorrected].
+
+In the NSW application, the authors compare experimental estimates with nonexperimental estimates built from NSW treated units and the PSID comparison group. The unadjusted simple matching estimator becomes highly unstable as the number of matches grows. In the nonexperimental sample it moves from `2.07` with one match to `-15.20` when all controls are used as matches. The bias-adjusted estimator is much more stable, staying near the experimental benchmark for much longer before degrading at the extreme many-match case.
+
+That result matters because it is exactly the kind of behavior that intuition-first matching summaries can miss. A design can look like it is still "matching" while the effect estimate is being driven around by the number of neighbors and the quality deterioration of the matches.
+
+The Monte Carlo study reinforces the same point. In simulations calibrated to the LaLonde setting, the bias-adjusted estimators generally beat simple matching on bias, RMSE, and interval coverage. The paper's own summary is especially telling:
+
+- simple matching performs worse on bias and RMSE
+- coverage around the bias-corrected estimator is closer to nominal
+- naive quadratic regression performs badly in this design
+- weighting estimators do fairly well, so the paper is not framed as a one-method victory lap
+
+The most practical line in the simulations is that a very simple linear bias adjustment performs well. That is the paper telling applied readers not to overinterpret the theoretical machinery. The practical lesson is estimator discipline, not estimator mystique.
+
+### What The Paper Does And Does Not Imply
+
+What it implies:
+
+- nearest-neighbor matching needs more respect for residual bias than casual explanations usually give it
+- post-match regression adjustment can be principled rather than ad hoc
+- choice of match ratio is not innocuous
+- benchmark validation is a serious diagnostic, not a side note
+
+What it does not imply:
+
+- matching is automatically preferable to weighting or regression
+- propensity-score matching is safe merely because it uses one scalar score
+- asymptotic normality guarantees good finite-sample behavior in weak-overlap designs
+- a bias-corrected estimator turns a bad covariate set into a credible design
+
+For this repo, that means this paper should sit next to the benchmark and implementation materials, not replace them. Use [Matching and Weighting Sources](matching-and-weighting-sources.qmd) for the reading map, [Matching Teaching Data](matching-teaching-data.qmd) for the benchmark datasets, and [Entropy-Based Weighting with WeightIt](weightit-entropy-balancing-notes.qmd) for the weighting-side implementation contrast.
+
+## Implications For This Repo
+
+- When the repo introduces nearest-neighbor matching, it should distinguish clearly between design quality and estimator behavior. Good balance language is not enough on its own.
+- The repo's NSW benchmark material should continue to be treated as core matching content rather than historical background. This paper uses that benchmark logic directly.
+- Matching implementation discussions should keep open the distinction between preprocessing for design and the effect estimator finally reported. This paper is about the second question.
+- The repo should avoid presenting bias correction as a universal patch. It is a correction for residual covariate mismatch under ignorability and overlap, not a repair for bad covariates or extrapolation.
+- When connecting to software workflows, the right practical translation is: if a nearest-neighbor estimator is going to be used for effect estimation, report sensitivity to match ratio and make explicit whether residual adjustment is being used. That complements the higher-level workflow pages rather than replacing them.
+
+## High-Level Takeaways
+
+- Abadie and Imbens (2011) is the note to read once matching explanations need to move beyond "find similar controls" [@abadie2011biascorrected].
+- The paper's main contribution is not that matching works. It is that ordinary multivariate nearest-neighbor matching has a bias problem that needs to be handled explicitly.
+- Bias correction is valuable because it preserves the local-comparison logic of matching while correcting the residual covariate gap that nearest-neighbor search leaves behind.
+- The asymptotic win is real but narrow: root-`N` consistency and asymptotic normality, not full efficiency and not identification by itself.
+- For this repo, the paper mainly strengthens the case for benchmark discipline, explicit overlap checks, and careful separation of design choices from estimator claims.

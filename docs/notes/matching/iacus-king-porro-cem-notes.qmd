@@ -1,0 +1,228 @@
+---
+title: "Coarsened Exact Matching"
+subtitle: "Notes on Iacus, King, and Porro (2012)"
+author: "Luke Heley"
+date: 3 April 2026
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: false
+---
+
+## Purpose
+
+These notes summarize Iacus, King, and Porro (2012) [@iacus2012cem] using the MCP evidence-base record retrieved for this repo on 3 April 2026. The aim is not to reproduce the paper's formal results line by line. The aim is to capture what problem the paper thinks existing matching practice gets wrong, how `CEM` is supposed to solve part of that problem, and how the method should be used inside this repo's design-first workflow.
+
+The aim here is to capture:
+
+- why the paper is dissatisfied with standard balance-checking workflows
+- how coarsened exact matching is constructed
+- what the paper means by monotonic imbalance bounding
+- which properties the paper claims for `CEM`
+- how post-matching estimation and estimand drift are handled
+- what practical cautions remain even if `CEM` is used well
+
+## Source Baseline
+
+- Source retrieved from the MCP evidence base on 3 April 2026.
+- Evidence-base bucket / collection: `evaluation`
+- Evidence-base document id: `92ba280007d27d428b96526e6ff027bbff234f87d72554a8938b8b243ca5369a`
+- Matched filename returned by MCP: `political_analysis-2011-iacus-pan_mpr013.pdf`
+- Source key / bucket path returned by MCP: `evaluation/political_analysis-2011-iacus-pan_mpr013.pdf`
+- Resolver link surfaced by MCP: [paper resolver](/resolver.html?bucket=evaluation&file_path=political_analysis-2011-iacus-pan_mpr013.pdf&page=1)
+- Citation metadata observed in the retrieved record:
+  - Iacus, Stefano M., King, Gary, and Porro, Giuseppe
+  - *Political Analysis* 20(1), 2012
+  - DOI: `10.1093/pan/mpr013`
+- Main MCP sections used for these notes:
+  - `1 Introduction`
+  - `2.5 Postmatching Estimation`
+  - `2.7 Quantifying Estimation Error`
+  - `3 Coarsened Exact Matching`
+  - `4.5 Approximate Invariance to Measurement Error`
+  - `4.6 Bounding Model Dependence`
+  - `4.7 Bounding the Average Treatment Effect Estimation Error`
+  - `6.3.2 Estimation`
+  - `6.3.3 Defining the quantity of interest`
+  - `7 Concluding Remarks on What Can Go Wrong`
+
+## Executive Summary
+
+- The paper's central complaint is that most popular matching methods guarantee sample size ex ante but improve balance only uncertainly and only after ex post checking [@iacus2012cem].
+- `CEM` flips that logic. The analyst chooses coarsenings up front, exact matching is run on the coarsened data, unmatched strata are dropped, and the original uncoarsened values are retained for analysis.
+- The paper frames `CEM` as a member of the monotonic imbalance bounding (`MIB`) class: tightening the coarsening on one variable tightens its imbalance bound without worsening the maximum bound on the others.
+- Its practical promise is not "no diagnostics ever again." Its practical promise is that the analyst can control imbalance directly through transparent design choices rather than by repeated opaque reruns.
+- For this repo, the big lesson is that `CEM` is a preprocessing design method, not a full estimator. It clarifies the balance-retention tradeoff and can reduce model dependence, but it also changes the estimand by pruning units.
+
+## Study Notes
+
+### What Problem The Paper Thinks Existing Matching Practice Has
+
+The paper starts from a sharp criticism of ordinary matching workflows [@iacus2012cem]. In the authors' view, most common methods are aimed at the wrong target. They secure matched sample size ex ante but only sometimes reduce imbalance, so analysts are forced into a cycle of:
+
+1. run a method
+2. inspect balance
+3. tweak the specification
+4. rerun and check again
+
+The paper argues that this is not just annoying. It means the method does not actually guarantee the thing matching is supposed to achieve. Worse, improving balance on one covariate can worsen it on another, so the analyst can never be fully sure that repeated tweaking has really moved the design in the right direction.
+
+That is the meaning of the paper's title. "Without balance checking" does not mean "ignore balance." It means use a procedure whose imbalance properties are controlled by the design choices built into the method rather than by repeated ex post repair.
+
+This connects directly to the repo's general matching note, [Matching and Weighting](matching-and-weighting.qmd). The paper is not saying diagnostics are intellectually unnecessary. It is saying the design algorithm itself should embody the balance target more directly.
+
+### The Basic CEM Algorithm
+
+The method itself is simple in structure [@iacus2012cem]:
+
+- coarsen each covariate into substantively meaningful bins
+- perform exact matching on those coarsened covariates
+- keep only strata containing at least one treated and one control unit
+- drop the unmatched strata
+- return to the original uncoarsened data for estimation, using stratum weights
+
+That last step matters. `CEM` is not "analyze the binned data directly and forget the originals." Coarsening defines which units are considered comparable. Once that pruning is done, estimation proceeds on the original data.
+
+The paper also emphasizes that the strata can contain different numbers of treated and control units, so the output is not necessarily a pair-matched sample. That is why stratum weights matter in the estimation stage.
+
+The practical interpretation is straightforward:
+
+- coarsening encodes what counts as substantively similar
+- exact matching on the coarsened scale makes that similarity rule transparent
+- pruning enforces common support at the chosen level of coarseness
+
+That transparency is one of the main reasons `CEM` is useful in teaching. It makes the design decision visible instead of burying it inside a distance metric.
+
+### Monotonic Imbalance Bounding
+
+The paper's main theoretical language is monotonic imbalance bounding, or `MIB` [@iacus2012cem]. The key idea is that the analyst can choose ex ante how much imbalance is allowed through the coarsening vector.
+
+For `CEM`, that means:
+
+- finer coarsening lowers the allowed mismatch
+- coarser coarsening relaxes the allowed mismatch
+- tightening the bound for one variable does not worsen the maximum imbalance bound for the others
+
+That is the authors' contrast with older equal-percent-bias-reducing (`EPBR`) methods such as common forms of propensity-score or Mahalanobis matching. Those methods may improve balance on average under assumptions, but they do not guarantee in-sample improvement in any particular application.
+
+The paper therefore treats `CEM` as an inversion of usual practice. Instead of asking an algorithm to optimize some distance and then checking what happened, the user chooses the acceptable imbalance range directly through the bins. If you understand what a histogram bin means, the paper argues, you already understand the most important tuning parameter of `CEM`.
+
+### Why The Paper Thinks CEM Reduces More Than Mean Imbalance
+
+One reason the paper pushes back against simple balance tables is that mean balance is only a fragment of the problem [@iacus2012cem]. The claim is that `CEM`, by matching on coarsened multivariate strata, eliminates discrepancies beyond the chosen coarsening level for:
+
+- interactions
+- nonlinearities
+- moments
+- quantiles
+- other distributional differences larger than the coarsened cells permit
+
+This is a strong claim, and the paper uses it to connect `CEM` to lower model dependence. If remaining treated-control differences are trapped inside small strata, then any model used afterward only has to bridge short local gaps rather than large global extrapolations.
+
+That is why the paper treats exactness on coarsened cells as a design feature rather than a crude simplification. The coarsening is the mechanism by which global modeling problems are turned into smaller local ones.
+
+### Matching Is Preprocessing, Not Estimation
+
+One of the paper's most useful reminders is that matching methods are preprocessing algorithms, not statistical estimators [@iacus2012cem]. After preprocessing, the analyst still needs an effect estimator.
+
+This has two implications that matter for the repo:
+
+- `CEM` does not by itself produce a causal effect estimate; it produces a weighted matched design
+- the analysis stage still matters, especially when different strata contain different numbers of treated and control units
+
+The paper discusses several post-matching options:
+
+- weighted differences in means
+- weighted linear regression on treatment
+- weighted regression on treatment plus covariates
+- within-stratum modeling and averaging
+- prediction-based approaches for missing potential outcomes
+
+This aligns closely with the repo's practical separation between design and estimation. `CEM` belongs with preprocessing methods like `MatchIt`, not with final-effect estimators. That is why this note sits naturally next to [Matching Teaching Data](matching-teaching-data.qmd), [Matching and Weighting Sources](matching-and-weighting-sources.qmd), and the benchmark materials rather than displacing them.
+
+### Estimation Error, Model Dependence, And What Is Actually Bounded
+
+The paper does not stop at the slogan that `CEM` improves balance. It tries to connect balance to the actual causal estimation problem [@iacus2012cem].
+
+Its estimation-error discussion says that matching error depends on two things:
+
+- imbalance between treated and control covariate distributions
+- the importance of those covariates for the control outcome surface
+
+If exact matching on the relevant covariates were possible, the imbalance component would vanish. When exact matching is not possible, the paper argues that `CEM` still helps because the user-chosen coarsening bounds how far apart matched treated and control units can be on each covariate.
+
+Under a mild Lipschitz-type restriction on the control outcome function, the paper then shows a stronger result: finer coarsening reduces not just imbalance but the maximum possible treatment-effect estimation error itself [@iacus2012cem].
+
+That is an ambitious claim, but it is narrower than it can sound in summary form:
+
+- it relies on a smoothness restriction
+- it is about a bound, not a guarantee of perfect finite-sample performance
+- it does not eliminate the need for an analysis model when the coarsening is loose
+
+So the paper's practical message is not that balance metrics are irrelevant. It is that imbalance should be controlled through the design parameter that directly matters for estimation error: how wide the coarsened cells are.
+
+### Other Properties The Paper Highlights
+
+The paper spends unusual effort arguing that `CEM` has several practical properties not shared as clearly by common alternatives [@iacus2012cem].
+
+The most important for repo purposes are:
+
+- bounded model dependence:
+  - by tightening the coarsening, the analyst reduces the room for the post-matching model to drive the answer
+- approximate invariance to measurement error:
+  - if the measurement error is smaller than the coarsening width and does not push units across stratum boundaries, the matched design is unchanged; even when that is not exact, the paper argues the method is often less sensitive than alternatives
+- interpretability:
+  - the tuning choice is visible and substantively discussable
+
+This is where `CEM` differs philosophically from propensity-score workflows. Propensity scores compress the matching problem into one estimated scalar and then ask balance diagnostics to confirm whether the compression worked. `CEM` instead asks the analyst to declare the acceptable comparability scale directly.
+
+### The Empirical Illustration And The Local Estimand Issue
+
+The paper's empirical section is especially useful because it refuses to hide the estimand problem [@iacus2012cem]. After `CEM`, some treated units remain unmatched. The authors distinguish:
+
+- the local SATT for the matched treated units
+- the global SATT for all treated units, which requires extrapolation for unmatched treated units
+
+That distinction is central. In the paper's example, the local estimate is stable, but global estimates vary depending on how the unmatched treated units are handled. The paper treats that variation as evidence of unavoidable model dependence in the extrapolation region, not as a nuisance to wave away.
+
+This is one of the strongest links to this repo's benchmark framing:
+
+- pruning changes who the estimate is about
+- transparency about the matched subset is part of the method, not an optional appendix
+- analysts should characterize the matched population rather than pretending the original estimand survived unchanged
+
+That is exactly why the paper recommends explicit descriptions of the matched subset. In repo terms, this belongs next to the [NSW and CPS Benchmark Lab](../../labs/nsw-cps-benchmark-lab.qmd), where support loss and estimand drift are part of the lesson rather than an afterthought.
+
+### What Can Go Wrong
+
+The paper's final caution section is strong and worth taking literally [@iacus2012cem].
+
+The primary risk is poor coarsening choice:
+
+- if bins are too wide, useful information is thrown away and the analysis model must work harder
+- if bins are too narrow, too many units are dropped and the result may be low efficiency or no feasible matched design
+
+The paper is also explicit that `CEM` does not solve generic matching problems:
+
+- it can still fail when important covariates are omitted
+- it can still induce treated-unit selection and therefore change the estimand
+- it cannot rescue a fundamentally uninformative dataset
+
+That last point is especially important. The paper is enthusiastic about `CEM`, but it does not claim a magical repair for weak overlap or missing confounding. If the coarsening one is comfortable with leaves too few matched units, the underlying data problem remains.
+
+## Implications For This Repo
+
+- `CEM` should be presented in this repo as a transparent design-stage preprocessing method, not as a standalone estimator.
+- The main pedagogic value of `CEM` here is that it makes the balance-retention tradeoff legible. That fits naturally with [Matching Teaching Data](matching-teaching-data.qmd), especially the notes on when overlap is imperfect.
+- The repo should keep linking `CEM` back to benchmark validation. The method can improve design transparency, but it still needs to be judged against stronger evidence where available, as in [NSW and CPS Benchmark Lab](../../labs/nsw-cps-benchmark-lab.qmd).
+- `CEM` is a useful contrast with propensity-score matching and weighting because it starts from direct covariate control rather than scalar compression. That makes it a good bridge between intuition-first notes and implementation pages.
+- When the repo discusses `CEM` in applied workflows, it should explicitly say what coarsening choices mean substantively, what treated units were dropped, and what estimand remains after pruning.
+
+## High-Level Takeaways
+
+- Iacus, King, and Porro (2012) is the central paper for understanding `CEM` as more than just "exact matching with bins" [@iacus2012cem].
+- The paper's core argument is that many matching methods make analysts check after the fact whether the procedure accomplished the goal, whereas `CEM` lets analysts set the admissible imbalance directly through coarsening.
+- `CEM` is attractive because it is transparent, design-first, and aimed at reducing model dependence, not because it abolishes modeling or diagnostics.
+- The most important practical limit is estimand drift: pruning unmatched units can produce a stable local effect for the matched subset while leaving the global effect model dependent.
+- For this repo, `CEM` is best understood as the clearest exact-style matching method for teaching support, pruning, and design transparency, not as a universal replacement for benchmark checks or weighting approaches.

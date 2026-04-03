@@ -173,16 +173,16 @@ If you want a compact starting stack for matching and weighting, I would begin w
 
 ## Start Here
 
-1. Cunningham, *Causal Inference: The Mixtape*, for the clearest intuition-first treatment [@cunningham2018matching].
-2. Gertler et al., *Impact Evaluation in Practice*, for a practical evaluator-facing workflow [@gertler2010ch8matching].
-3. LaLonde (1986) and Dehejia and Wahba (1999), because the benchmark debate still structures how matching designs are judged [@lalonde1986evaluating; @dehejia1999causal].
-4. One implementation pair: the `MatchIt` paper for matching workflows and the `WeightIt` package manual for weighting workflows [@ho2011matchit; @greifer2025weightit].
+1. Cunningham, *Causal Inference: The Mixtape*, for the clearest intuition-first treatment ([note](mixtape-matching-subclassification-notes.qmd)) [@cunningham2018matching].
+2. Gertler et al., *Impact Evaluation in Practice*, for a practical evaluator-facing workflow ([note](gertler-matching-notes.qmd)) [@gertler2010ch8matching].
+3. LaLonde (1986) and Dehejia and Wahba (1999), because the benchmark debate still structures how matching designs are judged ([benchmark appendix](lalonde-background-appendix.qmd)) [@lalonde1986evaluating; @dehejia1999causal].
+4. One implementation pair: the `MatchIt` paper for matching workflows and the `WeightIt` package manual for weighting workflows ([WeightIt note](weightit-entropy-balancing-notes.qmd)) [@ho2011matchit; @greifer2025weightit].
 
 That gives you design intuition, benchmark discipline, and software entry points without trying to read the whole literature at once.
 
 ## General Overviews
 
-### Cunningham (2018), *Causal Inference: The Mixtape*, chapter on matching and subclassification
+### Cunningham (2018), *Causal Inference: The Mixtape*, chapter on matching and subclassification ([note](mixtape-matching-subclassification-notes.qmd))
 
 This is the best single overview if the goal is to understand what matching is trying to do conceptually, without disappearing into notation too early [@cunningham2018matching].
 
@@ -192,7 +192,7 @@ Why it is worth notes:
 - it is concise and easy to absorb quickly
 - it connects naturally to the NSW benchmark material used elsewhere in the repo
 
-### Gertler et al. (2010), *Impact Evaluation in Practice*, chapter on matching
+### Gertler et al. (2010), *Impact Evaluation in Practice*, chapter on matching ([note](gertler-matching-notes.qmd))
 
 This is the strongest practical overview if the audience is evaluator-facing rather than econometrics-facing [@gertler2010ch8matching].
 
@@ -214,7 +214,7 @@ Why it is worth notes:
 
 ## Benchmark And Validation Sources
 
-### LaLonde (1986)
+### LaLonde (1986) ([benchmark appendix](lalonde-background-appendix.qmd))
 
 This is still the core benchmark source for thinking seriously about observational adjustment [@lalonde1986evaluating].
 
@@ -246,7 +246,7 @@ Why it is worth notes:
 
 ## Matching-Specific Method Sources
 
-### Abadie and Imbens (2011)
+### Abadie and Imbens (2011) ([note](abadie-imbens-bias-corrected-matching-notes.qmd))
 
 This is the key paper if your notes need to move from intuition to the statistical behavior of matching estimators [@abadie2011biascorrected].
 
@@ -256,7 +256,7 @@ Why it is worth notes:
 - it helps distinguish simple nearest-neighbor practice from more careful estimation
 - it is important once the notes need to say more than “find similar units”
 
-### Iacus, King, and Porro (2012)
+### Iacus, King, and Porro (2012) ([note](iacus-king-porro-cem-notes.qmd))
 
 This is the main source to read if you want a serious note on coarsened exact matching [@iacus2012cem].
 
@@ -288,7 +288,7 @@ Why it is worth notes:
 - it is the main source if you want to explain weighting without reducing everything to propensity scores
 - it is especially relevant for ATT-style “build a weighted control group” workflows
 
-### Greifer (2025), `WeightIt`
+### Greifer (2025), `WeightIt` ([note](weightit-entropy-balancing-notes.qmd))
 
 This is the main implementation source for weighting in this repo’s workflow [@greifer2025weightit].
 
@@ -302,13 +302,13 @@ Why it is worth notes:
 
 If you want a sequence that compounds well, use:
 
-1. Cunningham on matching and subclassification [@cunningham2018matching].
-2. Gertler et al. on matching [@gertler2010ch8matching].
-3. LaLonde (1986) and Dehejia-Wahba (1999) [@lalonde1986evaluating; @dehejia1999causal].
-4. Imbens and Xu (2025) for the modern benchmark reassessment [@imbens2025comparingexperimentalnonexperimentalmethods].
-5. `MatchIt` and Abadie-Imbens for matching implementation and estimator behavior [@ho2011matchit; @abadie2011biascorrected].
-6. Hainmueller (2012) and `WeightIt` for weighting workflows [@hainmueller2012entropy; @greifer2025weightit].
-7. Iacus, King, and Porro (2012) if you want a separate note on coarsened exact matching [@iacus2012cem].
+1. Cunningham on matching and subclassification ([note](mixtape-matching-subclassification-notes.qmd)) [@cunningham2018matching].
+2. Gertler et al. on matching ([note](gertler-matching-notes.qmd)) [@gertler2010ch8matching].
+3. LaLonde (1986) and Dehejia-Wahba (1999) ([benchmark appendix](lalonde-background-appendix.qmd)) [@lalonde1986evaluating; @dehejia1999causal].
+4. Imbens and Xu (2025) for the modern benchmark reassessment ([benchmark appendix](lalonde-background-appendix.qmd)) [@imbens2025comparingexperimentalnonexperimentalmethods].
+5. `MatchIt` and Abadie-Imbens for matching implementation and estimator behavior ([Abadie-Imbens note](abadie-imbens-bias-corrected-matching-notes.qmd)) [@ho2011matchit; @abadie2011biascorrected].
+6. Hainmueller (2012) and `WeightIt` for weighting workflows ([WeightIt note](weightit-entropy-balancing-notes.qmd)) [@hainmueller2012entropy; @greifer2025weightit].
+7. Iacus, King, and Porro (2012) if you want a separate note on coarsened exact matching ([CEM note](iacus-king-porro-cem-notes.qmd)) [@iacus2012cem].
 
 # Bottom Line
 

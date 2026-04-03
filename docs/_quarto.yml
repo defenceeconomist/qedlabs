@@ -41,6 +41,10 @@ website:
               text: The Effect Matching
             - href: notes/matching/gertler-matching-notes.qmd
               text: Gertler Matching
+            - href: notes/matching/abadie-imbens-bias-corrected-matching-notes.qmd
+              text: Abadie-Imbens Bias-Corrected Matching
+            - href: notes/matching/iacus-king-porro-cem-notes.qmd
+              text: Coarsened Exact Matching (CEM)
             - href: notes/matching/lalonde-background-appendix.qmd
               text: LaLonde Background Appendix
             - href: notes/matching/weightit-entropy-balancing-notes.qmd

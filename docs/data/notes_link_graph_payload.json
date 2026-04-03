@@ -73,9 +73,9 @@
       "title": "Bias-Corrected Matching Estimators for Average Treatment Effects",
       "id": "cite:abadie2011biascorrected",
       "kind": "external",
-      "incoming": 3,
+      "incoming": 4,
       "outgoing": 0,
-      "degree": 3
+      "degree": 4
     },
     {
       "label": "california_prop99: California Proposition 99",
@@ -106,9 +106,9 @@
       "title": "Causal Inference without Balance Checking: Coarsened Exact Matching",
       "id": "cite:iacus2012cem",
       "kind": "external",
-      "incoming": 2,
+      "incoming": 3,
       "outgoing": 0,
-      "degree": 2
+      "degree": 3
     },
     {
       "label": "Chapter 3 Evaluation methods",
@@ -759,6 +759,15 @@
       "degree": 3
     },
     {
+      "id": "notes/matching/abadie-imbens-bias-corrected-matching-notes.qmd",
+      "label": "Bias-Corrected Matching Estimators",
+      "kind": "internal",
+      "path": "notes/matching/abadie-imbens-bias-corrected-matching-notes.qmd",
+      "incoming": 2,
+      "outgoing": 5,
+      "degree": 6
+    },
+    {
       "id": "notes/other-methods/choosing-a-method.qmd",
       "label": "Choosing A Method",
       "kind": "internal",
@@ -766,6 +775,15 @@
       "incoming": 2,
       "outgoing": 0,
       "degree": 2
+    },
+    {
+      "id": "notes/matching/iacus-king-porro-cem-notes.qmd",
+      "label": "Coarsened Exact Matching",
+      "kind": "internal",
+      "path": "notes/matching/iacus-king-porro-cem-notes.qmd",
+      "incoming": 2,
+      "outgoing": 4,
+      "degree": 5
     },
     {
       "id": "notes/other-methods/comparing-methods.qmd",
@@ -790,16 +808,16 @@
       "label": "Entropy-Based Weighting with WeightIt",
       "kind": "internal",
       "path": "notes/matching/weightit-entropy-balancing-notes.qmd",
-      "incoming": 2,
+      "incoming": 4,
       "outgoing": 7,
-      "degree": 8
+      "degree": 9
     },
     {
       "id": "notes/matching/lalonde-background-appendix.qmd",
       "label": "LaLonde Background Appendix",
       "kind": "internal",
       "path": "notes/matching/lalonde-background-appendix.qmd",
-      "incoming": 2,
+      "incoming": 3,
       "outgoing": 6,
       "degree": 7
     },
@@ -808,27 +826,27 @@
       "label": "Matching and Weighting",
       "kind": "internal",
       "path": "notes/matching/matching-and-weighting.qmd",
-      "incoming": 3,
-      "outgoing": 11,
-      "degree": 14
+      "incoming": 5,
+      "outgoing": 17,
+      "degree": 18
     },
     {
       "id": "notes/matching/matching-and-weighting-sources.qmd",
       "label": "Matching and Weighting Sources",
       "kind": "internal",
       "path": "notes/matching/matching-and-weighting-sources.qmd",
-      "incoming": 1,
+      "incoming": 3,
       "outgoing": 11,
-      "degree": 12
+      "degree": 14
     },
     {
       "id": "notes/matching/matching-teaching-data.qmd",
       "label": "Matching Teaching Data",
       "kind": "internal",
       "path": "notes/matching/matching-teaching-data.qmd",
-      "incoming": 1,
+      "incoming": 3,
       "outgoing": 6,
-      "degree": 7
+      "degree": 9
     },
     {
       "id": "notes/index.qmd",
@@ -836,17 +854,17 @@
       "kind": "internal",
       "path": "notes/index.qmd",
       "incoming": 0,
-      "outgoing": 16,
-      "degree": 16
+      "outgoing": 18,
+      "degree": 18
     },
     {
       "id": "notes/matching/gertler-matching-notes.qmd",
       "label": "Notes on Gertler et al.: Matching",
       "kind": "internal",
       "path": "notes/matching/gertler-matching-notes.qmd",
-      "incoming": 1,
+      "incoming": 2,
       "outgoing": 0,
-      "degree": 1
+      "degree": 2
     },
     {
       "id": "notes/matching/effectbook-matching-notes.qmd",
@@ -862,9 +880,9 @@
       "label": "Notes on The Mixtape: Matching and Subclassification",
       "kind": "internal",
       "path": "notes/matching/mixtape-matching-subclassification-notes.qmd",
-      "incoming": 1,
+      "incoming": 2,
       "outgoing": 1,
-      "degree": 2
+      "degree": 3
     },
     {
       "id": "notes/other-methods/index.qmd",
@@ -915,12 +933,22 @@
   "edges": [
     {
       "source": "notes/index.qmd",
+      "target": "notes/matching/abadie-imbens-bias-corrected-matching-notes.qmd",
+      "kind": "internal"
+    },
+    {
+      "source": "notes/index.qmd",
       "target": "notes/matching/effectbook-matching-notes.qmd",
       "kind": "internal"
     },
     {
       "source": "notes/index.qmd",
       "target": "notes/matching/gertler-matching-notes.qmd",
+      "kind": "internal"
+    },
+    {
+      "source": "notes/index.qmd",
+      "target": "notes/matching/iacus-king-porro-cem-notes.qmd",
       "kind": "internal"
     },
     {
@@ -994,9 +1022,54 @@
       "kind": "internal"
     },
     {
+      "source": "notes/matching/abadie-imbens-bias-corrected-matching-notes.qmd",
+      "target": "cite:abadie2011biascorrected",
+      "kind": "external"
+    },
+    {
+      "source": "notes/matching/abadie-imbens-bias-corrected-matching-notes.qmd",
+      "target": "notes/matching/matching-and-weighting-sources.qmd",
+      "kind": "internal"
+    },
+    {
+      "source": "notes/matching/abadie-imbens-bias-corrected-matching-notes.qmd",
+      "target": "notes/matching/matching-and-weighting.qmd",
+      "kind": "internal"
+    },
+    {
+      "source": "notes/matching/abadie-imbens-bias-corrected-matching-notes.qmd",
+      "target": "notes/matching/matching-teaching-data.qmd",
+      "kind": "internal"
+    },
+    {
+      "source": "notes/matching/abadie-imbens-bias-corrected-matching-notes.qmd",
+      "target": "notes/matching/weightit-entropy-balancing-notes.qmd",
+      "kind": "internal"
+    },
+    {
       "source": "notes/matching/effectbook-matching-notes.qmd",
       "target": "https://theeffectbook.net/ch-Matching.html",
       "kind": "external"
+    },
+    {
+      "source": "notes/matching/iacus-king-porro-cem-notes.qmd",
+      "target": "cite:iacus2012cem",
+      "kind": "external"
+    },
+    {
+      "source": "notes/matching/iacus-king-porro-cem-notes.qmd",
+      "target": "notes/matching/matching-and-weighting-sources.qmd",
+      "kind": "internal"
+    },
+    {
+      "source": "notes/matching/iacus-king-porro-cem-notes.qmd",
+      "target": "notes/matching/matching-and-weighting.qmd",
+      "kind": "internal"
+    },
+    {
+      "source": "notes/matching/iacus-king-porro-cem-notes.qmd",
+      "target": "notes/matching/matching-teaching-data.qmd",
+      "kind": "internal"
     },
     {
       "source": "notes/matching/lalonde-background-appendix.qmd",
@@ -1137,6 +1210,36 @@
       "source": "notes/matching/matching-and-weighting.qmd",
       "target": "cite:lalonde1986evaluating",
       "kind": "external"
+    },
+    {
+      "source": "notes/matching/matching-and-weighting.qmd",
+      "target": "notes/matching/abadie-imbens-bias-corrected-matching-notes.qmd",
+      "kind": "internal"
+    },
+    {
+      "source": "notes/matching/matching-and-weighting.qmd",
+      "target": "notes/matching/gertler-matching-notes.qmd",
+      "kind": "internal"
+    },
+    {
+      "source": "notes/matching/matching-and-weighting.qmd",
+      "target": "notes/matching/iacus-king-porro-cem-notes.qmd",
+      "kind": "internal"
+    },
+    {
+      "source": "notes/matching/matching-and-weighting.qmd",
+      "target": "notes/matching/lalonde-background-appendix.qmd",
+      "kind": "internal"
+    },
+    {
+      "source": "notes/matching/matching-and-weighting.qmd",
+      "target": "notes/matching/mixtape-matching-subclassification-notes.qmd",
+      "kind": "internal"
+    },
+    {
+      "source": "notes/matching/matching-and-weighting.qmd",
+      "target": "notes/matching/weightit-entropy-balancing-notes.qmd",
+      "kind": "internal"
     },
     {
       "source": "notes/matching/matching-teaching-data.qmd",
