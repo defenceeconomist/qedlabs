@@ -11,9 +11,10 @@ toc: false
 
 # Build the design before you estimate
 
-Quasi-Experimental Design Labs organizes working material for quasi-experimental evaluation into two practical routes: concise method notes and worksheet-style labs. The aim is to move from method selection to design discipline without losing the thread of the original policy question.
+Quasi-Experimental Design Labs organizes working material for quasi-experimental evaluation into three practical routes. Use slides for the shortest overview, notes for the detailed method explanation, and labs for code and workflows you can run yourself.
 
 ::: {.cta-row}
+[Start with Slides](slides/index.qmd){.cta-button}
 [Start with Notes](notes/index.qmd){.cta-button}
 [Open Labs](labs/index.qmd){.cta-button .secondary}
 :::

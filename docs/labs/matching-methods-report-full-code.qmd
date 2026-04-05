@@ -1,0 +1,20 @@
+---
+title: "Matching and Weighting for Causal Inference: Full Code"
+format:
+  html:
+    toc: false
+execute:
+  echo: false
+  eval: true
+  warning: false
+  message: false
+---
+
+This document contains the complete R code extracted from `matching-methods-report.qmd`.
+
+```{r}
+#| results: asis
+cat("```r\n")
+cat(readLines("matching-methods-report-full-code.R"), sep = "\n")
+cat("\n```")
+```

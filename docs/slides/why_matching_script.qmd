@@ -1,0 +1,145 @@
+---
+title: "Why Matching Presenter Script"
+subtitle: "A fuller talk track for the concept deck"
+format:
+  html:
+    toc: true
+    toc-depth: 2
+    code-links:
+      - text: Why We Do Matching deck
+        href: why_matching.html
+      - text: Matching and Weighting notes
+        href: ../notes/matching/matching-and-weighting.html
+execute:
+  echo: false
+  eval: false
+---
+
+## How To Use This Script
+
+Use this page when you want a fuller spoken version of the deck rather than cue cards.
+
+- Read it once or twice to get the flow into your ear.
+- Trim examples or transitions if you need to get under `20` minutes.
+
+## Slide-By-Slide Script
+
+### Title Slide
+
+Today I want to explain why matching exists before we talk about any specific matching algorithm. The main point is that matching is a response to a causal-design problem. It is not a magic software move and it is not a badge that makes observational data behave like an experiment.
+
+### Session Promise
+
+This deck starts from the missing counterfactual,^[A `counterfactual` is the outcome that would have happened to the same unit under the treatment state it did not receive.] then moves through confounding, and only then arrives at matching. That order matters. If we start with software, matching can look like a technical trick. If we start with causal inference,^[`Causal inference` is the task of estimating what effect a treatment or intervention had, rather than just describing associations in the data.] matching looks like what it really is: an attempt to build a more credible comparison group.
+
+### 20-Minute Arc
+
+The structure is simple. First, I will explain the basic counterfactual problem and why causal inference always needs a comparison group. Second, I will show why randomization is the clearest benchmark and why observational comparisons usually fail. Third, I will explain what matching is trying to repair, and then I will end with the assumptions and limits that still remain.
+
+### Start With The Fundamental Problem
+
+For any unit, there are two potential outcomes: one if the unit receives treatment and one if it does not. The problem is that we only ever observe one of those outcomes for each unit. The other one is missing. That missing value is the counterfactual, and causal inference is the task of finding a credible stand-in for it.
+
+### Why We Need A Comparison Group
+
+That is why every causal design is, at bottom, a comparison-group problem. We observe what happened under the treatment state the unit actually received, but we do not observe what would have happened under the alternative state. So the design task is always to build or find a comparison group that is credible enough to stand in for that missing outcome.
+
+### Best Benchmark: Randomization
+
+The cleanest benchmark is randomization.^[`Randomization` means treatment is assigned by chance rather than by choice, need, or other characteristics. This helps break the link between treatment status and pre-treatment differences.] If treatment is randomized, then treated and untreated groups are comparable in expectation before treatment begins. That is why randomized controlled trials^[A `randomized controlled trial` or `RCT` is a study where units are randomly assigned to treatment or control.] are the clearest benchmark for causal comparison quality. But they are still a benchmark, not magic: attrition,^[`Attrition` means units drop out or disappear from the study after assignment.] noncompliance,^[`Noncompliance` means some units do not follow the treatment status they were assigned.] and external-validity^[`External validity` is the extent to which a result generalizes beyond the sample or setting studied.] problems can still matter.
+
+### Why Matching Enters The Story
+
+Matching only enters because many important policy and programme questions are not randomized. Treatment has already happened, and the comparison group is not automatically credible. In those settings, matching is a second-best design repair. The job is to recover the best comparison the data can still defend when a stronger design is not available.
+
+### Why Raw Comparisons Mislead
+
+The core problem in observational data is that treatment is usually related to prior characteristics. People who get treated may differ from controls before treatment starts, and those same differences may also affect the outcome. That means the raw treated-control gap is usually mixing together the effect of treatment and the effect of pre-existing differences.
+
+### The Confounder Problem
+
+That mixture is what we call confounding.^[`Confounding` means the observed treatment-outcome relationship is partly driven by other variables that affect both treatment and outcome.] A confounder^[A `confounder` is a variable that influences both whether a unit gets treatment and what outcome it has.] is a common cause of treatment and outcome. Once that common-cause path exists, the observed association between treatment and outcome is no longer a clean causal effect. Association and causation separate because part of the relationship is being driven by selection into treatment.
+
+### Backdoor Path
+
+This slide shows the basic structure. `Prior need` affects who gets treatment, and it also affects the outcome. So if I compare treated and untreated units without addressing `Prior need`, I am not just comparing treatment states. I am also comparing units that entered the analysis with different baseline levels of need. That is the backdoor^[A `backdoor path` is a non-causal path connecting treatment and outcome through a common cause. It must be blocked to isolate the causal path.] problem matching is trying to repair.
+
+### What This Means For Design
+
+Once we see that structure, the design requirement becomes clearer. If treated and untreated units differ on `Prior need`, then the raw outcome gap is confounded. Part of the gap reflects pre-treatment selection and not only treatment. The direction of the bias depends on how `Prior need` affects the outcome, which is why it is safer to say the raw gap is confounded than to claim a fixed bias direction.
+
+### Block The Backdoor
+
+The design goal is to block that backdoor path by conditioning on the right pre-treatment variables. Regression can do this, matching can do this, subclassification can do this, and weighting can do this. The methods differ in implementation, but the causal target is the same: compare treated and untreated units after the confounding path has been addressed.
+
+### Matching In One Sentence
+
+So the shortest defensible definition of matching is this: matching compares treated units with untreated units that are similar on relevant observed pre-treatment covariates.^[`Covariates` are characteristics of the units being studied, such as age, prior income, baseline health, or geography.] The important words there are `relevant`, `observed`, and `pre-treatment`. Matching is a design tool for reducing observed confounding. It is not a guarantee that all confounding has disappeared.
+
+### Why Match?
+
+The strongest practical reason to match is not just that imbalance looks ugly. It is that imbalance creates model dependence.^[`Model dependence` means the estimated effect changes a lot depending on the statistical model specification the analyst chooses.] If treated and control units are far apart in covariate space,^[`Covariate space` means the multidimensional pattern formed by all the variables used to describe each unit.] the estimate depends heavily on modeling choices, functional form,^[`Functional form` means the mathematical shape the model assumes, such as linear, curved, or involving interactions.] and extrapolation.^[`Extrapolation` means the model is effectively guessing outcomes for combinations of characteristics that are poorly represented or absent in the data.] Matching helps by removing or down-weighting the least credible comparisons before the model summarizes the data.
+
+### Why Matching Appeals In Practice
+
+That is why matching is attractive in applied work. It makes the comparison group more visible, it reduces hidden extrapolation, and it forces design diagnostics into the open. Instead of pretending a coefficient alone settles the question, matching makes the analyst show who is actually being compared to whom and what that costs in terms of retention or weights.
+
+### Design In Two Steps
+
+The cleanest way to think about matching is as a two-step workflow. First, preprocess the design: define the estimand,^[An `estimand` is the causal quantity you want to learn about, such as the average treatment effect for treated units.] choose covariates from the assignment story, inspect imbalance and overlap,^[`Overlap` means treated and untreated units with similar characteristics both exist in the data, so a comparison is actually possible.] and then adjust the design. Second, estimate the effect on the redesigned sample or weighting scheme.^[`Weighting` means giving some observations more influence and others less influence in order to build a more comparable treated-control contrast.] That split helps keep design decisions separate from outcome-model fishing.
+
+### From Subclassification To Matching
+
+Subclassification^[`Subclassification` means dividing the sample into groups, or strata, based on observed characteristics and comparing treated and untreated units within those groups.] is the clearest starting point for the logic. If you can compare treated and untreated units within the same covariate-defined strata,^[`Strata` are the subgroups created by that classification step.] the causal story is intuitive. Exact matching is the strict version of that rule. Approximate matching methods are ways of relaxing exact equality when the data become too sparse, but the underlying idea stays the same: compare like with like.
+
+### The Curse Of Dimensionality
+
+The difficulty is that once many covariates matter at once, exact strata multiply very quickly. Cells become tiny or empty, and overlap disappears for some parts of the treated group. That is why matching methods exist in the first place. The causal logic is simple, but realistic data rarely support exact comparisons everywhere we would like them to.
+
+### Good Controls, Not All Controls
+
+At that point, variable choice becomes central. The question is not simply which baseline variables are available. The real question is which variables help block confounding without opening new problems. Matching should target plausible pre-treatment common causes. It should not become a kitchen-sink exercise that throws in every measured variable without a causal story.
+
+### Collider Warning
+
+This is where bad controls matter. A collider^[A `collider` is a variable caused by two other variables. Conditioning on it can create a misleading association between those causes.] is not a confounder. If two variables both cause a third variable and we condition on that third variable, we can create a spurious^[`Spurious` means false or misleading rather than genuinely causal.] relationship that did not exist before. So even a pre-treatment variable is not automatically safe just because it was measured early. Causal reasoning has to come before software.
+
+### What Matching Is Buying
+
+What matching buys us is design improvement, not proof. It can reduce observed baseline imbalance, make overlap problems visible, and force the analyst to report design costs more plainly. Those are real gains. But they are gains in the quality and transparency of the comparison, not automatic identification guarantees.
+
+### Matching And Weighting Are Siblings
+
+It is also helpful to see matching and weighting as siblings. Matching changes who remains in the sample. Weighting changes how much each unit counts in the comparison. Both are trying to solve the same underlying problem, and many matching estimators^[An `estimator` is the rule or formula used to turn data into an effect estimate.] can be understood as weighted averages rather than as mysterious black-box procedures.
+
+### One Logic, Several Implementations
+
+That is why regression, matching, stratification, and weighting belong in the same conceptual family. They are different implementations of the same larger idea: compare treated and untreated units after blocking backdoor paths with observed covariates. Once you understand that shared logic, the methods menu becomes much easier to navigate.
+
+### Matching Is Still About Assumptions
+
+None of this removes the core assumptions. Matching still relies on no important unmeasured confounders,^[An `unmeasured confounder` is a common cause of treatment and outcome that is not observed in the data and therefore cannot be adjusted for directly.] usable overlap, actual balance^[`Balance` means treated and untreated groups look similar on the observed covariates after adjustment.] on observed covariates after adjustment, and a stable estimand that still answers the original question. Matching can improve design, but it cannot make these assumptions disappear.
+
+### What Matching Cannot Do
+
+That means matching has hard limits. It cannot fix omitted confounding, it cannot rescue units for which no comparable controls exist, and it cannot justify bad controls. Most importantly, it cannot convert observational data into randomized data. If the design problem is too severe, matching does not erase that fact.
+
+### When Not To Match
+
+So we should not default to matching just because it is available in software. If a stronger design such as a randomized experiment, `RDD`,^[`RDD` stands for `regression discontinuity design`, a design that identifies causal effects using a cutoff rule for treatment assignment.] or credible `DiD`^[`DiD` stands for `difference-in-differences`, a design that compares changes over time between treated and untreated groups.] is available, use that instead. And if overlap is so weak that only severe pruning^[`Pruning` means dropping units that do not have credible counterparts in the other treatment group.] or extreme weights make the design work, that is a substantive warning about what the data can support.
+
+### Why We Still Do It
+
+Even with those warnings, we still do matching because many important questions are observational and policy-relevant. Regression alone can hide the comparison problem rather than expose it. Matching makes the counterfactual argument more visible and can reduce dependence on pure model form, even when it cannot eliminate all uncertainty.
+
+### Practical Standard
+
+So the practical standard is straightforward. Define the estimand first. Choose covariates from the assignment story. Inspect imbalance and overlap. Match or weight as a design step. Estimate only after the adjusted design is credible enough to defend, and then follow that with uncertainty checks and sensitivity checks rather than treating the estimate as self-validating.
+
+### What The Lab Focuses On
+
+In the lab, we narrow the menu on purpose. We focus on exact matching as the transparency benchmark, coarsened exact matching,^[`Coarsened exact matching` groups continuous variables into bins first and then performs exact matching on those coarsened versions.] as the main approximate matching method, and entropy balancing^[`Entropy balancing` is a weighting method that chooses weights so selected covariate moments balance exactly across groups.] as the weighting comparison. We do not center nearest-neighbor propensity-score matching^[`Propensity-score matching` first estimates each unit's probability of treatment given observed covariates, then uses that score to build comparisons.] or the full advanced `MatchIt` method menu on the first pass. That narrower scope keeps the design rule visible, and people who want the broader menu can use the official [MatchIt documentation](https://kosukeimai.github.io/MatchIt/).
+
+### Closing Line
+
+The line I want to leave in the room is simple: we do matching to reduce observed confounding by building a more credible comparison group, while staying honest that causality still depends on assumptions the data cannot prove. If the audience remembers that sentence, the deck has done its job.

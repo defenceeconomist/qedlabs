@@ -4,6 +4,8 @@
 .quarto/
 docs/.quarto/
 docs/_site/
+data/
+docs/data/
 
 # Editor and notebook noise
 .Rproj.user/

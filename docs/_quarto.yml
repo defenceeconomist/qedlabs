@@ -6,6 +6,7 @@ project:
     - notes/index.qmd
     - notes/**/*.qmd
     - labs/*.qmd
+    - slides/*.qmd
   pre-render:
     - python3 scripts/extract_link_graph.py --output data/notes_link_graph_payload.json --include-prefix notes/
   resources:
@@ -20,6 +21,12 @@ website:
         text: Notes
       - href: labs/index.qmd
         text: Labs
+      - href: slides/index.qmd
+        text: Slides
+    right:
+      - icon: github
+        href: https://github.com/defenceeconomist/qedlabs
+        aria-label: GitHub repository
   sidebar:
     - id: notes
       title: "Notes"
@@ -76,6 +83,8 @@ website:
           text: Labs Overview
         - section: Matching
           contents:
+            - href: labs/matching-methods-report.qmd
+              text: Matching Methods Report
             - href: labs/lalonde-matching-lab.qmd
               text: LaLonde Matching Lab
             - href: labs/black-politicians-lab.qmd
@@ -90,6 +99,19 @@ website:
               text: Synthetic Control Design Lab
             - href: labs/synthetic-control-donor-pool-lab.qmd
               text: Synthetic Control Donor Pool Lab
+    - id: slides
+      title: "Slides"
+      style: docked
+      search: true
+      contents:
+        - href: slides/index.qmd
+          text: Slides Overview
+        - href: slides/why_matching.qmd
+          text: Why We Do Matching
+        - href: slides/why_matching_script.qmd
+          text: Why Matching Presenter Script
+        - href: slides/scm.qmd
+          text: Synthetic Control Slides
 
 format:
   html:

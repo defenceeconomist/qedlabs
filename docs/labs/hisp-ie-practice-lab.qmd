@@ -17,18 +17,18 @@ Use this page as a guided replication worksheet for the HISP case-study material
 - Use the in-page code blocks as the primary worksheet sequence in this repo.
 
 ::: {.callout-note}
-Unlike the other labs in this repository, this page is organized to follow the logic of `docs/data/hisp_ie_in_practice/HISP Book replication.do` as closely as possible. The aim is to translate that Stata workflow into R, not to rewrite it into a different teaching sequence.
+Unlike the other labs in this repository, this page is organized to follow the logic of the original HISP replication do-file as closely as possible. The aim is to translate that workflow into R, not to rewrite it into a different teaching sequence.
 :::
 
 ## Source Baseline
 
-This lab uses the tracked build bundle in `docs/data/hisp_ie_in_practice`:
+This lab no longer ships a tracked data bundle in the repository. To run the worksheet end to end, point it at an external HISP data folder that contains:
 
-- primary workflow baseline: [HISP Book replication.do](../data/hisp_ie_in_practice/HISP%20Book%20replication.do)
-- Stata input dataset: [evaluation.dta](../data/hisp_ie_in_practice/evaluation.dta)
-- CSV analysis dataset used for rendering: [evaluation.csv](../data/hisp_ie_in_practice/evaluation.csv)
+- `HISP Book replication.do`
+- `evaluation.dta`
+- `evaluation.csv`
 
-The renderable bundle lives under `docs/` so the site can build without depending on ignored raw-data paths in the repository root.
+Set `HISP_IE_DATA_DIR` to that folder before running the code locally. The site keeps the worksheet structure, but it does not bundle the underlying HISP files.
 
 ## Step 1: Convert The Stata Files And Load The HISP Data
 
@@ -58,7 +58,7 @@ if (length(missing_packages) > 0) {
 
 invisible(lapply(required_packages, library, character.only = TRUE))
 
-data_dir <- "../data/hisp_ie_in_practice"
+data_dir <- Sys.getenv("HISP_IE_DATA_DIR", unset = "PATH/TO/hisp_ie_in_practice")
 dta_files <- list.files(data_dir, pattern = "[.]dta$", full.names = TRUE)
 
 csv_export_manifest <- dplyr::bind_rows(lapply(dta_files, function(dta_path) {
@@ -111,8 +111,8 @@ dat |>
 
 Checkpoint:
 
-- Does the tracked `evaluation.csv` keep the same `19,827` rows and `22` columns as the Stata source?
-- If any CSV file was missing, did the export manifest recreate it from the bundled `.dta` file?
+- Does your external `evaluation.csv` keep the same `19,827` rows and `22` columns as the Stata source?
+- If any CSV file was missing, did the export manifest recreate it from the `.dta` file in your local bundle?
 
 ## Step 2: Method 1, Before-After Among Enrolled Households
 

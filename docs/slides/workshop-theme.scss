@@ -1,0 +1,293 @@
+/*-- scss:defaults --*/
+$body-bg: #f7f1e8;
+$body-color: #112620;
+$link-color: #0f6a57;
+$presentation-heading-color: #112620;
+$presentation-heading-font: "Avenir Next", "Trebuchet MS", "Helvetica Neue", sans-serif;
+$font-family-sans-serif: "Avenir Next", "Trebuchet MS", "Helvetica Neue", sans-serif;
+$presentation-font-size-root: 34px;
+$code-color: #112620;
+
+/*-- scss:rules --*/
+:root {
+  --deck-ink: #112620;
+  --deck-deep: #17372f;
+  --deck-accent: #c05a2a;
+  --deck-gold: #c59b3d;
+  --deck-soft: #f7f1e8;
+  --deck-card: rgba(255, 255, 255, 0.8);
+  --deck-muted: #4b615b;
+}
+
+.reveal {
+  font-family: "Avenir Next", "Trebuchet MS", "Helvetica Neue", sans-serif;
+  color: var(--deck-ink);
+}
+
+.reveal .slide-background-content {
+  background:
+    radial-gradient(circle at top left, rgba(192, 90, 42, 0.16), transparent 30%),
+    radial-gradient(circle at bottom right, rgba(23, 55, 47, 0.14), transparent 34%),
+    linear-gradient(135deg, #f9f4ec 0%, #f2e7d6 100%);
+}
+
+.reveal .slides {
+  text-align: left;
+}
+
+.reveal .slides section {
+  padding: 1rem 1.6rem;
+}
+
+.reveal #title-slide {
+  background:
+    radial-gradient(circle at top left, rgba(242, 231, 214, 0.15), transparent 35%),
+    linear-gradient(135deg, #14342c 0%, #1d4c41 58%, #b05225 100%);
+  color: #fff8ef;
+  padding: 2rem 2.2rem;
+  text-align: left;
+}
+
+.reveal #title-slide h1,
+.reveal #title-slide h2,
+.reveal #title-slide h3,
+.reveal #title-slide p,
+.reveal #title-slide .quarto-title-author-name,
+.reveal #title-slide .date {
+  color: #fff8ef;
+}
+
+.reveal #title-slide h1 {
+  font-size: 2.15em;
+  letter-spacing: 0.02em;
+  margin-bottom: 0.18em;
+}
+
+.reveal #title-slide .subtitle {
+  font-size: 1.05em;
+  max-width: 18em;
+}
+
+.reveal .slides section.section-slide {
+  background:
+    radial-gradient(circle at top right, rgba(247, 241, 232, 0.12), transparent 30%),
+    linear-gradient(140deg, #102822 0%, #22453d 58%, #c05a2a 120%);
+  color: #fff8ef;
+  padding: 2rem 2.3rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.reveal .slides section.section-slide h2,
+.reveal .slides section.section-slide p,
+.reveal .slides section.section-slide li {
+  color: #fff8ef;
+}
+
+.reveal .slides section.section-slide code {
+  background: rgba(255, 248, 239, 0.16);
+  color: #fff8ef;
+  border: 1px solid rgba(255, 248, 239, 0.2);
+}
+
+.reveal h2 {
+  font-size: 1.45em;
+  margin-bottom: 0.45em;
+  letter-spacing: 0.01em;
+}
+
+.reveal h3 {
+  font-size: 0.78em;
+  margin-bottom: 0.45em;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--deck-muted);
+}
+
+.reveal p,
+.reveal li {
+  font-size: 0.78em;
+  line-height: 1.32;
+}
+
+.reveal strong {
+  color: var(--deck-deep);
+}
+
+.reveal a {
+  color: #0f6a57;
+  text-decoration-thickness: 0.08em;
+}
+
+.reveal ul,
+.reveal ol {
+  margin-left: 1.05em;
+}
+
+.reveal li {
+  margin-bottom: 0.24em;
+}
+
+.reveal table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.65em;
+  margin-top: 0.35em;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 18px 38px rgba(17, 38, 32, 0.08);
+}
+
+.reveal table th {
+  background: var(--deck-deep);
+  color: #fff8ef;
+  padding: 0.65em 0.75em;
+  border: 0;
+}
+
+.reveal table td {
+  background: rgba(255, 255, 255, 0.72);
+  padding: 0.65em 0.75em;
+  border: 0;
+  border-top: 1px solid rgba(17, 38, 32, 0.08);
+}
+
+.reveal table tr:nth-child(even) td {
+  background: rgba(244, 235, 222, 0.88);
+}
+
+.reveal code {
+  background: rgba(23, 55, 47, 0.08);
+  color: var(--deck-deep);
+  padding: 0.1em 0.28em;
+  border-radius: 0.32em;
+}
+
+.reveal .kicker {
+  font-size: 1.18em;
+  line-height: 1.18;
+  max-width: 15em;
+  margin: 0.1em 0 0.7em;
+  color: var(--deck-deep);
+  font-weight: 700;
+}
+
+.reveal .signal {
+  font-size: 1.18em;
+  line-height: 1.18;
+  max-width: 16em;
+  margin: 0.15em 0 0.75em;
+  color: var(--deck-deep);
+  font-weight: 700;
+}
+
+.reveal .card-grid,
+.reveal .metric-grid,
+.reveal .lab-grid,
+.reveal .hero-grid {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.reveal .card-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.reveal .metric-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.reveal .lab-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.reveal .hero-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: stretch;
+}
+
+.reveal .mini-card,
+.reveal .metric-card,
+.reveal .lab-card,
+.reveal .hero-card {
+  background: var(--deck-card);
+  border-radius: 22px;
+  padding: 1.05rem 1.1rem;
+  box-shadow: 0 20px 40px rgba(17, 38, 32, 0.08);
+  border: 1px solid rgba(17, 38, 32, 0.08);
+}
+
+.reveal .mini-card {
+  border-top: 6px solid var(--deck-accent);
+}
+
+.reveal .metric-card {
+  border-top: 6px solid var(--deck-gold);
+}
+
+.reveal .lab-card {
+  border-top: 6px solid var(--deck-deep);
+}
+
+.reveal .hero-card {
+  border-top: 8px solid var(--deck-accent);
+  min-height: 100%;
+}
+
+.reveal .placeholder-card {
+  border-top-color: var(--deck-gold);
+}
+
+.reveal .mini-card p:last-child,
+.reveal .metric-card p:last-child,
+.reveal .lab-card p:last-child,
+.reveal .hero-card p:last-child,
+.reveal .mini-card ul:last-child,
+.reveal .metric-card ul:last-child,
+.reveal .lab-card ul:last-child,
+.reveal .hero-card ul:last-child {
+  margin-bottom: 0;
+}
+
+.reveal .hero-card h3 {
+  font-size: 1em;
+  letter-spacing: 0.01em;
+  text-transform: none;
+  color: var(--deck-ink);
+  margin-top: 0.35rem;
+}
+
+.reveal .hero-tag {
+  display: inline-block;
+  padding: 0.18rem 0.5rem;
+  border-radius: 999px;
+  background: rgba(23, 55, 47, 0.08);
+  color: var(--deck-deep);
+  font-size: 0.52em;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.reveal .small-note {
+  margin-top: 0.55rem;
+  font-size: 0.58em;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--deck-muted);
+}
+
+.reveal .quarto-footer {
+  color: rgba(17, 38, 32, 0.7);
+}
+
+@media (max-width: 900px) {
+  .reveal .card-grid,
+  .reveal .metric-grid,
+  .reveal .lab-grid,
+  .reveal .hero-grid {
+    grid-template-columns: 1fr;
+  }
+}

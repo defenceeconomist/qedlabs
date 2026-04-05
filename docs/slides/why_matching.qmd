@@ -1,0 +1,620 @@
+---
+title: "Why We Do Matching"
+subtitle: "A causal-inference deck on confounding, comparability, and design"
+author: "Luke Heley"
+date: 9 March 2026
+bibliography: references.bib
+format:
+  html:
+    toc: true
+    toc-depth: 2
+  revealjs:
+    output-file: why_matching-revealjs.html
+    theme: [white, workshop-theme.scss]
+    slide-level: 2
+    slide-number: c/t
+    progress: true
+    controls: true
+    overview: true
+    transition: fade
+    center: false
+    width: 1400
+    height: 850
+    footer: '<a href="../index.html">Back to site</a>'
+    preview-links: auto
+execute:
+  echo: false
+  eval: false
+---
+
+## Session Promise
+
+::: {.kicker}
+This short deck explains why matching exists before it explains any specific matching algorithm.
+:::
+
+- start from the counterfactual problem
+- show how confounding distorts raw comparisons
+- explain why matching is a design-stage attempt to improve comparability
+- keep the limits explicit throughout [@cunningham2021mixtape; @huntingtonklein_matching]
+
+## 20-Minute Arc
+
+| Time | Segment | Purpose |
+|---|---|---|
+| `0-4` | Counterfactual problem | Why causal inference needs a comparison group |
+| `4-8` | Benchmark comparison | Why randomization is the clearest comparison |
+| `8-12` | Confounding | Why raw observational comparisons fail |
+| `12-16` | Matching logic | What matching is trying to repair |
+| `14-18` | Assumptions and limits | What matching cannot do |
+| `18-20` | Practical takeaway | How to use matching responsibly |
+
+## Start With The Fundamental Problem
+
+- each unit has a treated potential outcome and an untreated potential outcome
+- we only observe one of them for any given unit
+- the missing outcome is the counterfactual
+- causal inference is the problem of constructing a credible stand-in for that missing outcome [@cunningham2021mixtape]
+
+## Why We Need A Comparison Group
+
+::: {.card-grid}
+::: {.mini-card}
+**Observed outcome**
+
+What happened under the treatment state actually received.
+:::
+
+::: {.mini-card}
+**Missing outcome**
+
+What would have happened under the alternative treatment state.
+:::
+
+::: {.mini-card}
+**Design task**
+
+Build a comparison group that is credible enough to stand in for the missing outcome.
+:::
+:::
+
+## Best Benchmark: Randomization
+
+- if treatment is randomized, the treated and untreated groups are comparable in expectation
+- that is why `RCT`s are the clearest benchmark for causal comparison quality
+- but `RCT`s are a benchmark, not magic: attrition, noncompliance, and external validity still matter [@heiss2026_randomization_matching_content]
+
+## Why Matching Enters The Story
+
+- in many policy settings, treatment was not randomized
+- the comparison group is therefore not automatically credible
+- matching matters because it is a second-best design repair when stronger design features are unavailable
+- the job is to recover the best comparison the data can still defend [@cunningham2021mixtape; @huntingtonklein_matching]
+
+## Dataset We Use: `lalonde`
+
+- the lab and report use `MatchIt::lalonde`, built from the National Supported Work training study with a non-experimental comparison group
+- this dataset became a benchmark because LaLonde showed that many non-experimental estimators missed the experimental training effect [@lalonde1986evaluating]
+- Dehejia and Wahba made it a matching case study by showing that better design choices could recover more credible estimates [@dehejia1999causal]
+- Abadie and Imbens kept it central in the matching literature because it is a disciplined test of how matching estimators behave when the benchmark is known [@abadie2011biascorrected]
+
+::: {.small-note}
+We use `lalonde` because it is not just convenient. It is a benchmark dataset for asking whether an observational design can get back to something close to the experimental answer.
+:::
+
+## Why Raw Comparisons Mislead
+
+- in observational data, treatment is usually related to prior characteristics
+- the treated group may differ from the untreated group before treatment starts
+- a raw difference in outcomes therefore combines:
+  - the effect of treatment
+  - the effect of pre-existing differences
+- that mixture is the basic confounding problem
+
+## The Confounder Problem
+
+- a confounder is a common cause of treatment and outcome
+- confounders create backdoor paths between treatment and outcome
+- if those paths remain open, the observed association is not a clean causal effect [@cunningham2021mixtape; @huntingtonklein_matching]
+
+```{r}
+#| label: setup-ggdag
+#| include: false
+#| eval: true
+suppressPackageStartupMessages({
+  library(dagitty)
+  library(dplyr)
+  library(ggdag)
+  library(ggplot2)
+  library(grid)
+})
+
+matching_palette <- c(
+  Confounder = "#A44A1A",
+  `Adjusted confounder` = "#7F6000",
+  Treatment = "#275D8A",
+  Outcome = "#4B7F52",
+  `Background factor` = "#6B5C7A",
+  Collider = "#A43D63",
+  Mediator = "#B65A1E"
+)
+
+slide_plot_background <- "#f7f1e8"
+dag_edge_color <- "#112620"
+
+plot_matching_dag <- function(dag, roles, label_x, label_y,
+                              xlim = c(0.7, 3.3), ylim = c(0.6, 2.4)) {
+  td <- tidy_dagitty(dag)
+  edges <- dplyr::filter(td$data, !is.na(to)) |>
+    dplyr::mutate(
+      dx = xend - x,
+      dy = yend - y,
+      dist = sqrt(dx^2 + dy^2),
+      pad = pmin(0.18, dist / 3),
+      x_plot = x + dx / dist * pad,
+      y_plot = y + dy / dist * pad,
+      xend_plot = xend - dx / dist * pad,
+      yend_plot = yend - dy / dist * pad
+    )
+  nodes <- dplyr::distinct(td$data, name, .keep_all = TRUE) |>
+    dplyr::mutate(
+      role = unname(roles[name]),
+      label_x = unname(label_x[name]),
+      label_y = unname(label_y[name])
+    )
+
+  ggplot() +
+    geom_segment(
+      data = edges,
+      aes(x = x_plot, y = y_plot, xend = xend_plot, yend = yend_plot),
+      arrow = arrow(type = "closed", angle = 22, length = unit(14, "pt")),
+      linewidth = 2.2,
+      color = dag_edge_color,
+      lineend = "round"
+    ) +
+    geom_dag_point(
+      data = nodes,
+      aes(x = x, y = y, color = role),
+      size = 18,
+      show.legend = FALSE
+    ) +
+    geom_label(
+      data = nodes,
+      aes(x = label_x, y = label_y, label = label, fill = role),
+      color = "white",
+      fontface = "bold",
+      linewidth = 0,
+      label.padding = unit(0.18, "lines"),
+      show.legend = FALSE
+    ) +
+    scale_color_manual(values = matching_palette) +
+    scale_fill_manual(values = matching_palette) +
+    coord_cartesian(xlim = xlim, ylim = ylim, clip = "off") +
+    theme_void() +
+    theme(
+      panel.background = element_rect(fill = slide_plot_background, color = NA),
+      plot.background = element_rect(fill = slide_plot_background, color = NA),
+      plot.margin = margin(10, 20, 10, 20)
+    )
+}
+
+backdoor_dag <- dagify(
+  outcome ~ treatment + prior_need,
+  treatment ~ prior_need,
+  exposure = "treatment",
+  outcome = "outcome",
+  labels = c(
+    prior_need = "Prior need",
+    treatment = "Treatment",
+    outcome = "Outcome"
+  ),
+  coords = list(
+    x = c(prior_need = 1, treatment = 2, outcome = 3),
+    y = c(prior_need = 2, treatment = 1, outcome = 1)
+  )
+)
+
+blocked_backdoor_dag <- dagify(
+  outcome ~ treatment + prior_need,
+  treatment ~ prior_need,
+  exposure = "treatment",
+  outcome = "outcome",
+  labels = c(
+    prior_need = "Condition on prior need",
+    treatment = "Treatment",
+    outcome = "Outcome"
+  ),
+  coords = list(
+    x = c(prior_need = 1, treatment = 2, outcome = 3),
+    y = c(prior_need = 2, treatment = 1, outcome = 1)
+  )
+)
+
+collider_dag <- dagify(
+  earnings ~ programme + admin_capacity,
+  application_complete ~ motivation + admin_capacity,
+  programme ~ motivation,
+  exposure = "programme",
+  outcome = "earnings",
+  labels = c(
+    motivation = "Motivation",
+    programme = "Programme",
+    application_complete = "Application complete",
+    admin_capacity = "Administrative capacity",
+    earnings = "Earnings"
+  ),
+  coords = list(
+    x = c(motivation = 1, programme = 2, application_complete = 2, admin_capacity = 3, earnings = 4),
+    y = c(motivation = 2, programme = 2, application_complete = 1, admin_capacity = 2, earnings = 2)
+  )
+)
+
+mediator_dag <- dagify(
+  earnings ~ programme + prior_need + skill_gain,
+  programme ~ prior_need,
+  skill_gain ~ programme,
+  exposure = "programme",
+  outcome = "earnings",
+  labels = c(
+    prior_need = "Prior need",
+    programme = "Programme",
+    skill_gain = "Skill gain after programme",
+    earnings = "Earnings"
+  ),
+  coords = list(
+    x = c(prior_need = 1, programme = 2, skill_gain = 3, earnings = 4),
+    y = c(prior_need = 2, programme = 2, skill_gain = 1, earnings = 2)
+  )
+)
+```
+
+## Backdoor Path
+
+```{r}
+#| label: fig-backdoor-path
+#| echo: false
+#| eval: true
+#| warning: false
+#| fig-width: 7.6
+#| fig-height: 3.9
+#| out-width: 78%
+#| fig-align: center
+plot_matching_dag(
+  backdoor_dag,
+  roles = c(
+    prior_need = "Confounder",
+    treatment = "Treatment",
+    outcome = "Outcome"
+  ),
+  label_x = c(prior_need = 1.02, treatment = 2.22, outcome = 2.98),
+  label_y = c(prior_need = 1.76, treatment = 1.18, outcome = 0.80)
+)
+```
+
+- this is the core confounding case: `D <- X -> Y`
+- `Prior need` is a common cause of treatment and outcome
+- the raw treated-control gap mixes treatment effects with selection [@mixtape_sessions_unconfoundedness]
+
+## What This Means For Design
+
+- if treated units differ from controls on `Prior need`^[`Prior need` means baseline disadvantage or need that existed before treatment, such as poorer health, lower prior earnings, or higher case severity.], the raw outcome gap is confounded
+- part of the observed gap then reflects pre-treatment selection, not just treatment
+- the direction of bias depends on whether `Prior need` raises or lowers the outcome
+- a credible design must block the backdoor path by conditioning on the right pre-treatment variables
+- this is the bridge from causal logic to matching logic [@cunningham2021mixtape]
+
+## Block The Backdoor
+
+```{r}
+#| label: fig-block-backdoor
+#| echo: false
+#| eval: true
+#| warning: false
+#| fig-width: 7.6
+#| fig-height: 3.9
+#| out-width: 78%
+#| fig-align: center
+plot_matching_dag(
+  blocked_backdoor_dag,
+  roles = c(
+    prior_need = "Adjusted confounder",
+    treatment = "Treatment",
+    outcome = "Outcome"
+  ),
+  label_x = c(prior_need = 1.12, treatment = 2.22, outcome = 2.98),
+  label_y = c(prior_need = 1.76, treatment = 1.18, outcome = 0.80)
+)
+```
+
+- once the confounder is conditioned on, the remaining open path is the causal path from treatment to outcome
+- regression, matching, subclassification, and weighting all aim at this same design goal
+- the methods differ in implementation, not in the underlying causal target [@mixtape_sessions_unconfoundedness]
+
+## Matching In One Sentence
+
+- matching tries to compare treated units with untreated units that are similar on relevant observed pre-treatment covariates
+- the aim is to make treatment status less entangled with baseline differences
+- matching is therefore a design tool for reducing observed confounding, not a guarantee of identification
+
+## Why Match?
+
+::: {.signal}
+Matching is useful because imbalance creates model dependence.
+:::
+
+- imbalance -> model dependence -> researcher discretion -> bias
+- raw mismatch forces the outcome model to extrapolate
+- extrapolation creates analyst discretion about specification
+- analyst discretion can move the estimate even when the causal story is unchanged
+- matching trims or down-weights the least credible comparisons first [@heiss2026_randomization_matching_content; @ho2007matching]
+
+## Why Matching Appeals In Practice
+
+::: {.card-grid}
+::: {.mini-card}
+**Visible comparisons**
+
+The analyst has to show who is being compared to whom.
+:::
+
+::: {.mini-card}
+**Less hidden extrapolation**
+
+The design leans less on functional-form assumptions alone.
+:::
+
+::: {.mini-card}
+**Explicit diagnostics**
+
+Balance, overlap, retention, and weights become reportable design costs.
+:::
+:::
+
+## Design In Two Steps
+
+::: {.lab-grid}
+::: {.lab-card}
+**1. Preprocess the design**
+
+- define the estimand
+- choose covariates from the assignment story
+- inspect imbalance and overlap
+- match or weight before estimating
+:::
+
+::: {.lab-card}
+**2. Estimate on the redesigned data**
+
+- use the matched sample or weights as the design
+- estimate the treatment effect after preprocessing
+- report uncertainty that reflects the adjusted design
+:::
+:::
+
+## From Subclassification To Matching
+
+- subclassification is the clearest starting point: compare treated and untreated units within the same covariate-defined strata
+- exact matching is the strict version of that logic
+- approximate matching relaxes exact equality when exact strata become too sparse
+- the underlying idea stays the same: compare like with like [@cunningham2021subclassification]
+
+## The Curse Of Dimensionality
+
+- once many covariates matter at once, exact strata proliferate
+- some cells become tiny or empty
+- overlap disappears for parts of the treated group
+- matching methods exist because the causal logic is simple, but the data rarely support simple exact comparisons everywhere [@cunningham2021subclassification]
+
+## Good Controls, Not All Controls
+
+- matching should target plausible pre-treatment confounders
+- not every available baseline variable belongs in the design
+- the right question is causal: which variables help block confounding without opening new problems?
+- this is where causal reasoning matters most
+- a pre-treatment common cause belongs in the design
+- a collider does not become safe just because it was measured before treatment
+- a post-treatment mediator does not belong in the matching design [@mixtape_sessions_unconfoundedness]
+
+## Collider Warning
+
+```{r}
+#| label: fig-collider-warning
+#| echo: false
+#| eval: true
+#| warning: false
+#| fig-width: 7.6
+#| fig-height: 3.9
+#| out-width: 78%
+#| fig-align: center
+plot_matching_dag(
+  collider_dag,
+  roles = c(
+    motivation = "Background factor",
+    programme = "Treatment",
+    application_complete = "Collider",
+    admin_capacity = "Background factor",
+    earnings = "Outcome"
+  ),
+  label_x = c(
+    motivation = 1.00,
+    programme = 2.05,
+    application_complete = 2.08,
+    admin_capacity = 3.00,
+    earnings = 4.02
+  ),
+  label_y = c(
+    motivation = 2.32,
+    programme = 2.30,
+    application_complete = 0.76,
+    admin_capacity = 2.32,
+    earnings = 2.30
+  ),
+  xlim = c(0.7, 4.3),
+  ylim = c(0.55, 2.55)
+)
+```
+
+- a collider is different from a confounder
+- if you condition on `Application complete`, you can open a non-causal path between treatment and outcome through upstream factors
+- this is why not every pre-treatment variable belongs in the design [@mixtape_sessions_unconfoundedness]
+
+## Post-Treatment Mediator Warning
+
+```{r}
+#| label: fig-mediator-warning
+#| echo: false
+#| eval: true
+#| warning: false
+#| fig-width: 7.6
+#| fig-height: 3.9
+#| out-width: 78%
+#| fig-align: center
+plot_matching_dag(
+  mediator_dag,
+  roles = c(
+    prior_need = "Confounder",
+    programme = "Treatment",
+    skill_gain = "Mediator",
+    earnings = "Outcome"
+  ),
+  label_x = c(prior_need = 1.00, programme = 2.06, skill_gain = 3.02, earnings = 4.00),
+  label_y = c(prior_need = 2.32, programme = 2.30, skill_gain = 0.74, earnings = 2.30),
+  xlim = c(0.7, 4.3),
+  ylim = c(0.55, 2.55)
+)
+```
+
+- if you condition on a post-treatment mediator, you block part of the treatment effect
+- that changes the estimand away from the total programme effect
+- mediators therefore do not belong in the design stage when the target is a total causal effect
+
+## What Matching Is Buying
+
+| Problem | What matching tries to improve |
+|---|---|
+| Baseline imbalance | More comparable treated and control units |
+| Opaque regression dependence | A clearer comparison rule |
+| Weak visibility on overlap | Explicit evidence on where support fails |
+| Hidden design costs | Retention and weighting costs that can be reported plainly |
+
+## Matching And Weighting Are Siblings
+
+- both are design-stage responses to the same comparison problem
+- matching changes who remains in the analytic sample
+- weighting changes how much each unit counts in the final comparison
+- many matching procedures can also be understood as weighted averages rather than as mysterious algorithms [@huntingtonklein_matching; @heiss2026_randomization_matching_content]
+
+## One Logic, Several Implementations
+
+::: {.card-grid}
+::: {.mini-card}
+**Regression**
+
+Compares outcomes conditional on observed covariates.
+:::
+
+::: {.mini-card}
+**Matching**
+
+Builds more comparable treated-control pairs or samples first.
+:::
+
+::: {.mini-card}
+**Stratification and weights**
+
+Take within-cell differences and aggregate them with weights.
+:::
+:::
+
+::: {.small-note}
+All are trying to estimate causal contrasts after blocking backdoor paths with observed covariates.
+:::
+
+## Matching Is Still About Assumptions
+
+::: {.metric-grid}
+::: {.metric-card}
+**Conditional independence**
+
+No important unmeasured confounders remain after conditioning.
+:::
+
+::: {.metric-card}
+**Common support**
+
+Comparable treated and untreated units must exist.
+:::
+
+::: {.metric-card}
+**Balance**
+
+Observed covariates should actually look similar after adjustment.
+:::
+
+::: {.metric-card}
+**Stable estimand**
+
+The design should still answer the question you started with.
+:::
+:::
+
+## What Matching Cannot Do
+
+- it cannot fix omitted confounding
+- it cannot rescue a design with no overlap
+- it cannot justify bad controls
+- it cannot turn observational data into randomized data
+- it should not be the default when a stronger design is available
+
+## When Not To Match
+
+- do not default to matching when a credible `RDD`, `DiD`, or randomized design is available
+- do not force matching when overlap is so weak that only severe pruning or extreme weights make the comparison work
+- do not pretend a matched design answers the original question if the estimand has drifted to a narrower subgroup
+
+## Why We Still Do It
+
+- many important programme and policy questions are observational
+- regression alone can hide the comparison problem rather than expose it
+- matching forces the analyst to defend the counterfactual more directly
+- even when imperfect, it can make a weak design more transparent and less model-dependent
+
+## Practical Standard
+
+- define the estimand first
+- choose covariates from the assignment story
+- inspect raw imbalance and overlap
+- match or weight as a design step
+- estimate only after the adjusted design is credible enough to defend
+- follow the main design with uncertainty checks and sensitivity checks
+- report the remaining limitations directly
+
+## What The Lab Focuses On
+
+::: {.lab-grid}
+::: {.lab-card}
+**We focus on**
+
+- exact matching as the transparency benchmark
+- coarsened exact matching as the main approximate matching method
+- entropy balancing as the weighting comparison
+:::
+
+::: {.lab-card}
+**We do not center**
+
+- nearest-neighbor propensity-score matching in the core lab
+- optimal, full, genetic, or other advanced matching variants
+- the full `MatchIt` method menu on a first pass
+:::
+:::
+
+::: {.small-note}
+This narrower scope keeps the design rule visible. For the broader implementation menu, see the [MatchIt documentation](https://kosukeimai.github.io/MatchIt/).
+:::
+
+## Closing Line
+
+::: {.signal}
+We do matching to reduce observed confounding by building a more credible comparison group, while remaining honest that causality still depends on assumptions the data cannot prove.
+:::

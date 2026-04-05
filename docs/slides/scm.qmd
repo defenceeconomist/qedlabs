@@ -1,0 +1,42 @@
+---
+title: "Synthetic Control Slides"
+subtitle: "Placeholder deck for the SCM sequence"
+format:
+  revealjs:
+    theme: [white, workshop-theme.scss]
+    slide-level: 2
+    slide-number: false
+    progress: true
+    controls: true
+    overview: true
+    transition: fade
+    center: false
+    width: 1400
+    height: 850
+    footer: '<a href="../index.html">Back to site</a>'
+    preview-links: auto
+execute:
+  echo: false
+  eval: false
+---
+
+## Deck Status
+
+::: {.hero-card .placeholder-card}
+<span class="hero-tag">Placeholder</span>
+
+### Synthetic Control Sequence
+
+This deck slot is reserved for the synthetic control concept sequence. It will become the short entry-point deck for donor-pool logic, counterfactual construction, diagnostics, and practical use.
+
+- next source material: [Synthetic Control notes](../notes/scm/synthetic-control.qmd)
+- next worked example: [Synthetic Control Design Lab](../labs/synthetic-control-design-lab.qmd)
+- next extension: [Synthetic Control Donor Pool Lab](../labs/synthetic-control-donor-pool-lab.qmd)
+:::
+
+## Planned Shape
+
+- start with the counterfactual construction problem
+- explain why donor-pool choice is the design bottleneck
+- show how pre-treatment fit disciplines the comparison
+- make the limits explicit: spillovers, anticipation, poor support, and overfitting

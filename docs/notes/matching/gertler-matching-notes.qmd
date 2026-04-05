@@ -12,7 +12,7 @@ format:
 
 ## Purpose
 
-These notes summarize Chapter 8 ("Matching") in *Impact Evaluation in Practice* using the recently extracted export in `data/evidencebase_exports/gertler_ch8/`. They are meant to capture the chapter's actual argument and worked examples rather than only the bookmark structure.
+These notes summarize Chapter 8 ("Matching") in *Impact Evaluation in Practice* using extracted source material from the chapter. They are meant to capture the chapter's actual argument and worked examples rather than only the bookmark structure.
 
 The aim here is to capture:
 
@@ -23,7 +23,6 @@ The aim here is to capture:
 
 ## Source Baseline
 
-- Source file in the export: `data/evidencebase_exports/gertler_ch8/`
 - Underlying source key: `evaluation/gertler_ch8.pdf`
 - Book metadata in the export:
   - *Impact Evaluation in Practice*

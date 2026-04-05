@@ -1,0 +1,62 @@
+---
+title: "Slides"
+page-layout: full
+toc: false
+---
+
+<div class="landing-stack">
+
+::: {.hero-panel .slides-intro}
+<span class="hero-eyebrow">Slides</span>
+
+# Short decks for the method sequence
+
+Use this section to open the teaching decks and talk tracks for each topic.
+:::
+
+## Slide Library {#slide-library .section-heading}
+
+<p class="section-intro">Each topic has one card. Use the RevealJS deck as the main entry point and the page view or notes as secondary references.</p>
+
+::: {.section-grid .slides-grid}
+::: {.section-card .slide-topic-card}
+<span class="page-badge badge-core">Matching</span>
+
+### Why We Do Matching
+
+Primary presentation deck for the matching sequence.
+
+[Open RevealJS deck](why_matching-revealjs.html){.topic-card-primary}
+
+::: {.topic-card-links}
+[Accessible slides page](why_matching.qmd){.topic-card-secondary}
+[Presenter notes](why_matching_script.qmd){.topic-card-secondary}
+:::
+
+::: {.card-meta}
+Use the accessible page when you want the outline and citations. Use the presenter notes for rehearsal or first delivery.
+:::
+:::
+
+::: {.section-card .slide-topic-card}
+<span class="page-badge badge-skeleton">Synthetic Control</span>
+
+### Synthetic Control
+
+Reserved slot for the SCM concept deck and follow-on talk track.
+
+[Open placeholder deck](scm.qmd){.topic-card-primary}
+
+::: {.topic-card-links}
+[Synthetic control notes](../notes/scm/synthetic-control.qmd){.topic-card-secondary}
+[Design lab](../labs/synthetic-control-design-lab.qmd){.topic-card-secondary}
+[Donor pool lab](../labs/synthetic-control-donor-pool-lab.qmd){.topic-card-secondary}
+:::
+
+::: {.card-meta}
+Build the RevealJS deck and presenter notes here next.
+:::
+:::
+:::
+ 
+</div>

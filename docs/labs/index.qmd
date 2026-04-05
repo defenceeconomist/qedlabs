@@ -26,6 +26,14 @@ This section collects worksheet-style pages for hands-on design work. Use it whe
 
 ::: {.section-grid}
 ::: {.section-card}
+<span class="page-badge badge-guide">Core report</span>
+
+### [Matching Methods Report](matching-methods-report.qmd)
+
+Long-form reference report on exact matching, `CEM`, and entropy balancing before you move into the shorter worksheet labs.
+:::
+
+::: {.section-card}
 <span class="page-badge badge-lab">Core lab</span>
 
 ### [LaLonde Matching Lab](lalonde-matching-lab.qmd)

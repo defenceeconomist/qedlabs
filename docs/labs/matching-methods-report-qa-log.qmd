@@ -1,0 +1,48 @@
+---
+title: "Quality Assurance Log: Matching Methods Report"
+subtitle: "Comparison Against MatchIt and WeightIt Documentation"
+date: "2026-03-06"
+format:
+  html:
+    toc: true
+execute:
+  echo: false
+  eval: false
+---
+
+## Scope
+
+- Report reviewed: `docs/labs/matching-methods-report.qmd`
+- Documentation baseline:
+  - `MatchIt` version `4.7.2` (`matchit`, `method_exact`, `method_cem`, `summary.matchit`)
+  - `WeightIt` version `1.5.1` (`weightit`, `method_ebal`, `glm_weightit`)
+- QA date: `2026-03-06`
+
+## Outcome Summary
+
+| Outcome | Count |
+|---|---:|
+| Checks passed | 8 |
+| Minor documentation-traceability gaps | 1 |
+| Material mismatches | 0 |
+
+No material inconsistencies were found between the report implementation/interpretation and the installed `MatchIt` and `WeightIt` documentation.
+
+## Detailed QA Log
+
+| ID | Report claim and location | Documentation comparison | Result | Action |
+|---|---|---|---|---|
+| M1 | `method = NULL` is used to create baseline, pre-adjustment diagnostics (`matching_methods_report.qmd:225-255`) | `MatchIt::matchit` documents that `method = NULL` performs no matching and can be used with `summary()` to inspect pre-match balance. Source: [matchit](https://kosukeimai.github.io/MatchIt/reference/matchit.html). | Pass | None |
+| M2 | Exact matching described as full-cross subclasses with non-overlap subclasses dropped (`matching_methods_report.qmd:290-324`) | `MatchIt::method_exact` describes exact matching exactly this way and warns that discarding can change precision/target population. Source: [method_exact](https://kosukeimai.github.io/MatchIt/reference/method_exact.html). | Pass | None |
+| M3 | CEM described as binning plus exact matching on coarsened covariates; report uses default and custom cutpoints (`matching_methods_report.qmd:388-423`) | `MatchIt::method_cem` confirms this behavior, including default `cutpoints = "sturges"` and support for `q#` quantile cutpoints. Source: [method_cem](https://kosukeimai.github.io/MatchIt/reference/method_cem.html). | Pass | None |
+| M4 | Iterative CEM tuning is framed as balancing covariate balance and retained sample size (`matching_methods_report.qmd:392, 470-574`) | `MatchIt::method_cem` recommends iterative adjustment of `grouping`/`cutpoints` until a balance-retention compromise is obtained. Source: [method_cem](https://kosukeimai.github.io/MatchIt/reference/method_cem.html). | Pass | None |
+| M5 | `summary(..., un = TRUE)` interpretation is used for unmatched and adjusted diagnostics (`matching_methods_report.qmd:235-247, 531-543`) | `summary.matchit` documents `un = TRUE` as inclusion of unmatched-sample balance and defines reported statistics (SMD, variance ratio, ECDF). Source: [summary.matchit](https://kosukeimai.github.io/MatchIt/reference/summary.matchit.html). | Pass | None |
+| W1 | For entropy balancing with binary treatment and `estimand = "ATT"`, treated units are focal and remain unweighted (`matching_methods_report.qmd:605-609`) | `WeightIt::weightit` states focal-group weights are set to 1 for ATT/ATC designs. Source: [weightit](https://ngreifer.github.io/WeightIt/reference/weightit.html). | Pass | None |
+| W2 | `method = "ebal"` is described as entropy optimization under exact balance constraints (`matching_methods_report.qmd:605-607`) | `WeightIt::method_ebal` defines entropy balancing as minimizing negative entropy subject to exact moment balance constraints and exact mean balance on included terms. Source: [method_ebal](https://ngreifer.github.io/WeightIt/reference/method_ebal.html). | Pass | None |
+| W3 | Default/tuned entropy-balancing controls (`moments`, `int`, `quantile`) are discussed as explicit tuning levers (`matching_methods_report.qmd:607, 675-677`) | `WeightIt::method_ebal` documents defaults (`moments = 1`, `int = FALSE`) and optional `quantile` constraints; interpretation in report is consistent. Source: [method_ebal](https://ngreifer.github.io/WeightIt/reference/method_ebal.html). | Pass | None |
+| W4 | Post-weighting effect model uses `lm_weightit()` to account for uncertainty from estimated weights (`matching_methods_report.qmd:752-772`) | `WeightIt::glm_weightit` documents that `glm_weightit()`/`lm_weightit()` compute covariance matrices that account for weight estimation when available. Source: [glm_weightit](https://ngreifer.github.io/WeightIt/reference/glm_weightit.html). | Pass | None |
+| D1 | Report citations for key package-behavior claims rely mostly on method papers and CRAN citation entries rather than direct doc-topic links (`matching_methods_report.qmd` throughout) | Technically valid, but less auditable for package-default and argument-specific claims than direct documentation links. | Minor gap | Optional: add direct doc-topic citations/links in methods sections for `method = NULL`, `method = "cem"`, `method = "ebal"`, and `lm_weightit()`. |
+
+## QA Decision
+
+The report is **documentation-aligned** with `MatchIt 4.7.2` and `WeightIt 1.5.1` for the checked implementation and interpretation claims.

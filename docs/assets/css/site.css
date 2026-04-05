@@ -90,6 +90,26 @@ a {
   max-width: 44rem;
 }
 
+.slides-intro {
+  margin-bottom: 1.2rem;
+  padding: 1.25rem 1.4rem;
+}
+
+.slides-intro h1 {
+  font-size: clamp(1.5rem, 2vw, 2rem);
+  margin-bottom: 0.45rem;
+  max-width: 18ch;
+}
+
+.slides-intro .hero-eyebrow {
+  margin-bottom: 0.55rem;
+}
+
+.slides-intro p {
+  font-size: 0.98rem;
+  max-width: 38rem;
+}
+
 .cta-row {
   display: flex;
   flex-wrap: wrap;
@@ -182,6 +202,71 @@ a {
 
 .section-card ul li + li {
   margin-top: 0.15rem;
+}
+
+.slides-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.slide-topic-card {
+  background:
+    linear-gradient(180deg, rgba(232, 241, 248, 0.82) 0%, rgba(255, 255, 255, 0.98) 42%),
+    var(--site-panel);
+  border-color: rgba(15, 76, 129, 0.18);
+  box-shadow: 0 18px 36px rgba(15, 76, 129, 0.08);
+  padding: 1.2rem 1.2rem 1.1rem;
+}
+
+.slide-topic-card h3 {
+  font-size: 1.45rem;
+  margin-bottom: 0.45rem;
+}
+
+.slide-topic-card p {
+  margin-bottom: 0.75rem;
+}
+
+.topic-card-primary {
+  background: linear-gradient(135deg, #0f4c81 0%, #13639e 100%);
+  border-radius: 0.9rem;
+  box-shadow: 0 12px 28px rgba(15, 76, 129, 0.16);
+  color: #ffffff;
+  display: inline-flex;
+  font-weight: 700;
+  margin-bottom: 0.95rem;
+  padding: 0.8rem 1rem;
+  text-decoration: none;
+}
+
+.topic-card-primary:hover,
+.topic-card-primary:focus {
+  background: linear-gradient(135deg, #0c416d 0%, #105785 100%);
+  color: #ffffff;
+}
+
+.topic-card-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  margin-bottom: 0.75rem;
+}
+
+.topic-card-secondary {
+  background: rgba(15, 76, 129, 0.08);
+  border: 1px solid rgba(15, 76, 129, 0.14);
+  border-radius: 999px;
+  color: var(--site-accent);
+  display: inline-flex;
+  font-size: 0.94rem;
+  font-weight: 700;
+  padding: 0.45rem 0.72rem;
+  text-decoration: none;
+}
+
+.topic-card-secondary:hover,
+.topic-card-secondary:focus {
+  background: rgba(15, 76, 129, 0.14);
+  color: #0b3a63;
 }
 
 .page-badge {
@@ -299,5 +384,10 @@ a {
   .graph-section,
   .principle-banner {
     padding: 1rem;
+  }
+
+  .topic-card-primary {
+    width: 100%;
+    justify-content: center;
   }
 }
