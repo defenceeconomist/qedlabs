@@ -1,0 +1,232 @@
+---
+title: "Notes on The Mixtape: Synthetic Control"
+subtitle: "Detailed Study Notes for Chapter 10"
+author: "Luke Heley"
+date: 5 April 2026
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: false
+---
+
+## Purpose
+
+These are study notes on [*Causal Inference: The Mixtape*, Chapter 10 ("Synthetic Control")](https://mixtape.scunning.com/10-synthetic_control). They are meant to support understanding and recall rather than reproduce the chapter. The structure follows the source chapter so the notes can be read alongside it.
+
+The aim here is to capture:
+
+- the main idea of each section
+- why the section matters for causal inference
+- what conceptual traps to watch for
+- how the chapter connects to this repo's teaching materials
+
+## Source Baseline
+
+- Source: [The Mixtape, Chapter 10 - Synthetic Control](https://mixtape.scunning.com/10-synthetic_control)
+- Author: Scott Cunningham
+- Accessed for these notes: 5 April 2026
+- Current chapter sections observed in the live rendering:
+  - `10.1 Introducing the Comparative Case Study`
+  - `10.1.1 Cuba, Miami, and the Mariel Boatlift`
+  - `10.1.2 Picking synthetic controls`
+  - `10.1.3 Formalization`
+  - `10.1.4 California's Proposition 99`
+  - `10.1.5 Falsifications`
+  - `10.2 Prison Construction and Black Male Incarceration`
+  - `10.3 Conclusion`
+
+## Executive Summary
+
+- The chapter teaches synthetic control as a disciplined version of the comparative case study. Its core move is to replace hand-picked comparators with a transparent donor-weighting procedure that can be inspected, challenged, and diagnosed.
+- A recurring theme is that synthetic control does not remove judgment; it relocates judgment into donor-pool design, predictor choice, and falsification work. The optimizer matters, but the credibility of the design still depends on decisions the researcher makes before and around estimation.
+- The chapter is strongest when it moves from intuition to workflow. The California tobacco example makes the estimator legible, the inference section explains why placebo-based RMSPE comparisons matter, and the Texas prison example shows what it looks like to replicate a full SCM workflow rather than stop at one plot.
+- For this repo, the chapter is most useful as a bridge between the [Synthetic Control overview](synthetic-control.qmd), the [Synthetic Control Sources](synthetic-control-sources.qmd), and the practical SCM labs in `docs/labs/`.
+
+## Chapter Structure and Notes
+
+### 10.1 Introducing the Comparative Case Study
+
+Main idea:
+
+- The chapter introduces synthetic control as an answer to a comparative-case-study problem: how to construct a credible counterfactual for one treated aggregate unit when no single untreated unit looks convincing on its own.
+
+Why this matters:
+
+- This framing keeps the method anchored in causal design rather than in optimization mechanics.
+- It clarifies why SCM often appears in settings like states, cities, firms, or countries where treatment happens once and at a high level of aggregation.
+- It also shows why SCM is best understood as a refinement of case-comparison logic, not as a generic prediction algorithm.
+
+Key understanding points:
+
+- Comparative case studies often have compelling substantive narratives but weakly specified counterfactuals.
+- SCM improves that situation by choosing donor weights explicitly rather than relying on informal control selection.
+- The method is attractive when ordinary difference-in-differences feels too coarse for a single treated unit with idiosyncratic dynamics.
+
+What to remember:
+
+- The chapter is not selling SCM as "better regression." It is selling it as a more disciplined way to do small-sample comparative causal work.
+- If the counterfactual question is vague, the synthetic control exercise will also be vague.
+
+### 10.1.1 Cuba, Miami, and the Mariel Boatlift
+
+Main idea:
+
+- The Mariel Boatlift example motivates SCM by showing both the appeal and the weakness of classical comparative case studies: Card's design is substantively sharp, but the choice of comparison cities remains partly ad hoc.
+
+Why this matters:
+
+- The example makes clear what SCM is trying to repair.
+- It also highlights that uncertainty in comparative case studies is not only sampling uncertainty; it is also uncertainty about whether the chosen controls can reproduce the missing counterfactual.
+
+Key understanding points:
+
+- Card's Miami study is useful because treatment happened sharply and at an aggregate level, making a case-study design natural.
+- The weakness is that the four comparison cities were selected by researcher judgment rather than by an explicit weighting rule.
+- Cunningham uses this example to show why one weighted synthetic comparator can be more persuasive than a small, hand-picked control set.
+
+What to remember:
+
+- SCM starts from a real applied complaint: "why these controls and not others?"
+- This section is a reminder that design transparency is one of SCM's major selling points.
+
+### 10.1.2 Picking synthetic controls
+
+Main idea:
+
+- This section complicates the standard SCM sales pitch by arguing that the method does not eliminate researcher discretion; it changes where that discretion enters.
+
+Why this matters:
+
+- It is one of the most practically useful parts of the chapter because it pushes against the idea that "the machine chose the weights" is enough to guarantee objectivity.
+- It also introduces imperfect-fit problems and specification-search risks that appear quickly in real applications.
+
+Key understanding points:
+
+- Researcher choices about predictors, pre-treatment windows, and matching specifications still shape the final result.
+- Weak pre-treatment fit is not a small nuisance. It signals either noise, transitory shocks, weak support, or an over-ambitious design.
+- The chapter emphasizes that cherry-picking across specifications remains possible unless the analyst is explicit about alternative models and their robustness.
+
+What to remember:
+
+- SCM can make researcher choices more legible, but it does not make them disappear.
+- Donor-pool definition and predictor selection are design decisions that deserve the same scrutiny as any regression specification.
+
+### 10.1.3 Formalization
+
+Main idea:
+
+- The formalization section writes SCM as a constrained weighting problem: choose non-negative donor weights that sum to one and minimize distance between treated and donor-weighted predictors before treatment.
+
+Why this matters:
+
+- This is the chapter's clearest statement of what the optimizer is actually doing.
+- It ties the intuitive "build a synthetic unit" story to a precise design rule that can be inspected and defended.
+
+Key understanding points:
+
+- The post-treatment treatment effect is the treated outcome minus the weighted donor outcome in each post-treatment period.
+- Predictor choice matters because the optimizer is only as good as the balance target it is given.
+- The non-negativity and adding-up constraints generate the convex-hull property: classical SCM interpolates within the donor pool rather than extrapolating beyond it.
+
+What to remember:
+
+- No-extrapolation is both a virtue and a constraint.
+- If the treated unit lies outside the donor pool's support, poor fit is often telling you something real about the design rather than only something technical about the estimator.
+
+### 10.1.4 California's Proposition 99
+
+Main idea:
+
+- The California tobacco application shows the canonical SCM workflow in action: define a treated unit, exclude contaminated donors, choose predictors and lags, inspect pre-treatment balance, then interpret the post-treatment gap.
+
+Why this matters:
+
+- This is the chapter's main teaching example for how SCM is actually judged in applied work.
+- It moves the method from abstract notation to a picture-driven design where pre-treatment fit and donor plausibility do most of the persuasive work.
+
+Key understanding points:
+
+- The balance table matters because SCM still needs a legible comparison between the treated unit and its synthetic analogue, especially on lagged outcomes.
+- The path plot and gap plot are central because SCM is a picture-intensive estimator: the core claim is that the synthetic unit tracks the treated unit before treatment and then diverges after it.
+- Placebo-based inference uses the post/pre RMSPE ratio to ask whether the treated unit's divergence is unusually large relative to donor-pool placebos.
+- Dropping placebo units with much worse pre-treatment fit than the treated unit is presented as a readability and comparability choice, not as a substitute for the exact rank-based \(p\)-value.
+
+What to remember:
+
+- The California example is the chapter's clearest argument that SCM credibility lives in diagnostics, not just in one treatment-effect estimate.
+- If you cannot explain the donor pool, the fit, the balance table, and the placebo ranking, you do not yet have a defensible SCM result.
+
+### 10.1.5 Falsifications
+
+Main idea:
+
+- The falsification section adds a second layer of discipline beyond placebo-by-unit inference: rerun the model with an earlier fake treatment date and ask whether the same design spuriously finds an effect.
+
+Why this matters:
+
+- This is the chapter's most direct statement that convincing SCM work requires more than running `synth` once.
+- Placebo-date checks test whether the estimated divergence really looks like a treatment-timed structural break rather than a feature of a badly chosen model.
+
+Key understanding points:
+
+- Cunningham uses the German reunification example to illustrate placebo-date falsification rather than to reteach SCM from scratch.
+- A good placebo-date exercise asks whether the model behaves sensibly out of sample when treatment is rewound to a period where no effect should exist.
+- This complements placebo-by-unit inference: one checks whether the treated unit is unusual relative to donors, the other checks whether the model itself is spuriously unstable over time.
+
+What to remember:
+
+- A strong SCM workflow combines fit, donor transparency, placebo-based exact \(p\)-values, and placebo-date falsification.
+- In this repo, this is the clearest bridge from chapter intuition to the more diagnostic-first workflow used in [Synthetic Control overview](synthetic-control.qmd).
+
+### 10.2 Prison Construction and Black Male Incarceration
+
+Main idea:
+
+- The Texas prison example turns the chapter from explanation into replication-oriented practice. The goal is not only to show one more SCM estimate, but to walk the reader through what it looks like to estimate, inspect, and stress-test a full application.
+
+Why this matters:
+
+- This section is where the chapter becomes operational.
+- It exposes the reader to a realistic workflow with donor lists, predictor choices, code in multiple languages, saved outputs, placebo loops, and iterative refinement.
+- It also shows why SCM is often taught as a craft: the analysis depends on repeated inspection rather than a single one-line estimator.
+
+Key understanding points:
+
+- The substantive setup matters because it motivates why Texas in 1993 can be treated as a comparative case study around prison-capacity expansion.
+- Cunningham explicitly treats convex-hull plausibility and pre-treatment resemblance as design assets before estimation, not as afterthoughts.
+- The Stata, R, and Python examples are valuable mainly because they reveal workflow: prepare data, run SCM, inspect weights and paths, then build placebo distributions and RMSPE comparisons.
+- The closing exercise asks the reader to change the dependent variable and run a placebo-date check, which makes the section a guided replication rather than a finished proof.
+
+What to remember:
+
+- The Texas section is the chapter's best reminder that SCM is learned by iterating through a full design-and-diagnostics sequence.
+- For this repo, it pairs naturally with the [Synthetic Control Design Lab](../../labs/synthetic-control-design-lab.qmd) and [Synthetic Control Donor Pool Lab](../../labs/synthetic-control-donor-pool-lab.qmd).
+
+### 10.3 Conclusion
+
+Main idea:
+
+- The conclusion presents the chapter as a foundation: enough formal structure and workflow detail to use SCM responsibly, without pretending the frontier questions around the method are settled.
+
+Why this matters:
+
+- It explains the chapter's balance between intuition, examples, and code.
+- It also frames the chapter as an entry point to later methodological developments rather than the final word on synthetic-control research.
+
+Key understanding points:
+
+- Cunningham intentionally keeps the chapter close to canonical SCM rather than trying to cover the full extension literature.
+- That makes the chapter especially useful for building a durable baseline before moving on to augmented SCM, synthetic DiD, or other modern variants.
+
+What to remember:
+
+- This chapter is the right first detailed note if you want the core SCM workflow in causal-inference language.
+- The next step in this repo is usually to move outward, either to the [Synthetic Control Sources](synthetic-control-sources.qmd) page for follow-on reading or to the SCM labs for practice.
+
+## What This Chapter Adds To This Repo
+
+- It gives the clearest intuition-first account in the repo for why SCM is a comparative-case-study design rather than merely a panel estimator [@cunningham2018synthetic].
+- It sharpens the warning that donor-pool design and predictor choice remain researcher decisions, even when donor weights are algorithmically chosen.
+- It makes RMSPE-based placebo inference and placebo-date falsification feel central rather than optional, which should inform how the repo's SCM labs and future notes are written.
+- It provides the best source-following bridge between the high-level [Synthetic Control overview](synthetic-control.qmd) and the more implementation-facing materials in `docs/labs/`.

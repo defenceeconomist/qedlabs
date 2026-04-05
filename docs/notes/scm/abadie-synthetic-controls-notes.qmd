@@ -1,0 +1,156 @@
+---
+title: "Notes on Abadie (2021): Using Synthetic Controls"
+subtitle: "Detailed Study Notes for Feasibility, Data Requirements, and Methodological Aspects"
+author: "Luke Heley"
+date: "5 April 2026"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: false
+---
+
+## Purpose
+
+These are study notes on Alberto Abadie's JEL article, *Using Synthetic Controls: Feasibility, Data Requirements, and Methodological Aspects* [@abadie2021using]. They are meant to support understanding and recall rather than reproduce the article. The structure follows the article's order, with extra emphasis on feasibility, contextual requirements, data requirements, diagnostics, and the practical design lessons most useful for this repo's SCM materials.
+
+The aim here is to capture:
+
+- the main argument of each section
+- why each section matters for empirical SCM practice
+- which failure modes Abadie treats as design-relevant rather than technical nuisances
+- what this paper should change in the repo's overview notes and labs
+
+## Source Baseline
+
+- Source: Evidence Base document in the `evaluation` bucket, `Using Synthetic Controls: Feasibility, Data Requirements, and Methodological Aspects` [@abadie2021using]
+- Author: Alberto Abadie
+- Accessed for these notes: 5 April 2026
+- Evidence Base file: `abadie-2021-using-synthetic-controls-feasibility-data-requirements-and-methodological-aspects.pdf`
+- Citation key already present in repo bibliography: `@abadie2021using`
+- Numbered sections observed in the Evidence Base document:
+  - `1. Introduction`
+  - `2. A Primer on Synthetic Control Estimators`
+  - `3. Formal Aspects of Synthetic Control Estimators`
+  - `4. Why Use Synthetic Controls?`
+  - `5. Contextual Requirements`
+  - `6. Data Requirements`
+  - `7. Robustness and Diagnostic Checks`
+  - `8. Extensions and Related Methods`
+  - `9. Conclusions`
+- The introduction explicitly flags sections `4` to `6` as the core of the article and advises readers already familiar with SCM to focus especially on subsections `3.3` to `3.5` [@abadie2021using].
+
+## Executive Summary
+
+- The article treats SCM as a research-design method for comparative case studies, not as an optimization trick. The central question is whether a transparent donor-weighted counterfactual is feasible in the empirical setting at hand [@abadie2021using].
+- Abadie's strongest practical point is that classical SCM is valuable precisely because it refuses arbitrary extrapolation. The same restriction that makes the method interpretable also makes design failure visible when the treated unit is outside donor support [@abadie2021using].
+- The paper's core message is not "use SCM whenever you have one treated unit." It is "use SCM when the context, donor pool, pre-treatment information, and post-treatment horizon make the counterfactual credible, and redesign or stop when they do not" [@abadie2021using].
+- Diagnostics are not a finishing step. Backdating, placebo logic, and leave-one-out checks are part of judging whether the estimated counterfactual is believable and whether results hinge on one donor or one timing decision [@abadie2021using].
+- For this repo, the article is the best source to keep SCM teaching design-first: donor support, anticipation, interference, outcome volatility, and data length should be screened before anyone gets excited about a plot or a package output [@abadie2021using].
+
+## Notes by Section
+
+### 1. Introduction
+
+Abadie frames the paper as practical guidance for researchers using synthetic controls in real comparative case studies, not as a narrow theoretical update [@abadie2021using]. That framing matters because it sets the standard for the whole note: the article is mainly about when SCM deserves to be believed, not only how it is computed.
+
+The introduction is also unusually explicit about reading priorities. Section 2 gives the intuition, section 3 gives the formal machinery, and sections 4 through 6 contain the core applied lessons on advantages, contextual requirements, and data requirements. That organization is worth preserving because it keeps the paper from being flattened into "SCM overview" notes and instead highlights its central contribution: feasibility guidance [@abadie2021using].
+
+### 2. A Primer on Synthetic Control Estimators
+
+This section starts from the comparative-case-study problem: one aggregate unit is treated, no single untreated unit is obviously adequate, and standard large-sample regression logic is often poorly matched to that setting [@abadie2021using]. SCM enters as a way to formalize comparison-unit choice rather than leave it to informal narrative claims about similarity.
+
+The key practical idea is simple. The treated unit's missing untreated path is approximated with a weighted average of untreated donor units, using pre-treatment outcomes and other unaffected predictors to determine the weights. That does not solve identification by itself, but it turns the counterfactual into something explicit, inspectable, and reusable in placebo exercises [@abadie2021using].
+
+What to retain from the primer is that SCM belongs to the comparative-case-study tradition. It is most naturally at home when interventions happen once, at an aggregate level, and the analyst's main task is to build and defend a plausible untreated trajectory for the treated unit [@abadie2021using].
+
+### 3. Formal Aspects of Synthetic Control Estimators
+
+The formal section gives the canonical setup: one treated unit, a donor pool of untreated units, predictors unaffected by treatment, and a post-treatment effect defined as the gap between the treated outcome and the synthetic outcome [@abadie2021using]. For note-taking purposes, the most important formal contribution is not the notation itself but the discipline it imposes on what counts as a valid counterfactual construction.
+
+Abadie also makes clear that classical SCM relies on nonnegative donor weights that sum to one. That constraint matters throughout the article because it underlies both the method's main strength, no extrapolation, and one of its main practical failure modes, inability to fit treated units that fall outside donor support [@abadie2021using].
+
+#### 3.3 Fit and factor-model intuition
+
+This is one of the most important parts of the paper for empirical work. Abadie's argument is that good pre-treatment fit is valuable not just because the graph looks nice, but because under a linear factor-model intuition it suggests the synthetic control is approximating the latent structure that drives the untreated path of the treated unit [@abadie2021using].
+
+The flip side is equally important. Weak fit is not a cosmetic issue. It may indicate that the treated unit is poorly supported by the donor pool, that predictors are uninformative, or that the exercise is overfitting noise rather than reconstructing signal. In this framing, pre-treatment fit is evidence about design quality, not a box to tick after the estimator runs [@abadie2021using].
+
+A practical takeaway for this repo is to treat long pre-treatment outcome histories as part of identification strength. They help distinguish persistent latent structure from short-run idiosyncratic shocks, which is exactly why SCM applications with very short pre-periods should be approached cautiously even when apparent balance looks impressive [@abadie2021using].
+
+#### 3.4 Variable selection
+
+Abadie treats variable selection as a predictive and design problem, not as a ritual list of covariates [@abadie2021using]. Lagged outcomes are especially important because they carry information about latent factors, and the exact way pre-treatment outcomes are summarized is less important than whether the resulting synthetic control reproduces the treated unit's pre-treatment path well.
+
+The section also warns against two opposite mistakes. Using too many predictors can reduce sparsity and make the synthetic control harder to interpret, while excluding substantively useful covariates can push too much structure into the latent-error component and worsen bias bounds. This is a good reason to think of predictor choice as a disciplined compromise between explanatory richness and stable fit [@abadie2021using].
+
+Another practical lesson is that variable selection should not drift into post-treatment tuning. Abadie notes the value of training-validation logic for assessing predictive power, and he stresses that post-treatment outcomes are not used in the classical weight-selection procedure. That is a design safeguard against specification search and one reason SCM can be more transparent than ad hoc regression tweaking [@abadie2021using].
+
+#### 3.5 Inference and practical estimation issues
+
+The paper's discussion of inference centers on permutation or placebo logic: reassign treatment to donor units, rebuild synthetic controls, and ask whether the treated-unit effect looks unusually large relative to the placebo distribution [@abadie2021using]. The main operational point is that SCM's formalized counterfactual construction makes this kind of comparative-case-study inference feasible.
+
+Abadie also explains why raw placebo gaps are not enough when placebo units differ greatly in pre-treatment fit. The post/pre RMSPE ratio is useful because it scales post-treatment divergence by the quality of the pre-treatment match, and the paper explicitly notes that some placebo runs may reasonably be set aside when their pre-treatment fit is much worse than the treated unit's [@abadie2021using].
+
+Just as important, the article distinguishes this design-based logic from ordinary sampling-based inference. In many SCM settings the sample is effectively the population, or there is no well-defined super-population to sample from. The inference question is therefore often about how unusual the treated-unit gap is under alternative treatment assignments, not about approximating a classical sampling distribution [@abadie2021using].
+
+### 4. Why Use Synthetic Controls?
+
+This section is the clearest statement of why classical SCM remains attractive. Abadie's first answer is no extrapolation: by restricting weights to a convex combination of donor units, SCM avoids building a counterfactual from arbitrary linear combinations that can place heavy negative weight on units with little substantive resemblance to the treated case [@abadie2021using].
+
+The second answer is transparency. SCM makes it possible to inspect pre-treatment fit, inspect the donor weights, and see directly whether the donor pool can or cannot approximate the treated unit. That is not only good for exposition. It means the method can reveal when it should not be trusted, which is a major advantage over settings where a model always returns an estimate even when support is weak [@abadie2021using].
+
+Abadie also emphasizes sparsity and protection against specification search. Classical SCM often puts weight on a relatively small number of donors, making the counterfactual easier to understand, and the use of pre-treatment information alone to choose weights limits the scope for tuning the model to post-treatment outcomes. For applied work, this section is the strongest defense of SCM as a disciplined comparative-case-study design rather than simply another panel estimator [@abadie2021using].
+
+### 5. Contextual Requirements
+
+This section is where the paper becomes most useful as a feasibility screen. Abadie argues that SCM can fail for reasons that are visible in the context of the intervention even before detailed estimation begins [@abadie2021using].
+
+The first requirement concerns the size of the effect relative to outcome volatility. Comparative case studies with one treated unit are inherently weak at detecting small effects when the outcome is very noisy. In that setting, even a real effect may be hard to distinguish from unit-specific shocks, and noisy outcomes raise the risk that good pre-treatment fit is partly overfit noise. Abadie's suggestion is pragmatic: if volatility is substantial, consider filtering the outcome in both treated and donor units before applying SCM [@abadie2021using].
+
+The second requirement is the availability of a meaningful comparison group. Donor units cannot be simultaneously exposed to similar interventions, and they should not be kept in the donor pool if they suffered idiosyncratic shocks that would not plausibly have hit the treated unit absent treatment. This is also where Abadie makes the interpolation point: no extrapolation is not enough if the donor pool is substantively distant and the synthetic control only matches by averaging away large donor-treated discrepancies [@abadie2021using].
+
+No anticipation and no interference are treated as central design requirements, not footnotes. If agents react in advance or treatment components arrive early, Abadie recommends backdating the treatment date in the data so the estimated post-period captures the full effect path. If spillovers affect nearby or linked donor units, the analyst may need to exclude those units or interpret the resulting estimate with a directional-bias argument in mind. The paper's German reunification discussion is useful here because it shows how transparent donor weights can help reason about attenuation from spillovers rather than pretend contamination is impossible [@abadie2021using].
+
+The convex-hull condition is the sharpest feasibility test. If the treated unit is extreme enough that no weighted donor average can reproduce key predictors or the pre-treatment outcome path, standard SCM may simply be inappropriate. Abadie discusses transformations such as differencing or demeaning as possible adjustments, but he is careful not to oversell them: in some settings the level is substantively important, and differencing can increase noise and bias risk. The real lesson is that some comparative case studies do not admit a credible classical synthetic control and should not be forced into one [@abadie2021using].
+
+Finally, the time horizon matters. Some interventions take time to show up in the main outcome, while others decay quickly. A design with too little post-treatment follow-up may miss the effect path entirely, so SCM feasibility depends partly on whether the available horizon matches the intervention's expected dynamics [@abadie2021using].
+
+### 6. Data Requirements
+
+The data section complements the contextual screen by stating the minimum empirical ingredients for a credible SCM study. At the most basic level, the method needs aggregate data on predictors and outcomes for the treated unit and a donor pool. When no official aggregate series exist, aggregated microdata can sometimes do the job, which keeps SCM open to settings where the data work is substantial but still feasible [@abadie2021using].
+
+Abadie then returns to the importance of a long pre-treatment window. If untreated outcomes follow the factor-model logic described earlier, more pre-treatment periods tighten the bias bound when the synthetic control tracks the treated unit well. But the paper is careful here too: very long pre-periods may introduce structural-instability problems, so it can be sensible to up-weight more recent pre-treatment information relative to remote history [@abadie2021using].
+
+Short pre-treatment windows create a different danger: spurious or overfit balance. With only a few pre-periods, the synthetic control may appear to match perfectly for reasons that do not generalize to the untreated post-treatment path. Abadie notes that strong additional predictors can reduce this risk by lowering residual variance, but the general lesson is that apparent fit in a short panel should not be trusted at face value [@abadie2021using].
+
+The paper also stresses sufficient post-intervention information. If effects emerge gradually, or if they dissipate after a short burst, the observed post-treatment horizon needs to be long enough to capture the relevant dynamics. In practice, that means SCM data design is not just about assembling a long pre-period. It is also about making sure the follow-up period matches the substantive effect window the study claims to estimate [@abadie2021using].
+
+### 7. Robustness and Diagnostic Checks
+
+Abadie treats diagnostics as a way to evaluate the credibility of the counterfactual and the sensitivity of results to design choices, not as decorative add-ons [@abadie2021using]. The section's two most practical checks are backdating and leave-one-out analysis.
+
+Backdating asks whether the same design finds an effect when the intervention is artificially moved earlier in time. If the study shows a large "effect" before the intervention could plausibly matter, that weakens the case that the main post-treatment gap is causal. If it does not, the design gains credibility because it looks less like a machine for discovering spurious breaks [@abadie2021using].
+
+Leave-one-out analysis asks whether the result depends excessively on a single donor that receives positive weight. If dropping one donor substantially changes the estimated effect without materially worsening pre-treatment fit, the analyst should investigate whether that donor was contaminated, unusually idiosyncratic, or otherwise doing too much work in the original design. This is one of the cleanest practical checks in SCM because the donor weights are sparse and transparent enough to make the exercise interpretable [@abadie2021using].
+
+The section's broader message is that robustness work should map onto actual design concerns. Diagnostics are valuable when they test anticipation, donor dependence, spillovers, and support, not when they become a long undisciplined menu of alternative specifications [@abadie2021using].
+
+### 8. Extensions and Related Methods
+
+The extension section is useful mainly because it shows which problems later methods are trying to solve. Abadie discusses approaches for multiple treated units, penalized SCM for more disaggregated settings, bias-correction and regression-adjusted variants, regression-based approaches that allow extrapolation, synthetic DiD, matrix-completion methods, and newer inference proposals [@abadie2021using].
+
+The important interpretive point is that these extensions do not repeal the design lessons of earlier sections. They exist because classical SCM can fail when fit is weak, donor pools are large and disaggregated, treatment assignment is more complex, or inference needs are different. For this repo, that means extension notes should be introduced as responses to specific design failures or research settings, not as upgrades that make feasibility screening unnecessary [@abadie2021using].
+
+### 9. Conclusions
+
+The conclusion restates the article's central discipline: mechanical applications of synthetic controls are risky when they ignore the context of the intervention or the nature of the data [@abadie2021using]. That is the right sentence to keep in mind when reading flashy SCM applications.
+
+Abadie also ends by marking several open areas, including sampling-based inference, external validity, sensitivity to model restrictions, multiple interventions, channels of effect, experimental design for aggregate interventions, and computational issues [@abadie2021using]. The research frontier is wide, but the paper's practical message is stable: most SCM credibility still comes from careful case design rather than from frontier branding.
+
+## What to Carry Into This Repo
+
+- Use this paper as the main feasibility screen before the broader [Synthetic Control overview](synthetic-control.qmd). The overview explains the method family; Abadie is the best source for deciding when classical SCM is actually credible [@abadie2021using].
+- Read section `5` alongside the [Synthetic Control Donor Pool Lab](../../labs/synthetic-control-donor-pool-lab.qmd). That lab becomes much more useful once donor selection is treated as an identification decision shaped by spillovers, support, and comparison-group availability rather than as a software input [@abadie2021using].
+- Read sections `5` to `7` alongside the [Synthetic Control Design Lab](../../labs/synthetic-control-design-lab.qmd). The lab's value is highest when backdating, leave-one-out checks, and timing assumptions are understood as design diagnostics rather than as optional robustness extras [@abadie2021using].
+- Keep this note paired with the [Synthetic Control Sources](synthetic-control-sources.qmd) page. The source map helps sequence the literature, but Abadie should be the first stop whenever the repo needs a source-following reference on feasibility, data requirements, and methodological guardrails [@abadie2021using].

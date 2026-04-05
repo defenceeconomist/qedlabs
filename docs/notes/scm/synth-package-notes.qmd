@@ -1,0 +1,160 @@
+---
+title: "Synth Package Notes"
+subtitle: "Notes on Abadie, Diamond, and Hainmueller (2011)"
+author: "Luke Heley"
+date: "5 April 2026"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: false
+---
+
+## Purpose
+
+These notes summarize Abadie, Diamond, and Hainmueller's *Synth: An R Package for Synthetic Control Methods in Comparative Case Studies* [@hainmueller2011synth] using the MCP evidence-base record retrieved for this repo on 5 April 2026. The goal is not to restate the help files line by line. The goal is to capture what the package paper is actually doing, which parts of the classical synthetic-control workflow it makes explicit, and how this package should be positioned relative to the rest of this repo's SCM notes.
+
+The aim here is to capture:
+
+- what problem the `Synth` package is solving for comparative case studies
+- how `dataprep()` and `synth()` divide the design and estimation work
+- what the `V` and `W` weights mean in practice
+- how tables, plots, and placebo exercises are meant to be read
+- what the Basque Country example teaches beyond being a package demo
+- where `Synth` sits relative to newer SCM packages and workflows in this repo
+
+## Source Baseline
+
+- Source retrieved from the MCP evidence base on 5 April 2026.
+- Evidence-base bucket / collection: `evaluation`
+- Evidence-base document id: `c831e42cdd6d2bff8c6a848e04443d2e757fd469c337df450b9bef556df004a8`
+- Matched filename returned by MCP: `v42i13.pdf`
+- Source key / bucket path returned by MCP: `evaluation/v42i13.pdf`
+- Resolver link surfaced by MCP: [paper resolver](/resolver.html?bucket=evaluation&file_path=v42i13.pdf&page=1)
+- Citation metadata observed in the retrieved record:
+  - Abadie, Alberto; Diamond, Alexis; Hainmueller, Jens
+  - *Journal of Statistical Software* 42(13), June 2011
+  - DOI in repo bibliography: `10.18637/jss.v042.i13`
+- Main MCP sections used for these notes:
+  - `Abstract`
+  - `1. Introduction`
+  - `2. Synthetic Control Methods`
+  - `3.3. Obtaining Results: Tables, Figures, and Estimates`
+  - `3.4. Placebo Tests`
+  - `4. Conclusion`
+
+## Executive Summary
+
+- The paper presents `Synth` as the canonical implementation of classical synthetic control for comparative case studies, not as a general-purpose panel estimator [@hainmueller2011synth].
+- Its practical contribution is to turn the original SCM papers into a reproducible workflow with separate objects for data preparation, optimization, tables, plots, and placebo-style diagnostics [@hainmueller2011synth].
+- `dataprep()` is doing more than formatting. It forces the analyst to define treated units, donor units, predictors, optimization windows, and plotting windows in a way that exposes the design choices usually hidden in hand-built SCM code [@hainmueller2011synth].
+- `synth()` then solves the nested classical-SCM problem: choose predictor weights `V` and donor weights `W` so the synthetic control matches the treated unit's pre-treatment predictors and outcome path as closely as possible under convex-combination constraints [@hainmueller2011synth; @abadie2010synthetic].
+- The package's built-in outputs matter because they show the exact objects an SCM study has to defend: predictor balance, donor composition, path fit, outcome gaps, and placebo rarity [@hainmueller2011synth].
+- For this repo, `Synth` should be taught as the baseline original workflow that clarifies classical SCM mechanics. It should be paired with the feasibility and design warnings in [Abadie Synthetic Controls](abadie-synthetic-controls-notes.qmd), not treated as a self-sufficient guide to credible application.
+
+## Study Notes
+
+### What problem the package is solving
+
+The paper begins from the same problem as the original SCM articles: comparative case studies often rely on an analyst choosing a few controls by judgment and then hoping those controls represent the treated unit's untreated trajectory [@hainmueller2011synth]. `Synth` is presented as a way to make that comparison-unit choice transparent, data-driven, and inspectable rather than informal.
+
+That matters for note-taking because the package is not just a coding convenience. It packages the core classical SCM design into a workflow that can be rerun, audited, and stress-tested. The package is therefore best understood as a bridge from the method papers to actual empirical implementation.
+
+### What `dataprep()` actually does
+
+The most important practical insight in the package paper is that `dataprep()` is part of the design, not only part of the syntax [@hainmueller2011synth]. It asks the user to define:
+
+- the treated unit and donor pool
+- the outcome and predictor set
+- which pre-treatment periods are used to construct predictor summaries
+- which pre-treatment periods are used to optimize fit
+- which periods are used for plotting and effect display
+
+That structure is valuable because classical SCM is easy to describe abstractly but easy to implement sloppily. `dataprep()` forces the analyst to encode the design in a standardized object that can then be passed into `synth()`, tables, plots, and placebo workflows. In repo terms, this makes the design legible enough to teach.
+
+The deeper point is that the package paper treats predictor choice and pre-treatment windows as research-design decisions. They are not cosmetic tuning knobs. They determine what the synthetic control is trying to reproduce and which parts of the treated unit's history are allowed to discipline the fit.
+
+### What `synth()` is optimizing
+
+The paper restates the familiar classical SCM setup in package form [@hainmueller2011synth; @abadie2010synthetic]. The synthetic control is a weighted average of donor units with nonnegative weights summing to one. Those simplex constraints preserve the classical no-extrapolation logic.
+
+The implementation detail worth retaining is the split between predictor weights and donor weights:
+
+- `W` weights determine which donor units and what shares build the synthetic control
+- `V` weights determine how much importance the optimization assigns to each predictor or lagged-outcome summary
+
+The package chooses `W` to minimize the distance between treated and synthetic predictors given `V`, and by default chooses `V` in a data-driven way to minimize pre-treatment mean squared prediction error of the outcome [@hainmueller2011synth]. That nested structure is the core computational idea in the paper.
+
+For the repo, this is the right place to explain why SCM is not only "weight units until the lines match." It is also "weight the pre-treatment information that defines what matching should mean." That distinction helps readers see why two SCM specifications using the same donor pool can still imply different designs.
+
+### How to read the outputs
+
+One reason the package paper is so useful is that it names the outputs a credible SCM study should inspect [@hainmueller2011synth]. `synth()` returns the raw optimization results, including the donor weights in `solution.w`. The paper then shows how to derive gaps directly from the prepared outcome matrices.
+
+The convenience functions matter because they correspond closely to the standard empirical reporting workflow:
+
+- `synth.tab()` summarizes predictor balance, predictor weights, donor weights, and optimization loss
+- `path.plot()` shows whether treated and synthetic outcomes actually track each other before treatment
+- `gaps.plot()` translates that same information into treatment-effect-style deviations over time
+
+The package paper is especially clear that these are not decorative outputs. The tables tell you whether the counterfactual is built from plausible donors and whether predictor balance improved meaningfully. The plots tell you whether the design is persuasive before anyone interprets a post-treatment divergence as causal.
+
+### What the Basque Country example teaches
+
+The Basque example is more than a packaged replication. It is the canonical demonstration of how classical SCM is supposed to be defended in practice [@hainmueller2011synth; @abadie2003economic]. The package paper uses it to show the full workflow from `dataprep()` through estimation, donor-weight inspection, path plotting, gap plotting, and placebo exercises.
+
+Two practical lessons are worth carrying forward. First, sparse donor weights are treated as informative rather than suspicious by default. In the example, most of the synthetic Basque control comes from a small number of regions, which is exactly why the donor table needs to be shown [@hainmueller2011synth]. Second, good pre-treatment tracking is the main reason the later GDP gap is interpreted seriously. The example is persuasive because the fit is visibly strong before the intervention intensifies.
+
+That makes the Basque example a good teaching bridge between the method's origin story and the package workflow in this repo's SCM materials.
+
+### Placebo logic is part of the workflow
+
+The placebo section is one of the strongest parts of the paper because it shows that inferential thinking is built into the classical SCM workflow rather than bolted on afterward [@hainmueller2011synth]. The paper describes placebos across units, placebos in time, and placebo outcomes that should remain unaffected.
+
+The core logic is comparative rarity. Reassign the intervention to untreated units or earlier periods, rebuild the synthetic control, and ask whether the treated case still looks unusually large relative to those placebo gaps. The package paper also repeats an important discipline from the original SCM literature: untreated units with much worse pre-treatment fit should be screened out of permutation-style plots, because they are poor comparators for judging whether the treated-unit gap is unusual [@hainmueller2011synth; @abadie2010synthetic].
+
+For this repo, that reinforces a basic design lesson. Placebos help once the treated case is already well fitted. They do not rescue a design whose donor support or pre-treatment fit is weak.
+
+### What the package does not solve
+
+The package paper is implementation-focused, and that is exactly why it should not be mistaken for a full SCM design guide. It does not solve the feasibility questions emphasized in Abadie (2021): donor contamination, concurrent shocks, anticipation, weak support, or short panels [@abadie2021using]. It assumes the analyst is already in a setting where classical SCM is at least plausible.
+
+It also does not solve problems that later packages target directly:
+
+- it does not relax the convex-hull restriction with augmentation
+- it does not combine SCM and DiD time-weighting
+- it does not offer the newer interval-estimation and uncertainty workflows developed later
+- it does not change the fact that a poor donor pool remains a poor donor pool
+
+That is the right way to position `Synth` in this repo. It is the cleanest source for the original implementation logic, but not the last word on applied SCM practice.
+
+### Where `Synth` sits relative to newer packages
+
+If the question is "how does classical SCM work in code," `Synth` is still the right baseline note [@hainmueller2011synth]. If the question is "what package is easiest to teach in a tidy workflow," `tidysynth` is often easier to read line by line. If the question is "what should I do when fit is weak," `augsynth` is usually the next package to study. If the question is "how does SCM overlap with modern panel estimators," `synthdid` becomes more relevant [@tidysynth-package; @augsynth-package; @synthdid-package].
+
+So the repo should use `Synth` to teach the original grammar of SCM:
+
+- define the treated unit and donor pool
+- encode predictors and time windows
+- inspect donor and predictor weights
+- inspect pre-treatment path fit
+- run placebo logic
+
+Then it can move to newer packages once readers understand exactly what classical SCM is adding and where it starts to strain.
+
+## Implications For This Repo
+
+- Use this note as the implementation companion to [Abadie Synthetic Controls](abadie-synthetic-controls-notes.qmd). Abadie (2021) is the feasibility screen; `Synth` is the baseline software workflow.
+- Keep it close to [Synthetic Control Sources](synthetic-control-sources.qmd), because that page already frames `Synth` as one of the core implementation sources for SCM.
+- Read it alongside [Synthetic Control Teaching Data](synthetic-control-teaching-data.qmd) when using `Synth::basque` or related package data as the first concrete SCM example.
+- Treat `dataprep()` as a design object in labs and teaching notes. That is the package's clearest contribution to disciplined workflow.
+- Use this note to explain why donor weights, predictor weights, path plots, gap plots, and placebo plots are core outputs rather than presentational extras.
+- Use newer package notes for extensions, but keep `Synth` as the point of reference for what those extensions are changing.
+
+## High-Level Takeaways
+
+- The `Synth` paper is the clearest source in this repo for how the original synthetic-control workflow is actually organized in software [@hainmueller2011synth].
+- Its central practical contribution is not a new identification result. It is a transparent implementation of classical SCM that makes the design, optimization, and diagnostic objects easy to inspect.
+- `dataprep()` and `synth()` should be taught together: one encodes the case-study design, the other solves the constrained weighting problem implied by that design.
+- The package's tables and plots matter because they force the analyst to defend predictor balance, donor composition, pre-treatment fit, and placebo rarity in a visible way.
+- For this repo, `Synth` should be the baseline implementation note that sits between the high-level SCM overview and the newer extension packages.

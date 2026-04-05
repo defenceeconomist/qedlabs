@@ -11,8 +11,8 @@ This note is a source map for synthetic control method reading. It is organized 
 If you want a compact starting stack, I would begin with these three:
 
 1. Abadie (2021) for the best high-level methodological overview [@abadie2021using].
-2. Cunningham's *Causal Inference: The Mixtape* chapter plus Mixtape Sessions slides for intuition and pedagogy [@cunningham2018synthetic; @mixtape-sessions-synthtex].
-3. The `Synth` package paper and manual for implementation details [@hainmueller2011synth; @synth-package].
+2. Cunningham's *Causal Inference: The Mixtape* chapter plus Mixtape Sessions slides for intuition and pedagogy ([chapter note](mixtape-synthetic-control-notes.qmd); [sessions note](mixtape-sessions-synthetic-control-notes.qmd)) [@cunningham2018synthetic; @mixtape-sessions-synthtex].
+3. The `Synth` package paper and manual for implementation details ([note](synth-package-notes.qmd)) [@hainmueller2011synth; @synth-package].
 
 That combination gives you design logic, identification intuition, and the original software workflow.
 
@@ -20,7 +20,7 @@ That combination gives you design logic, identification intuition, and the origi
 
 ## Abadie (2021), *Using Synthetic Controls: Feasibility, Data Requirements, and Methodological Aspects*
 
-This is the best single overview if the goal is to understand when SCM is credible and when it is not [@abadie2021using].
+This is the best single overview if the goal is to understand when SCM is credible and when it is not ([note](abadie-synthetic-controls-notes.qmd)) [@abadie2021using].
 
 Why it is worth notes:
 
@@ -30,7 +30,7 @@ Why it is worth notes:
 
 ## Cunningham (2018), *Causal Inference: The Mixtape*, chapter on synthetic control
 
-This is the best textbook-style source for intuition-first notes [@cunningham2018synthetic].
+This is the best textbook-style source for intuition-first notes ([note](mixtape-synthetic-control-notes.qmd)) [@cunningham2018synthetic].
 
 Why it is worth notes:
 
@@ -106,7 +106,7 @@ Why it is worth notes:
 
 ## Mixtape Sessions: Causal Inference 3
 
-Scott Cunningham's `Causal-Inference-3` repository is one of the best open teaching resources for SCM [@mixtape-causal-inference-3; @mixtape-sessions-synthtex].
+Scott Cunningham's `Causal-Inference-3` repository is one of the best open teaching resources for SCM ([note](mixtape-sessions-synthetic-control-notes.qmd)) [@mixtape-causal-inference-3; @mixtape-sessions-synthtex].
 
 Why it is worth notes:
 
@@ -138,7 +138,7 @@ Why it is worth notes:
 
 ## `Synth`
 
-The foundational implementation source is the `Synth` package paper and the package manual [@hainmueller2011synth; @synth-package].
+The foundational implementation source is the `Synth` package paper and the package manual ([note](synth-package-notes.qmd)) [@hainmueller2011synth; @synth-package].
 
 Take notes on:
 
@@ -201,12 +201,12 @@ Take notes on:
 
 If you want a sequence that compounds well, use:
 
-1. `Causal Inference: The Mixtape` synthetic control chapter [@cunningham2018synthetic].
+1. `Causal Inference: The Mixtape` synthetic control chapter ([chapter note](mixtape-synthetic-control-notes.qmd)) [@cunningham2018synthetic].
 2. Abadie and Gardeazabal (2003) [@abadie2003economic].
 3. Abadie, Diamond, and Hainmueller (2010) [@abadie2010synthetic].
 4. Abadie (2021) [@abadie2021using].
 5. `Synth` package paper and manual [@hainmueller2011synth; @synth-package].
-6. Mixtape Sessions lecture slides and SCM workshop repositories [@mixtape-sessions-synthtex; @mixtape-synthetic-control-and-clustering].
+6. Mixtape Sessions lecture slides and SCM workshop repositories ([Mixtape Sessions note](mixtape-sessions-synthetic-control-notes.qmd)) [@mixtape-sessions-synthtex; @mixtape-synthetic-control-and-clustering].
 7. Ben-Michael, Feller, and Rothstein (2021), Arkhangelsky et al. (2021), and Xu (2017) for extensions [@benmichael2021augmented; @arkhangelsky2021synthetic; @xu2017generalized].
 8. `augsynth`, `synthdid`, `scpi`, and `gsynth` package docs for implementation details [@augsynth-package; @synthdid-package; @scpi-package; @gsynth-package].
 

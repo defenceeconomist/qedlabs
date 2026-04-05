@@ -20,6 +20,10 @@ In practice, SCM is strongest when:
 - untreated donors are available and not contaminated by the intervention
 - the treated unit is unusual in treatment timing but not impossible to approximate with donor data
 
+## Companion Source Notes
+
+If you want a source-following companion to this overview, start with [Abadie Synthetic Controls](abadie-synthetic-controls-notes.qmd). If you want the original R implementation workflow, use [Synth Package Notes](synth-package-notes.qmd). If you want the intuition-first textbook treatment as well, use Scott Cunningham's chapter note ([Mixtape Synthetic Control](mixtape-synthetic-control-notes.qmd)). If you want the workshop slide treatment too, use [Mixtape Sessions Synthetic Control](mixtape-sessions-synthetic-control-notes.qmd). If you want the broader reading map first, use [Synthetic Control Sources](synthetic-control-sources.qmd).
+
 # Core Design Conditions
 
 The credibility of SCM still turns on a small set of design conditions that have not changed since the original applications [@AbadieGard03; @AbadieDiamondHainmueller10; @Abadie_Using_Synthetic_Controls_2021].

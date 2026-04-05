@@ -63,6 +63,14 @@ website:
               text: Synthetic Control Teaching Data
             - href: notes/scm/synthetic-control-sources.qmd
               text: Synthetic Control Sources
+            - href: notes/scm/synth-package-notes.qmd
+              text: Synth Package Notes
+            - href: notes/scm/abadie-synthetic-controls-notes.qmd
+              text: Abadie Synthetic Controls (2021)
+            - href: notes/scm/mixtape-synthetic-control-notes.qmd
+              text: Mixtape Synthetic Control (Chapter 10)
+            - href: notes/scm/mixtape-sessions-synthetic-control-notes.qmd
+              text: Mixtape Sessions Synthetic Control
         - section: Other Methods
           href: notes/other-methods/index.qmd
           contents:

@@ -1,0 +1,198 @@
+---
+title: "Notes on Mixtape Sessions: Synthetic Control"
+subtitle: "Detailed Study Notes for Synth.tex"
+author: "Luke Heley"
+date: "5 April 2026"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: false
+---
+
+## Purpose
+
+These are study notes on Scott Cunningham's Mixtape Sessions synthetic-control deck, [`Synth.tex`](https://github.com/Mixtape-Sessions/Causal-Inference-3/blob/main/Slides/Synth.tex) [@mixtape-sessions-synthtex]. They are meant to support understanding and recall rather than reproduce the slide deck. The structure follows the deck's main sections, but the emphasis is on durable concepts, design logic, and the parts that connect most directly to this repo's notes and labs.
+
+The aim here is to capture:
+
+- the main argument of each top-level section
+- what the deck adds beyond a standard textbook chapter
+- where the practical design lessons are strongest
+- how the material should change work in this repo
+
+## Source Baseline
+
+- Source: [Mixtape Sessions, `Synth.tex`](https://github.com/Mixtape-Sessions/Causal-Inference-3/blob/main/Slides/Synth.tex)
+- Author: Scott Cunningham
+- Accessed for these notes: 5 April 2026
+- Current top-level deck sections observed in the source file:
+  - `Introduction to course`
+  - `Potential outcomes review`
+  - `Original synthetic control method`
+  - `Imperfect fit`
+  - `Multiple outcomes`
+  - `Multiple treated units and staggered`
+
+## Executive Summary
+
+- The deck treats synthetic control as a comparative-case-study design first and an optimizer second. The recurring concern is not whether weights can be computed, but whether the donor pool and pre-treatment path make the resulting counterfactual credible.
+- Its strongest teaching contribution is the progression from canonical SCM to failure modes and extensions. The deck does not stop at "find a synthetic unit"; it keeps asking what happens when fit is weak, when multiple outcomes matter, or when treatment is no longer a one-unit one-time event.
+- The most useful bridge to this repo is that Cunningham teaches SCM as part of a larger causal-panel toolkit. Classical SCM remains central, but augmented SCM, synthetic DiD, matrix-completion ideas, and staggered-adoption variants are presented as responses to specific design problems rather than as branding exercises.
+- For this repo, the main lesson is to keep the design sequence explicit: define the treated unit well, build a defensible donor pool, inspect pre-treatment fit hard, and only then decide whether the classical estimator is enough or whether an extension is needed.
+
+## Notes by Section
+
+### Introduction to course
+
+The opening frames are mostly workshop orientation, but they reveal the teaching stance of the deck [@mixtape-sessions-synthtex]. Cunningham presents synthetic control as one of the major causal-inference innovations of the last two decades and signals that the workshop is about project guidance as much as abstract theory. That matters for note-taking because it explains why the deck mixes identification, empirical examples, software, and estimator extensions in one long sequence rather than treating SCM as a self-contained chapter.
+
+### Potential outcomes review
+
+This section gives the causal language needed to motivate SCM without assuming the reader is already thinking in comparative-case-study terms. The key reminder is that SCM targets the missing untreated potential outcome for a treated aggregate unit, so the estimand is the treatment effect on the treated over post-treatment periods rather than a generic prediction target [@mixtape-sessions-synthtex].
+
+Two framing devices matter most here.
+
+First, the deck uses the randomized controlled trial as a thought experiment. That is less about idealism than about discipline: before choosing a quasi-experimental design, the analyst should be able to state what randomized comparison would have answered the causal question. SCM then appears as a response to situations where treatment is assigned to one city, state, firm, or country and no direct randomized comparison exists.
+
+Second, the deck makes the ATT logic explicit. With one treated aggregate unit, the problem is always the same: observed post-treatment outcomes are available for the treated unit, but the untreated path for that same unit is missing. SCM is one way to impute that missing path using a weighted donor pool rather than a single hand-picked comparison.
+
+### Original synthetic control method
+
+This is the core of the deck and the part most worth detailed notes. The main contribution is to situate SCM inside the comparative-case-study problem rather than inside a generic panel-data toolbox [@cunningham2018synthetic; @mixtape-sessions-synthtex].
+
+#### Comparative case studies and why SCM exists
+
+The deck starts from an old problem in applied work: many important policies happen at an aggregate level, but the comparison group is often chosen ad hoc. Traditional comparative case studies can therefore feel informative but weakly disciplined. Cunningham uses examples like the Mariel Boatlift discussion to show the problem clearly: if the control cities are chosen informally, uncertainty remains about whether the null result is really about no effect or just about a poor comparator set.
+
+SCM is presented as a response to that design weakness. Instead of choosing one control unit, or a small fixed set, the analyst chooses weights over a donor pool using a transparent optimization rule. That does not make the design automatically causal, but it does make the counterfactual construction inspectable.
+
+#### The donor pool is the first design decision
+
+The deck treats donor-pool construction as prior to estimation, not as a minor software input. The estimator can only form a persuasive counterfactual if the untreated reservoir contains units capable of approximating the treated unit before treatment. If the donor pool is contaminated, structurally incomparable, or too thin, no optimization step can rescue the design.
+
+This is one of the clearest points of overlap with the repo's [Synthetic Control overview](synthetic-control.qmd): SCM is attractive precisely because it makes the comparison problem explicit, but it still stands or falls on whether the donor pool gives the treated unit meaningful support.
+
+#### Convex hull logic and no extrapolation
+
+The deck explains classical SCM as a constrained weighting problem with non-negative donor weights that sum to one. The practical consequence is the familiar convex-hull property: the synthetic control must be an average of observed donor units rather than an extrapolation beyond them [@abadie2010synthetic; @mixtape-sessions-synthtex].
+
+That restriction is presented as both strength and limitation.
+
+- It is a strength because the counterfactual remains substantively interpretable. The synthetic unit is made from actual untreated units with visible contributions.
+- It is a limitation because the treated unit may sit outside the support of the donor pool. If so, classical SCM may fail to fit well even when the research question is good.
+
+The important takeaway is that bad fit is often a design signal, not merely an estimation inconvenience.
+
+#### Weights, objectives, and pre-treatment fit
+
+The deck gives the basic setup in the familiar Abadie-Diamond-Hainmueller form: choose donor weights to minimize pre-treatment imbalance in outcomes and predictors, subject to the simplex constraints [@abadie2010synthetic]. The notes worth carrying forward are less about the algebra than about interpretation.
+
+- The objective is to reconstruct the untreated path before the intervention.
+- Pre-treatment fit is the main observable evidence that the donor-weighted combination may also track the treated unit after treatment in the absence of treatment.
+- Predictor choice matters because it shapes what kind of untreated path the optimizer is trying to reproduce.
+
+The deck's Basque Country and California tobacco examples matter because they make the method legible. Basque Country supplies the origin story and the intuition that DiD can be too coarse for a single treated case. Proposition 99 matters because it became the canonical teaching application in which the treated path and synthetic path can be compared visually and over time.
+
+#### Diagnostics and placebo logic
+
+Cunningham's treatment of SCM is not satisfied by a single treatment-effect plot. The deck repeatedly pushes toward diagnostics: inspect pre-treatment gaps, inspect the donor composition, and use placebo or permutation-style exercises to see whether the treated post-treatment gap looks unusual relative to comparable untreated units [@mixtape-sessions-synthtex].
+
+The practical lesson is that placebo exercises are most useful when they reinforce a design that already looks plausible. They are not a substitute for donor-pool discipline or for strong pre-treatment fit. In repo terms, this aligns with the existing [Synthetic Control Sources](synthetic-control-sources.qmd) page and supports keeping diagnostic interpretation central in the labs.
+
+### Imperfect fit
+
+This is the section where the deck becomes more than a standard SCM introduction. The problem is simple: classical SCM is persuasive when pre-treatment fit is strong, but applied work often lands in settings where the convex-hull restriction prevents an adequately close match [@mixtape-sessions-synthtex].
+
+#### Factor-model bias intuition
+
+The deck uses a factor-model story to explain why pre-treatment fit matters. If untreated outcomes are driven by common shocks with unit-specific loadings, then matching the treated unit well on a long pre-treatment outcome path can proxy for matching those latent loadings. When fit is poor, the bias risk comes from mismatch in the unobserved structure rather than only from observed covariates.
+
+This is the most important conceptual upgrade in the section: poor fit is not just visually unattractive. It indicates that the synthetic unit may not share the treated unit's latent outcome-generating process well enough for post-treatment comparisons to be credible.
+
+#### Why long pre-treatment panels matter
+
+The deck stresses that long pre-treatment histories help separate signal from noise. With more pre-treatment periods, the estimator is less likely to overfit idiosyncratic shocks and more likely to approximate the stable latent structure that matters for the untreated path [@mixtape-sessions-synthtex]. That is a useful discipline for this repo because it pushes analysts to think about panel length as part of identification strength, not only as data availability.
+
+#### Demeaned SCM
+
+The deck then turns to a demeaned or intercept-shifted version of SCM. The intuition is that when level differences are distracting and pre-treatment fit in levels is hard to interpret, centering outcomes can help focus the comparison on movement rather than raw level matching [@mixtape-sessions-synthtex].
+
+The notes worth keeping are the tradeoffs rather than the derivation:
+
+- demeaning can reduce some forms of bias tied to level mismatch
+- it moves SCM closer to DiD-style logic
+- it can also sacrifice one of classical SCM's most attractive features, namely the no-extrapolation interpretation of the synthetic unit
+
+So demeaned SCM is not a universal improvement. It is a response to specific fit problems.
+
+#### Augmented SCM
+
+The augmented-SCM part of the deck is especially useful because it frames negative or relaxed weights as bias reduction, not as a free license to fit anything [@benmichael2021augmented; @mixtape-sessions-synthtex]. The core idea is to start with SCM and then use an outcome model to adjust for remaining pre-treatment imbalance.
+
+That framing matters:
+
+- classical SCM stays the baseline when fit is good
+- augmentation becomes attractive when the treated unit is near but not well inside the donor-pool support
+- the point of the extra modeling is to reduce bias from imperfect balance, not to chase in-sample fit for its own sake
+
+For this repo, this section justifies treating augmented SCM as the first extension to consider when the design is substantively good but classical weights cannot reproduce the treated pre-treatment path closely enough.
+
+### Multiple outcomes
+
+This section asks a question that does not arise in introductory SCM notes often enough: if a study has several related outcomes, should it really build a different synthetic unit for each one [@mixtape-sessions-synthtex]?
+
+The deck's answer is that separate weights can create an interpretability problem. If smoking, alcohol use, and another outcome all produce different donor compositions, then the analyst is no longer comparing one treated unit with one coherent synthetic analogue. The method starts to look like a collection of outcome-specific fits rather than a comparative-case-study design.
+
+The slide treatment is useful because it makes the tradeoff explicit.
+
+- Separate weights can fit each outcome better.
+- Shared weights can produce a more coherent counterfactual story.
+- The choice depends on whether the outcomes plausibly share enough latent structure for common weights to be sensible.
+
+The deck summarizes two shared-weight strategies.
+
+- Concatenated weights stack outcomes and time periods into one pooled fit problem.
+- Averaged weights smooth outcomes before fitting and can reduce noise when the outcomes share structure strongly.
+
+The practical caution is just as important as the promise: pooling across outcomes helps only when common structure is plausible. If the outcomes are driven by very different processes, forcing common weights can degrade the design badly. In repo terms, this is an advanced note rather than a default workflow, but it is a useful warning against treating outcome-by-outcome SCM as automatically coherent.
+
+### Multiple treated units and staggered
+
+The last major section broadens SCM into a more general panel-method family. The deck covers three related ideas: matrix completion, synthetic DiD, and partially pooled SCM for staggered adoption [@xu2017generalized; @arkhangelsky2021synthetic; @benmichael2021augmented; @mixtape-sessions-synthtex].
+
+#### Matrix completion
+
+The matrix-completion discussion reframes several causal designs as missing-data patterns in a unit-by-time outcome matrix. The point is not that SCM disappears, but that SCM can be understood as one special case inside a broader imputation problem. Low-rank structure, fixed effects, and regularization then become ways to recover untreated outcomes when treatment patterns are more complex than the canonical single treated unit.
+
+The most useful takeaway is conceptual: once treatment timing becomes staggered or treated units become numerous, it can be more natural to think in terms of structured imputation than in terms of one donor-weight vector for one treated unit.
+
+#### Synthetic DiD
+
+The synthetic-DiD material is presented as a deliberate hybrid [@arkhangelsky2021synthetic]. Instead of requiring classical SCM's near-exact level matching or standard DiD's plain parallel-trends assumption, the estimator uses unit weights and time weights together to improve balance across both dimensions.
+
+The core intuition to keep:
+
+- unit weights make treated units look more like selected controls
+- time weights emphasize the pre-treatment periods most useful for predicting post-treatment behavior
+- the combined estimator aims to reduce bias when neither plain DiD nor plain SCM is fully comfortable
+
+This is a good fit for the repo whenever there are multiple treated units or the panel structure looks more like a modern DiD application than a single-case comparative study.
+
+#### Partially pooled SCM for staggered adoption
+
+The staggered-adoption part of the deck is built around the tradeoff between two imperfect strategies.
+
+- Separate SCM estimates one synthetic control for each treated unit and then averages effects.
+- Pooled SCM fits the average treated unit well but can hide poor unit-level matches.
+
+The partially pooled approach exists because neither extreme is always satisfactory. The estimator trades off pooled fit against unit-level fit so that the overall ATT can remain credible without completely sacrificing state- or unit-specific balance [@mixtape-sessions-synthtex].
+
+This is one of the strongest applied lessons in the deck. Once adoption is staggered, the analyst should stop asking only "can I run SCM?" and start asking "what level of aggregation am I trying to fit well?" The deck's answer is pragmatic: balance the pooled and unit-level objectives rather than assuming one target always dominates.
+
+## What to Carry Into This Repo
+
+- Use classical SCM when there is one treated unit or a very small treated set, treatment timing is sharp, the donor pool is clean, and the treated unit can be matched well over a reasonably long pre-treatment period. The right companion pages are the [Synthetic Control overview](synthetic-control.qmd) and [Synthetic Control Teaching Data](synthetic-control-teaching-data.qmd).
+- Prefer augmented SCM when the research design still looks like SCM, but the treated unit sits awkwardly relative to donor support and classical convex-hull weights leave visible pre-treatment imbalance. That is the first extension to consider before jumping to a wholly different framework.
+- Move toward synthetic DiD, matrix-completion-style estimators, or staggered-adoption SCM variants when treatment is no longer a single comparative case, when multiple treated units matter, or when timing heterogeneity makes one synthetic unit too crude. In this repo, those cases should usually be discussed alongside the [Synthetic Control Design Lab](../../labs/synthetic-control-design-lab.qmd) and [Synthetic Control Donor Pool Lab](../../labs/synthetic-control-donor-pool-lab.qmd).
+- Keep the source map nearby. The [Synthetic Control Sources](synthetic-control-sources.qmd) page is the right place to decide whether the next reading step should be Abadie for feasibility, Cunningham for intuition, or software/package documentation for implementation.
