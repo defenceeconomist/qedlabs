@@ -35,3 +35,5 @@ Local rendering stays unchanged:
 ```bash
 quarto render docs
 ```
+
+.
