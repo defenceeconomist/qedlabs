@@ -66,16 +66,61 @@ Best for stress-testing matching choices against a canonical benchmark compariso
 
 Use this when you want a more open-ended practice page.
 :::
+:::
+
+## Synthetic Control Labs {#scm-labs .section-heading}
+
+<p class="section-intro">Start with the core report, then move from SCM mechanics to the canonical case and then to the first principled extension.</p>
+
+::: {.section-grid}
+::: {.section-card}
+<span class="page-badge badge-guide">Core report</span>
+
+### [Synthetic Control Methods Report](synthetic-control-methods-report.qmd)
+
+Long-form reference report on donor-pool design, pre-treatment fit, placebo logic, and when to move beyond classical SCM.
+:::
+
+::: {.section-card}
+<span class="page-badge badge-lab">Introductory</span>
+
+### [Synthetic Control Mechanics Lab](synthetic-control-mechanics-lab.qmd)
+
+Best first practical exercise for learning `dataprep()`, `synth()`, donor weights, and gap plots without substantive complexity.
+:::
+
+::: {.section-card}
+<span class="page-badge badge-core">Intermediate</span>
+
+### [Proposition 99 With tidysynth](synthetic-control-proposition-99-lab.qmd)
+
+Canonical end-to-end SCM workflow with donor exclusions, balance checks, donor transparency, and placebo logic.
+:::
+
+::: {.section-card}
+<span class="page-badge badge-applied">Advanced</span>
+
+### [Augmented SCM With Kansas](synthetic-control-augmentation-lab.qmd)
+
+Best for learning what weak classical fit looks like and when augmentation becomes defensible.
+:::
+:::
+
+::: {.path-grid}
+::: {.path-card}
+<span class="page-badge badge-skeleton">Design worksheet</span>
+
+### [Synthetic Control Design Lab](synthetic-control-design-lab.qmd)
+
+Use this when you want a planning worksheet before committing to a runnable case.
+:::
 
 ::: {.path-card}
-<span class="page-badge badge-skeleton">Build-out route</span>
+<span class="page-badge badge-skeleton">Donor worksheet</span>
 
-### Synthetic control design labs
+### [Synthetic Control Donor Pool Lab](synthetic-control-donor-pool-lab.qmd)
 
-- [Synthetic Control Design Lab](synthetic-control-design-lab.qmd)
-- [Synthetic Control Donor Pool Lab](synthetic-control-donor-pool-lab.qmd)
-
-Treat these as structured lab skeletons.
+Use this when the main bottleneck is screening and defending the donor pool.
 :::
 :::
 

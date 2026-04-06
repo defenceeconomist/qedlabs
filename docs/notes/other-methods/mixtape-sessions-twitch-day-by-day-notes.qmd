@@ -1,0 +1,363 @@
+---
+title: "Notes on Mixtape Sessions: Twitch Workshop Content by Day"
+subtitle: "Detailed Day-by-Day Transcript Notes"
+author: "Luke Heley"
+date: "6 April 2026"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: false
+---
+
+## Purpose
+
+These are detailed day-by-day notes on Scott Cunningham's four-day Mixtape Sessions workshop for Twitch. This page is a content companion to [Mixtape Sessions: Twitch Training Delivery](mixtape-sessions-twitch-training-notes.qmd). That companion note focuses on pedagogy and delivery. This page focuses on what he actually covers each day, how the content sequence unfolds, and which examples and design ideas anchor the workshop.
+
+The aim here is to capture:
+
+- the main content arc of each workshop day
+- which concepts and methods receive the most attention
+- how the Twitch examples are used to connect methods to platform questions
+- what each day contributes to the workshop as a whole
+
+## Source Baseline
+
+- Source: four transcript files in `tmp/`
+  - `twitch_--_mixtape_sessions__day_1_v1 (720p).txt`
+  - `twitch_--_mixtape_sessions__day_2_v1 (720p).txt`
+  - `twitch_--_mixtape_sessions__day_3 (720p).txt`
+  - `twitch_--_mixtape_sessions__day_4_v1 (720p).txt`
+- Total transcript size: about `17,296` lines
+- The transcripts are rough auto-transcriptions, so these notes follow repeated content patterns and clear transitions rather than every wording detail.
+- The workshop is cumulative. Each day assumes the prior day has established a new layer of causal language, design logic, or implementation practice.
+
+## Executive Summary
+
+- Day 1 is foundations. It defines the workshop, motivates causal inference for industry and platforms, develops the potential-outcomes frame, and introduces randomization, selection bias, and heterogeneous treatment effects.
+- Day 2 is the bridge from foundations to design-stage adjustment. It revisits randomization inference, then spends most of the day on DAGs, backdoor reasoning, collider problems, and why matching depends on a credible causal model.
+- Day 3 is the first heavy implementation day. It covers nearest-neighbor matching, matching discrepancies and bias correction, propensity scores, inverse-probability weighting, and then begins the IV sequence.
+- Day 4 is mostly IV and RD. It deepens IV through weak-instrument problems, LATE and compliers, then pivots into regression discontinuity with examples, diagnostics, software, and a final code walk-through.
+- Across all four days, the workshop keeps returning to one basic claim: methods are answers to specific identification problems, not interchangeable estimator brands.
+
+## Day 1
+
+### Main role of the day
+
+Day 1 is the onboarding and foundations day. Cunningham uses it to set the frame for the whole workshop: what causal inference is for, why it matters outside economics, how it differs from prediction, and why participants should care before they ever touch a method. The explicit day-1 agenda is potential outcomes, counterfactuals, randomization, and the decomposition of simple outcome differences into causal and bias components (`Day 1, lines 85-108`; `Day 1, lines 672-686`).
+
+### What he covers
+
+The day begins with orientation:
+
+- workshop goals and schedule
+- why Twitch gets matching, IV, and RD rather than a Papa John's-style DiD and synthetic-control emphasis
+- how causal inference fits data science, machine learning, and business analytics (`Day 1, lines 75-126`)
+
+From there he moves into the conceptual core of causal inference:
+
+- counterfactuals as alternative histories
+- potential outcomes as the formal way to represent those missing states
+- the difference between prediction questions and causal questions
+- why causal inference is fundamentally about missing data on unobserved outcomes (`Day 1, lines 147-299`; `Day 1, lines 649-675`)
+
+He then builds the workshop's central decomposition:
+
+- average treatment effect
+- selection bias
+- heterogeneous treatment-effects bias
+- the way raw comparisons mix all three together (`Day 1, lines 1810-2220`)
+
+Later in the day he introduces:
+
+- randomization and why it breaks the link between treatment assignment and potential outcomes
+- SUTVA and interference concerns
+- the idea that randomized designs eliminate some bias terms by design, rather than by modeling (`Day 1, lines 2328-2467`; `Day 1, lines 2473-2508`)
+
+The day also spends real time on randomization inference and on two applied papers:
+
+- the eBay paid-search paper as a platform-relevant case of selection bias and experimental validation
+- Rebecca Thornton's HIV paper as a bridge toward IV by showing that randomization can be used indirectly to learn about harder causal questions (`Day 1, lines 2668-3247`; `Day 1, lines 3440-3829`)
+
+The final block is randomization inference:
+
+- why exact randomization-based inference matters
+- how it differs from the more familiar asymptotic habit
+- a step-by-step setup using apps and examples (`Day 1, lines 3929-4703`)
+
+### Key examples and applications
+
+Day 1 uses examples aggressively:
+
+- Marvel and time-travel stories for counterfactual thinking
+- Twitch creator behaviors and earnings questions
+- eBay search advertising as a platform-scale illustration of selection bias
+- HIV-status learning as a design that anticipates IV logic
+
+These examples are not side stories. They are the main way he turns potential-outcomes language into something the Twitch audience can hold onto.
+
+### What Day 1 contributes to the whole workshop
+
+Day 1 does the conceptual heavy lifting. If the rest of the workshop is a tour of identification strategies, day 1 establishes the map:
+
+- causal effects are about missing counterfactuals
+- raw comparisons are contaminated
+- randomization is the clean benchmark
+- observational work must be judged by how credibly it rebuilds or approximates that benchmark
+
+That is why day 2 can then move into DAGs and matching without sounding like a software tutorial.
+
+## Day 2
+
+### Main role of the day
+
+Day 2 is the design-logic day. It starts by recapping day 1 and then shifts into DAGs, backdoor reasoning, collider bias, and matching as a method family that only makes sense when the causal model is good enough. The stated plan is explicit: revisit randomization inference, then do DAGs, then do matching (`Day 2, lines 122-126`; `Day 2, lines 885-888`).
+
+### What he covers
+
+The morning recap does two things at once:
+
+- reminds participants of the potential-outcomes decomposition from day 1
+- restates the practical lesson that many Twitch and platform questions are causal questions even if teams describe them as correlational or predictive (`Day 2, lines 11-39`)
+
+He then uses Substack and Twitch to re-express selection bias in practical terms:
+
+- creators choose behaviors endogenously
+- firms observe behaviors and outcomes together
+- observed correlations can easily be driven by sorting into treatment rather than treatment effects (`Day 2, lines 71-120`)
+
+After the recap, the day moves into causal graphs:
+
+- what DAGs are
+- how they encode prior knowledge
+- why DAG construction depends on institutional knowledge and expert judgment
+- why DAGs matter for variable selection and not just for presentation (`Day 2, lines 1120-1292`; `Day 2, lines 1547-1587`)
+
+The main design blocks are:
+
+- backdoor paths
+- colliders
+- the backdoor criterion as permission to use selection-on-observables methods
+- the claim that controlling for the wrong variable can create bias rather than remove it (`Day 2, lines 1594-1707`; `Day 2, lines 1677-1702`)
+
+He then uses DAGs to show:
+
+- when matching is allowed
+- when matching is not allowed
+- why matching is, in a sense, one of the most assumption-dependent methods because it relies so heavily on a correct adjustment set (`Day 2, lines 1563-1577`; `Day 2, lines 2067-2077`; `Day 2, lines 3311-3332`)
+
+The matching sequence begins conceptually before it becomes computational:
+
+- matching and weighting as ways to estimate missing counterfactuals
+- exact weighting ideas using smoking and age examples
+- balance as a design target rather than a decorative diagnostic
+- the curse of dimensionality as the reason exact adjustment breaks down (`Day 2, lines 3577-3655`; `Day 2, lines 3818-3869`; `Day 2, lines 4458-4467`)
+
+Late in the day he introduces:
+
+- nearest-neighbor matching
+- the ATT versus ATE distinction in matching
+- the Dehejia and Wahba paper as a benchmark case for the next day's implementation material (`Day 2, lines 4473-4569`; `Day 2, lines 4643-4669`)
+
+### Key examples and applications
+
+Day 2 is the day where Twitch becomes a standing application environment:
+
+- consistent schedule and earnings
+- creator actions, platform growth, and endogenous sorting
+- institutional knowledge of the platform as an input to the DAG
+- content-creator level matching and the risk of poor common support (`Day 2, lines 72-118`; `Day 2, lines 1269-1288`; `Day 2, lines 4458-4464`)
+
+The smoking example is also important because it gives a simpler teaching case for weighting and adjustment before returning to platform settings.
+
+### What Day 2 contributes to the whole workshop
+
+Day 2 supplies the logic that distinguishes methods. Day 1 established the problem. Day 2 says:
+
+- here is how to decide whether backdoor adjustment is even on the table
+- here is why covariate choice cannot be treated as a checklist exercise
+- here is why matching and weighting are design methods, not plug-and-play fixes
+
+Without day 2, day 3 would collapse into mechanics.
+
+## Day 3
+
+### Main role of the day
+
+Day 3 is the first implementation-heavy day. It finishes the matching section, moves through nearest-neighbor matching in multiple dimensions, propensity scores, inverse-probability weighting, and propensity-score matching, then begins the IV sequence. He states the plan up front and says the goal is interpretation, not being impressed by code execution (`Day 3, lines 17-49`).
+
+### What he covers
+
+The day opens by re-situating matching inside the DAG logic:
+
+- write a credible DAG
+- check whether backdoor adjustment is possible
+- if yes, enter the world of matching, weighting, or regression under selection on observables (`Day 3, lines 77-97`)
+
+He then revisits nearest-neighbor matching:
+
+- why exact matching is ideal but often impossible
+- matching discrepancies as the main source of finite-sample bias
+- how the curse of dimensionality worsens those discrepancies
+- why bias correction matters when exact matches do not exist (`Day 3, lines 260-309`; `Day 3, lines 354-374`)
+
+This leads into a more detailed treatment of:
+
+- nearest-neighbor bias adjustment
+- matching with replacement
+- how to think about which covariates matter more for good matching (`Day 3, lines 405-423`)
+
+The second major block is propensity scores:
+
+- the Rosenbaum-Rubin scalar reduction argument
+- the appeal of collapsing many covariates into one balancing score
+- how propensity scores can support weighting, stratification, or matching
+- why common support is central and why propensity scores help diagnose it (`Day 3, lines 522-709`; `Day 3, lines 2058-2079`)
+
+He then compares methods inside the backdoor family:
+
+- covariate matching
+- propensity-score matching
+- inverse-probability weighting
+- trimming and support restrictions
+- the practical tradeoff between transparency, finite-sample behavior, and susceptibility to mismatch (`Day 3, lines 2037-2149`; `Day 3, lines 2157-2218`)
+
+His bottom-line guidance is fairly clear:
+
+- use DAGs to select covariates
+- use propensity scores to inspect support
+- consider weighting on a trimmed sample
+- be careful about nearest-neighbor propensity-score matching because finite-sample exactness is never really there (`Day 3, lines 2124-2144`; `Day 3, lines 2212-2253`)
+
+The day then pivots into IV:
+
+- when IV is appropriate instead of matching
+- the IV DAG
+- why IV is for cases where backdoor adjustment fails
+- why the method is attractive and awkward at the same time (`Day 3, lines 2372-2440`; `Day 3, lines 3103-3136`)
+
+The first IV block covers:
+
+- the structure of the IV estimand
+- covariance logic
+- why the exclusion and relevance assumptions do the real work
+- why IV requires its own form of narrative and substantive defense (`Day 3, lines 3397-3496`)
+
+### Key examples and applications
+
+Day 3 uses Twitch repeatedly for:
+
+- content-creator matching
+- support and donor-pool style reasoning at the creator level
+- the practical question of when matching is even usable on platform data
+
+It also introduces a few research examples from Cunningham's own work and from the broader literature when he shifts into IV.
+
+### What Day 3 contributes to the whole workshop
+
+Day 3 is where the workshop becomes most recognizably "methods training." But the content still follows the larger design sequence:
+
+- backdoor adjustment first
+- diagnose the limits of backdoor adjustment
+- move to IV only when the problem structure demands it
+
+That sequencing is one of the clearest throughlines in the whole workshop.
+
+## Day 4
+
+### Main role of the day
+
+Day 4 is the advanced methods and wrap-up day. It continues IV at a deeper level, especially weak instruments, LATE, and compliers, then shifts into regression discontinuity design. It is the densest day conceptually and the most compressed by the end.
+
+### What he covers
+
+The first major IV block deepens the previous day's intuition:
+
+- Wald intuition and two-stage least squares
+- why the IV estimate is a ratio
+- how to think about first stage and reduced form visually and substantively
+- why data visualization is essential in IV presentations (`Day 4, lines 125-203`; `Day 4, lines 464-477`)
+
+He then uses the Angrist-Krueger schooling paper and the later critique literature to teach:
+
+- many-instrument and weak-instrument problems
+- why a famous design can still be fragile
+- how econometric criticism changed reporting standards in IV (`Day 4, lines 291-366`; `Day 4, lines 766-1036`)
+
+This section includes:
+
+- Anderson-Rubin intervals and weak-IV robust inference
+- jackknife IV and later corrections
+- the idea that the field learned by publicly discovering where early IV success stories were too fragile (`Day 4, lines 1002-1118`)
+
+The second major IV block is LATE:
+
+- always takers, never takers, compliers, defiers
+- why IV estimates the effect for compliers under the usual assumptions
+- why different instruments can identify different complier groups
+- why this matters for interpretation in industry and policy contexts (`Day 4, lines 1641-1811`; `Day 4, lines 1827-1902`)
+
+He then turns that logic back toward Twitch:
+
+- verification and chatting as candidate treatments or instruments
+- the need to define the treatment carefully
+- the possibility of using inducements or frictions to generate usable variation
+- the practical difficulty that IV only learns about certain margins and certain users (`Day 4, lines 2479-2594`)
+
+The regression-discontinuity block then begins:
+
+- what RD pictures are showing
+- why sharp and fuzzy RD differ
+- how fuzzy RD is effectively an IV design at a cutoff
+- why RD is useful when rules or thresholds create plausibly local quasi-random variation (`Day 4, lines 2626-3061`)
+
+The main RD content includes:
+
+- canonical plots
+- local comparisons near the cutoff
+- the role of continuity assumptions
+- sharp versus fuzzy designs
+- local linear methods, bandwidth choice, and the bias-variance tradeoff
+- why high-order polynomials are a bad default (`Day 4, lines 3180-3341`; `Day 4, lines 3765-3830`)
+
+The implementation section covers:
+
+- `rdrobust`
+- `rddensity`
+- `binsreg`
+- use of R, Stata, and Python
+- a DUI recidivism paper as the walk-through case (`Day 4, lines 3903-4006`; `Day 4, lines 3823-3828`)
+
+### Key examples and applications
+
+The day's main examples are:
+
+- Angrist-Krueger and the weak-instrument critiques
+- draft lottery and schooling logic
+- Twitch verification and chatting as an IV-style platform question
+- Uber and other industry threshold cases for RD
+- DUI recidivism for the RD code walkthrough
+
+These examples are more heterogeneous than the earlier days, but the throughline remains the same: what kind of natural or policy-generated variation is doing the identification work?
+
+### What Day 4 contributes to the whole workshop
+
+Day 4 finishes the method family sequence by showing two important alternatives to backdoor adjustment:
+
+- IV when omitted confounding blocks credible selection-on-observables adjustment
+- RD when a threshold rule creates a local quasi-experiment
+
+It also closes the workshop by returning to an implicit meta-point: every method has a specific type of identifying variation, a specific estimand, and specific interpretive limits.
+
+## Cross-Day Throughline
+
+Several content patterns repeat across all four days.
+
+- Potential outcomes stay in the background even when the workshop is talking about DAGs, matching, IV, or RD.
+- Methods are introduced as responses to specific design failures, not as a menu of equivalent estimators.
+- Twitch examples keep pulling the workshop back from abstract econometrics to platform decisions, creator behavior, and product-relevant causal questions.
+- Implementation is always downstream of design logic. Even on the code-heavy days, the software is presented as the last step in an argument.
+
+## How to Use This Note
+
+Use this page when the goal is to remember what the workshop covered and how the method sequence unfolded. Use [Mixtape Sessions: Twitch Training Delivery](mixtape-sessions-twitch-training-notes.qmd) when the goal is to study Cunningham's teaching craft and translate it into QED Labs practice.

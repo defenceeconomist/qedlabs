@@ -1,0 +1,209 @@
+---
+title: "Synthetic Control for Causal Inference"
+subtitle: "Classical SCM, donor-pool design, and placebo diagnostics"
+author: "Luke Heley"
+date: 6 April 2026
+bibliography:
+  - ../references.bib
+  - ../../evaluation-bibliography.bib
+link-citations: true
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: true
+  pdf:
+    toc: true
+    number-sections: true
+---
+
+## Executive Summary
+
+- This report positions synthetic control methods (SCM) as design-first tools for comparative case studies with one treated unit, or a very small number of treated units, observed over time.
+- The core SCM question is not whether untreated units share the same average trend as the treated unit. It is whether a transparent weighted combination of untreated donors can reproduce the treated unit's pre-treatment outcome path closely enough to act as a credible counterfactual [@abadie2003economic; @abadie2010synthetic].
+- For evaluator practice, donor-pool design, intervention timing, and pre-treatment fit matter more than the choice of R package. A persuasive SCM study is built before it is estimated.
+- The strongest beginner workflow on this site is: understand the original mechanics in the [Synthetic Control Mechanics Lab](synthetic-control-mechanics-lab.qmd), work through the canonical California case in [Proposition 99 With tidysynth](synthetic-control-proposition-99-lab.qmd), and then study weak-fit repair in [Augmented SCM With Kansas](synthetic-control-augmentation-lab.qmd).
+- Classical SCM should remain the default starting point because its convex-combination logic makes support limits and donor dependence visible. But weak fit, disaggregated data, or likely spillovers may require augmented, penalized, or spillover-aware variants rather than pretending the baseline design succeeded [@abadie2021using; @benmichael2021augmented; @Abadie_LHour_2021_PenalizedSCM; @DiStefano_Mellace_2024_InclusiveSCM_arxiv].
+- Within a wider quasi-experimental toolkit, SCM is strongest when treatment happens to one place at a known date, the pre-treatment series is long, the donor pool is plausibly untreated, and a simple difference-in-differences comparison feels too coarse for the treated case [@govuk_evaluation_academy_resources; @govuk_qed_slides].
+
+## Introduction
+
+Synthetic control methods sit in the middle ground between informal comparative case studies and more familiar panel estimators. The design starts with an aggregate treated unit such as a state, city, sector, or institution, observed over a reasonably long time series. Instead of comparing that treated unit with a simple average of untreated units, SCM constructs a weighted synthetic comparison from the donor pool and asks whether that synthetic unit tracks the treated unit closely before the intervention [@abadie2003economic; @abadie2010synthetic].
+
+That shift sounds technical, but the underlying design logic is simple. A good SCM study makes three objects inspectable. First, it shows which untreated units are even allowed to serve as donors. Second, it shows which donors actually receive weight. Third, it shows whether the weighted combination reproduces the treated unit well enough before treatment to justify learning from the post-treatment gap. If those three objects are weak, the post-treatment graph should not rescue the design.
+
+This report gives SCM the same curricular role that the matching report plays elsewhere on the site: a long-form reference page that explains what the method is for, where it fits among quasi-experimental designs, what a defensible workflow looks like, and how the site's labs and notes fit together.
+
+### Relevance for Evaluation Practice
+
+SCM matters in evaluation because many interventions are delivered to places rather than people. Local transport investments, tobacco-control policies, economic-development zones, policing initiatives, and institutional reforms often affect a single geography or a small handful of treated places. In those settings, matching individual units or estimating an ordinary treated-versus-untreated panel average can feel too blunt. Evaluators still need a counterfactual, but they need one that respects the treated unit's idiosyncratic history rather than assuming all untreated places are equally informative [@govuk_qed_slides; @abadie2021using].
+
+That is where SCM is useful. It makes the comparative-case argument explicit instead of leaving it implicit inside a regression. But it should not be narrated as a magic alternative to ordinary evaluation design. SCM earns credibility only when the donor pool is plausible, pre-treatment fit is strong, and the post-treatment divergence lines up with the treatment story rather than with concurrent shocks or spillovers.
+
+::: {.callout-note}
+## Report Route
+
+Use this page as the conceptual anchor for the site's SCM materials:
+
+- Use [Synthetic Control](../notes/scm/synthetic-control.qmd) for the shorter method overview.
+- Use [Synthetic Control Teaching Data](../notes/scm/synthetic-control-teaching-data.qmd) when you need dataset choices for teaching or build-out.
+- Use [California Proposition 99](../notes/scm/california-tobacco-synthetic-control-notes.qmd) for the canonical paper-level application logic.
+- Use [Synthetic Control Mechanics Lab](synthetic-control-mechanics-lab.qmd) before you want to read `dataprep()` and `synth()` output comfortably.
+- Use [Proposition 99 With tidysynth](synthetic-control-proposition-99-lab.qmd) for the first end-to-end applied workflow.
+- Use [Augmented SCM With Kansas](synthetic-control-augmentation-lab.qmd) once the main question becomes what to do when classical SCM fit is visibly weak.
+:::
+
+## Design Principles
+
+### Define The Treated Unit And Intervention Before Anything Else
+
+Every SCM design begins by stating clearly what the treated unit is, when treatment starts, and why that timing is substantively defensible. That sounds obvious, but it does real work. If treatment is phased in ambiguously, repeatedly redefined, or bundled with other changes, the later treated-versus-synthetic gap becomes hard to interpret. The method cannot repair a fuzzy intervention.
+
+This is also where SCM differs from casual comparative case study. The treated unit is not merely the case of interest. It is the unit for which the analysis claims to reconstruct an untreated outcome path. That requires the intervention date to be anchored tightly enough that pre-treatment fit and post-treatment divergence mean something.
+
+### Treat Donor-Pool Construction As Identification
+
+Donor selection is not housekeeping. It is part of the causal argument. A donor pool should contain untreated units that are substantively comparable to the treated unit and plausibly unaffected by the intervention. Units that are contaminated, structurally incomparable, or treated by closely related policies should usually be excluded before estimation rather than left in for convenience [@abadie2010synthetic; @abadie2021using].
+
+This is one of the main reasons SCM teaches well. The design forces the evaluator to show which alternatives were considered credible and which were ruled out. A large donor pool is not automatically better. An implausible donor pool only gives the optimizer more ways to manufacture a misleading fit.
+
+### Pre-Treatment Fit Comes Before Effects
+
+The central empirical question in SCM is whether the synthetic control reproduces the treated unit convincingly before treatment. If it does not, the post-treatment gap is hard to interpret as an intervention effect. The most important figure in an SCM application is therefore usually the pre-treatment part of the path plot, not the post-treatment divergence [@abadie2010synthetic; @abadie2021using].
+
+That rule is stricter than many first-time users expect. A dramatic post-treatment break does not compensate for poor pre-treatment tracking. Weak fit means the weighted donor combination was never reproducing the treated unit's untreated path especially well in the first place.
+
+### Diagnostics Are Part Of The Estimate
+
+In SCM, diagnostics are not decorations added after the real analysis. The weights, balance tables, path plots, gap plots, placebo runs, and sensitivity checks are the real analysis. A single treatment-effect line without those supporting objects is incomplete.
+
+In practice, a defensible core workflow should report at least:
+
+- donor-pool rules and exclusions
+- key predictors and lagged outcomes used to anchor fit
+- donor weights so the synthetic unit is inspectable
+- treated and synthetic outcome paths over the full panel
+- the treated-minus-synthetic gap series
+- placebo-by-unit or related reassignment diagnostics
+- some sensitivity to donor-pool or predictor choices
+
+### Placebo Logic Is Comparative, Not Decorative
+
+SCM inference usually proceeds through placebo or reassignment logic rather than through off-the-shelf large-sample standard errors. The idea is to ask what kind of post-treatment gap would appear if other donor units were reassigned as if they had been treated and the same design were rerun [@abadie2010synthetic]. That makes inference comparative: the treated unit is judged against the empirical rarity of placebo gaps, usually after screening out placebo runs with obviously terrible pre-treatment fit.
+
+This matters because SCM applications are often small-sample and highly case-specific. The inferential question is rarely "what would the asymptotic variance be?" It is closer to "does the treated unit look unusually extreme relative to plausible placebo cases estimated under the same rules?"
+
+### Start With Classical SCM Before Moving To Variants
+
+Classical SCM should remain the baseline because its convex-weight constraints keep the design legible. If the treated unit cannot be approximated as a weighted average of untreated donors, that is important information about support. The first response should be to diagnose the failure honestly, not to hide it behind a more flexible estimator.
+
+That said, weak classical fit does not always mean the whole comparative design should be abandoned. Sometimes it means the next defensible step is augmented SCM, penalized SCM, or a spillover-aware extension. The right workflow is therefore sequential: diagnose classical SCM first, then justify any extension as a response to a visible design problem rather than as a default upgrade [@benmichael2021augmented; @Abadie_LHour_2021_PenalizedSCM; @DiStefano_Mellace_2024_InclusiveSCM_arxiv].
+
+## Causal Inference Background
+
+### SCM In Potential-Outcomes Terms
+
+The potential-outcomes problem is the same here as elsewhere in causal inference. The treated unit has an observed post-treatment outcome path and an unobserved untreated path. SCM tries to approximate that missing untreated path with a weighted combination of untreated donor units whose pre-treatment behavior resembles the treated unit closely enough to make the comparison credible [@cunningham2021mixtape; @abadie2010synthetic].
+
+What changes is the scale of the problem. The unit is often a place or institution rather than an individual, and the evidence comes from a time series rather than a cross-section. That is why long pre-treatment histories matter so much. They are doing part of the causal work by revealing whether the donor combination can track the treated unit before the intervention ever begins.
+
+### Why SCM Instead Of A Simple Panel Average
+
+A simple treated-versus-rest comparison can be misleading when the treated unit already has distinctive pre-treatment dynamics. In the California tobacco case, for example, the raw rest-of-US average is a poor comparator because California's smoking trajectory already differs materially before Proposition 99 [@abadie2010synthetic]. SCM improves on that by replacing the crude donor average with a weighted counterfactual chosen to match the treated unit more closely.
+
+That is also why SCM is often described as an alternative to overly coarse difference-in-differences comparisons, not as a replacement for all panel methods. The method is most attractive when one treated unit is unusual enough that an average untreated trend is implausible, but not so unusual that no weighted donor combination can reproduce it [@abadie2021using].
+
+### Core Assumptions And Failure Modes
+
+Several assumptions sit underneath even a polished SCM application:
+
+- The donor pool must remain untreated or at least not materially contaminated by the intervention.
+- The treated unit must be approximable by the donor pool, since SCM works inside donor support rather than by arbitrary extrapolation.
+- No other major treated-unit shock should arrive at the same time as treatment if it could also generate the post-treatment break.
+- The treatment date must be defined tightly enough that pre-period and post-period comparisons are substantively meaningful.
+- Spillovers into donors should be limited, or else handled explicitly with a spillover-aware design.
+
+These are design conditions, not software settings. If they are violated badly enough, a tidy SCM pipeline will still produce output, but the result will not answer the intended causal question.
+
+### Why Long Pre-Treatment Outcome Histories Matter
+
+SCM relies heavily on lagged outcomes and pre-treatment trajectories because those series often absorb part of the latent structure that simple observed covariates miss [@abadie2010synthetic; @abadie2021using]. For evaluators, the practical lesson is straightforward: a short panel sharply limits what SCM can learn. If only a few pre-treatment periods are available, the design may never get enough evidence about whether the donor pool can reconstruct the treated unit.
+
+This is also why pre-treatment fit should be shown directly rather than implied. A good balance table helps, but the full path plot and gap series are more informative because they show whether the treated unit's history is genuinely being tracked over time.
+
+## Positioning SCM Among Quasi-Experimental Designs
+
+### When SCM Is Strongest
+
+SCM is especially strong when all of the following are true:
+
+- treatment happens to one place or a very small number of places
+- the intervention date is known
+- the outcome is observed over a reasonably long pre-treatment period
+- untreated donor units are available and plausibly unaffected
+- the treated unit is unusual enough that a raw untreated average is implausible, but not so unusual that donor support collapses
+
+This is why SCM fits naturally alongside the Evaluation Academy toolkit for policy analysis rather than outside it [@govuk_evaluation_academy_resources; @govuk_qed_slides]. It is the right kind of design for aggregate case interventions when the data look more like a comparative case study than like a clean treatment-control panel with many treated units.
+
+### When Not To Default To SCM
+
+SCM should not be treated as the automatic answer to "one treated place over time." If a credible threshold governs treatment, regression discontinuity may be stronger. If multiple treated and untreated units have stable pre-treatment trends and a defensible parallel-trends story, difference-in-differences may be simpler and more transparent. If treatment timing varies widely across many units, other panel designs may fit the problem better.
+
+The main failure mode is using SCM because it produces an attractive figure even when donor support is weak or spillovers are obvious. In those cases, the right conclusion may be that the design is not credible, not that the analyst needs a more elaborate optimizer.
+
+## Recommended Core Workflow For This Site
+
+### Primary Teaching Case
+
+For this site, the canonical first real application should remain California Proposition 99 using `tidysynth::smoking`. It is the cleanest beginner case because it keeps the substantive story intuitive while preserving the full SCM workflow: donor exclusions, predictors, lagged outcomes, donor weights, path fit, gap plots, and placebo logic. It also connects directly to the original JASA application rather than to a detached package demo [@abadie2010synthetic].
+
+That makes the site's most defensible learning route:
+
+1. [Synthetic Control Mechanics Lab](synthetic-control-mechanics-lab.qmd) for the original `Synth` grammar.
+2. [Proposition 99 With tidysynth](synthetic-control-proposition-99-lab.qmd) for the first full applied SCM workflow.
+3. [Augmented SCM With Kansas](synthetic-control-augmentation-lab.qmd) for weak-fit diagnosis and principled extension.
+
+### Companion Reading Path
+
+The notes already in the repo support that route well:
+
+- [Synthetic Control](../notes/scm/synthetic-control.qmd) for the short overview.
+- [California Proposition 99](../notes/scm/california-tobacco-synthetic-control-notes.qmd) for the canonical paper's design logic.
+- [Basque Country Conflict](../notes/scm/basque-country-conflict-notes.qmd) for the original comparative case-study application.
+- [The Augmented Synthetic Control Method](../notes/scm/augmented-synthetic-control-method-notes.qmd) when classical fit becomes the bottleneck.
+- [The Inclusive Synthetic Control Method](../notes/scm/inclusive-synthetic-control-method-notes.qmd) when donor contamination and spillovers become first-order design issues.
+
+### What A Full SCM Write-Up Should Cover
+
+If this report is later expanded into a code-backed empirical analysis, the section order should stay close to the current narrative logic:
+
+1. State the treated unit, intervention timing, outcome, and target causal question.
+2. Defend donor-pool inclusions and exclusions before estimation.
+3. Explain the predictor set and the pre-treatment window used to anchor fit.
+4. Show pre-treatment fit and predictor balance before discussing post-treatment effects.
+5. Report donor weights and the treated-versus-synthetic path and gap.
+6. Run placebo or reassignment diagnostics and explain what constitutes a meaningful comparator.
+7. Stress-test the design with donor-pool and predictor sensitivity checks.
+8. Conclude with a design judgment, not only an effect estimate.
+
+That structure keeps the report aligned with the matching report's design-first teaching style while respecting what is specific to SCM: donor support, path fit, and placebo logic matter more here than individual-level covariate balance alone.
+
+## Extensions And Modern Variants
+
+### Augmented SCM
+
+Augmented SCM is the natural next step when classical SCM fit is visibly weak but the broader comparative design still looks plausible. The method combines synthetic-control weighting with an outcome model that reduces bias from imperfect pre-treatment fit [@benmichael2021augmented]. In teaching terms, this should be introduced as a repair strategy for a diagnosed weakness, not as the main starting point.
+
+### Penalized SCM
+
+Penalized SCM becomes attractive when the data are more disaggregated, the donor pool is large, or classical convex weighting becomes unstable or too rigid for the support problem at hand [@Abadie_LHour_2021_PenalizedSCM]. It is better treated as an advanced extension for difficult support settings than as the default for introductory work.
+
+### Spillover-Aware SCM
+
+Inclusive and related spillover-aware extensions matter when donor contamination is not a nuisance but an expected feature of the intervention environment. Place-based policies often affect nearby or economically linked areas, so the design question is no longer just which donors to drop. It is whether the evaluation needs to model direct and indirect effects jointly [@DiStefano_Mellace_2024_InclusiveSCM_arxiv].
+
+## Bottom Line
+
+Synthetic control should be taught on this site as a comparative design workflow, not as an optimizer with a memorable graph. The core report should therefore anchor readers around four ideas: define the treated case clearly, treat donor-pool design as identification, insist on strong pre-treatment fit before interpreting effects, and use placebo logic to judge whether the treated unit's post-treatment divergence is unusually large under the same design rules.
+
+That is the same design-first posture the matching report uses, translated into SCM's own language of donor support, path fit, and comparative diagnostics. From here, the labs can do the operational work and the notes can carry the source-specific detail.

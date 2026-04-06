@@ -1,0 +1,286 @@
+---
+title: "Lab: Proposition 99 With tidysynth"
+format:
+  html: default
+execute:
+  echo: true
+  eval: false
+---
+
+## How To Use This Page
+
+Use this page as the first full SCM application lab.
+
+- Keep the [Synthetic Control](../notes/scm/synthetic-control.qmd) overview open in another tab.
+- Use the [California Proposition 99 notes](../notes/scm/california-tobacco-synthetic-control-notes.qmd) when you want the paper-level rationale behind each design step.
+- Do not rush to the post-treatment plot. The donor pool, predictors, and pre-treatment fit are the actual argument.
+- End with a design judgment about whether California's synthetic comparison looks credible enough to interpret.
+
+::: {.callout-note}
+The code is shown but not executed when the site is rendered. That keeps the page readable while preserving a runnable workflow for teaching and self-study.
+:::
+
+## Training Goal
+
+Turn the canonical Proposition 99 application into a repeatable `tidysynth` workflow:
+
+1. define the treated unit and intervention date
+2. build a donor pool that tries to stay plausibly untreated
+3. choose predictors and lagged outcomes that discipline pre-treatment fit
+4. inspect donor weights, balance, path fit, and placebo-style comparisons
+5. explain why this is a design-and-diagnostics workflow rather than just a nice graph
+
+## Dataset At A Glance
+
+This lab uses `tidysynth::smoking`, the bundled state-year panel tied to California's tobacco-control program.
+
+- Treated unit: California
+- Intervention anchor: `1988` in the teaching implementation, so `1989` onward is interpreted as the post-treatment period
+- Outcome: per-capita cigarette sales (`cigsale`)
+- Core predictors: income, cigarette price, beer consumption, age structure, and lagged smoking outcomes
+- Main value: this is the cleanest benchmark case for teaching a full end-to-end SCM workflow in a tidy grammar
+
+## What To Hand Back
+
+By the end of the lab, you should be able to report:
+
+- which states were excluded before estimation and why
+- which predictors anchor the fit exercise
+- which donor states receive positive or near-positive weight
+- whether California's pre-treatment fit is strong enough to make the `1989` onward gap meaningful
+- whether the placebo diagnostics reinforce the result or only partially reassure you
+
+## Step 1: Load Packages And Inspect The Panel
+
+```{r}
+required_packages <- c(
+  "tidysynth",
+  "dplyr",
+  "ggplot2",
+  "tibble",
+  "purrr"
+)
+
+missing_packages <- required_packages[!vapply(
+  required_packages,
+  requireNamespace,
+  logical(1),
+  quietly = TRUE
+)]
+
+if (length(missing_packages) > 0) {
+  install.packages(missing_packages, repos = "https://cloud.r-project.org")
+}
+
+invisible(lapply(required_packages, library, character.only = TRUE))
+
+data("smoking", package = "tidysynth")
+
+smoking |>
+  glimpse()
+```
+
+Checkpoint:
+
+- The data are already in tidy long format.
+- Every row is a state-year observation, which makes the `tidysynth` pipeline easier to read than the original matrix workflow.
+
+## Step 2: Define The Intervention And Donor Exclusions
+
+Following the canonical Proposition 99 design, exclude states that adopted large tobacco-control programs during the post period, states with very large cigarette-tax increases, and the District of Columbia.
+
+```{r}
+treated_state <- "California"
+intervention_year <- 1988
+
+excluded_states <- c(
+  "Alaska",
+  "Hawaii",
+  "Maryland",
+  "Massachusetts",
+  "Michigan",
+  "New Jersey",
+  "New York",
+  "Washington",
+  "District of Columbia"
+)
+
+analysis_data <- smoking |>
+  filter(year <= 2000) |>
+  filter(!state %in% excluded_states)
+
+analysis_data |>
+  count(state, sort = TRUE)
+```
+
+What to discuss:
+
+- donor-pool construction is part of identification, not housekeeping
+- the point is not to find the biggest donor pool, but the most defensible untreated comparison set
+- if contamination remains plausible even after exclusions, that is a design limitation you should say out loud
+
+## Step 3: Inspect The Raw California Trend
+
+```{r fig.height=5.5}
+analysis_data |>
+  mutate(group = if_else(state == treated_state, "California", "Donor pool")) |>
+  group_by(group, year) |>
+  summarise(cigsale = mean(cigsale, na.rm = TRUE), .groups = "drop") |>
+  ggplot(aes(x = year, y = cigsale, color = group)) +
+  geom_line(linewidth = 1.1) +
+  geom_vline(xintercept = intervention_year, linetype = 2, color = "gray40") +
+  labs(
+    x = NULL,
+    y = "Per-capita cigarette sales",
+    color = NULL
+  ) +
+  theme_minimal(base_size = 12)
+```
+
+Checkpoint:
+
+- A simple donor-pool average is not the SCM counterfactual.
+- This first plot is only a benchmark for why a weighted synthetic comparison is needed.
+
+## Step 4: Build The Synthetic-Control Object
+
+```{r}
+smoking_out <- analysis_data |>
+  synthetic_control(
+    outcome = cigsale,
+    unit = state,
+    time = year,
+    i_unit = treated_state,
+    i_time = intervention_year,
+    generate_placebos = TRUE
+  ) |>
+  generate_predictor(
+    time_window = 1980:1988,
+    lnincome = mean(lnincome, na.rm = TRUE),
+    retprice = mean(retprice, na.rm = TRUE),
+    age15to24 = mean(age15to24, na.rm = TRUE)
+  ) |>
+  generate_predictor(
+    time_window = 1984:1988,
+    beer = mean(beer, na.rm = TRUE)
+  ) |>
+  generate_predictor(
+    time_window = 1975,
+    cigsale_1975 = cigsale
+  ) |>
+  generate_predictor(
+    time_window = 1980,
+    cigsale_1980 = cigsale
+  ) |>
+  generate_predictor(
+    time_window = 1988,
+    cigsale_1988 = cigsale
+  ) |>
+  generate_weights(
+    optimization_window = 1970:1988,
+    Margin.ipop = 0.02,
+    Sigf.ipop = 7,
+    Bound.ipop = 6
+  ) |>
+  generate_control()
+```
+
+This pipeline does the same design work as the classical `Synth` setup, but in a grammar that is easier to teach line by line.
+
+## Step 5: Inspect Balance Before You Look At Effects
+
+```{r}
+balance_tbl <- smoking_out |>
+  grab_balance_table()
+
+balance_tbl
+```
+
+What to look for:
+
+- the synthetic California column should sit close to observed California on the key predictors
+- the donor-pool average is the benchmark you are trying to beat
+- weak lagged-outcome balance is a warning sign because those lags are carrying a lot of the design discipline
+
+## Step 6: Inspect Donor Weights
+
+```{r}
+weights_tbl <- smoking_out |>
+  grab_unit_weights() |>
+  arrange(desc(weight))
+
+weights_tbl
+```
+
+Checkpoint:
+
+- donor weights are part of the result, not an appendix
+- if the synthetic control is built from a small set of plausible states, the counterfactual becomes easier to inspect and defend
+
+## Step 7: Plot Observed And Synthetic California
+
+```{r fig.height=5.7}
+smoking_out |>
+  plot_trends()
+```
+
+```{r fig.height=5.7}
+smoking_out |>
+  plot_differences()
+```
+
+What to discuss:
+
+- the trend plot asks whether California and synthetic California line up closely through `1988`
+- the difference plot asks whether the post-treatment divergence is both visible and treatment-timed
+- a dramatic post-treatment gap is not enough if the pre-treatment fit is loose
+
+## Step 8: Make The Gap Series Inspectable
+
+```{r}
+gap_tbl <- smoking_out |>
+  grab_synthetic_control() |>
+  transmute(
+    year = time_unit,
+    observed = real_y,
+    synthetic = synth_y,
+    gap = observed - synthetic
+  )
+
+gap_tbl
+```
+
+This is a useful discipline step. Never rely only on the plot when you can inspect the actual treated-versus-synthetic series directly.
+
+## Step 9: Add Placebo-By-Unit Diagnostics
+
+```{r fig.height=6}
+smoking_out |>
+  plot_placebos()
+```
+
+```{r}
+mspe_tbl <- smoking_out |>
+  grab_significance()
+
+mspe_tbl
+```
+
+How to read this:
+
+- placebos ask whether California's post-treatment divergence looks unusually large relative to donor states reassigned as if they were treated
+- this is diagnostic reassurance, not a substitute for a credible donor pool
+- if many placebo units fit terribly before treatment, interpret the ranking with caution
+
+## Step 10: Write The Design Judgment
+
+Use the outputs above to answer:
+
+1. Why is California better suited to SCM than a simple treated-versus-rest-of-US comparison?
+2. Which donor states actually build synthetic California?
+3. Is the pre-treatment fit strong enough that the `1989` onward gap is worth interpreting?
+4. Do the placebo diagnostics strengthen the case, or do they mainly show how much the result depends on fit quality?
+
+## Next Step
+
+Move next to the [augmented SCM lab](synthetic-control-augmentation-lab.qmd), where the main question shifts from "how do I run classical SCM?" to "what should I do when classical fit is visibly weak?"

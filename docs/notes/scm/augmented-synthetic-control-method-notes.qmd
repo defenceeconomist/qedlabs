@@ -1,0 +1,303 @@
+---
+title: "Notes on Ben-Michael, Feller, and Rothstein (2021): The Augmented Synthetic Control Method"
+subtitle: "Detailed Study Notes for the ASCM paper"
+author: "Luke Heley"
+date: "6 April 2026"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: false
+---
+
+## Purpose
+
+These are study notes on Ben-Michael, Feller, and Rothstein's *The Augmented Synthetic Control Method* [@benmichael2021augmented]. They are meant to support understanding and recall rather than reproduce the paper. The emphasis is on what the paper adds to classical SCM, why augmentation is framed as bias correction rather than as unrestricted extrapolation, and how the paper's design logic should change the way this repo talks about weak pre-treatment fit.
+
+The aim here is to capture:
+
+- the core argument of each main section
+- what ASCM is trying to fix in classical SCM
+- how the paper interprets ridge augmentation, negative weights, and extrapolation
+- what the simulations and Kansas example say about when augmentation helps
+- how this paper should change the SCM notes and labs in this repo
+
+## Source Baseline
+
+- Source retrieved from the MCP evidence base on 6 April 2026.
+- Evidence-base bucket / collection: `evaluation`
+- Evidence-base document id: `ab75711d042049d9a6f75ddf0d7d6b5150ffa8fa4bfaffe619a2155f1fbc91e4`
+- Matched filename returned by MCP: `w28885.pdf`
+- Source key / bucket path returned by MCP: `evaluation/w28885.pdf`
+- Resolver link surfaced by MCP: [paper resolver](/resolver.html?bucket=evaluation&file_path=w28885.pdf&page=1)
+- Source title in Evidence Base: *The Augmented Synthetic Control Method*
+- Source version used here: NBER Working Paper No. `28885`, June 2021, later published in JASA as [@benmichael2021augmented]
+- Authors: Eli Ben-Michael, Avi Feller, and Jesse Rothstein
+- Accessed for these notes: 6 April 2026
+- Citation key already present in repo bibliography: `@benmichael2021augmented`
+- Main numbered sections observed in the paper:
+  - `Abstract`
+  - `1 Introduction`
+  - `1.1 Related work`
+  - `2 Overview of the Synthetic Control Method`
+  - `3 Augmented SCM`
+  - `4 Ridge ASCM improves pre-treatment fit while penalizing extrapolation`
+  - `5 Error under restrictions on the data generating processes`
+  - `6 Auxiliary covariates`
+  - `7 Simulations and empirical illustrations`
+  - `8 Discussion`
+
+## Executive Summary
+
+- The paper starts from a discipline already embedded in classical SCM: use synthetic control only when pre-treatment fit is excellent. Its entire motivation is that many substantively interesting applications fail that test, and researchers often then fall back to regression that extrapolates with little control [@benmichael2021augmented].
+- ASCM is proposed as a middle ground. It keeps SCM as the baseline comparison design, estimates the bias induced by imperfect pre-treatment fit with an outcome model, and then debiases the SCM estimate rather than replacing it outright [@benmichael2021augmented].
+- The paper's most important conceptual move is to show that ridge-augmented SCM can be written as a modified synthetic-control problem. That matters because it makes augmentation interpretable as controlled extrapolation away from the SCM solution, not as a separate black-box estimator [@benmichael2021augmented].
+- The formal results say that improved pre-treatment fit can reduce bias under both linear and latent-factor models, but they also stress an overfitting risk when pre-treatment outcomes are noisy. The ridge penalty exists to negotiate exactly that tradeoff [@benmichael2021augmented].
+- The paper is also explicit about how to decide whether augmentation is worth using in practice: compute the estimated bias from the augmentation step and ask whether that bias is large enough, in context, to justify some extrapolation away from the classical SCM solution [@benmichael2021augmented].
+- For this repo, the main lesson is not "always upgrade to ASCM." It is "when classical SCM fit is weak but the comparative-case design is still substantively credible, augmentation is the first principled extension to consider" [@benmichael2021augmented].
+
+## Notes by Section
+
+### Abstract
+
+The abstract is unusually informative and worth treating as part of the paper rather than as boilerplate [@benmichael2021augmented]. It states the entire practical agenda in one place: classical SCM should only be used with excellent pre-treatment fit, ASCM addresses settings where that fit is infeasible, ridge augmentation controls fit while minimizing extrapolation from the convex hull, and the method is implemented in `augsynth`.
+
+It also previews a recommendation that deserves more emphasis in applied use than it usually gets: whether to prefer ASCM to SCM alone should depend on the estimated bias from the augmentation step. If the estimated bias is small, the paper expects SCM and ASCM to look similar and sees little reason to pay for extra extrapolation. If the estimated bias is large, that is evidence that some controlled augmentation is worthwhile [@benmichael2021augmented].
+
+### 1. Introduction
+
+The introduction starts from a tension already familiar from the SCM literature [@benmichael2021augmented]. Classical SCM is attractive because it avoids extrapolation and keeps the counterfactual interpretable as a convex combination of donor units. But that same restriction means the method is only supposed to be used when pre-treatment fit is excellent. In many applications, that standard cannot be met.
+
+The paper's diagnosis of current practice is blunt. When SCM fits poorly, researchers often fall back to linear regression, which improves fit by allowing negative weights and extrapolating outside donor support. The authors position ASCM as a middle path between these two extremes: preserve the SCM design logic, but correct the bias produced by remaining pre-treatment imbalance [@benmichael2021augmented].
+
+That framing matters because it defines augmentation as a response to a failure mode in classical SCM rather than as a general replacement for it.
+
+The introduction also previews the paper's main claims:
+
+- ridge-augmented SCM can be expressed as a weighted estimator
+- its weights solve a modified synthetic-controls problem
+- the penalty term directly controls the amount of extrapolation
+- the method can be justified under both linear and latent-factor models
+- auxiliary covariates can be incorporated without abandoning the weighting logic
+
+The Kansas tax-cut application and the `augsynth` package are presented as practical demonstrations of this framework rather than as side notes [@benmichael2021augmented].
+
+The introduction also contains a practical recommendation that should not be buried: the choice between SCM and ASCM should be based on the estimated bias implied by the augmentation step. The paper's logic is not that augmentation should be automatic whenever weak fit appears. It is that the analyst should inspect whether the estimated bias is large enough, in the units of the estimand, to justify moving away from the classical SCM weights [@benmichael2021augmented].
+
+### 1.1 Related work
+
+The related-work section is useful because it situates ASCM among three different types of extensions [@benmichael2021augmented].
+
+First are methods that keep the simplex constraint but modify SCM to be more stable, for example through penalties or dimension reduction. Second are approaches that relax classical SCM constraints, especially the ban on negative weights. Third are outcome-model-based approaches such as matrix completion or generalized SCM that approach the counterfactual problem more directly from the modeling side.
+
+The authors are careful not to claim that ASCM makes these alternatives obsolete. Their narrower claim is that there is value in keeping SCM as the starting point and augmenting it only enough to address imperfect pre-treatment fit.
+
+### 2. Overview of the Synthetic Control Method
+
+This section restates the standard SCM problem in a way that sets up the later augmentation results [@benmichael2021augmented]. The missing treated-unit counterfactual is imputed as a weighted average of donor outcomes, with weights chosen to balance pre-treatment outcomes and possibly other covariates.
+
+Two aspects of the setup matter most for the rest of the paper.
+
+#### Why the simplex constraint matters
+
+The SCM weights are constrained to lie on the simplex: they must be non-negative and sum to one. The paper treats this as an important design choice because it preserves sparsity and interpretability. A synthetic control built from a small number of non-negative donor weights is substantively legible in a way that unconstrained regression often is not [@benmichael2021augmented].
+
+#### Why the simplex constraint can fail
+
+The treated unit may lie outside the convex hull of the donor pool, especially when the pre-treatment period is long or the treated unit is unusual. In that setting, exact or near-exact balance is often infeasible with simplex weights. The paper emphasizes that this is not a small nuisance. It is the reason classical SCM is conditionally recommended and often unusable in practice [@benmichael2021augmented].
+
+This section therefore sets up the problem ASCM is trying to solve: how to improve fit when SCM alone cannot get close enough, without jumping immediately to unrestricted regression.
+
+### 3. Augmented SCM
+
+This is the conceptual core of the paper. The authors define ASCM by starting with the SCM estimate and then adjusting it using an outcome model that estimates the bias caused by imbalance in pre-treatment predictors [@benmichael2021augmented].
+
+The paper gives two equivalent ways to read this estimator.
+
+#### Bias-correction interpretation
+
+In one form, ASCM is the original SCM estimate plus a correction term based on how imbalanced the treated unit remains on a predictive function of the pre-treatment outcomes. This is directly analogous to bias correction for imperfect matching [@benmichael2021augmented].
+
+That interpretation is crucial. The method is not trying to throw away SCM. It is trying to repair the cases where SCM is close but not close enough.
+
+#### Doubly robust / residual-balancing interpretation
+
+In the alternative form, ASCM begins with an outcome model and then reweights residuals. The paper notes connections to doubly robust estimation and generalized regression estimators [@benmichael2021augmented].
+
+This second interpretation matters because it shows ASCM is not only a technical patch. It belongs to a broader family of estimators that combine modeling with balance.
+
+#### Choice of augmentation model
+
+The paper then distinguishes outcome models that are:
+
+- linear in pre-treatment outcomes
+- linear in donor units
+
+This is useful because it shows ASCM is a framework, not a single estimator. Different outcome models are possible. The paper focuses on ridge regression because it leads to especially clean weighting and optimization results.
+
+It also discusses a simple fixed-effects or demeaned special case, which yields a weighted difference-in-differences style adjustment. That helps connect ASCM to later hybrid estimators such as synthetic DiD [@benmichael2021augmented].
+
+### 4. Ridge ASCM improves pre-treatment fit while penalizing extrapolation
+
+This is the paper's most important section for practical interpretation. The authors choose ridge regression as the default augmentation model and then show that the resulting estimator remains a weighting estimator [@benmichael2021augmented].
+
+#### Ridge ASCM as controlled extrapolation
+
+The key result is that Ridge ASCM can be written as a penalized SCM problem. Its weights minimize pre-treatment imbalance while paying a penalty for moving too far away from the original SCM weights.
+
+That is the heart of the method:
+
+- SCM gives the sparse, non-negative baseline
+- augmentation allows negative weights when needed to improve fit
+- the ridge penalty controls how far the estimator can move away from the SCM solution
+
+This distinguishes Ridge ASCM from ridge regression alone. Ordinary ridge regression penalizes variance in the weights but may use negative weights even when no extrapolation is necessary. Ridge ASCM instead treats extrapolation as something to be used reluctantly and only when the SCM fit problem justifies it [@benmichael2021augmented].
+
+#### Why the penalized-SCM representation matters
+
+The paper's representation result makes augmentation much more interpretable than a simple "run ridge after SCM" description would suggest. It shows that Ridge ASCM is still targeting the SCM balancing problem; it just relaxes the simplex restriction in a structured way.
+
+That makes several practical statements possible.
+
+- If SCM already achieves exact balance, Ridge ASCM collapses back to SCM.
+- If SCM does not achieve exact balance, Ridge ASCM improves fit by allowing some extrapolation.
+- The hyperparameter \(\lambda\) directly governs the extrapolation-versus-fit tradeoff.
+
+This is exactly the kind of interpretation the repo needs when explaining why augmentation is not a free pass to fit anything.
+
+#### Better fit than SCM, but not for free
+
+The section also shows that Ridge ASCM achieves at least as good pre-treatment fit as SCM alone. The relevant cost is that improvement may require moving outside the convex hull and using negative donor weights [@benmichael2021augmented].
+
+The paper's geometric examples are useful because they make the tradeoff concrete. Ridge regression can leave the simplex early because it is optimizing variance and fit jointly from a neutral center. Ridge ASCM starts from the SCM solution and only departs from it when necessary, which preserves more of SCM's interpretability.
+
+### 5. Error under restrictions on the data generating processes
+
+This section gives the paper's formal justification for why augmentation can help and why regularization matters [@benmichael2021augmented].
+
+#### 5.1 Error under linearity
+
+Under a linear outcome model, the estimation error for a weighting estimator decomposes into:
+
+- systematic error from imbalance in pre-treatment outcomes
+- idiosyncratic post-treatment noise
+
+In this setting, improving pre-treatment fit reduces bias directly. Ridge ASCM helps because it reduces imbalance, but it can also increase variance through more extreme weights. The ridge penalty therefore negotiates a standard bias-variance tradeoff [@benmichael2021augmented].
+
+This is the easiest case conceptually and makes the paper's basic message transparent: if the untreated outcome is well approximated by a linear function of pre-treatment outcomes, then imbalance is exactly the bias problem augmentation is trying to solve.
+
+#### 5.2 Error under a latent factor model
+
+The latent-factor discussion matters more for SCM specifically because it connects back to the Abadie-Diamond-Hainmueller justification. Here the authors show that balancing noisy lagged outcomes only imperfectly balances the latent factors that generate untreated outcomes [@benmichael2021augmented].
+
+That creates an extra overfitting risk. Better observed fit may partly reflect fitting noise rather than underlying factor structure. The paper's contribution is to show that modest extrapolation can still reduce overall error, but too much extrapolation can make things worse. This is the main reason regularization is essential rather than optional.
+
+The practical lesson is subtle but important:
+
+- poor SCM fit means bias is likely a real problem
+- augmentation can reduce that bias
+- but under noisy factor-model settings, chasing perfect pre-treatment fit can overfit
+
+This is exactly why the paper does not advocate unlimited negative weighting.
+
+#### 5.3 Hyper-parameter selection
+
+The proposed tuning strategy extends the familiar SCM placebo-in-time logic. The paper recommends cross-validation over held-out pre-treatment periods, using a leave-one-time-period-out prediction criterion and optionally a more conservative one-standard-error rule [@benmichael2021augmented].
+
+That is one of the paper's most useful practical contributions. It gives the analyst a way to choose the amount of augmentation using pre-treatment predictive performance rather than post-treatment results.
+
+For this repo, that matters because it keeps augmentation inside the same design-stage discipline that makes SCM appealing in the first place.
+
+The Evidence Base version of the paper also flags Section 5 as the place where inference is addressed. That matters for note-taking because it prevents the section from being read as only a theory chapter. The paper does not present inference as fully settled, but it does treat tuning, finite-sample error, and inferential implications as part of one practical problem rather than as separate topics [@benmichael2021augmented].
+
+### 6. Auxiliary covariates
+
+This section is more important than it may first appear because it addresses a recurring applied question: how should non-outcome covariates enter ASCM [@benmichael2021augmented]?
+
+The paper gives two main strategies.
+
+#### Joint balancing and joint augmentation
+
+When the number of auxiliary covariates is moderate, the authors propose including them alongside lagged outcomes both in the SCM balancing criterion and in the ridge outcome model. After standardization, this extends the same penalized-weight logic to the combined predictor vector.
+
+This is the paper's default generalization.
+
+#### Residualization for a small covariate set
+
+When the auxiliary covariate set is small, the paper proposes a two-step approach:
+
+1. residualize pre- and post-treatment outcomes on the auxiliary covariates
+2. run Ridge ASCM on the residualized outcome series
+
+The attraction is that the covariates are balanced exactly by construction, and the remaining extrapolation is focused on the residualized outcomes rather than on the raw covariates themselves [@benmichael2021augmented].
+
+The practical message is that covariates do not need to be awkwardly bolted onto ASCM. There are principled routes for incorporating them, and the choice depends mainly on covariate dimension and the balance target.
+
+### 7. Simulations and empirical illustrations
+
+This section asks whether augmentation actually improves performance in realistic settings and whether the weighting interpretation still looks sensible in an empirical application [@benmichael2021augmented].
+
+#### 7.1 Calibrated simulation studies
+
+The simulations are calibrated to the Kansas application and compare:
+
+- SCM alone
+- ridge regression alone
+- Ridge ASCM
+- fixed effects alone
+- SCM augmented with fixed effects
+
+The main result is consistent across several data-generating processes: augmenting SCM with ridge regression reduces bias relative to SCM when SCM fit is not restricted to be excellent. The gains are especially large under the baseline factor model and a fixed-effects model, smaller but still present in noisier or autoregressive settings [@benmichael2021augmented].
+
+Two findings are especially important.
+
+- Ridge ASCM usually performs at least slightly better than ridge regression alone, which supports the idea that starting from SCM's sparse, interpretable solution is useful.
+- When SCM fit is already good, the gains from augmentation are more limited and too little regularization can worsen RMSE.
+
+This second point is exactly the paper's intended discipline. Augmentation is most valuable when classical SCM fit is weak, not when classical SCM is already doing well.
+
+The section also compares alternative augmentation models, including LASSO, random forests, matrix completion, and generalized SCM. The broad conclusion is that augmentation helps with many outcome models, but ridge regression performs consistently well and remains easiest to diagnose because its extrapolation is explicit [@benmichael2021augmented].
+
+#### 7.2 Illustration: 2012 Kansas tax cuts
+
+The Kansas case is the paper's main empirical demonstration. The substantive question is whether the 2012 Brownback tax cuts increased economic growth, using log gross state product per capita as the main outcome [@benmichael2021augmented].
+
+The case is chosen well for the paper's purpose because SCM alone fits Kansas only imperfectly. That creates exactly the sort of setting where augmentation should matter if the method is doing useful work.
+
+The paper compares:
+
+- SCM on lagged outcomes alone
+- Ridge ASCM
+- Ridge ASCM with covariates included jointly
+- Ridge ASCM on residualized outcomes
+
+The main takeaways are:
+
+- SCM alone has visibly weak pre-treatment fit, which should already lower confidence in the plain SCM estimate
+- ridge augmentation improves pre-treatment fit, especially in the problematic mid-2000s
+- adding auxiliary covariates improves both fit and covariate balance further
+- the estimated post-treatment effect is consistently negative across the main specifications
+
+The placebo-in-time checks are also important. Using earlier fake treatment dates, the paper finds placebo effects close to zero for the augmented covariate specification, which helps argue against simple overfitting [@benmichael2021augmented].
+
+The donor-weight comparison may be the most useful part for teaching. Ridge ASCM weights remain close to the SCM weights, preserve some sparsity, and usually introduce only limited negative weighting. Ridge regression alone, by contrast, is much less sparse and more aggressively negative. That visualizes the paper's core claim that ASCM is controlled extrapolation rather than unrestricted regression [@benmichael2021augmented].
+
+### 8. Discussion
+
+The discussion restates the paper's central contribution clearly: SCM is valuable but often unusable when excellent fit is infeasible, and ASCM offers a way to control pre-treatment fit while minimizing extrapolation [@benmichael2021augmented].
+
+The authors then point to future work on inference, sensitivity, and other extensions. The inference point is especially relevant. The paper sketches how conformal inference might be adapted to ASCM, but it does not present inference as a solved problem. That restraint matters because it stops readers from overclaiming what augmentation settles.
+
+The discussion should also be read together with the paper's earlier practical decision rule: augmentation is worth the extra extrapolation only when the estimated bias from poor SCM fit is substantively meaningful. That keeps ASCM tied to the same design discipline as SCM rather than turning it into a reflexive default [@benmichael2021augmented].
+
+## What to Carry Into This Repo
+
+- Use this note when the problem is not "what is SCM?" but "what should I do when SCM fit is visibly weak?" It is the main source-following note for that question in the repo.
+- Pair it with the [Synthetic Control overview](synthetic-control.qmd) when deciding whether poor fit means "stop" or "move to augmentation." Classical SCM remains the benchmark; ASCM is the first principled extension when the design still looks substantively credible.
+- Read it alongside [Synthetic Control Sources](synthetic-control-sources.qmd) and [Synth Package Notes](synth-package-notes.qmd). The source map explains where ASCM sits in the literature, and the package note explains where software starts to matter.
+- Use it with the [Synthetic Control Design Lab](../../labs/synthetic-control-design-lab.qmd) whenever the main issue is how much extrapolation is tolerable and how cross-validation or placebo-in-time logic should govern tuning.
+- Keep the Kansas illustration in mind when reading applied SCM work. If classical SCM fit is as weak as it is there, the right comparison is not usually "SCM or nothing" but "SCM plus an explicit bias-correction strategy versus a more weakly controlled extrapolating model."
+
+## Bottom Line
+
+The paper's main achievement is to make augmentation legible inside the SCM framework. It does not say that negative weights are harmless or that fit should be optimized at all costs. It says that when classical SCM is substantively well motivated but fails on pre-treatment fit, bias correction through a disciplined outcome model can improve the estimate, provided extrapolation is controlled and tuned using pre-treatment information. Just as importantly, it says the analyst should inspect the estimated bias and use that quantity to decide whether augmentation is worth the extrapolation cost. That makes ASCM the natural first extension for weak-fit comparative case studies, not a replacement for classical SCM in settings where SCM already works.

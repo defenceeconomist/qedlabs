@@ -11,7 +11,7 @@ This note is a source map for synthetic control method reading. It is organized 
 If you want a compact starting stack, I would begin with these three:
 
 1. Abadie (2021) for the best high-level methodological overview [@abadie2021using].
-2. Cunningham's *Causal Inference: The Mixtape* chapter plus Mixtape Sessions slides for intuition and pedagogy ([chapter note](mixtape-synthetic-control-notes.qmd); [sessions note](mixtape-sessions-synthetic-control-notes.qmd)) [@cunningham2018synthetic; @mixtape-sessions-synthtex].
+2. Cunningham's *Causal Inference: The Mixtape* chapter plus the two Mixtape Sessions slide notes for intuition and pedagogy ([chapter note](mixtape-synthetic-control-notes.qmd); [Cunningham slide note](mixtape-sessions-synthetic-control-notes.qmd); [Abadie slide note](synthetic-controls-methods-practice-notes.qmd)) [@cunningham2018synthetic; @mixtape-sessions-synthtex; @mixtape-synthetic-control-and-clustering].
 3. The `Synth` package paper and manual for implementation details ([note](synth-package-notes.qmd)) [@hainmueller2011synth; @synth-package].
 
 That combination gives you design logic, identification intuition, and the original software workflow.
@@ -42,7 +42,7 @@ Why it is worth notes:
 
 ## Abadie and Gardeazabal (2003)
 
-This is the origin paper for the method and the Basque Country case study [@abadie2003economic].
+This is the origin paper for the method and the Basque Country case study ([note](basque-country-conflict-notes.qmd)) [@abadie2003economic].
 
 Why it is worth notes:
 
@@ -52,7 +52,7 @@ Why it is worth notes:
 
 ## Abadie, Diamond, and Hainmueller (2010)
 
-This is the canonical JASA article on California Proposition 99 [@abadie2010synthetic].
+This is the canonical JASA article on California Proposition 99 ([note](california-tobacco-synthetic-control-notes.qmd)) [@abadie2010synthetic].
 
 Why it is worth notes:
 
@@ -62,7 +62,7 @@ Why it is worth notes:
 
 ## Abadie, Diamond, and Hainmueller (2015)
 
-This paper is especially useful if you care about comparative case studies and the logic of bridging qualitative and quantitative work [@abadie2015comparative].
+This paper is especially useful if you care about comparative case studies and the logic of bridging qualitative and quantitative work ([note](comparative-politics-synthetic-control-notes.qmd)) [@abadie2015comparative].
 
 Why it is worth notes:
 
@@ -74,13 +74,23 @@ Why it is worth notes:
 
 ## Ben-Michael, Feller, and Rothstein (2021)
 
-This is the key augmented SCM paper [@benmichael2021augmented].
+This is the key augmented SCM paper ([note](augmented-synthetic-control-method-notes.qmd)) [@benmichael2021augmented].
 
 Why it is worth notes:
 
 - directly addresses imperfect pre-treatment fit
 - introduces outcome-model bias correction in a way that is practically important
 - underpins the `augsynth` workflow
+
+## Di Stefano and Mellace (2024)
+
+This is the key inclusive SCM paper for settings with spillovers or treated units that need to remain in each other's donor pools ([note](inclusive-synthetic-control-method-notes.qmd)) [@DiStefano_Mellace_2024_InclusiveSCM_arxiv].
+
+Why it is worth notes:
+
+- addresses donor contamination directly rather than only by excluding suspect units
+- shows how to estimate direct and spillover effects jointly while retaining SCM-style weights
+- especially useful when restricted donor pools sharply worsen pre-treatment fit
 
 ## Arkhangelsky et al. (2021)
 
@@ -116,7 +126,7 @@ Why it is worth notes:
 
 ## Mixtape Sessions: Synthetic Control and Clustering
 
-Alberto Abadie's Mixtape Sessions repository is a high-value source if you want notes closer to the frontier and closer to the original research perspective [@mixtape-synthetic-control-and-clustering].
+Alberto Abadie's Mixtape Sessions repository is a high-value source if you want notes closer to the frontier and closer to the original research perspective ([note](synthetic-controls-methods-practice-notes.qmd)) [@mixtape-synthetic-control-and-clustering].
 
 Why it is worth notes:
 
@@ -206,7 +216,7 @@ If you want a sequence that compounds well, use:
 3. Abadie, Diamond, and Hainmueller (2010) [@abadie2010synthetic].
 4. Abadie (2021) [@abadie2021using].
 5. `Synth` package paper and manual [@hainmueller2011synth; @synth-package].
-6. Mixtape Sessions lecture slides and SCM workshop repositories ([Mixtape Sessions note](mixtape-sessions-synthetic-control-notes.qmd)) [@mixtape-sessions-synthtex; @mixtape-synthetic-control-and-clustering].
+6. Mixtape Sessions lecture slides and SCM workshop repositories ([Cunningham slide note](mixtape-sessions-synthetic-control-notes.qmd); [Abadie slide note](synthetic-controls-methods-practice-notes.qmd)) [@mixtape-sessions-synthtex; @mixtape-synthetic-control-and-clustering].
 7. Ben-Michael, Feller, and Rothstein (2021), Arkhangelsky et al. (2021), and Xu (2017) for extensions [@benmichael2021augmented; @arkhangelsky2021synthetic; @xu2017generalized].
 8. `augsynth`, `synthdid`, `scpi`, and `gsynth` package docs for implementation details [@augsynth-package; @synthdid-package; @scpi-package; @gsynth-package].
 

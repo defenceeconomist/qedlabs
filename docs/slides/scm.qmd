@@ -1,11 +1,20 @@
 ---
-title: "Synthetic Control Slides"
-subtitle: "Placeholder deck for the SCM sequence"
+title: "Synthetic Control"
+subtitle: "Design-first causal comparison for aggregate interventions"
+author: "Luke Heley"
+date: 6 April 2026
+bibliography:
+  - ../../evaluation-bibliography.bib
+  - references.bib
 format:
+  html:
+    toc: true
+    toc-depth: 2
   revealjs:
+    output-file: scm-revealjs.html
     theme: [white, workshop-theme.scss]
     slide-level: 2
-    slide-number: false
+    slide-number: c/t
     progress: true
     controls: true
     overview: true
@@ -20,23 +29,134 @@ execute:
   eval: false
 ---
 
-## Deck Status
+## Session Promise
 
-::: {.hero-card .placeholder-card}
-<span class="hero-tag">Placeholder</span>
-
-### Synthetic Control Sequence
-
-This deck slot is reserved for the synthetic control concept sequence. It will become the short entry-point deck for donor-pool logic, counterfactual construction, diagnostics, and practical use.
-
-- next source material: [Synthetic Control notes](../notes/scm/synthetic-control.qmd)
-- next worked example: [Synthetic Control Design Lab](../labs/synthetic-control-design-lab.qmd)
-- next extension: [Synthetic Control Donor Pool Lab](../labs/synthetic-control-donor-pool-lab.qmd)
+::: {.kicker}
+This short deck explains synthetic control as a comparative-case-study design before it explains any specific package workflow.
 :::
 
-## Planned Shape
+- start from the missing counterfactual for one treated place
+- show why hand-picked control cases are often too informal
+- explain donor-pool support and pre-treatment fit as the core design tests
+- keep the limits explicit throughout [@abadie2010synthetic; @abadie2021using; @cunningham2021mixtape]
 
-- start with the counterfactual construction problem
-- explain why donor-pool choice is the design bottleneck
-- show how pre-treatment fit disciplines the comparison
-- make the limits explicit: spillovers, anticipation, poor support, and overfitting
+## 20-Minute Arc
+
+| Time | Segment | Purpose |
+|---|---|---|
+| `0-3` | Counterfactual problem | Why aggregate interventions need a comparison rule |
+| `3-6` | Why SCM exists | Why hand-picked comparators are not enough |
+| `6-10` | Donor support | Why the donor pool is the design bottleneck |
+| `10-14` | Pre-treatment fit | Why fit is the main credibility test |
+| `14-17` | Diagnostics and failure modes | How to read weights, gaps, and placebo checks |
+| `17-20` | Extensions and labs | When to stop, when to augment, and where the labs fit |
+
+## Start With The Comparative Case Problem
+
+- many interventions happen to one state, city, firm, or region rather than to many randomly assigned units
+- the treated unit's untreated outcome is therefore missing
+- the design task is to construct a credible stand-in for that missing untreated path
+- SCM is one answer to that problem when one comparison unit is not enough [@abadie2010synthetic; @cunningham2021mixtape]
+
+## Why Not Just Hand-Pick A Few Controls?
+
+- classical comparative case studies are often substantively sharp but counterfactually vague
+- the basic question is always "why these comparison units and not others?"
+- SCM answers that by choosing weights over a donor pool through an explicit rule rather than informal judgment
+- that does not remove judgment; it relocates it into donor-pool design, predictors, and diagnostics [@abadie2010synthetic; @hainmueller2011synth]
+
+## SCM In One Sentence
+
+::: {.card-grid}
+::: {.mini-card}
+**Treated unit**
+
+One aggregate unit receives the intervention.
+:::
+
+::: {.mini-card}
+**Donor pool**
+
+Untreated units supply candidate comparison material.
+:::
+
+::: {.mini-card}
+**Synthetic control**
+
+A weighted average of donors reconstructs the treated unit before treatment.
+:::
+:::
+
+## Design Bottleneck: The Donor Pool
+
+- the donor pool is not a software input; it is the main identification decision
+- donors should be untreated, comparable, and measured on the same outcome process
+- contaminated or structurally different units weaken the design before estimation even starts
+- if support is weak, no optimizer can rescue the case [@abadie2021using; @abadie2010synthetic]
+
+## Why The Convex-Hull Rule Matters
+
+- classical SCM restricts donor weights to be non-negative and to sum to one
+- that keeps the synthetic control inside the support of observed donors
+- the gain is no hidden extrapolation
+- the cost is that some treated units cannot be matched well because they sit outside donor support [@abadie2010synthetic; @hainmueller2011synth]
+
+## Strong Pre-Treatment Fit Is The Main Credibility Test
+
+- SCM is persuasive only when treated and synthetic outcomes line up closely before treatment
+- long pre-treatment panels help distinguish structural resemblance from noise
+- poor pre-treatment fit is usually a stop sign, not a minor inconvenience
+- that is why SCM is a diagnostics-heavy design rather than a one-line estimator [@abadie2021using; @mixtape-synthetic-control-and-clustering]
+
+## What The Core Outputs Mean
+
+- donor weights: which units actually build the comparison
+- balance table: whether key predictors and lagged outcomes line up
+- path plot: whether treated and synthetic units track before treatment
+- gap plot: whether divergence appears only after treatment
+- placebo checks: whether the treated gap looks unusually large relative to comparable untreated cases [@abadie2010synthetic; @hainmueller2011synth]
+
+## Placebo Logic Is Diagnostic, Not Magical
+
+- placebo-by-unit checks ask whether the treated result looks unusual in the donor pool
+- placebo-in-time checks ask whether the design creates fake treatment effects when treatment is backdated
+- both are useful only after donor support and pre-treatment fit already look credible
+- weak design does not become strong because the placebo plot is busy [@abadie2010synthetic; @cunningham2021mixtape]
+
+## Core Failure Modes
+
+- donor contamination or spillovers
+- anticipation before the formal intervention date
+- poor support in the donor pool
+- short or noisy pre-treatment panels
+- overfitting through aggressive predictor search
+- concurrent shocks hitting the treated unit at the same time as treatment [@abadie2021using; @mixtape-synthetic-control-and-clustering]
+
+## When Classical SCM Is Enough
+
+- one treated unit or a very small treated set
+- clear intervention timing
+- a clean donor pool
+- long pre-treatment history
+- close treated-versus-synthetic fit before treatment
+
+If those conditions hold, classical SCM is often the right stopping point.
+
+## When Augmentation Enters
+
+- augmentation is for cases where the comparative-case design still makes sense but classical fit is too weak
+- ridge ASCM starts from SCM and then corrects remaining bias with a controlled outcome model
+- the point is controlled extrapolation, not unrestricted flexibility
+- if augmentation has to do too much work, the deeper lesson may still be that the design is weak [@benmichael2021augmented]
+
+## Learning Arc For This Sequence
+
+| Level | Case | Main lesson |
+|---|---|---|
+| Introductory | `Synth::synth.data` | Learn `dataprep()`, `synth()`, weights, and gap plots |
+| Intermediate | Proposition 99 with `tidysynth::smoking` | Learn the full classical SCM workflow and donor-pool discipline |
+| Advanced | `augsynth::kansas` | Learn what to do when classical fit is weak |
+
+## Closing Line
+
+The practical rule is simple: build the donor pool carefully, inspect pre-treatment fit hard, show the weights and diagnostics openly, and only then decide whether classical SCM is enough or whether augmentation is genuinely justified.

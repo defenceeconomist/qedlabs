@@ -1,0 +1,272 @@
+---
+title: "Lab: Synthetic Control Mechanics"
+format:
+  html: default
+execute:
+  echo: true
+  eval: false
+---
+
+## How To Use This Page
+
+Use this page as the first hands-on SCM lab.
+
+- Keep the [Synthetic Control](../notes/scm/synthetic-control.qmd) overview open in another tab.
+- Use this lab to understand the grammar of classical SCM before you move to real case studies.
+- Read `dataprep()` as part of the design, not as data wrangling boilerplate.
+- End by explaining what the optimizer did and whether the fit looks credible enough to learn from.
+
+::: {.callout-note}
+The code is shown but not executed when the site is rendered. That keeps the page readable while preserving a runnable workflow for teaching and self-study.
+:::
+
+## Training Goal
+
+Use `Synth::synth.data` to make the mechanics of classical SCM visible:
+
+1. define the treated unit and donor pool explicitly
+2. encode the design with `dataprep()`
+3. estimate the synthetic control with `synth()`
+4. inspect donor weights `W` and predictor weights `V`
+5. interpret the path plot and gap plot without pretending the toy data prove a substantive claim
+
+## Dataset At A Glance
+
+This lab uses `Synth::synth.data`, the package's toy panel for teaching the original workflow.
+
+- Purpose: mechanics first, not substantive interpretation
+- Data shape: a small panel with one treated unit and a compact donor pool
+- Main value: it isolates the optimizer, the matrices, and the output objects without the extra complexity of a real policy application
+- Main limit: the dataset is too artificial to teach donor contamination, spillovers, or serious placebo logic
+
+## What To Hand Back
+
+By the end of the lab, you should be able to report:
+
+- which unit is treated and which units enter the donor pool
+- what `dataprep()` is doing to produce `X1`, `X0`, `Z1`, and `Z0`
+- which donors receive positive weight in `solution.w`
+- which predictors or lagged outcomes receive the most weight in `solution.v`
+- whether the pre-treatment fit looks good enough to trust the toy example as a demonstration of mechanics
+
+## Step 1: Load Packages And Inspect The Toy Panel
+
+```{r}
+required_packages <- c(
+  "Synth",
+  "dplyr",
+  "tibble"
+)
+
+missing_packages <- required_packages[!vapply(
+  required_packages,
+  requireNamespace,
+  logical(1),
+  quietly = TRUE
+)]
+
+if (length(missing_packages) > 0) {
+  install.packages(missing_packages, repos = "https://cloud.r-project.org")
+}
+
+invisible(lapply(required_packages, library, character.only = TRUE))
+
+data("synth.data", package = "Synth")
+
+synth.data |>
+  tibble::as_tibble() |>
+  glimpse()
+```
+
+Checkpoint:
+
+- Can you see the unit identifier, time variable, predictors, and outcome?
+- Which columns are design inputs and which columns are only labels?
+
+## Step 2: Define The Treated Unit And Donor Pool
+
+The point of this step is not software convenience. It is to make the comparison explicit before any optimization happens.
+
+```{r}
+treated_unit <- 7
+
+donor_units <- c(29, 2, 13, 17, 32, 38)
+
+unit_lookup <- synth.data |>
+  distinct(unit.num, name) |>
+  arrange(unit.num)
+
+treated_name <- unit_lookup |>
+  filter(unit.num == treated_unit)
+
+donor_lookup <- unit_lookup |>
+  filter(unit.num %in% donor_units)
+
+treated_name
+donor_lookup
+```
+
+What to discuss:
+
+- SCM does not remove design judgment; it makes it legible.
+- Even in a toy example, you should know who is eligible to act as a donor before you estimate weights.
+
+## Step 3: Encode The Design With `dataprep()`
+
+`dataprep()` is the design object in the original `Synth` workflow. It decides which predictors matter, which pre-treatment periods define fit, and which periods will be plotted later.
+
+```{r}
+dataprep.out <- dataprep(
+  foo = synth.data,
+  predictors = c("X1", "X2", "X3"),
+  predictors.op = "mean",
+  dependent = "Y",
+  unit.variable = "unit.num",
+  time.variable = "year",
+  special.predictors = list(
+    list("Y", 1991, "mean"),
+    list("Y", 1985, "mean"),
+    list("Y", 1980, "mean")
+  ),
+  treatment.identifier = treated_unit,
+  controls.identifier = donor_units,
+  time.predictors.prior = 1984:1989,
+  time.optimize.ssr = 1984:1990,
+  unit.names.variable = "name",
+  time.plot = 1984:1996
+)
+
+names(dataprep.out)
+```
+
+## Step 4: Inspect The Objects That `dataprep()` Built
+
+```{r}
+dim(dataprep.out$X1)
+dim(dataprep.out$X0)
+dim(dataprep.out$Z1)
+dim(dataprep.out$Z0)
+
+dataprep.out$X1
+dataprep.out$X0
+
+dataprep.out$tag
+```
+
+Checkpoint:
+
+- `X1` and `X0` contain the predictor targets for the treated unit and donors.
+- `Z1` and `Z0` contain the pre-treatment outcome history used to optimize fit.
+- `tag` is worth reading because it records the design choices you just made.
+
+## Step 5: Estimate The Synthetic Control
+
+```{r}
+synth.out <- synth(dataprep.out)
+
+names(synth.out)
+```
+
+This is the estimator step. The constrained optimizer now chooses donor weights `W` and predictor weights `V` given the design encoded above.
+
+## Step 6: Read Donor Weights `W` And Predictor Weights `V`
+
+```{r}
+donor_weights <- tibble(
+  unit.num = donor_units,
+  weight = as.numeric(synth.out$solution.w)
+) |>
+  left_join(unit_lookup, by = "unit.num") |>
+  arrange(desc(weight))
+
+predictor_weights <- tibble(
+  predictor = rownames(dataprep.out$X1),
+  v_weight = as.numeric(synth.out$solution.v[, 1])
+) |>
+  arrange(desc(v_weight))
+
+donor_weights
+predictor_weights
+```
+
+What to look for:
+
+- sparse `W` weights mean only a few donors carry the synthetic comparison
+- large `V` weights show which predictors or lagged outcomes mattered most for fit
+- neither object is decorative; both are part of the causal argument
+
+## Step 7: Build The Standard Summary Tables
+
+```{r}
+synth.tables <- synth.tab(
+  dataprep.res = dataprep.out,
+  synth.res = synth.out
+)
+
+synth.tables$tab.pred
+synth.tables$tab.w
+synth.tables$tab.v
+```
+
+Checkpoint:
+
+- Does the synthetic unit improve predictor balance relative to a simple donor average?
+- Are the non-zero donor weights substantively legible or completely opaque?
+
+## Step 8: Plot The Treated And Synthetic Paths
+
+```{r fig.height=5.5}
+path.plot(
+  synth.res = synth.out,
+  dataprep.res = dataprep.out,
+  Ylab = "Outcome",
+  Xlab = "Year",
+  Legend = c("Treated unit", "Synthetic control"),
+  Legend.position = "bottomright"
+)
+abline(v = 1990, lty = 2, col = "gray40")
+```
+
+```{r fig.height=5.5}
+gaps.plot(
+  synth.res = synth.out,
+  dataprep.res = dataprep.out,
+  Ylab = "Treated minus synthetic",
+  Xlab = "Year"
+)
+abline(v = 1990, lty = 2, col = "gray40")
+abline(h = 0, lty = 3, col = "gray50")
+```
+
+What to discuss:
+
+- the path plot asks whether the synthetic unit tracks the treated unit before treatment
+- the gap plot turns that same information into a treatment-effect style display
+- if the pre-treatment gap is wide, the right lesson is usually "design problem" rather than "interesting effect"
+
+## Step 9: Calculate The Gap Series Directly
+
+```{r}
+gap_tbl <- tibble(
+  year = dataprep.out$tag$time.plot,
+  treated = as.numeric(dataprep.out$Y1plot),
+  synthetic = as.numeric(dataprep.out$Y0plot %*% synth.out$solution.w)
+) |>
+  mutate(gap = treated - synthetic)
+
+gap_tbl
+```
+
+This step matters because it makes the plotted divergence inspectable as ordinary data rather than as an opaque graphics side effect.
+
+## Final Prompt
+
+Write a short answer to these questions:
+
+1. What part of SCM became clearer once you saw `dataprep()` and `synth()` as separate steps?
+2. Which donors actually build the synthetic unit?
+3. Does this toy example teach you substantive causal inference, or mainly the structure of the estimator?
+
+## Next Step
+
+Move next to the [Proposition 99 lab](synthetic-control-proposition-99-lab.qmd), where the same workflow becomes a real comparative case study with donor exclusions, placebo logic, and stronger design stakes.

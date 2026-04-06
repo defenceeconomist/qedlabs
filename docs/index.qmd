@@ -19,3 +19,5 @@ Quasi-Experimental Design Labs organizes working material for quasi-experimental
 [Open Labs](labs/index.qmd){.cta-button .secondary}
 :::
 :::
+
+</div>

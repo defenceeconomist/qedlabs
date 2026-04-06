@@ -39,22 +39,22 @@ Use the accessible page when you want the outline and citations. Use the present
 :::
 
 ::: {.section-card .slide-topic-card}
-<span class="page-badge badge-skeleton">Synthetic Control</span>
+<span class="page-badge badge-core">Synthetic Control</span>
 
 ### Synthetic Control
 
-Reserved slot for the SCM concept deck and follow-on talk track.
+Primary presentation deck for the SCM sequence.
 
-[Open placeholder deck](scm.qmd){.topic-card-primary}
+[Open RevealJS deck](scm-revealjs.html){.topic-card-primary}
 
 ::: {.topic-card-links}
-[Synthetic control notes](../notes/scm/synthetic-control.qmd){.topic-card-secondary}
-[Design lab](../labs/synthetic-control-design-lab.qmd){.topic-card-secondary}
-[Donor pool lab](../labs/synthetic-control-donor-pool-lab.qmd){.topic-card-secondary}
+[Accessible slides page](scm.qmd){.topic-card-secondary}
+[Presenter notes](scm_script.qmd){.topic-card-secondary}
+[SCM labs](../labs/index.qmd){.topic-card-secondary}
 :::
 
 ::: {.card-meta}
-Build the RevealJS deck and presenter notes here next.
+Use the deck for the concept sequence and the presenter notes for the fuller talk track.
 :::
 :::
 :::

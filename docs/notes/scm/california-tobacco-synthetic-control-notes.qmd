@@ -1,0 +1,165 @@
+---
+title: "Notes on Abadie, Diamond, and Hainmueller (2010): California Proposition 99"
+subtitle: "Detailed Study Notes for the canonical JASA synthetic-control application"
+author: "Luke Heley"
+date: "6 April 2026"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: false
+---
+
+## Purpose
+
+These notes summarize Abadie, Diamond, and Hainmueller's *Synthetic Control Methods for Comparative Case Studies: Estimating the Effect of California's Tobacco Control Program* [@abadie2010synthetic] using the Evidence Base record retrieved for this repo on 6 April 2026. The aim is not to restate the paper mechanically. The aim is to capture what makes this article the canonical SCM paper: the design problem it is solving, the way it formalizes donor-weight selection, the California Proposition 99 application, and the placebo-based inference logic that later SCM work keeps returning to.
+
+The aim here is to capture:
+
+- how the paper frames SCM as a solution to ambiguity in comparative case studies
+- how the paper links SCM to a generalized difference-in-differences style panel setup
+- what the implementation section says about donor weights `W`, predictor weights `V`, and no-extrapolation
+- how the California donor pool, predictors, and outcome are chosen
+- what the Proposition 99 results actually show
+- why the RMSPE placebo logic became the standard SCM inference workflow
+- what this paper should change in the repo's SCM notes and labs
+
+## Source Baseline
+
+- Source retrieved from the MCP evidence base on 6 April 2026.
+- Evidence-base bucket / collection: `evaluation`
+- Evidence-base document id: `899dd55ab6e5d093e1cf0efbbd6493f824e36935880006a55fa4d10d27393169`
+- Matched filename returned by MCP: `ccs.pdf`
+- Source key / bucket path returned by MCP: `evaluation/ccs.pdf`
+- Resolver link surfaced by MCP: [paper resolver](/resolver.html?bucket=evaluation&file_path=ccs.pdf&page=1)
+- Citation key already present in the repo bibliography: `@abadie2010synthetic`
+- Main sections used for these notes:
+  - `1. INTRODUCTION`
+  - `2.3 Implementation`
+  - `3.2 Data and Sample`
+  - `3.3 Results`
+  - `3.4 Inference About the Effect of the California Tobacco Control Program`
+  - `4. CONCLUSION`
+  - `APPENDIX A: DATA SOURCES`
+
+## Executive Summary
+
+- This paper turns SCM from an appealing idea in the Basque Country application into a general comparative-case-study method with a clear estimation and inference workflow [@abadie2010synthetic].
+- Its starting point is that comparative case studies are often limited less by lack of data than by ambiguity about how controls were chosen and by inferential methods that ignore uncertainty about the counterfactual itself [@abadie2010synthetic].
+- The method's core discipline is to construct the control as a convex combination of donor units. That matters because it makes donor contributions explicit and blocks the kind of extrapolation that regression-based counterfactuals can hide [@abadie2010synthetic].
+- The Proposition 99 application shows the full workflow: restrict the donor pool, define predictors and lagged outcomes, inspect predictor balance and donor weights, show the treated-versus-synthetic path, and then judge rarity with placebo gaps and post/pre-RMSPE ratios [@abadie2010synthetic].
+- Substantively, the paper finds that cigarette consumption fell sharply in California relative to its synthetic counterpart after Proposition 99. The paper's headline figure is that by 2000 annual per-capita cigarette sales were about 26 packs lower than they would have been without Proposition 99 [@abadie2010synthetic].
+- For this repo, this is the main source to use when explaining why SCM output is not just one treatment-effect line. It is a bundle of design objects: donor-pool restrictions, predictor balance, weights, gap plots, and placebo-based inference [@abadie2010synthetic].
+
+## Study Notes
+
+### 1. Introduction
+
+The introduction frames the paper around a recurring problem in the social sciences: interventions often happen at an aggregate level, but researchers still want a causal comparison for one treated state, region, or country [@abadie2010synthetic]. Comparative case studies are a natural response to that problem, but the control group is often chosen informally and traditional inference only measures sampling uncertainty, not uncertainty about whether the controls really represent the missing counterfactual.
+
+That framing is the paper's first major contribution. It argues that SCM is useful because it reduces discretion in control selection and opens the door to inference that is about the design itself rather than about an imagined large-sample regression world [@abadie2010synthetic].
+
+The introduction also states two design claims that remain central in later SCM teaching. First, transparency matters because the method shows which donors matter and how much. Second, no-extrapolation matters because the synthetic control is built from actual observed units rather than from model-driven weights that can go negative or overshoot the donor pool [@abadie2010synthetic].
+
+### 2. The synthetic-control setup and implementation
+
+The paper's implementation section is where the method becomes operational [@abadie2010synthetic]. A synthetic control is defined as a weighted average of donor units with positive weights that sum to one. Those constraints are not incidental. They are the mechanism that keeps the counterfactual inside the support of the donor pool and makes the result interpretable as an actual mixture of observed units.
+
+The setup distinguishes two kinds of weights:
+
+- donor weights `W`, which determine which untreated units contribute to the synthetic control
+- predictor weights `V`, which determine which pre-treatment characteristics matter most for fitting the treated unit
+
+The treated unit's predictors are collected in `X1` and donor predictors in `X0`. The method chooses `W` to minimize the distance between `X1` and `X0W`, with `V` governing how strongly each predictor enters that distance metric [@abadie2010synthetic].
+
+The practical point is that `V` is not just a tuning nuisance. The paper treats it as a choice that should reflect predictive power. In the empirical application, `V` is selected to minimize mean squared prediction error in the pre-treatment outcome, which is why lagged outcomes play such a strong role in the final fit [@abadie2010synthetic].
+
+The paper also makes a more theoretical point in the introduction and method discussion: SCM is justified in a panel setting that generalizes standard difference-in-differences by allowing time-varying effects of unobserved factors [@abadie2010synthetic]. That matters because it explains why matching on long pre-treatment outcome paths can partly account for latent confounders even when a simple parallel-trends story is too crude.
+
+### 3.2 Data and sample
+
+The application uses annual state-level data from 1970 to 2000, with Proposition 99 taking effect in January 1989 after passage in November 1988 [@abadie2010synthetic]. That gives the paper `19` pre-intervention years and a post-period long enough to trace a meaningful effect path.
+
+The donor-pool logic is one of the best practical parts of the paper. States that adopted other large-scale tobacco-control programs during `1989` to `2000` are excluded, as are states that raised cigarette taxes by `50` cents or more over that period, plus the District of Columbia [@abadie2010synthetic]. The paper is explicit that these are design choices intended to keep the donor pool plausibly untreated.
+
+After those exclusions, the donor pool contains `38` states [@abadie2010synthetic]. The outcome is annual per-capita cigarette sales in packs, constructed from tax-revenue information. The main predictors are:
+
+- average retail cigarette price
+- logged per-capita state personal income
+- percent of the population aged `15` to `24`
+- per-capita beer consumption
+- lagged cigarette consumption in `1975`, `1980`, and `1988`
+
+This section is worth emphasizing in the repo because it shows that the California case is not a package demo with arbitrary inputs. The donor exclusions, predictor set, and time window are all tied directly to the causal story the paper is trying to defend.
+
+### 3.3 Results
+
+The paper first shows why the rest of the United States is a poor comparator for California [@abadie2010synthetic]. Even before Proposition 99, the trends diverge. By `1988`, per-capita cigarette consumption is about `27%` higher in the rest of the United States than in California.
+
+That matters because it motivates the synthetic-control construction directly. The average untreated state is not the right counterfactual; a weighted combination of carefully selected untreated states may be [@abadie2010synthetic].
+
+The balance table then shows the core design win. Synthetic California reproduces California closely on cigarette prices, beer consumption, youth share, and lagged cigarette sales, whereas the simple average of control states does not [@abadie2010synthetic]. The paper also notes that log GDP per capita receives very little weight in the predictor-weight matrix `V`, which is why its mismatch matters less than the close fit on smoking-related predictors and lagged outcomes.
+
+The donor composition is sparse and substantive. Smoking trends in California are best reproduced by a weighted combination of Colorado, Connecticut, Montana, Nevada, and Utah, with all other donor states receiving zero weight [@abadie2010synthetic]. That sparsity is part of the method's appeal: the counterfactual is inspectable rather than diffuse.
+
+Once the paper moves to the path plot and gap plot, the main effect becomes clear. Synthetic California tracks actual California closely before treatment, then the two paths diverge after Proposition 99 [@abadie2010synthetic]. The paper reports that over `1989` to `2000` cigarette consumption falls by almost `20` packs per capita on average, about a `25%` decline, and that by `1997` the estimated reduction is about `24` packs per capita. The article opening states the year-`2000` effect at about `26` packs lower than the untreated counterfactual [@abadie2010synthetic].
+
+The section also compares this result with earlier regression-based work by Fichtenberg and Glantz. The SCM estimate is larger, and the paper argues that one reason is donor contamination: using the rest of the country includes states that later adopted similar tobacco-control measures, which likely attenuates the estimated effect [@abadie2010synthetic].
+
+Finally, the paper reports a straightforward robustness exercise: adding many additional smoking predictors leaves the results virtually unchanged [@abadie2010synthetic]. That is useful in this repo because it reinforces a practical point: once the design already fits the treated path well, a bloated predictor list does not automatically transform the conclusion.
+
+### 3.4 Inference about Proposition 99
+
+This section is one of the paper's most important long-run contributions because it establishes the placebo workflow that became standard in SCM practice [@abadie2010synthetic]. The central question is whether California's post-1988 gap could plausibly have arisen by chance if the treated state had been chosen at random.
+
+The paper answers that by iteratively reassigning the intervention to each donor-pool state and re-estimating the synthetic control. This produces a distribution of placebo gaps against which California can be judged [@abadie2010synthetic].
+
+Two details matter here.
+
+First, pre-treatment fit matters for inference, not only for presentation. California's pre-intervention MSPE is about `3`, while the donor-pool median is about `6`, but some placebo states fit extremely badly, such as New Hampshire with a pre-treatment MSPE of `3437` because its cigarette sales are too extreme to be reproduced by a convex combination of other states [@abadie2010synthetic]. The paper treats those poor-fit placebo runs as bad comparators for judging rarity.
+
+Second, the paper proposes using the ratio of post-treatment RMSPE to pre-treatment RMSPE so inference reflects deterioration in fit after treatment rather than raw gap size alone [@abadie2010synthetic]. That ratio becomes the cleanest exact-test summary because it avoids relying entirely on ad hoc placebo-screening cutoffs.
+
+The paper still shows several cutoff-based placebo figures:
+
+- a lenient version excluding states with pre-treatment MSPE more than `20` times California's
+- a stricter version excluding states above `5` times California's
+- a stricter still version excluding states above `2` times California's
+
+In the `2x` figure, California's gap is the most extreme among the remaining `19` controls, corresponding to a `5%` randomization probability [@abadie2010synthetic]. In the RMSPE-ratio view, California's post/pre ratio is about `130`, and no control state is as large; the implied exact probability is `1/39 = 0.026` [@abadie2010synthetic].
+
+This section is essential for the repo because it shows how SCM inference is supposed to work when the sample is small and the treated unit is unique. It is about comparative rarity under reassignment, not about pretending the application is a conventional large-sample regression.
+
+### 4. Conclusion
+
+The conclusion is concise but important. It restates the paper's main position: comparative case studies have wide empirical scope, but their implementation is limited by inferential challenges and ambiguity about control selection [@abadie2010synthetic]. SCM addresses both by using data-driven synthetic comparison units and an inference procedure built around reassignment placebos.
+
+This is also where the paper states plainly that the Proposition 99 effects appear larger than prior estimates and that the observed magnitude would be very unlikely under random reassignment [@abadie2010synthetic]. For this repo, the conclusion is useful because it defines the paper's legacy in one sentence: SCM is not just an estimator for one tobacco case; it is a design template for aggregate comparative studies.
+
+### Appendix A: data sources
+
+The appendix is worth keeping in mind because it shows how concrete the application is [@abadie2010synthetic]. The paper lists source details for:
+
+- per-capita cigarette consumption
+- average retail cigarette price
+- logged per-capita state personal income
+- state population and age structure
+- per-capita beer consumption
+
+For teaching purposes, this appendix matters because it reminds readers that SCM credibility still depends on ordinary data work. The design is elegant, but it still stands on careful variable construction.
+
+## What To Carry Into This Repo
+
+- Use this note as the main source-following companion for the canonical California application in the [Synthetic Control overview](synthetic-control.qmd) [@abadie2010synthetic].
+- Keep it paired with [Synth Package Notes](synth-package-notes.qmd). The package note explains the software workflow; this paper explains the underlying application and inference logic that workflow is trying to reproduce [@abadie2010synthetic; @hainmueller2011synth].
+- Read it alongside [Synthetic Control Teaching Data](synthetic-control-teaching-data.qmd), since the bundled smoking datasets in later packages are all downstream of this design [@abadie2010synthetic].
+- Use it before the [Synthetic Control Donor Pool Lab](../../labs/synthetic-control-donor-pool-lab.qmd) whenever donor-pool exclusions need to be explained as part of identification rather than as housekeeping [@abadie2010synthetic].
+- Treat the placebo-MSPE section as the baseline inference template for the repo's SCM materials. Later notes can refine it, but they should not skip the logic this paper established [@abadie2010synthetic].
+
+## High-Level Takeaways
+
+- This is the canonical SCM paper because it combines design, application, and inference in one place [@abadie2010synthetic].
+- Its central practical move is to replace ad hoc comparison choice with a transparent convex-combination counterfactual [@abadie2010synthetic].
+- The Proposition 99 application matters because the synthetic control fits California closely before treatment and then diverges sharply afterward [@abadie2010synthetic].
+- The placebo and post/pre-RMSPE logic matters because it gives SCM a defensible exact-testing workflow in small-sample comparative settings [@abadie2010synthetic].
+- For this repo, the paper is the clearest source for why SCM should be taught as a design-and-diagnostics workflow rather than as a single optimizer call [@abadie2010synthetic].

@@ -1,0 +1,90 @@
+---
+title: "Synthetic Control Presenter Script"
+subtitle: "A fuller talk track for the concept deck"
+format:
+  html:
+    toc: true
+    toc-depth: 2
+    code-links:
+      - text: Synthetic Control deck
+        href: scm.html
+      - text: Synthetic Control notes
+        href: ../notes/scm/synthetic-control.html
+execute:
+  echo: false
+  eval: false
+---
+
+## How To Use This Script
+
+Use this page when you want a fuller spoken version of the SCM deck rather than cue cards.
+
+- Read it once or twice to get the pacing into your ear.
+- Keep the Proposition 99 and augmented-SCM notes nearby if you want extra examples.
+- Trim the extension material if you need to keep the talk under `20` minutes.
+
+## Slide-By-Slide Script
+
+### Title Slide
+
+Today I want to explain synthetic control as a design for comparative case studies before we talk about any specific package workflow. The main point is that SCM is not a graph-producing trick. It is a structured answer to a counterfactual problem that appears when one place, state, or institution gets treated and there is no single obvious comparison unit.
+
+### Session Promise
+
+This deck starts with the aggregate counterfactual problem, then explains why hand-picked control cases are often too informal, then shows why donor-pool support and pre-treatment fit carry so much weight in SCM. That order matters. If we start with the optimizer, SCM can look like software. If we start with the design problem, SCM looks like what it really is: a disciplined comparative-case-study method.
+
+### 20-Minute Arc
+
+The structure is simple. First, I will define the comparative-case problem. Second, I will explain why SCM exists instead of relying on one or two chosen controls. Third, I will focus on the donor pool and the convex-hull support condition. Fourth, I will explain why pre-treatment fit is the main credibility test. Finally, I will end with diagnostics, failure modes, and the point where augmentation becomes the next step rather than an automatic upgrade.
+
+### Start With The Comparative Case Problem
+
+Many important interventions happen at an aggregate level. A state changes tax policy. A city introduces a programme. A country experiences reunification. In those settings, the treated unit's untreated path is missing. The design task is to construct a credible stand-in for that missing path. Synthetic control is one way of doing that when ordinary panel averages feel too coarse and one comparison case is too fragile.
+
+### Why Not Just Hand-Pick A Few Controls?
+
+This is the original complaint that motivates SCM. Comparative case studies often have a sharp substantive story but a vague counterfactual story. The question is always: why these comparison units and not others? Synthetic control responds by replacing informal control selection with an explicit weighting rule over a donor pool. That does not remove judgment. It just makes the judgment more visible, which is exactly what good design should do.
+
+### SCM In One Sentence
+
+The cleanest one-sentence definition is this: SCM builds a weighted average of untreated donor units so the weighted donor path reproduces the treated unit before treatment as closely as possible. Post-treatment divergence is then interpreted as the estimated effect. The important phrase there is `before treatment`. The method earns credibility through pre-treatment tracking, not through post-treatment drama.
+
+### Design Bottleneck: The Donor Pool
+
+This is the slide I most want people to remember. The donor pool is the main identification decision. It is not housekeeping. If donors are contaminated, structurally incomparable, or simply too far away from the treated unit, the design is weak before any estimation starts. That is why SCM teaching should spend as much time on exclusion rules, spillovers, and support as it spends on code.
+
+### Why The Convex-Hull Rule Matters
+
+Classical SCM uses non-negative weights that sum to one. That keeps the synthetic control inside the observed donor pool rather than letting the analyst extrapolate through negative weights or impossible combinations. The great strength of that rule is transparency. The great limitation is also transparency. If the treated unit sits outside donor support, poor fit becomes visible instead of being hidden by a flexible model. That is a feature, even when it is inconvenient.
+
+### Strong Pre-Treatment Fit Is The Main Credibility Test
+
+This is where Alberto Abadie is especially clear. There are no ex ante guarantees that SCM will fit well, and if fit is poor, the method is often not appropriate. A close pre-treatment match is the main empirical reason to believe the synthetic unit is tracking the treated unit's untreated path. That is why long pre-treatment windows matter so much. They give the analyst more information about whether the match reflects stable structure or only noise.
+
+### What The Core Outputs Mean
+
+SCM results are never just one estimate. The donor weights tell you who is actually building the counterfactual. The balance table tells you whether key predictors and lagged outcomes line up. The path plot tells you whether the synthetic unit tracks the treated unit before treatment. The gap plot shows when the divergence opens up. The placebo exercises tell you whether the treated result looks unusual relative to donor-placebo benchmarks. All of those objects belong to the argument.
+
+### Placebo Logic Is Diagnostic, Not Magical
+
+This point gets blurred in applied work. Placebo-by-unit checks are useful because they ask whether the treated gap is unusual relative to untreated units reassigned as if they were treated. Placebo-in-time checks are useful because they ask whether the same design would create a fake effect if treatment were moved earlier. But neither device rescues a weak donor pool or poor fit. They reinforce a good design; they do not create one.
+
+### Core Failure Modes
+
+The recurring failure modes are donor contamination, anticipation, spillovers, short panels, noisy outcomes, weak support, and overfitting through too much tuning. Another major problem is a concurrent shock hitting the treated unit at the same time as the intervention. If that happens, SCM may be assigning too much to the treatment itself. These are not minor technical caveats. They are the reasons a persuasive-looking SCM graph can still be unconvincing.
+
+### When Classical SCM Is Enough
+
+Classical SCM is usually enough when treatment hits one unit at a known time, the donor pool is clean, the pre-treatment path is long, and the synthetic unit tracks the treated unit closely before treatment. Proposition 99 is the canonical teaching case because those pieces line up well enough to make the whole workflow legible and defensible.
+
+### When Augmentation Enters
+
+Augmentation should be taught as a response to weak fit, not as the next shiny thing. The Kansas example is useful precisely because classical SCM alone fits imperfectly. Augmented SCM starts from the classical weighting logic and then adds a controlled bias-correction step. The point is not unlimited flexibility. The point is to improve fit while keeping the extra extrapolation explicit enough to judge. If augmentation has to carry the entire design, that is often telling you the problem is deeper than the estimator choice.
+
+### Learning Arc For This Sequence
+
+The lab sequence mirrors that logic. First, use the `Synth` toy data to learn the mechanics cleanly. Second, use Proposition 99 with `tidysynth` to run the full classical workflow in a case where the design stakes are real. Third, use the Kansas tax-cut data to learn what poor fit looks like and when augmentation becomes the first principled extension rather than a default.
+
+### Closing Line
+
+The line I want to leave in the room is simple: synthetic control is persuasive only when the donor pool is defensible, the pre-treatment fit is strong, the weights and diagnostics are transparent, and the analyst stays honest about where the design may fail. If the audience remembers that sentence, the deck has done its job.

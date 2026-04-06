@@ -1,0 +1,235 @@
+---
+title: "Notes on Di Stefano and Mellace (2024): The Inclusive Synthetic Control Method"
+subtitle: "Detailed Study Notes for spillover-aware and multiple-treated synthetic control"
+author: "Luke Heley"
+date: "6 April 2026"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: false
+---
+
+## Purpose
+
+These are study notes on Di Stefano and Mellace's *The Inclusive Synthetic Control Method* [@DiStefano_Mellace_2024_InclusiveSCM_arxiv]. They are based on the Evidence Base version retrieved for this repo on 6 April 2026. The point is not to restate every derivation. The point is to capture what this paper changes in the way SCM should be used when donor contamination is plausible, when other treated units would materially improve fit, or when excluding affected units turns a good SCM design into a weak one.
+
+The aim here is to capture:
+
+- the problem iSCM is trying to solve
+- the paper's identification logic in plain language
+- what assumptions make iSCM feasible and what failure cases remain
+- how the paper compares iSCM with unrestricted and restricted donor-pool SCM
+- what the German reunification and Austria example is meant to show
+- what this paper should change in the repo's spillover-aware SCM guidance
+
+## Source Baseline
+
+- Source retrieved from the MCP evidence base on 6 April 2026.
+- Evidence-base bucket / collection: `evaluation`
+- Evidence-base document id: `24f9d8f55b4b689dc1b8e054d6d5124573e3a32532ed12f826b8f25190d3ab82`
+- Matched filename returned by MCP: `2403.17624v2.pdf`
+- Source key / bucket path returned by MCP: `evaluation/2403.17624v2.pdf`
+- Resolver link surfaced by MCP: [paper resolver](/resolver.html?bucket=evaluation&file_path=2403.17624v2.pdf&page=1)
+- Source title in Evidence Base: *The inclusive synthetic control method*
+- Authors: Roberta Di Stefano and Giovanni Mellace
+- Version used here: arXiv version dated `15 November 2024`
+- Citation key used in this repo: `@DiStefano_Mellace_2024_InclusiveSCM_arxiv`
+- Main numbered sections observed in the retrieved paper:
+  - `Abstract`
+  - `1 Introduction`
+  - `2 The inclusive synthetic control method`
+  - `3` section on the special case with one potentially affected unit
+  - `4` section comparing estimation errors of SCM and iSCM
+  - `5` section comparing iSCM with a restricted SCM
+  - `6` section on possible inference procedures
+  - `7` empirical application
+  - `7.1 Applying the inclusive Penalized SCM`
+  - `8 Conclusion`
+  - appendices on non-singularity, RMSPE ratios, and geometric intuition
+
+## Executive Summary
+
+- The paper starts from a specific SCM failure mode: the units that would best help pre-treatment fit may also be the units most likely to be contaminated by treatment or spillovers [@DiStefano_Mellace_2024_InclusiveSCM_arxiv].
+- The proposed fix is not to pretend contamination away. iSCM keeps those units in the donor pool, recognises that their post-treatment outcomes are contaminated, and then solves a small system of equations to back out the direct effect on the main treated unit and the effects on the other affected units jointly [@DiStefano_Mellace_2024_InclusiveSCM_arxiv].
+- That is the paper's key conceptual move: pre-treatment weights are still estimated in the usual SCM way, but the post-treatment interpretation of the weighted average changes once some donors are themselves affected [@DiStefano_Mellace_2024_InclusiveSCM_arxiv].
+- The method is deliberately modular. It does not require a new optimizer. Any synthetic-control-type estimator that returns the counterfactual as a weighted average of donor outcomes can, in principle, be used inside the iSCM logic [@DiStefano_Mellace_2024_InclusiveSCM_arxiv].
+- The strongest practical message is comparative rather than universal. iSCM is almost certain to dominate the naive "unrestricted" SCM that includes contaminated donors but ignores that contamination. The real practical choice is between iSCM and a restricted SCM that excludes potentially affected units and may fit much worse [@DiStefano_Mellace_2024_InclusiveSCM_arxiv].
+- For this repo, the paper matters because it turns spillovers from a reason to abandon SCM into a reason to redesign the SCM problem explicitly. The design question becomes not only "which donors are clean?" but also "which affected units must stay in the system to make the counterfactual credible?" [@DiStefano_Mellace_2024_InclusiveSCM_arxiv].
+
+## Study Notes
+
+### What problem the paper is solving
+
+Classical SCM relies on a clean donor pool: donor units are supposed to be untreated and unaffected by spillovers [@abadie2010synthetic; @abadie2021using]. Di Stefano and Mellace focus on cases where that rule becomes costly rather than merely inconvenient [@DiStefano_Mellace_2024_InclusiveSCM_arxiv].
+
+There are two main situations:
+
+- some treated units ought to be in each other's donor pools because excluding them destroys pre-treatment fit
+- some untreated units may be indirectly affected by the intervention, but excluding them sharply weakens the synthetic control
+
+The German reunification example makes the motivation concrete [@abadie2015comparative; @DiStefano_Mellace_2024_InclusiveSCM_arxiv]. Austria receives a large weight in synthetic West Germany. If Austria is affected by reunification, then keeping Austria in the donor pool without adjustment contaminates the estimate. But dropping Austria worsens fit substantially. The paper treats this as a design problem that standard SCM does not solve well.
+
+### The setup and the paper's vocabulary
+
+The paper's setup is worth learning because the terminology is part of the identification logic [@DiStefano_Mellace_2024_InclusiveSCM_arxiv].
+
+- The paper calls unit `1` the `main treated` unit.
+- It allows `m - 1` additional units in the donor pool to be `potentially affected`.
+- Those potentially affected units may be either other treated units or control units exposed to spillovers.
+- All remaining donor units are `pure control` units, meaning they are assumed not to be affected at all.
+
+This matters because iSCM is not a generic interference model. It requires the analyst to specify in advance which units might be affected. The paper is explicit that this is a substantive design input, not something the estimator discovers automatically [@DiStefano_Mellace_2024_InclusiveSCM_arxiv].
+
+### The core logic of iSCM
+
+The most important idea in the paper is simpler than the notation initially suggests [@DiStefano_Mellace_2024_InclusiveSCM_arxiv].
+
+In ordinary SCM, the synthetic control for the treated unit is a weighted average of donor outcomes. If some donors are themselves affected after treatment, that weighted average is no longer an estimate of untreated outcomes alone. It is a mixture of untreated outcomes plus the effects experienced by those affected donor units.
+
+The paper exploits the fact that synthetic-control weights are estimated using pre-treatment data, when no unit is yet treated. So the weights can still be estimated in the usual way. The difference appears only when those weights are carried into the post-treatment period.
+
+From the perspective of the main treated unit, the naive inclusive synthetic control estimates:
+
+- the untreated counterfactual component
+- plus weighted contamination from effects on the other affected units
+
+Then the paper repeats the same exercise for each potentially affected unit, allowing the main treated unit to appear in that unit's donor pool as well. The result is a small linear system whose unknowns are:
+
+- the treatment effect on the main treated unit
+- the spillover or treatment effects on each potentially affected unit
+
+That system can then be solved directly. The paper presents this in matrix form and notes that the solution can be written using Cramer's rule [@DiStefano_Mellace_2024_InclusiveSCM_arxiv].
+
+The practical insight is important: iSCM does not estimate spillovers by separate ad hoc post-processing. It treats direct and spillover effects as jointly entangled inside the donor-weighting structure and then untangles them explicitly.
+
+### Why the method is modular
+
+One of the paper's most useful features is that iSCM is not tied to one estimator [@DiStefano_Mellace_2024_InclusiveSCM_arxiv]. The requirement is only that the chosen SCM-type method produce the counterfactual as a weighted average of donor outcomes.
+
+That means the paper's logic can be layered onto:
+
+- classical SCM
+- penalized SCM
+- augmented or regression-adjusted SCM variants that still admit a weighted representation
+- other synthetic-control-style procedures with weighted donor outcomes
+
+This is a major strength for applied use. The contribution is not "replace SCM with a new black box." The contribution is "change how you define the donor-pool problem when some of the useful donors may also be affected."
+
+### Assumptions and practical constraints
+
+The paper is reasonably modest about what iSCM needs to work [@DiStefano_Mellace_2024_InclusiveSCM_arxiv].
+
+First, the analyst must identify the set of potentially affected units in advance. This is straightforward when those units are simply other treated units. It is harder when spillover exposure is uncertain or diffuse.
+
+Second, the chosen SCM-type estimator's own assumptions still need to hold. iSCM does not rescue a donor pool with no support, weak pre-treatment information, or an implausible comparative design [@abadie2021using; @DiStefano_Mellace_2024_InclusiveSCM_arxiv].
+
+Third, the method requires at least one pure control unit to receive non-zero weight. That condition is easy to miss conceptually but crucial in practice. If every positively weighted donor is affected, there is no clean anchor left in the system [@DiStefano_Mellace_2024_InclusiveSCM_arxiv].
+
+Fourth, the method becomes less reliable as the number of potentially affected units increases. This is both statistical and substantive. The linear system gets larger, the correction becomes less stable, and the paper therefore recommends imposing structure on which units can plausibly be affected rather than treating the whole donor pool as suspect [@DiStefano_Mellace_2024_InclusiveSCM_arxiv].
+
+### The special case with one potentially affected unit
+
+The paper gives separate attention to the case with only one potentially affected unit because it makes the logic transparent [@DiStefano_Mellace_2024_InclusiveSCM_arxiv].
+
+With only one additional affected unit, the full iSCM problem reduces to two linked synthetic-control equations:
+
+- one from the main treated unit's perspective
+- one from the potentially affected unit's perspective
+
+That special case is useful pedagogically because it shows exactly what iSCM is correcting. The naive inclusive SCM gap for the treated unit is not the treatment effect itself. It is the treatment effect net of a weighted contamination term from the affected donor. Solving the two-equation system removes that contamination.
+
+The broader lesson is that iSCM is not mainly about "many treated units." It already matters in the simplest spillover case where one substantively important donor may be contaminated.
+
+### Why iSCM improves on naive unrestricted SCM
+
+The cleanest comparison in the paper is not actually iSCM versus restricted SCM. It is iSCM versus the naive practice of including affected units in the donor pool and then reading the resulting post-treatment gap as though those donors were clean [@DiStefano_Mellace_2024_InclusiveSCM_arxiv].
+
+The paper argues that iSCM is almost certain to improve on that unrestricted estimator. The reason is conceptual rather than mysterious:
+
+- unrestricted SCM includes the useful but contaminated donors
+- their effects bleed mechanically into the synthetic control
+- iSCM estimates that contamination structure and removes it
+
+So if an analyst is already willing to leave potentially affected units in the donor pool, iSCM is the disciplined version of that choice. The naive unrestricted approach has little justification once the paper's correction logic is available.
+
+### The real decision: iSCM versus restricted SCM
+
+The harder comparison is between iSCM and a restricted SCM that excludes all potentially affected units from the donor pool [@DiStefano_Mellace_2024_InclusiveSCM_arxiv].
+
+That comparison is central because restricted SCM preserves the classical clean-donor logic, but it may fit badly once substantively important donors are removed. The paper's practical contribution is to give a data-driven way to think about this tradeoff.
+
+The paper's decision logic can be stated informally like this:
+
+- if excluding the affected units does not materially damage fit, restricted SCM may be enough
+- if affected units receive substantial weight and excluding them harms fit, iSCM becomes much more attractive
+
+The appendix's geometric discussion is useful here [@DiStefano_Mellace_2024_InclusiveSCM_arxiv]. It shows that adding a potentially affected unit can sometimes enlarge or improve the relevant convex-hull geometry enough to reduce interpolation problems. In other words, including an affected unit may improve the quality of the comparative match even before any post-treatment correction is applied.
+
+This is one of the paper's best practical points. Spillover-aware SCM is not only about bias from contamination. It is also about support and fit.
+
+### What the appendix adds
+
+The appendices are not decorative [@DiStefano_Mellace_2024_InclusiveSCM_arxiv].
+
+The non-singularity discussion clarifies that the correction system must be invertible. In practice, the danger is not ordinary multicollinearity language so much as degenerate weighting structures where the affected units fail to provide enough independent information once the synthetic controls are built.
+
+The geometric appendix is even more useful for teaching. It explains why iSCM can help even when both the main treated unit and the affected unit lie inside the convex hull of pure controls:
+
+- adding an affected unit can allow the synthetic control to rely less on distant pure controls
+- that can improve local fit and reduce interpolation bias
+
+It also shows the opposite possibility. There are configurations where adding the affected unit clearly makes things worse. The paper therefore does not say "always include affected units." It says that inclusion is most appealing when those units receive substantial weight and materially improve approximation [@DiStefano_Mellace_2024_InclusiveSCM_arxiv].
+
+### What the paper says about inference
+
+The paper includes a section on possible inference procedures, but the main contribution is still identification and estimator construction rather than a fully new inferential theory [@DiStefano_Mellace_2024_InclusiveSCM_arxiv].
+
+For note-taking purposes, the key lesson is conservative:
+
+- the inferential problem does not disappear once spillovers are acknowledged
+- iSCM should still be read inside the existing SCM tradition of design-based diagnostics, placebo logic, and fit-sensitive interpretation [@abadie2010synthetic; @abadie2021using]
+
+That is the right way to absorb the paper into this repo. iSCM expands what can count as a feasible donor-pool design, but it does not make pre-treatment fit, transparency, or placebo reasoning optional.
+
+### The German reunification application
+
+The empirical application returns to the same West Germany case used in the comparative-politics SCM literature [@abadie2015comparative; @DiStefano_Mellace_2024_InclusiveSCM_arxiv]. That is a smart choice because the example already has a known spillover concern: Austria receives large weight in synthetic West Germany and is a plausible spillover target.
+
+The paper's substantive interpretation is straightforward:
+
+- if Austria was negatively affected by reunification, then conventional SCM that uses Austria as a donor will understate the magnitude of West Germany's negative treatment effect
+- iSCM allows Austria to stay in the donor pool while correcting for the possibility that Austria itself was affected
+
+The reported result is a small negative spillover effect on Austria and, correspondingly, a somewhat more negative treatment effect on West Germany than the classical estimate suggests [@DiStefano_Mellace_2024_InclusiveSCM_arxiv].
+
+This matters less because of the exact number than because of the design lesson. The paper turns a familiar caveat from the Abadie literature into an explicit estimation strategy.
+
+### What the penalized-SCM extension shows
+
+Section `7.1` is especially useful because it asks an obvious question: if penalized SCM improves pre-treatment fit, maybe the spillover problem gets smaller once we use a more flexible estimator [@Abadie_LHour_2021_PenalizedSCM; @DiStefano_Mellace_2024_InclusiveSCM_arxiv].
+
+The paper's answer is basically no. Even with penalized SCM, excluding Austria still worsens pre-treatment fit substantially, especially for West Germany. The inclusive penalized version and the baseline iSCM therefore tell a similar story [@DiStefano_Mellace_2024_InclusiveSCM_arxiv].
+
+That is important for this repo because it prevents a common mistaken conclusion:
+
+- penalization helps with fit
+- but it does not by itself solve donor contamination from spillovers
+
+Fit improvement and spillover correction are different problems. The paper is about the second problem.
+
+## What To Carry Into This Repo
+
+- Use this note when the main SCM question is about spillovers, contaminated donors, or whether other treated units should remain inside the donor pool [@DiStefano_Mellace_2024_InclusiveSCM_arxiv].
+- Keep it paired with [Abadie Synthetic Controls](abadie-synthetic-controls-notes.qmd) and [Comparative Politics and SCM](comparative-politics-synthetic-control-notes.qmd). Those notes explain why contamination matters; this paper explains how to redesign the estimator once contamination is plausible [@abadie2021using; @abadie2015comparative; @DiStefano_Mellace_2024_InclusiveSCM_arxiv].
+- Read it alongside [The Augmented Synthetic Control Method](augmented-synthetic-control-method-notes.qmd), but do not conflate the two papers. ASCM addresses weak fit; iSCM addresses affected donors and spillovers. Some applications may need both ideas, but they solve different design failures [@benmichael2021augmented; @DiStefano_Mellace_2024_InclusiveSCM_arxiv].
+- Use it with the [Synthetic Control Donor Pool Lab](../../labs/synthetic-control-donor-pool-lab.qmd) whenever donor exclusion itself may be the source of design weakness rather than its cure.
+- Use the appendix's geometric intuition when teaching why spillover-aware SCM is partly a support problem, not only a contamination problem [@DiStefano_Mellace_2024_InclusiveSCM_arxiv].
+
+## High-Level Takeaways
+
+- iSCM is the paper in this repo that most directly answers the question "what if the best donors are not clean?" [@DiStefano_Mellace_2024_InclusiveSCM_arxiv].
+- Its main innovation is to keep potentially affected units in the donor pool and then solve explicitly for the direct and spillover effects that are mixed into the synthetic-control equations [@DiStefano_Mellace_2024_InclusiveSCM_arxiv].
+- The method requires advance knowledge of which units may be affected and at least one pure control with non-zero weight [@DiStefano_Mellace_2024_InclusiveSCM_arxiv].
+- The most favorable comparison for iSCM is against naive unrestricted SCM; the real applied decision is whether iSCM improves enough on restricted SCM to justify keeping affected units in the donor pool [@DiStefano_Mellace_2024_InclusiveSCM_arxiv].
+- The West Germany and Austria application shows why spillovers are not just a robustness footnote. They can change donor-pool design and the estimated treatment effect itself [@DiStefano_Mellace_2024_InclusiveSCM_arxiv].

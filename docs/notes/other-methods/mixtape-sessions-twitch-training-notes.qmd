@@ -1,0 +1,255 @@
+---
+title: "Notes on Mixtape Sessions: Twitch Training Delivery"
+subtitle: "Transcript-Driven Notes for QED Labs"
+author: "Luke Heley"
+date: "6 April 2026"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: false
+---
+
+## Purpose
+
+These are transcript-driven notes on Scott Cunningham's four-day Mixtape Sessions workshop for Twitch. They are meant to support QED Labs training design rather than reproduce the workshop day by day. The main task is to identify what is reusable in his delivery style, workshop structure, and teaching judgment.
+
+If you want the detailed content companion that follows the workshop sequence day by day, use [Mixtape Sessions: Twitch Workshop Content by Day](mixtape-sessions-twitch-day-by-day-notes.qmd).
+
+The aim here is to capture:
+
+- how the workshop is built across four long days
+- what Cunningham repeatedly does to reduce intimidation and increase traction
+- how he translates causal-inference ideas into platform and product questions
+- what QED Labs should reuse, adapt, or avoid in its own training design
+
+## Source Baseline
+
+- Source: four local transcript files in `tmp/`
+  - `twitch_--_mixtape_sessions__day_1_v1 (720p).txt`
+  - `twitch_--_mixtape_sessions__day_2_v1 (720p).txt`
+  - `twitch_--_mixtape_sessions__day_3 (720p).txt`
+  - `twitch_--_mixtape_sessions__day_4_v1 (720p).txt`
+- Total transcript size: about `17,296` lines
+- Working topic map observed from the transcripts:
+  - Day 1: orientation, causal foundations, potential outcomes, history, early applied examples
+  - Day 2: recap, DAGs, unconfoundedness, platform translation, matching setup
+  - Day 3: matching implementation, method comparison, transition into instrumental variables
+  - Day 4: instrumental variables, regression discontinuity, wrap-up and follow-through
+- This note is based on transcript evidence, not on reconstructing the slide decks or videos.
+- The transcripts are clearly auto-generated and occasionally rough. When wording is messy, the note follows repeated patterns rather than isolated phrasing.
+- Companion page for content coverage: [Mixtape Sessions: Twitch Workshop Content by Day](mixtape-sessions-twitch-day-by-day-notes.qmd)
+
+## Executive Summary
+
+- Cunningham starts by lowering the social and technical temperature. He tells participants what to expect, states explicit learning goals, and says the hard part is not coding but judgment. That makes the room feel survivable before it feels advanced.
+- He translates almost every abstract concept back into the audience's working world. Twitch, Substack, eBay, and other platform examples are not decoration. They are his main bridge from econometrics to practice.
+- He treats training as cumulative design reasoning, not estimator tourism. The recurring question is not "can you run the method?" but "what would have to be true for this method to be the right argument?"
+- He uses story and history to reduce intimidation before formalism. This is not filler. It is one of his main onboarding tools for people who are far from economics or causal-inference culture.
+- He delays code until the conceptual stakes are clear, then uses line-by-line walkthroughs to teach interpretation rather than syntax memorization.
+- He runs the workshop like an extended learning relationship rather than a one-off event. Recordings, follow-up videos, corrections, and office hours are part of the teaching design.
+- He is notably willing to admit uncertainty, revise an answer after the break, or say when a topic needs more scrutiny. That humility increases trust because the workshop is framed as disciplined reasoning rather than performance.
+
+## How the Workshop Is Built
+
+### Pacing and agenda-setting
+
+Cunningham is unusually explicit about workshop structure. Early on he lays out the schedule, the learning goals, the daily sequence, and the reason for regular breaks. He says the workshop is four days long with hourly breaks and a lunch break because long sessions are fatiguing for participants, even if the instructor can keep going (`Day 1, lines 80-84`). That is a strong facilitation signal: stamina is treated as part of instructional design, not as a personal weakness of the audience.
+
+He also previews the conceptual route before each major block. On day 1 he says what the workshop is trying to achieve and where each day is heading (`Day 1, lines 85-127`). On day 3 he opens by showing where they are in the repo and slides, then lists the exact methods they will cover and why (`Day 3, lines 17-55`). This keeps a difficult workshop legible.
+
+### Recap, transitions, and cumulative sequencing
+
+Day 2 opens with a long recap of day 1 rather than a hard reset (`Day 2, lines 11-39`). That recap is not merely summary. He restates the previous day's deepest point in plain language: many business and platform questions are causal questions even when teams do not describe them that way (`Day 2, lines 29-39`). This is good cumulative training practice because it reconnects technical material to the audience's own motivation before introducing the next layer.
+
+Transitions are similarly deliberate. He often closes a block by saying where the logic goes next, then re-opens after the break with the next method framed as a response to the previous limit. Day 3 is especially clear on this: matching is tied back to DAGs, then IV is introduced as the next design family once backdoor adjustment is no longer credible (`Day 3, lines 76-90`; `Day 3, lines 2379-2390`).
+
+### Breaks, recovery, and energy management
+
+The transcripts show frequent short breaks, explicit lunch breaks, and a consistent pattern of stopping before fatigue turns into drift (`Day 1, lines 80-84`; `Day 2, lines 3631-3633`; `Day 3, lines 1395-1397`; `Day 4, lines 1039-1046`). He also uses breaks as reset points for changes in mode: from lecture to discussion, from background to paper discussion, or from one design family to another.
+
+This matters because the workshop is long and conceptually heavy. He does not pretend that attention is infinite. QED Labs should treat that as a design principle, especially for evaluator training that asks people to hold assumptions, design logic, and code interpretation in working memory at the same time.
+
+## Scott Cunningham's Teaching Tactics
+
+### Bridge-building from economics to practitioners
+
+- Delivery move:
+  Cunningham repeatedly positions himself as an applied data worker rather than a remote theory specialist, then connects economics to the participants' world of platform decisions and stakeholder questions.
+- What he is trying to accomplish:
+  He is lowering status distance while legitimizing the material. Participants do not have to become economists. They have to become competent decision-makers who can reason about causal questions.
+- Why it works:
+  This likely works because it reframes the workshop from disciplinary initiation into practical judgment. It also makes the instructor sound like an ally rather than a gatekeeper.
+- Evidence from transcript:
+  Day 1 opens with "ordinary data worker" language and the claim that the workshop is about answering important stakeholder questions (`Day 1, lines 61-64`). He then explains why Twitch should start with different methods than Papa John's because the underlying product and data structure differ (`Day 1, lines 110-117`).
+- How to adapt it for QED Labs:
+  Open trainings by saying what type of practitioner the course is for, what real decisions it supports, and why the methods belong in that decision environment. Use language that reduces prestige distance without flattening the technical challenge.
+- Risk or limit if copied too literally:
+  If QED Labs copies the anti-theory tone too strongly, it could sound dismissive of method depth. The point is to make the material usable, not to make it sound easy.
+
+### Confidence, comprehension, and competency framing
+
+- Delivery move:
+  Cunningham names three workshop goals: confidence, comprehension, and competency.
+- What he is trying to accomplish:
+  He is defining success across affective, cognitive, and practical dimensions before the technical material begins.
+- Why it works:
+  This likely works because participants can locate themselves inside a developmental path. They do not have to confuse "I cannot do this yet" with "I do not belong here."
+- Evidence from transcript:
+  He explicitly states the three goals and says he starts small and builds up so the material does not remain mysterious or intimidating (`Day 1, lines 65-69`). He also says competency comes from experience and project work, not just exposure (`Day 1, lines 72-79`).
+- How to adapt it for QED Labs:
+  Use three-part learning goals in workshop openings. One goal should describe confidence or orientation, one should describe conceptual understanding, and one should describe what participants will actually be able to do after practice.
+- Risk or limit if copied too literally:
+  If the workshop does not genuinely support all three levels, the framing will feel hollow. QED Labs should only promise competency where practice time and follow-on materials exist.
+
+### Storytelling and history as intimidation-reduction
+
+- Delivery move:
+  Before heavy formalism, Cunningham gives background stories, field history, and narrative context. He also says directly that history may help make the technical material feel less weird.
+- What he is trying to accomplish:
+  He is trying to reduce intimidation, create narrative hooks, and explain why the methods look the way they do.
+- Why it works:
+  This likely works because learners remember motives and conflicts more easily than formal definitions. Story gives technical content a human shape.
+- Evidence from transcript:
+  On day 1 he says he wants to tell participants where the material came from so that later technical parts feel less strange (`Day 1, lines 128-133`). After the first break he says it is helpful to get some history before diving deeper, while also warning himself not to belabor it (`Day 1, lines 391-401`). On day 4 he says plainly that causal studies involve a lot of storytelling and that this should be embraced (`Day 4, lines 2135-2138`).
+- How to adapt it for QED Labs:
+  Put a short "why this method exists" segment before formal assumptions. Use it to explain what failure or dispute the method was built to answer. Keep the story tight and in service of later design reasoning.
+- Risk or limit if copied too literally:
+  Too much history can become self-indulgent. Cunningham himself warns that he may love the material more than the average participant needs (`Day 1, lines 393-396`). QED Labs should use story as onboarding, not as drift.
+
+### Repeated translation from abstract estimands to platform and product questions
+
+- Delivery move:
+  He repeatedly turns abstract causal language into platform-native questions about schedules, verification, chatting, creator behavior, earnings, retention, and growth.
+- What he is trying to accomplish:
+  He is making abstract identification problems feel operational. Participants are not just learning terms like selection bias or LATE. They are learning how those ideas surface in their own product questions.
+- Why it works:
+  This likely works because it keeps the workshop close to action. Participants can test each new idea against familiar data-generating processes rather than holding it only as theory.
+- Evidence from transcript:
+  Day 1 frames the opening around how causality fits into data science, machine learning, and business analytics (`Day 1, lines 128-129`). Day 2 is even stronger: he says many platform questions are causal questions and then translates selection bias into creator schedule and earnings examples, plus the Substack consistency example (`Day 2, lines 29-39`; `Day 2, lines 72-118`). He also tells participants to bring their institutional knowledge of Twitch into the modeling process (`Day 2, lines 1269-1288`).
+- How to adapt it for QED Labs:
+  For each method, prepare two or three audience-native examples before the session. Reuse the same examples across methods so participants can compare how the design logic changes while the business problem stays fixed.
+- Risk or limit if copied too literally:
+  Platform examples can become speculative if the instructor does not know the setting well enough. Cunningham offsets this by repeatedly deferring to Twitch's own institutional knowledge. QED Labs should do the same with client or policy contexts.
+
+### Line-by-line code walkthroughs only after concept framing
+
+- Delivery move:
+  Cunningham delays code until the conceptual argument is clear, then teaches code as a line-by-line interpretation exercise rather than a joint coding session.
+- What he is trying to accomplish:
+  He wants participants to understand what each line is doing in the design and why the output matters, not just to watch software run.
+- Why it works:
+  This likely works because it keeps the learning target on reasoning. It also reduces the chaos and tempo problems of live co-coding in a heterogeneous audience.
+- Evidence from transcript:
+  Day 1 says the hard parts of causal inference are not the coding and that Stata is useful because he can take people through it line by line (`Day 1, lines 68-79`). Near the end of day 2 he says he has tried coding together live and found it weaker than walking through a code skeleton line by line and asking why each step exists (`Day 2, lines 4688-4696`). Day 3 repeats that the code is simple and the goal is to interpret what it means and how it fits into life and work (`Day 3, lines 39-45`).
+- How to adapt it for QED Labs:
+  Use code skeletons with deliberate pauses for interpretation. Ask "why this line?" and "what would break if this assumption were wrong?" Keep live coding for narrow demonstrations, not for the main pedagogy.
+- Risk or limit if copied too literally:
+  Participants still need active practice. If QED Labs only narrates code without giving learners something to execute later, competency will stall at recognition.
+
+### Live question handling and office-hours extension
+
+- Delivery move:
+  Cunningham repeatedly offers questions, office hours, recordings, follow-up links, extra videos, and even later interviews to extend the workshop beyond the live room.
+- What he is trying to accomplish:
+  He is building an extended learning container. The workshop is not the only chance to understand the material.
+- Why it works:
+  This likely works because it reduces the penalty for confusion in the room. Participants can stay engaged even when the pace is high because there is a visible recovery path.
+- Evidence from transcript:
+  Day 1 offers Calendly-based office hours and frames them as a genuine chance to brainstorm about the participants' work (`Day 1, lines 117-123`). Day 3 repeats the office-hours offer and promises a summary conversation to make sure everyone can articulate when to use matching versus IV (`Day 3, lines 53-74`). Day 4 closes by offering more meetings, extra videos, corrections, and sincere follow-up on participant questions (`Day 4, lines 2585-2603`; `Day 4, lines 4030-4035`).
+- How to adapt it for QED Labs:
+  Design follow-through into the training package. That can include recordings, summary notes, code skeletons, Q and A office hours, and explicit correction updates when something in the live session needs revision.
+- Risk or limit if copied too literally:
+  Open-ended access can become unsustainable. QED Labs should define a bounded support model rather than rely on personal generosity alone.
+
+### Repeated reminders about identification limits and design judgment
+
+- Delivery move:
+  Cunningham keeps bringing the conversation back to assumptions, DAG credibility, colliders, common support, and the fact that methods are only as good as the argument they encode.
+- What he is trying to accomplish:
+  He is inoculating participants against estimator worship. The point is not to run matching, IV, or RD in the abstract. The point is to know what would make them credible or non-credible in a concrete case.
+- Why it works:
+  This likely works because it gives participants a durable decision rule. Software changes. The habit of interrogating assumptions does not.
+- Evidence from transcript:
+  Day 2 says explicitly that matching and weighting need model-based reasoning and that balance on colliders would still be a problem (`Day 2, lines 3620-3639`). Day 3 says participants should be able to articulate why they would use matching rather than instruments and which beliefs about the world they are assuming (`Day 3, lines 59-75`). He also says none of us know the DAG with certainty and that the standard is often "good enough in good faith" rather than certainty (`Day 3, lines 78-87`). After lunch on day 3 he corrects himself on a prior answer instead of leaving a muddy distinction in place (`Day 3, lines 1398-1410`).
+- How to adapt it for QED Labs:
+  Keep a recurring slide or verbal frame for every method: when to use it, what must be true, what would most likely invalidate it, and how to explain that to a stakeholder. Treat corrections as part of the method culture, not as embarrassment.
+- Risk or limit if copied too literally:
+  Constant caution can become paralyzing if it is not paired with action. QED Labs should teach design skepticism together with a clear "best available next step" habit.
+
+## Notes on Content Delivery by Day
+
+### Day 1
+
+Day 1 is mostly onboarding and foundations. Cunningham uses biography, field history, and a strongly explicit framing of learning goals to make causal inference feel reachable (`Day 1, lines 65-84`; `Day 1, lines 128-133`). The content is technical, but the teaching objective is orientation first: what this field is, why it matters, and how it connects to the participants' own work.
+
+### Day 2
+
+Day 2 is where the workshop's translation habit becomes clearest. He begins with a long recap, restates the prior day's deep lesson in business language, and then uses Twitch and Substack to make selection bias and causal questions concrete (`Day 2, lines 11-39`; `Day 2, lines 72-118`). This is also where his design-first emphasis hardens: model-based reasoning, DAG credibility, and institutional knowledge are repeatedly foregrounded (`Day 2, lines 1269-1288`; `Day 2, lines 3620-3639`).
+
+### Day 3
+
+Day 3 shows how he handles a more method-heavy day without losing the argument. He reorients the room, states the table of contents, and says the goal is not just to watch code run but to understand how to interpret it (`Day 3, lines 17-45`). He also makes space for method comparison, post-break clarification, and explicit assumption summaries (`Day 3, lines 59-90`; `Day 3, lines 1398-1410`).
+
+### Day 4
+
+Day 4 is more compressed and at times slightly rushed, but it still reveals his teaching stance clearly. He openly names storytelling as part of causal argumentation, recommends external follow-on learning, and closes with extra material, corrections, and genuine office-hour invitations (`Day 4, lines 2135-2138`; `Day 4, lines 2585-2603`; `Day 4, lines 4030-4035`). Even under time pressure, he continues to teach a culture of follow-through.
+
+## What to Carry Into QED Labs
+
+### Training principles
+
+- Start by telling people what kind of practitioner the training is for and what kinds of decisions it is meant to improve.
+- Define success on three levels: confidence, comprehension, and competency.
+- Teach methods as arguments under assumptions, not as package workflows.
+- Say explicitly when you are stating a settled point, a judgment call, or a provisional opinion.
+
+### Workshop format choices
+
+- Use a visible day-level roadmap and re-state it at each major transition.
+- Build in regular short breaks and defend them as part of learning design.
+- Begin each new day with a recap of the deepest lesson from the previous day, not just a list of topics covered.
+- Sequence sessions concept first, assumptions second, interpretation third, code fourth.
+
+### Facilitation habits
+
+- Translate every major abstraction into audience-native questions before moving on.
+- Reuse a small number of anchor examples across multiple methods so the comparison is about design logic, not about switching domains constantly.
+- Admit uncertainty in real time and correct yourself later if needed.
+- Use questions to diagnose what distinction is still muddy, then restate the distinction plainly.
+
+### Repo and documentation patterns
+
+- Package training with recordings, code skeletons, and summary notes.
+- Provide a follow-up path that is specific enough to be real: office hours, a debrief session, or a structured Q and A window.
+- When a live session includes a technical correction, issue the correction clearly and attach it to the shared materials.
+- Build "when to use this method" notes alongside implementation notes so the repo reinforces judgment as much as execution.
+
+### Lab-design patterns
+
+- Start lab design from the causal question participants actually face, then choose the method family.
+- Keep a recurring worksheet for each design:
+  - What is the treatment?
+  - What is the outcome?
+  - Why is the raw comparison biased?
+  - What assumption is doing the work?
+  - What data would make the design more credible?
+- Prefer exercises that ask participants to justify a design choice before they run code.
+- Use line-by-line code walkthroughs to interpret design decisions, then hand participants a short execution task that forces them to repeat the logic themselves.
+
+## QED Labs Adaptation Checklist
+
+- [ ] Open the session by naming the audience, the decision context, and the kind of causal question the training is meant to improve.
+- [ ] State one confidence goal, one comprehension goal, and one competency goal.
+- [ ] Show the day structure early and revisit it before each major transition.
+- [ ] Plan regular breaks and protect them.
+- [ ] Start with a short background story that explains why the method exists, but cut it once it has done its onboarding job.
+- [ ] Prepare two or three audience-native examples and keep returning to them throughout the workshop.
+- [ ] For each method, ask: when would we use this, what would need to be true, and what would make it fail here?
+- [ ] Teach code after the design logic is clear and treat code review as an interpretation exercise.
+- [ ] Build a visible recovery path for learners: recordings, notes, follow-up session, or office hours.
+- [ ] End with a concrete translation step: what should participants now do differently in a QED Labs project, lab, or client conversation?
+
+## Bottom Line
+
+The strongest transferable lesson is not any individual explanation trick. It is the way Cunningham holds together orientation, judgment, and execution. He does not separate audience empathy from technical rigor. He uses empathy to make rigor possible. For QED Labs, the main implication is that better training should not feel simpler than the work. It should feel more navigable, more explicit about assumptions, and more clearly tied to the decisions people actually need to make.

@@ -65,12 +65,24 @@ website:
               text: Synthetic Control Sources
             - href: notes/scm/synth-package-notes.qmd
               text: Synth Package Notes
+            - href: notes/scm/basque-country-conflict-notes.qmd
+              text: Basque Country Conflict (2003)
+            - href: notes/scm/california-tobacco-synthetic-control-notes.qmd
+              text: California Proposition 99 (2010)
+            - href: notes/scm/comparative-politics-synthetic-control-notes.qmd
+              text: Comparative Politics and SCM
             - href: notes/scm/abadie-synthetic-controls-notes.qmd
               text: Abadie Synthetic Controls (2021)
+            - href: notes/scm/augmented-synthetic-control-method-notes.qmd
+              text: The Augmented Synthetic Control Method
+            - href: notes/scm/inclusive-synthetic-control-method-notes.qmd
+              text: The Inclusive Synthetic Control Method
             - href: notes/scm/mixtape-synthetic-control-notes.qmd
               text: Mixtape Synthetic Control (Chapter 10)
             - href: notes/scm/mixtape-sessions-synthetic-control-notes.qmd
               text: Mixtape Sessions Synthetic Control
+            - href: notes/scm/synthetic-controls-methods-practice-notes.qmd
+              text: "Synthetic Controls: Methods and Practice"
         - section: Other Methods
           href: notes/other-methods/index.qmd
           contents:
@@ -82,6 +94,10 @@ website:
               text: Comparing Methods
             - href: notes/other-methods/choosing-a-method.qmd
               text: Choosing a Method
+            - href: notes/other-methods/mixtape-sessions-twitch-training-notes.qmd
+              text: Mixtape Sessions Twitch Training Delivery
+            - href: notes/other-methods/mixtape-sessions-twitch-day-by-day-notes.qmd
+              text: Mixtape Sessions Twitch Content by Day
     - id: labs
       title: "Labs"
       style: docked
@@ -103,6 +119,14 @@ website:
               text: HISP IE Practice Lab
         - section: Synthetic Control Design
           contents:
+            - href: labs/synthetic-control-methods-report.qmd
+              text: Synthetic Control Methods Report
+            - href: labs/synthetic-control-mechanics-lab.qmd
+              text: Synthetic Control Mechanics Lab
+            - href: labs/synthetic-control-proposition-99-lab.qmd
+              text: Proposition 99 With tidysynth
+            - href: labs/synthetic-control-augmentation-lab.qmd
+              text: Augmented SCM With Kansas
             - href: labs/synthetic-control-design-lab.qmd
               text: Synthetic Control Design Lab
             - href: labs/synthetic-control-donor-pool-lab.qmd
@@ -120,6 +144,8 @@ website:
           text: Why Matching Presenter Script
         - href: slides/scm.qmd
           text: Synthetic Control Slides
+        - href: slides/scm_script.qmd
+          text: Synthetic Control Presenter Script
 
 format:
   html:

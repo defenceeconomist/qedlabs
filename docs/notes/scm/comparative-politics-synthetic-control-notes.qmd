@@ -1,0 +1,135 @@
+---
+title: "Notes on Abadie, Diamond, and Hainmueller: Comparative Politics and the Synthetic Control Method"
+subtitle: "Detailed Study Notes for the comparative-case-study argument behind SCM"
+author: "Luke Heley"
+date: "6 April 2026"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: false
+---
+
+## Purpose
+
+These notes summarize Abadie, Diamond, and Hainmueller's *Comparative Politics and the Synthetic Control Method* [@abadie2015comparative] using the Evidence Base record retrieved for this repo on 6 April 2026. The aim is not to restate the paper line by line. The aim is to capture what the paper adds beyond the earlier SCM articles: why synthetic control fits comparative case studies so well, how it helps bridge qualitative and quantitative work, why it is preferable to regression-style extrapolation in small-sample comparative settings, and what the German reunification example is meant to prove.
+
+The aim here is to capture:
+
+- how the paper reframes SCM as a comparative-politics design rather than only a statistical estimator
+- why explicit comparison-unit selection matters for inference in small-sample case studies
+- how the paper contrasts synthetic control with regression-based counterfactual construction
+- what the West Germany application teaches about fit, donor transparency, and placebo logic
+- what the sparsity discussion changes about how to think about "a few good comparators"
+- what this paper should change in the repo's SCM teaching materials
+
+## Source Baseline
+
+- Source retrieved from the MCP evidence base on 6 April 2026.
+- Evidence-base bucket / collection: `evaluation`
+- Evidence-base document id: `40e9e490f8fe22c1bd9dd47fa51163769abf7e062bae5d8135a83b2d0c962753`
+- Matched filename returned by MCP: `Comparative Politics and the Synthetic Control.pdf`
+- Source key / bucket path returned by MCP: `evaluation/Comparative Politics and the Synthetic Control.pdf`
+- Resolver link surfaced by MCP: [paper resolver](/resolver.html?bucket=evaluation&file_path=Comparative%20Politics%20and%20the%20Synthetic%20Control.pdf&page=1)
+- Citation metadata in the Evidence Base returned `year: 2014`, but the repo bibliography records the AJPS publication as 2015. These notes follow the journal citation already used in the repo: `@abadie2015comparative`.
+- Main parts of the retrieved document used for these notes:
+  - the article opening and framing section
+  - the synthetic-control setup and discussion of inference
+  - the German reunification application
+  - the robustness section
+  - the section on reducing the number of units in the synthetic control
+  - the conclusion
+
+## Executive Summary
+
+- This paper's main contribution is conceptual rather than purely technical. It argues that SCM belongs naturally inside comparative politics because it formalizes the most fragile step in comparative case studies: choosing the comparison cases [@abadie2015comparative].
+- The paper is explicit that small-sample comparative research is not blocked mainly by sample size. It is blocked by ambiguity about why particular comparison units were chosen. SCM matters because it makes that selection rule explicit and therefore more open to inference and critique [@abadie2015comparative].
+- A major selling point in the paper is that SCM avoids the kind of extrapolation that regression-based counterfactuals can hide. That is treated not as a software convenience but as a design virtue in aggregate comparative settings [@abadie2015comparative].
+- The German reunification application is doing two jobs at once: showing that a donor-weighted synthetic West Germany can fit the pre-1990 economy closely, and showing that the method still remains legible enough for qualitative inspection because the donor weights are transparent [@abadie2015comparative].
+- The sparsity section is especially useful for teaching. It explains why comparative researchers may prefer a synthetic control built from only a few cases, but also shows the cost of that preference when fit deteriorates too far [@abadie2015comparative].
+- For this repo, this paper should sit between the classical JASA paper and the later Abadie (2021) feasibility paper. It is the clearest source for why SCM is a comparative-case-study design and why that matters for evaluator-facing work [@abadie2015comparative].
+
+## Study Notes
+
+### What problem the paper is solving
+
+The paper starts from a familiar comparative-politics problem: researchers often want to study one country, region, or other aggregate unit around a major intervention, but no single untreated comparator is convincing enough on its own [@abadie2015comparative]. In that setting the weakness is not only lack of sample size. The weakness is that counterfactual selection becomes partly informal.
+
+Abadie, Diamond, and Hainmueller treat SCM as a way to systematize that comparison step. The method replaces "why these few controls?" with an explicit weighting rule over a donor pool. That shift matters because it makes the comparison unit reproducible, criticizable, and usable in formal placebo exercises [@abadie2015comparative].
+
+The paper's framing is worth keeping in this repo because it stops SCM from being taught as just another panel estimator. It is a design for comparative case studies where the main challenge is to build a credible untreated path for a single treated aggregate unit.
+
+### Why SCM fits comparative politics
+
+One of the strongest arguments in the article is that SCM helps bridge the qualitative and quantitative sides of comparative politics rather than forcing a choice between them [@abadie2015comparative]. Comparative case studies are valuable because they allow detailed, context-rich analysis of a small number of cases. Quantitative methods are valuable because they make effect estimates and comparisons more explicit.
+
+The paper argues that SCM sits in the middle. It systematizes comparison-case selection, which helps quantitative inference, but it does not hide the identities of the comparison cases behind a black box. Because donor weights are visible, researchers can still inspect whether the chosen comparisons make substantive historical and institutional sense [@abadie2015comparative].
+
+That is the source of the paper's memorable comparative-politics claim: synthetic control puts a quantitative skeleton under a comparative case study without stripping away the qualitative flesh. For this repo, that framing is especially useful when explaining SCM to evaluators who already think in case-comparison terms.
+
+### Why the paper prefers SCM to regression-style comparisons
+
+The paper's contrast with regression is not just a generic critique of models. It is a targeted argument about aggregate comparative case studies [@abadie2015comparative]. Regression-based approaches can be written as weighted averages too, but those weights need not stay between zero and one. That means a regression counterfactual can rely on extrapolation from units that are not genuinely similar to the treated case.
+
+SCM instead restricts the counterfactual to a convex combination of actual donor units. The paper treats that restriction as a major advantage because it makes the comparison interpretable and guards against extreme counterfactual construction [@abadie2015comparative].
+
+The important lesson is not that SCM always wins. It is that, in comparative case studies with a few aggregate units, interpolation inside the donor pool is often more defensible than model-driven extrapolation beyond it. If SCM cannot fit the treated unit under those constraints, the poor fit is informative about design weakness rather than something to be smoothed away.
+
+### How inference is framed
+
+The article is also important because it argues that precise quantitative inference becomes possible once the comparison-unit selection rule is explicit [@abadie2015comparative]. In other words, the paper pushes back on the idea that comparative case studies are inherently non-inferential because they involve few units.
+
+The proposed logic is placebo-style inference. Reassign the intervention across untreated units or to other dates, rebuild synthetic controls, and compare the observed treated-unit gap with the placebo distribution [@abadie2015comparative]. This is not presented as a generic large-sample standard-error problem. It is presented as a design-specific way to ask whether the observed divergence is unusually large given the actual comparison structure in the data.
+
+For this repo, that matters because it matches how SCM should be taught in labs: fit first, then placebo rarity, then sensitivity checks. The paper is useful precisely because it ties those steps to comparative case-study logic instead of to off-the-shelf panel inference habits.
+
+### What the West Germany application is meant to show
+
+The German reunification application is the paper's core demonstration [@abadie2015comparative]. West Germany is the treated unit, the donor pool is a set of OECD countries, and the question is how reunification affected West German per-capita GDP after 1990.
+
+The example is doing more than producing a treatment-effect estimate. It shows why a synthetic control can be more persuasive than any single comparator country. No one country matches West Germany closely enough before treatment, but a weighted combination of Austria, the United States, Japan, Switzerland, and the Netherlands comes much closer on predictors and pre-treatment outcome trends [@abadie2015comparative].
+
+The substantive result is that reunification appears to reduce West German per-capita GDP relative to its synthetic control by about 1,600 U.S. dollars per year on average over 1990 to 2003, roughly 8% of the 1990 baseline level [@abadie2015comparative]. But the more durable lesson for note-taking is methodological: SCM is persuasive here because the donor pool, weights, fit, and placebo checks are all inspectable.
+
+### What the robustness work teaches
+
+The paper's robustness exercises are useful because they show how SCM should be defended once the baseline result is in hand [@abadie2015comparative]. Leave-one-out checks ask whether the estimated effect is being driven too heavily by one positively weighted donor. If the main result collapses after removing one donor, that is an important warning about fragility.
+
+In the reunification example, the result weakens somewhat when particular donors are excluded, especially the United States, but it does not disappear altogether [@abadie2015comparative]. The practical lesson is that donor transparency enables interpretable robustness work. You can see which cases matter and how much they matter.
+
+That is a strong teaching point for this repo. SCM robustness is not a matter of running an arbitrary menu of alternative models. It is about stress-testing the specific comparative structure the method has made visible.
+
+### Why the sparsity section matters
+
+One of the most useful parts of the paper for comparative-politics readers is the section on reducing the number of units in the synthetic control [@abadie2015comparative]. Comparative researchers often prefer a very small number of cases because that supports deeper qualitative knowledge of each case.
+
+The paper shows the tradeoff clearly. Restricting the synthetic control to fewer donor countries can preserve interpretability, but it typically worsens fit. In the West Germany example, moving from the baseline five-country synthetic control down to four, three, or two countries degrades fit only moderately, but collapsing all the way to a single-country match produces a much worse pre-treatment approximation [@abadie2015comparative].
+
+That section is important because it corrects two bad instincts at once:
+
+- "more donors is always better" is too simple, because sparse controls can still be substantively useful
+- "just pick one close case" is also too simple, because a single comparator may fit much worse than a small synthetic combination
+
+For this repo, the section is a good bridge between comparative-politics language and evaluator language. It shows why SCM can respect the appeal of a small, explainable comparison set without pretending one hand-picked comparator is automatically best.
+
+### What the conclusion adds
+
+The conclusion returns to the article's main comparative-methods claim: SCM helps exploit complementarities between qualitative and quantitative approaches rather than forcing one to replace the other [@abadie2015comparative]. It makes comparison-unit choice explicit, which helps quantitative analysis, but it also preserves enough transparency to support detailed qualitative examination of the chosen comparison cases.
+
+That is why this paper still matters even after later methodological developments. It is not the last word on feasibility, spillovers, or extensions. But it is still one of the clearest arguments for why SCM belongs in the comparative-case-study toolkit at all.
+
+## What To Carry Into This Repo
+
+- Use this note as the main companion to the [Synthetic Control overview](synthetic-control.qmd) when the question is not only how SCM works, but why SCM is a natural comparative-case-study design [@abadie2015comparative].
+- Keep it paired with [Abadie Synthetic Controls](abadie-synthetic-controls-notes.qmd). This paper explains the comparative-politics argument for SCM; Abadie (2021) gives the later feasibility and failure-conditions screen [@abadie2015comparative; @abadie2021using].
+- Read it before or alongside the [Synthetic Control Donor Pool Lab](../../labs/synthetic-control-donor-pool-lab.qmd). The paper sharpens why donor-pool choice is an identification decision, not just a software input [@abadie2015comparative].
+- Use the sparsity discussion when explaining why SCM can still be attractive to case-oriented researchers and policy audiences who want a comparison built from a small, legible set of places [@abadie2015comparative].
+- Treat the regression contrast in this paper as the cleanest source in the repo for why no-extrapolation is one of classical SCM's defining design features [@abadie2015comparative].
+
+## High-Level Takeaways
+
+- This paper is the clearest comparative-politics defense of SCM in the repo's reading stack [@abadie2015comparative].
+- Its main contribution is to formalize comparison-unit selection in small-sample case studies, which is why it matters for both inference and transparency [@abadie2015comparative].
+- The regression comparison matters because it clarifies that SCM's convex-combination restriction is a design choice against extrapolation, not merely a computational detail [@abadie2015comparative].
+- The West Germany example matters because it shows how fit, donor weights, placebo logic, and leave-one-out robustness combine into a persuasive comparative case study [@abadie2015comparative].
+- The sparsity section is especially valuable for teaching because it makes the fit-versus-interpretability tradeoff explicit [@abadie2015comparative].

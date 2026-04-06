@@ -1,0 +1,258 @@
+---
+title: "Lab: Augmented SCM With Kansas"
+format:
+  html: default
+execute:
+  echo: true
+  eval: false
+---
+
+## How To Use This Page
+
+Use this page as the advanced SCM lab.
+
+- Keep the [Synthetic Control](../notes/scm/synthetic-control.qmd) overview open for the baseline design conditions.
+- Use the [Augmented Synthetic Control Method notes](../notes/scm/augmented-synthetic-control-method-notes.qmd) when you want the paper-level rationale for controlled extrapolation.
+- Read this lab as a design comparison, not as a software upgrade tutorial.
+- End by deciding whether the Kansas case supports classical SCM, augmented SCM, or neither.
+
+::: {.callout-note}
+The code is shown but not executed when the site is rendered. That keeps the page readable while preserving a runnable workflow for teaching and self-study.
+:::
+
+## Training Goal
+
+Use the Kansas tax-cut case to understand why augmentation exists:
+
+1. build a clean comparative-case panel
+2. fit a classical SCM benchmark
+3. fit a ridge-augmented SCM on the same outcome
+4. compare the two designs on pre-treatment fit, interpretability, and extrapolation risk
+5. state whether augmentation solves a real design problem or only hides one
+
+## Dataset At A Glance
+
+This lab uses `augsynth::kansas`, a quarterly state panel used in the ASCM paper's empirical illustration.
+
+- Substantive case: the Kansas tax cuts associated with the Brownback period
+- Teaching role: advanced extension case rather than first exposure to SCM
+- Main outcome here: log GDP per capita
+- Main lesson: poor classical fit is a warning signal, and augmentation is a controlled response to that warning rather than an automatic improvement
+
+## What To Hand Back
+
+By the end of the lab, you should be able to report:
+
+- how the Kansas panel was collapsed into an annual comparative-case dataset
+- whether classical SCM alone fits Kansas well enough before treatment
+- what changes when ridge augmentation is introduced
+- why negative or non-simplex weighting is a cost rather than a free benefit
+- whether the design should be defended with classical SCM, augmented SCM, or abandoned for a different strategy
+
+## Step 1: Load Packages And Inspect The Kansas Panel
+
+```{r}
+required_packages <- c(
+  "augsynth",
+  "dplyr",
+  "ggplot2",
+  "tibble"
+)
+
+missing_packages <- required_packages[!vapply(
+  required_packages,
+  requireNamespace,
+  logical(1),
+  quietly = TRUE
+)]
+
+if (length(missing_packages) > 0) {
+  install.packages(missing_packages, repos = "https://cloud.r-project.org")
+}
+
+invisible(lapply(required_packages, library, character.only = TRUE))
+
+data("kansas", package = "augsynth")
+
+kansas |>
+  glimpse()
+```
+
+Checkpoint:
+
+- The raw data are quarterly and much richer than the smoking case.
+- That makes this a better lab for weak-fit problems than for first-pass SCM mechanics.
+
+## Step 2: Collapse To A Clean Annual Panel
+
+This is a teaching choice. The underlying data are quarterly, but an annual panel makes the design logic easier to inspect in a first advanced lab.
+
+```{r}
+kansas_annual <- kansas |>
+  filter(year >= 1990, year <= 2016) |>
+  group_by(state, year) |>
+  summarise(
+    treated = max(treated, na.rm = TRUE),
+    lngdpcapita = mean(lngdpcapita, na.rm = TRUE),
+    revenuepop = mean(revenuepop, na.rm = TRUE),
+    emplvlcapita = mean(emplvlcapita, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  mutate(treated = as.integer(treated))
+
+kansas_annual |>
+  glimpse()
+```
+
+What to discuss:
+
+- aggregation is part of design, not only convenience
+- when you collapse data, say clearly what information is being smoothed away
+- the tradeoff here is readability versus finer-grained timing
+
+## Step 3: Inspect The Raw Kansas Trend
+
+```{r fig.height=5.5}
+kansas_annual |>
+  mutate(group = if_else(state == "Kansas", "Kansas", "Donor pool")) |>
+  group_by(group, year) |>
+  summarise(lngdpcapita = mean(lngdpcapita, na.rm = TRUE), .groups = "drop") |>
+  ggplot(aes(x = year, y = lngdpcapita, color = group)) +
+  geom_line(linewidth = 1.1) +
+  geom_vline(xintercept = 2012, linetype = 2, color = "gray40") +
+  labs(
+    x = NULL,
+    y = "Log GDP per capita",
+    color = NULL
+  ) +
+  theme_minimal(base_size = 12)
+```
+
+Checkpoint:
+
+- This is only a benchmark plot.
+- The key question is whether any convex combination of donors can reconstruct Kansas well enough before `2012`.
+
+## Step 4: Fit A Classical SCM Benchmark
+
+Use `augsynth` itself to fit the classical benchmark by turning the outcome model off.
+
+```{r}
+kansas_scm <- augsynth(
+  lngdpcapita ~ treated | revenuepop + emplvlcapita,
+  unit = state,
+  time = year,
+  t_int = 2012,
+  data = kansas_annual,
+  progfunc = "None",
+  scm = TRUE
+)
+
+summary(kansas_scm)
+```
+
+Why start here:
+
+- classical SCM remains the baseline
+- if the baseline already fits well, the case for augmentation is weaker
+- if the baseline fits poorly, that poor fit is the design problem augmentation is trying to address
+
+## Step 5: Fit Ridge-Augmented SCM
+
+```{r}
+kansas_ridge <- augsynth(
+  lngdpcapita ~ treated | revenuepop + emplvlcapita,
+  unit = state,
+  time = year,
+  t_int = 2012,
+  data = kansas_annual,
+  progfunc = "Ridge",
+  scm = TRUE
+)
+
+summary(kansas_ridge)
+```
+
+What changed:
+
+- the SCM weighting logic remains the starting point
+- the ridge outcome model is used to correct bias from imperfect pre-treatment fit
+- this may require limited extrapolation away from the donor convex hull
+
+## Step 6: Compare Pre-Treatment Fit Visually
+
+```{r fig.height=5.7}
+plot(kansas_scm)
+```
+
+```{r fig.height=5.7}
+plot(kansas_ridge)
+```
+
+Checkpoint:
+
+- Does ridge augmentation visibly improve the pre-treatment path?
+- If yes, ask whether that improvement looks modest and disciplined or aggressive and opaque.
+
+## Step 7: Compare The Two Specifications Side By Side
+
+```{r}
+model_summaries <- list(
+  classical_scm = summary(kansas_scm),
+  ridge_ascm = summary(kansas_ridge)
+)
+
+model_summaries
+```
+
+Use this step to compare:
+
+- pre-treatment fit quality
+- implied post-treatment effect direction
+- how much additional modeling you had to buy in order to improve fit
+
+## Step 8: Add A Placebo-In-Time Style Stress Test
+
+The advanced design question is not only whether ASCM fits better. It is whether it creates treatment-timed divergence only when treatment is plausibly active.
+
+```{r}
+kansas_backdate <- augsynth(
+  lngdpcapita ~ treated | revenuepop + emplvlcapita,
+  unit = state,
+  time = year,
+  t_int = 2008,
+  data = kansas_annual |>
+    mutate(treated = if_else(state == "Kansas" & year >= 2008, 1L, 0L)),
+  progfunc = "Ridge",
+  scm = TRUE
+)
+
+summary(kansas_backdate)
+plot(kansas_backdate)
+```
+
+How to read it:
+
+- a large placebo-in-time effect would suggest instability or overfitting
+- a near-zero placebo effect does not prove the design, but it is useful reassurance when fit is otherwise credible
+
+## Step 9: Write The Design Judgment
+
+Use the outputs above to answer:
+
+1. Does classical SCM fit Kansas well enough to stand on its own?
+2. What does ridge augmentation improve?
+3. What extrapolation cost are you implicitly accepting when you move from classical SCM to ASCM?
+4. Is this a case for classical SCM, augmented SCM, or a different design altogether?
+
+## Final Prompt
+
+Write a short memo with one of these conclusions:
+
+- stay with classical SCM because fit is already good enough
+- use augmented SCM because the comparative-case design is still credible but classical fit is too weak
+- abandon the SCM family here because even augmentation would be doing too much work
+
+## Next Step
+
+After this lab, go back to the [Synthetic Control slides](../slides/scm.qmd) and [SCM presenter script](../slides/scm_script.qmd) to consolidate the bigger design lesson: SCM credibility comes from donor support, pre-treatment fit, and transparent diagnostics before it comes from any single package call.

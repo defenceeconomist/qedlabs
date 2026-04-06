@@ -1,0 +1,315 @@
+---
+title: "Notes on Synthetic Controls: Methods and Practice"
+subtitle: "Detailed Study Notes for Alberto Abadie's Mixtape Sessions Deck"
+author: "Luke Heley"
+date: "6 April 2026"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: false
+---
+
+## Purpose
+
+These are study notes on Alberto Abadie's Mixtape Sessions slide deck, [*Synthetic Controls: Methods and Practice*](https://nbviewer.org/github/Mixtape-Sessions/Synthetic-Control-and-Clustering/blob/main/Slides/Synthetic-Control.pdf) [@mixtape-synthetic-control-and-clustering]. They are meant to support understanding and recall rather than reproduce the slides. The emphasis is on the deck's design logic, diagnostic guidance, and the parts that add something distinct to the other SCM notes in this repo.
+
+The aim here is to capture:
+
+- the main argument of each section of the deck
+- what the deck contributes beyond a textbook introduction
+- which practical rules Abadie treats as non-negotiable
+- how the material should shape work elsewhere in this repo
+
+## Source Baseline
+
+- Source: [*Synthetic Controls: Methods and Practice*](https://nbviewer.org/github/Mixtape-Sessions/Synthetic-Control-and-Clustering/blob/main/Slides/Synthetic-Control.pdf)
+- Author: Alberto Abadie
+- Venue: Mixtape Sessions
+- Deck date shown on title slide: 27-28 April 2023
+- Accessed for these notes: 6 April 2026
+- Main sections observed in the deck:
+  - `Introduction`
+  - `Applications`
+  - `A primer on synthetic control estimation`
+  - `Why use synthetic controls?`
+  - `Contextual requirements`
+  - `Data requirements`
+  - `Robustness and diagnosis checks`
+  - `A penalized synthetic control estimator`
+  - `Synthetic controls for experimental design`
+  - `Closing remarks`
+
+## Executive Summary
+
+- Abadie teaches SCM as a practical design for aggregate interventions, not as a general-purpose machine for panel prediction. The deck starts with the canonical estimator, but its center of gravity is feasibility: when support exists, when fit is persuasive, and when the design should be abandoned.
+- The single most important message is that SCM credibility comes from pre-treatment fit over a long pre-treatment window. The factor-model bias result is used mainly to justify that practical rule, not to encourage theorem-chasing.
+- The deck's clearest applied contribution is the sequence of design disciplines it imposes: use a clean donor pool, avoid extrapolation, inspect convex-hull support, backdate when needed, run placebo-style comparisons, and do not treat poor fit as a minor inconvenience.
+- Relative to the other notes in this repo, this deck is especially valuable on three fronts: why SCM is preferable to unconstrained regression in comparative case studies, how penalized SCM addresses interpolation bias, and how synthetic-control logic can be moved upstream into experimental design.
+
+## Notes by Section
+
+### Introduction and applications
+
+The opening slides do two jobs at once [@mixtape-synthetic-control-and-clustering]. First, they define the target problem: interventions often occur at the level of cities, regions, countries, or other large units, where treatment affects only a few observations and ordinary micro-level experimentation is infeasible or inappropriate. Second, they establish that SCM is no longer niche. Abadie lists applications across economics, other social sciences, engineering, biomedical work, public evaluation, consulting, and technology firms.
+
+That introductory framing matters because it makes the deck's practical stance explicit. The method is not being sold as a fashionable alternative to regression. It is being presented as a response to a specific empirical problem: causal questions about a small number of aggregate units.
+
+Two small but important points are baked into the introduction:
+
+- aggregate interventions often bring interference, fairness, or implementation constraints that make micro-randomization unrealistic
+- SCM's widespread adoption does not relax its design demands; it just raises the stakes for getting those demands right
+
+### A primer on synthetic control estimation
+
+This is the foundational section. The slides give the usual setup with one treated unit, a donor pool of untreated units, pre-treatment characteristics \(X_1\) and \(X_0\), and a simplex-constrained weight vector \(W\) chosen to minimize pre-treatment discrepancy [@abadie2010synthetic; @mixtape-synthetic-control-and-clustering].
+
+The important notes here are not only the formulas.
+
+#### What the optimizer is trying to do
+
+Abadie treats SCM as a weighted reconstruction problem. The synthetic unit is the donor-weighted average that best reproduces the treated unit's pre-intervention characteristics. Post-treatment effects are then the gap between observed treated outcomes and the outcomes of that synthetic analogue.
+
+That sounds familiar, but the deck sharpens the interpretation in two ways.
+
+- Predictor weights \(v_h\) matter because they encode which pre-treatment discrepancies count more for reproducing the untreated path.
+- The estimated effect only becomes persuasive when the pre-treatment path itself is tracked convincingly, not merely when a balance table looks acceptable.
+
+#### German reunification as the canonical comparative-case example
+
+The German reunification slides do more than illustrate the method. They show what SCM is supposed to look like when it is working well: a synthetic West Germany built from a sparse set of OECD countries, close balance on observed predictors, and a visual comparison where the synthetic path tracks the treated unit before the intervention.
+
+The weight table matters because it makes the counterfactual inspectable. A synthetic control is not a black box; it is an explicit composition of donor units. That is a recurring theme throughout the deck.
+
+#### Why the factor-model result matters
+
+The factor-model slides are there to justify a practical lesson: when the treated unit can be approximated well over an extended pre-treatment period, bias is bounded and falls with more informative pre-treatment data [@abadie2010synthetic; @mixtape-synthetic-control-and-clustering].
+
+The key takeaway is operational rather than theoretical:
+
+- long pre-treatment histories help distinguish structural resemblance from noise
+- the bias bound is only reassuring when fit is close
+- the credibility of SCM depends on the ratio between transitory noise and pre-treatment information
+
+The deck is explicit that these matching equalities may hold only approximately in practice. That makes fit a diagnostic object, not an assumption you can take on faith.
+
+#### When not to use SCM
+
+One of the strongest practical statements in the deck comes here: there are no ex ante guarantees on fit, and if fit is poor, Abadie recommends against using SCM [@mixtape-synthetic-control-and-clustering].
+
+That guidance is stronger than the usual "report fit carefully" advice. It says poor fit is often a stop sign.
+
+The risk factors the deck highlights are:
+
+- short pre-treatment periods
+- large donor pools
+- noisy outcomes
+- donor sets that include units unlike the treated unit
+
+These are exactly the settings where overfitting and interpolation bias become tempting.
+
+#### Permutation inference
+
+The deck presents the standard SCM permutation logic clearly. Reassign the treatment iteratively to donor units, estimate placebo effects, and ask whether the treated-unit result is unusually large relative to that benchmark distribution [@abadie2010synthetic; @mixtape-synthetic-control-and-clustering].
+
+The California tobacco sequence is useful here because it shows the entire diagnostic workflow:
+
+- treated versus rest-of-US path
+- treated versus synthetic California path
+- post-treatment gap plot
+- placebo gaps for all donor states
+- placebo gaps after restricting to states with acceptable pre-treatment fit
+- distribution of post/pre prediction-error ratios
+
+Two lessons are worth retaining.
+
+- The permutation distribution is informative because it reveals whether the treated unit looks exceptional relative to feasible placebos, not because it delivers a magical large-sample p-value.
+- Screening out placebo units with terrible pre-treatment fit is a comparability decision. It improves interpretability, but it does not rescue a weak original design.
+
+The slides then underline a methodological point that often gets blurred: SCM placebo inference is not primarily trying to approximate a sampling distribution. It evaluates significance relative to an assignment benchmark implemented in the data, and the uniform benchmark is a convention rather than a law [@mixtape-synthetic-control-and-clustering].
+
+### Why use synthetic controls?
+
+This section is one of the best short defenses of SCM in the deck. Abadie contrasts synthetic control with unconstrained linear regression, showing that regression-based weights sum to one but may be negative, greater than one, and dense. In other words, regression can construct a counterfactual partly by extrapolating outside the donor support [@mixtape-synthetic-control-and-clustering].
+
+The practical advantages of SCM are laid out cleanly.
+
+#### No extrapolation
+
+Because classical SCM uses non-negative weights that sum to one, it stays inside the convex hull of the donor pool. That prevents the estimator from manufacturing comparisons from impossible combinations of donor units.
+
+The cost is equally important: if the treated unit lies outside that convex hull, mismatch is visible rather than hidden. The deck treats this as a feature because it makes support problems transparent.
+
+#### Transparency of fit and counterfactual construction
+
+Regression can fit perfectly in predictor space while leaning heavily on extrapolation. SCM instead makes the remaining discrepancy between the treated unit and the donor support explicit. That is why the deck repeatedly returns to actual pre-treatment gaps and actual donor weights.
+
+The transparency point has two layers:
+
+- transparency of fit: how close is the treated unit to the donor convex hull?
+- transparency of counterfactual: which donor units actually create the synthetic comparison?
+
+#### Safeguard against specification search
+
+This is one of the deck's more pointed claims. Because synthetic-control weights can be fixed using only pre-treatment information, the design phase can in principle occur before post-treatment outcomes are observed, or even before treatment occurs. That makes pre-registration and design-stage discipline more plausible than in approaches that keep peeking at post-treatment results.
+
+The point is not that SCM makes p-hacking impossible. It is that SCM gives the analyst a coherent place to stop design choices before outcome inspection.
+
+#### Sparsity
+
+The geometry slide matters because it explains why SCM weights are often sparse and why that is substantively useful. Sparse weights make the synthetic unit legible. They also clarify where interpolation bias may come from when the treated unit is not comfortably inside donor support.
+
+The repo-level lesson is straightforward: donor weights are part of the argument, not only part of the appendix.
+
+### Contextual requirements
+
+This section is short in the deck but unusually high value. It gives a compact checklist for when SCM is even worth considering [@abadie2021using; @mixtape-synthetic-control-and-clustering].
+
+#### Size of effect versus volatility
+
+If the expected treatment effect is small relative to the treated unit's ordinary shocks, SCM may not detect anything persuasive. This is not a special weakness of SCM so much as a reminder that aggregate causal inference is signal-limited.
+
+#### Availability of a clean comparison group
+
+Abadie defines the donor requirement narrowly. Untreated units should:
+
+- avoid similar interventions during the study period
+- avoid large idiosyncratic shocks on the relevant outcome
+- resemble the treated unit on relevant characteristics
+
+That is why donor-pool construction is an identification decision, not a housekeeping step.
+
+#### No anticipation
+
+The deck notes that anticipation can often be handled by backdating. This is a practical reminder that treatment timing in SCM is partly analytical. If the treated unit reacts before the formal intervention date, the design should reflect that.
+
+#### No interference
+
+The slide treatment is concise but important. SCM assumes donors remain untreated, yet the deck notes that sparsity can help diagnose or reason about interference because it narrows attention to the donors carrying most of the counterfactual weight.
+
+#### Convex-hull condition and time horizon
+
+The treated unit must be approximable by a donor-weighted combination, and the study must run long enough post treatment for the effect to emerge if the mechanism is slow-moving. These are design conditions, not after-the-fact robustness checks.
+
+### Data requirements
+
+The data section reinforces the feasibility logic. SCM needs enough information to show that the synthetic counterfactual is not an artifact.
+
+The deck's main data requirements are:
+
+- aggregate predictor and outcome data at the level where treatment actually operates
+- sufficient pre-treatment information to judge whether the synthetic unit steadily tracks the treated unit
+- sufficient post-treatment information to observe effects that may build slowly
+
+One useful nuance is that aggregate data may need to be built from micro-data when no ready-made aggregate panel exists. That is relevant for this repo because several labs implicitly assume the unit definition is already settled, when in practice aggregation may itself be part of the design.
+
+### Robustness and diagnosis checks
+
+The deck distinguishes two main diagnostic families.
+
+#### Backdating
+
+Backdating is introduced first as an anticipation fix, then repurposed as a credibility check. If an earlier fake treatment date generates large "effects," the design is likely unstable or overfit. The German reunification backdating graphic makes this concrete [@mixtape-synthetic-control-and-clustering].
+
+This is a useful corrective to workflows that rely only on donor-placebo exercises. Placebo-in-time checks ask a different question: does the model create treatment-timed divergence only when treatment is plausibly active?
+
+#### Design robustness
+
+The second family of checks asks whether the result survives sensible changes to the study design, especially:
+
+- alterations to the donor pool
+- alterations to predictor choice
+- leave-one-out exercises for highly weighted donor units
+
+That emphasis fits the rest of the deck. Diagnostics are not decorative; they are tests of whether the comparative-case story still holds after mild design perturbations.
+
+### A penalized synthetic control estimator
+
+This is one of the most distinctive sections of the deck. Abadie presents penalized SCM as a way to reduce interpolation bias when classical SCM averages together donor units that are individually far from the treated unit [@Abadie_LHour_2021_PenalizedSCM; @mixtape-synthetic-control-and-clustering].
+
+#### What the penalty is doing
+
+The penalized objective adds a term that makes it costly to put weight on donor units far from the treated unit in predictor space. The tuning parameter \(\lambda\) governs the tradeoff:
+
+- as \(\lambda \to 0\), the estimator approaches pure SCM
+- as \(\lambda \to \infty\), it approaches nearest-neighbor matching
+
+That continuum is conceptually useful because it shows penalized SCM as a bridge between two familiar comparison strategies rather than as a wholly separate method.
+
+#### Why this matters
+
+The deck gives three advantages:
+
+- uniqueness of the solution under general-position conditions
+- reduced interpolation bias when donor units are far apart from one another and from the treated unit
+- no increase in computational complexity relative to ordinary SCM
+
+The toy example is especially useful pedagogically. Unpenalized SCM can have several solutions that fit equally well in aggregate, including some that use "bad" donor matches. Penalization steers the estimator away from those solutions even when the raw fit criterion alone cannot discriminate sharply among them.
+
+This is one of the clearest places where the deck extends beyond a standard textbook account. It does not only say that weak fit is bad; it shows a specific estimator built to reduce a concrete source of bias in disaggregated or awkward-support settings.
+
+### Synthetic controls for experimental design
+
+This is the most original part of the deck relative to the other SCM notes in this repo. The key move is to treat synthetic-control logic not only as an observational estimator, but as a design device for choosing which aggregate units should receive treatment in a small-scale experiment [@mixtape-synthetic-control-and-clustering].
+
+#### Why ordinary experimentation can fail with aggregate units
+
+The ridesharing example is instructive. A within-city A/B test for driver incentives is problematic because:
+
+- fairness concerns arise when drivers doing similar work receive different compensation
+- interference appears when treated drivers shift market opportunities away from untreated drivers
+
+Randomizing treatment across cities is better on interference grounds, but it can still be expensive, politically awkward, and statistically weak when the number of cities is small.
+
+#### Synthetic control as design rather than ex post estimator
+
+Abadie and Zhao's idea is to choose treated and untreated units using pre-treatment information so that:
+
+- treated units are representative of the broader aggregate the experiment is meant to learn about
+- untreated units can form a credible counterfactual for those treated units
+
+This creates two synthetic objects rather than one: a treated aggregate and an untreated synthetic comparison.
+
+#### Core setup
+
+The deck introduces treated-arm weights \(w\) and control-arm weights \(v\), with disjoint support, and shows how the resulting estimator can target either:
+
+- the population average treatment effect, if both treated and untreated weighted groups reproduce the target aggregate under their relevant potential outcomes
+- a weighted ATT, if the untreated arm reproduces the untreated counterfactual for the treated weighted group
+
+The optimization problem then uses pre-treatment outcomes and covariates to choose treated and control compositions jointly, subject to weighting and cardinality constraints.
+
+The conceptual shift is important. In ordinary SCM, the treated unit is given. In synthetic-control design, the treated unit is itself an object to be chosen.
+
+#### Why this is useful
+
+The simulation slides suggest that synthetic-control design can substantially outperform simple difference-in-means designs when only a few aggregate units can be treated. The reason is intuitive: the design is choosing units to maximize representativeness and matchability before the experiment begins.
+
+For this repo, that matters because it expands the role of SCM. The method is not only for retrospective policy evaluation. It can also help structure pilot design when interventions can only be rolled out to a few places.
+
+### Closing remarks
+
+The closing slides are brief but useful. Abadie ends with a familiar warning: SCM has practical advantages, but credibility still depends on diligence and on whether contextual and data requirements are genuinely met [@mixtape-synthetic-control-and-clustering].
+
+He also points to open areas where the method is still developing:
+
+- sampling-based inference
+- external validity
+- sensitivity to modeling restrictions
+- multiple interventions
+- data-driven choice of predictor weights
+- mediation analysis
+- computational methods
+
+That final list is a good reminder that the deck is not trying to settle the entire frontier. It is trying to define a high standard for applied SCM work.
+
+## What This Deck Adds To The Repo
+
+- Use this note when you want the method-originator version of SCM practice. Compared with the [Mixtape Synthetic Control chapter note](mixtape-synthetic-control-notes.qmd), this deck is less intuition-first and more feasibility-first.
+- Use it alongside the [Synthetic Control overview](synthetic-control.qmd) when deciding whether a design should proceed at all. The contextual and data requirement slides are the shortest strong checklist in the repo.
+- Use it with the [Synthetic Control Sources](synthetic-control-sources.qmd) page when deciding which extension to read next. Penalized SCM and synthetic-control experimental design are the two most distinctive follow-on topics here.
+- Pair the diagnostic guidance with the [Synthetic Control Design Lab](../../labs/synthetic-control-design-lab.qmd) and [Synthetic Control Donor Pool Lab](../../labs/synthetic-control-donor-pool-lab.qmd) whenever donor support, backdating, or placebo logic becomes the main issue.
+
+## Bottom Line
+
+This deck's main contribution is not a new slogan for SCM. It is a disciplined account of when the method deserves to be trusted. Abadie keeps returning to the same practical sequence: find a setting with a meaningful aggregate intervention, build a defensible donor pool, demand strong pre-treatment fit, use transparent donor weights and placebo logic, and stop if support is weak. The extra value beyond canonical SCM is the bridge to penalized estimators and to experiment design when only a few large units can be treated.

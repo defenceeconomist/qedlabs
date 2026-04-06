@@ -1,0 +1,151 @@
+---
+title: "Notes on Abadie and Gardeazabal (2003): The Basque Country Case"
+subtitle: "Detailed Study Notes for the origin synthetic-control case study"
+author: "Luke Heley"
+date: "6 April 2026"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: false
+---
+
+## Purpose
+
+These notes summarize Abadie and Gardeazabal's *The Economic Costs of Conflict: A Case Study of the Basque Country* [@abadie2003economic] using the Evidence Base record retrieved for this repo on 6 April 2026. The aim is not to restate the article mechanically. The aim is to capture why this paper matters as the origin synthetic-control application, what design problem it is solving, how the Basque counterfactual is built, what the placebo and event-study sections contribute, and what this paper still adds even after the later California and feasibility papers.
+
+The aim here is to capture:
+
+- why the paper treats the Basque conflict as a useful case for studying the economic costs of political violence
+- how the paper constructs an early synthetic control from other Spanish regions
+- what predictors and weighting logic the paper uses before terrorism intensifies
+- what the GDP-gap results actually show
+- how the Catalonia placebo sharpens the interpretation
+- why the 1998-1999 truce event study matters alongside the synthetic-control result
+- what this paper should change in the repo's SCM notes and teaching sequence
+
+## Source Baseline
+
+- Source retrieved from the MCP evidence base on 6 April 2026.
+- Evidence-base bucket / collection: `evaluation`
+- Evidence-base document id: `f6c319adcba543b6ac25a8ace75a0801f1dcec130eb6515b6531a0026a05f7b2`
+- Matched filename returned by MCP: `The Economic Costs of Conflict.pdf`
+- Source key / bucket path returned by MCP: `evaluation/The Economic Costs of Conflict.pdf`
+- Resolver link surfaced by MCP: [paper resolver](/resolver.html?bucket=evaluation&file_path=The%20Economic%20Costs%20of%20Conflict.pdf&page=1)
+- Citation key already present in the repo bibliography: `@abadie2003economic`
+- Main parts of the retrieved document used for these notes:
+  - the article opening and abstract framing
+  - `I. A Brief History of ETA's Terrorist Activity`
+  - `A. Analytical Methods and Main Results`
+  - `B. A "Placebo Study"`
+  - `C. Discussion`
+  - the truce/event-study analytical section
+  - `IV. Summary and Conclusions`
+
+## Executive Summary
+
+- This is the origin SCM paper in the repo's reading stack. It shows the method first as a comparative case-study solution to a counterfactual problem, not as a package workflow or a generalized estimator family [@abadie2003economic].
+- The paper's starting point is simple and still important: neither the Basque Country's own time series nor the rest of Spain gives a credible untreated comparison, because Spain had large macroeconomic shocks and the Basque Country entered the terrorism period with unusually strong growth fundamentals [@abadie2003economic].
+- The core design move is to build a synthetic Basque Country from a convex combination of the other `16` Spanish regions, selecting weights so the synthetic region matches pre-terrorism predictors and the 1960s GDP path [@abadie2003economic].
+- The resulting synthetic control is sparse. Catalonia receives weight `0.8508` and Madrid `0.1492`, with all other regions receiving zero weight [@abadie2003economic].
+- Substantively, the paper finds that Basque per-capita GDP falls about `10` percentage points below the synthetic counterfactual over the 1980s and 1990s, with gaps reaching about `12%` at their largest and still around `8` to `9%` in `1995` to `1997` [@abadie2003economic].
+- The article also matters because it shows an early inferential style for SCM: a Catalonia placebo, a discussion of spillover and industrial-composition critiques, and a separate stock-market event study around the `1998` to `1999` cease-fire [@abadie2003economic].
+- For this repo, the paper should be taught as the method's origin story and as a reminder that classical SCM began inside a broader case-study argument, not as a one-plot software recipe [@abadie2003economic].
+
+## Study Notes
+
+### Why this case is methodologically useful
+
+The paper starts from a causal question that is hard to answer with standard comparisons: what did terrorism cost the Basque economy [@abadie2003economic]? A pure Basque time series is contaminated by Spain-wide shocks, especially the downturn of the late 1970s and early 1980s. A simple comparison to the rest of Spain is also weak because the Basque Country entered the terrorism period richer, more industrialized, denser, and better educated than most other Spanish regions [@abadie2003economic].
+
+That is why this article matters for SCM history. The treated case is unusual enough that a simple untreated average is not credible, but still similar enough to some donor regions that a weighted comparison may be feasible. The paper uses that setting to argue that case-study counterfactuals can be made more explicit and less arbitrary.
+
+### What the paper says about the conflict itself
+
+The article's historical section is not decorative. It establishes why the treatment is substantively concentrated in the Basque Country and why the timing is not completely arbitrary [@abadie2003economic]. ETA was founded in `1959`, claimed its first victim in `1968`, and escalated sharply in the mid-1970s, with especially intense violence in `1978` to `1980`.
+
+The paper reports that almost `70%` of ETA deaths in Spain during `1968` to `1997` occurred in the Basque Country, and that deaths per inhabitant per year were about `37` times higher there than in the rest of Spain [@abadie2003economic]. This matters because the paper is not using the Basque Country as a symbolic example. It is using a region that was exposed to much more intense violence than the rest of the national economy.
+
+The section also previews a design nuance that still matters for SCM teaching: the conflict does not begin as one perfectly sharp treatment at one moment. The first victim appears in `1968`, but large-scale activity arrives later. That is one reason the paper emphasizes pre-terrorism matching over a simplistic one-date-before-one-date-after framing.
+
+### How the synthetic Basque Country is built
+
+The central analytical section contains the original SCM setup in applied form [@abadie2003economic]. The donor pool is the other `16` Spanish regions. The synthetic Basque Country is a weighted average of those regions, with nonnegative weights that sum to one. The paper is explicit that control-unit choice is embedded in the weight vector `W`: choosing the synthetic control is the same thing as choosing which comparison regions matter and by how much.
+
+The predictor set is built from pre-terrorism growth determinants measured mainly in the 1960s [@abadie2003economic]. Table 3 includes:
+
+- real per-capita GDP
+- investment ratio
+- population density
+- sectoral shares
+- human-capital shares
+
+The paper then chooses the predictor-importance matrix `V` so the synthetic control reproduces the Basque Country's real per-capita GDP path during the 1960s as closely as possible [@abadie2003economic]. That is already the later familiar logic: use pre-treatment outcome fit to discipline how predictors are weighted.
+
+The resulting synthetic control is very sparse. Catalonia carries weight `0.8508` and Madrid carries weight `0.1492` [@abadie2003economic]. That sparsity matters for the repo because it shows that SCM did not start from a diffuse "average of everyone" intuition. It started from the idea that a few transparent comparators can combine into a more credible case-study control than any single region or the full national average.
+
+### What the GDP-gap result shows
+
+The paper's main figure compares actual Basque GDP with the synthetic counterfactual over `1955` to `1997` [@abadie2003economic]. The fit is close up to about `1975`, which is important because large-scale terrorist activity had not yet taken hold. After that point the two series diverge.
+
+The result is not a short-run dip. The Basque Country falls as much as about `12%` below the synthetic control and remains around `8` to `9%` below it in `1995` to `1997`, implying an average loss of about `10%` over the 1980s and 1990s [@abadie2003economic]. The paper therefore presents the Basque conflict as a long-run drag on output rather than as a transitory shock.
+
+This is one of the most useful teaching points in the article. The synthetic control is persuasive because the key contrast is visible before and after the escalation of violence, not because the paper layers on complicated post hoc modeling.
+
+### How the paper links the gap to conflict intensity
+
+The article goes beyond a single before-and-after plot by relating the GDP gap to the intensity of terrorist activity [@abadie2003economic]. Using deaths caused by terrorist actions as a proxy for conflict intensity, the paper argues that spikes in violence are followed by larger GDP gaps.
+
+The impulse-response exercise reinforces that interpretation. The estimated effect on the GDP gap is negative at all lags, largest after about two to three years, and then fades gradually in absolute value [@abadie2003economic]. The authors report confidence intervals that exclude zero through the eleventh lag.
+
+For this repo, the deeper lesson is not that this exact impulse-response design should be copied mechanically. The lesson is that the paper tries to connect the SCM gap back to substantive dynamics of the treatment rather than leaving the synthetic-control plot uninterpreted.
+
+### What the placebo study contributes
+
+The placebo section is methodologically important because it shows an early version of SCM falsification logic [@abadie2003economic]. Instead of the later full-donor placebo distribution and RMSPE-ratio workflow, the paper chooses one especially relevant untreated region, Catalonia, and applies the same procedure there.
+
+Catalonia is not an arbitrary placebo. It is the largest contributor to the synthetic Basque Country and resembles the Basque Country in several historical and institutional ways, but without a large-scale terrorist campaign [@abadie2003economic]. The synthetic Catalonia tracks actual Catalonia closely up to the late 1980s. During `1990` to `1997`, Catalonia outperforms its own synthetic by about `4%`, which the paper links to Barcelona's `1992` Olympics.
+
+That matters because Catalonia's unusually strong 1990s performance may artificially widen the Basque GDP gap in the baseline analysis [@abadie2003economic]. The implication is interesting: if anything, the Basque Country's relative catch-up in the 1990s may have been more pronounced than the main figure suggests.
+
+For this repo, this section is useful because it shows the pre-2010 form of placebo reasoning. The paper is already trying to answer, "Could this gap be an artifact?" but it has not yet standardized the later placebo-by-unit workflow.
+
+### What the discussion section adds
+
+The discussion section is valuable because it anticipates objections that later SCM papers would formalize as spillover and support concerns [@abadie2003economic]. If terrorism harmed other Spanish regions through reputational effects, then the estimated Basque GDP gap is arguably a lower bound, because some donor regions were also indirectly hurt. If terrorism diverted investment from the Basque Country to other Spanish regions, the gap could be overstated, though the authors argue this bias is likely small because the synthetic control is much larger than the treated region.
+
+The paper also addresses the criticism that the gap might reflect industrial decline rather than terrorism. The Basque Country began with especially high industrial concentration, and industrial decline was severe during the study period. The authors argue this cannot fully explain the estimated gap because the timing of the gap still moves with terrorist intensity [@abadie2003economic].
+
+Another useful point is demographic. Once the Basque Country's relative population loss is considered, the economic effect appears even more striking [@abadie2003economic]. For the repo, that is a reminder that even a persuasive SCM result can understate the broader economic footprint of a conflict or place-based shock.
+
+### Why the truce event study matters
+
+The paper's second empirical strategy is not synthetic control at all. It is an event-study analysis of stock returns around the `1998` to `1999` ETA cease-fire [@abadie2003economic]. That matters because the paper is not asking readers to trust one design alone.
+
+The logic is straightforward. If the conflict hurts the Basque economy, then firms with substantial Basque exposure should perform relatively better as peace becomes credible and relatively worse as the truce collapses [@abadie2003economic]. The authors classify `14` Basque stocks and `59` non-Basque stocks, build buy-and-hold portfolios, and estimate abnormal returns using a Fama-French three-factor setup.
+
+The paper defines a `Good News` period of `22` trading sessions, when the truce became more credible, and a `Bad News` period of `66` trading sessions, when the peace process unraveled [@abadie2003economic]. In the difference regression, Basque stocks outperform non-Basque stocks during the good-news window and underperform during the bad-news window. The compounded abnormal return is about `10.14%` in the good-news period and `-11.21%` in the bad-news period [@abadie2003economic].
+
+This section matters in the repo because it shows how the authors validate the SCM story with a different source of evidence. The long-run synthetic-control gap and the high-frequency market reaction point in the same direction.
+
+### What the conclusion contributes
+
+The conclusion makes the article's durable claim explicit: the Basque conflict appears to have imposed a real economic cost, and the methods used here can be adapted to other conflicts [@abadie2003economic]. The paper presents the synthetic-control result as a case-study method that can travel, not as a one-off regional history exercise.
+
+That is the right way to carry the paper into this repo. It is historically important not only because it came first, but because it established the basic logic that later SCM work refined: build a transparent weighted counterfactual, show fit, investigate whether the divergence matches the treatment, and use additional diagnostics or designs to stress-test the story.
+
+## What To Carry Into This Repo
+
+- Use this note as the origin-paper companion to the [Synthetic Control overview](synthetic-control.qmd) when the question is where SCM started and what problem it was first designed to solve [@abadie2003economic].
+- Keep it paired with [California Proposition 99](california-tobacco-synthetic-control-notes.qmd). The Basque paper is the method's origin case; California is the paper that turns the idea into the later canonical SCM workflow [@abadie2003economic; @abadie2010synthetic].
+- Read it alongside [Synth Package Notes](synth-package-notes.qmd), which repackages the Basque example as the standard software demonstration [@abadie2003economic; @hainmueller2011synth].
+- Use the Catalonia placebo section to explain that early SCM inference was already design-aware, even before the later placebo-by-unit and RMSPE-ratio conventions were standardized [@abadie2003economic].
+- Use the truce section to remind readers that strong SCM papers often pair the synthetic-control result with other evidence instead of treating one weighted comparison as self-sufficient [@abadie2003economic].
+
+## High-Level Takeaways
+
+- This is the origin SCM application in the repo's reading sequence [@abadie2003economic].
+- Its key design move is to replace weak comparisons to Spain as a whole with a sparse weighted counterfactual built from Catalonia and Madrid [@abadie2003economic].
+- The main substantive result is a roughly `10%` long-run GDP loss for the Basque Country relative to its synthetic control [@abadie2003economic].
+- The paper matters methodologically because it already combines pre-treatment fit, a placebo exercise, and complementary event-study evidence [@abadie2003economic].
+- For this repo, it should be taught as the comparative-case-study origin of SCM rather than as a historical footnote to the California paper [@abadie2003economic].

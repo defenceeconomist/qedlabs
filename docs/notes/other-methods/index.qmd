@@ -24,6 +24,14 @@ Use this page when several designs are still plausible and you need to compare t
 
 Use this page when the practical task is to move from a policy problem and observed data structure to a defensible design choice.
 
+## [Mixtape Sessions: Twitch Training Delivery](mixtape-sessions-twitch-training-notes.qmd)
+
+Use this page when the goal is to study how Scott Cunningham structures, delivers, and extends a causal-inference workshop, and to translate those training patterns into QED Labs practice.
+
+## [Mixtape Sessions: Twitch Workshop Content by Day](mixtape-sessions-twitch-day-by-day-notes.qmd)
+
+Use this page when the goal is to follow the content sequence of the four-day Twitch workshop closely and review what Cunningham covers each day.
+
 # Working Rule
 
 The method should be chosen by the assignment process and the data-generating structure, not by which estimator is most familiar or easiest to run.
