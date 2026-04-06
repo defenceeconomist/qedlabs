@@ -31,11 +31,11 @@ Today I want to explain synthetic control as a design for comparative case studi
 
 ### Session Promise
 
-This deck starts with the aggregate counterfactual problem, then explains why hand-picked control cases are often too informal, then shows why donor-pool support and pre-treatment fit carry so much weight in SCM. That order matters. If we start with the optimizer, SCM can look like software. If we start with the design problem, SCM looks like what it really is: a disciplined comparative-case-study method.
+This deck starts with the aggregate counterfactual problem, then explains why SCM improves on both hand-picked controls and hidden regression extrapolation, then separates contextual requirements from data requirements before talking about inference. That order matters. If we start with the optimizer, SCM can look like software. If we start with the design problem, SCM looks like what it really is: a disciplined comparative-case-study method.
 
 ### 20-Minute Arc
 
-The structure is simple. First, I will define the comparative-case problem. Second, I will explain why SCM exists instead of relying on one or two chosen controls. Third, I will focus on the donor pool and the convex-hull support condition. Fourth, I will explain why pre-treatment fit is the main credibility test. Finally, I will end with diagnostics, failure modes, and the point where augmentation becomes the next step rather than an automatic upgrade.
+The structure is simple. First, I will define the comparative-case problem. Second, I will explain why SCM exists instead of relying on either ad hoc controls or off-the-shelf regression. Third, I will focus on donor support, contextual requirements, and data requirements. Fourth, I will explain why pre-treatment fit and permutation logic carry most of the empirical argument. Finally, I will end with robustness, extensions, and the lab sequence.
 
 ### Start With The Comparative Case Problem
 
@@ -44,6 +44,10 @@ Many important interventions happen at an aggregate level. A state changes tax p
 ### Why Not Just Hand-Pick A Few Controls?
 
 This is the original complaint that motivates SCM. Comparative case studies often have a sharp substantive story but a vague counterfactual story. The question is always: why these comparison units and not others? Synthetic control responds by replacing informal control selection with an explicit weighting rule over a donor pool. That does not remove judgment. It just makes the judgment more visible, which is exactly what good design should do.
+
+### Why Not Just Run Regression?
+
+This is one of the most useful additions from Alberto Abadie's teaching deck. Regression can force exact balance by extrapolating outside the support of the donor pool, often through negative or hard-to-interpret implicit weights. SCM gives up that convenience on purpose. It forces the analyst to stay inside observed support, so remaining mismatch stays visible. That is a constraint, but it is also a safeguard. Because the weights come from pre-treatment information, they can often be fixed before post-treatment outcomes arrive, which helps limit specification search.
 
 ### SCM In One Sentence
 
@@ -57,6 +61,14 @@ This is the slide I most want people to remember. The donor pool is the main ide
 
 Classical SCM uses non-negative weights that sum to one. That keeps the synthetic control inside the observed donor pool rather than letting the analyst extrapolate through negative weights or impossible combinations. The great strength of that rule is transparency. The great limitation is also transparency. If the treated unit sits outside donor support, poor fit becomes visible instead of being hidden by a flexible model. That is a feature, even when it is inconvenient.
 
+### Contextual Requirements Come First
+
+Abadie is very explicit that SCM is not just a recipe to run whenever panel data exist. The context has to cooperate. The effect has to be large enough relative to outcome volatility to be detectable at all. The donor units have to remain untreated and avoid major idiosyncratic shocks. Anticipation and interference need to be handled as design problems, not brushed aside later. And the time horizon has to be long enough for the effect to emerge. If those background conditions fail, the method is being asked to do something the design cannot support.
+
+### Data Requirements Are Not Optional
+
+The data requirements are equally concrete. We need aggregate outcomes and predictors measured on genuinely comparable units. We need a long enough pre-treatment panel to see whether the synthetic unit tracks the treated path steadily rather than accidentally. We also need enough post-treatment periods when effects are expected to accumulate over time. One of Abadie's recurring warnings is that short pre-treatment windows combined with many donor units create real overfitting risk. That is not a side note; it changes whether the design is credible.
+
 ### Strong Pre-Treatment Fit Is The Main Credibility Test
 
 This is where Alberto Abadie is especially clear. There are no ex ante guarantees that SCM will fit well, and if fit is poor, the method is often not appropriate. A close pre-treatment match is the main empirical reason to believe the synthetic unit is tracking the treated unit's untreated path. That is why long pre-treatment windows matter so much. They give the analyst more information about whether the match reflects stable structure or only noise.
@@ -65,26 +77,46 @@ This is where Alberto Abadie is especially clear. There are no ex ante guarantee
 
 SCM results are never just one estimate. The donor weights tell you who is actually building the counterfactual. The balance table tells you whether key predictors and lagged outcomes line up. The path plot tells you whether the synthetic unit tracks the treated unit before treatment. The gap plot shows when the divergence opens up. The placebo exercises tell you whether the treated result looks unusual relative to donor-placebo benchmarks. All of those objects belong to the argument.
 
-### Placebo Logic Is Diagnostic, Not Magical
+### Basque Country: The Origin SCM Case
 
-This point gets blurred in applied work. Placebo-by-unit checks are useful because they ask whether the treated gap is unusual relative to untreated units reassigned as if they were treated. Placebo-in-time checks are useful because they ask whether the same design would create a fake effect if treatment were moved earlier. But neither device rescues a weak donor pool or poor fit. They reinforce a good design; they do not create one.
+This is the point in the deck where the method should stop sounding abstract. The Basque Country case is the origin application, and it is still the cleanest way to show what SCM is trying to do in a comparative case study. The original research aim is simple and strong: estimate the economic cost of political conflict in the Basque Country. The treated unit is the Basque Country. The donor pool is the other Spanish regions. The outcome is real GDP per capita. When I rerun the design in `tidysynth` using the classic `Synth::basque` data, the solution comes back almost exactly as the paper reports: about `0.851` on Catalonia and `0.149` on Madrid. That is what transparency looks like. We can see exactly which regions are carrying the counterfactual.
 
-### Core Failure Modes
+### Basque In `tidysynth`
 
-The recurring failure modes are donor contamination, anticipation, spillovers, short panels, noisy outcomes, weak support, and overfitting through too much tuning. Another major problem is a concurrent shock hitting the treated unit at the same time as the intervention. If that happens, SCM may be assigning too much to the treatment itself. These are not minor technical caveats. They are the reasons a persuasive-looking SCM graph can still be unconvincing.
+I included the actual `tidysynth` pipeline because I do not want this example to remain trapped in the older matrix interface. The only extra preparation step is to turn the schooling counts into shares and combine the top two schooling categories, which is exactly the adjustment made in the package example. After that, the pipeline is standard: declare the treated unit and intervention date, generate the predictors over the paper's pre-treatment windows, fit the weights over `1960` to `1969`, and then generate the synthetic control and placebos.
+
+### Basque Balance Table
+
+The balance table is useful here because it shows two things at once. First, the synthetic Basque unit is much closer than the donor average on the predictors that matter for the design. Second, balance is not literally perfect on every row. That is a healthy reminder that SCM is usually a best available convex match, not a magical exact replica. The key success is that the synthetic unit is much more Basque-like than the average donor region, especially on pre-treatment GDP, agriculture, and industrial structure.
+
+### Basque Placebo Tests
+
+The placebo-gap slide should be read visually first. Reassign treatment across donor regions, rebuild the synthetic controls, and compare the resulting gaps to the Basque gap. The plotted version prunes placebo runs with pre-period RMSPE above `2x` the treated case, because badly fit placebos are weak comparators. The visual lesson is that Basque diverges much more sharply after treatment than the comparable placebo runs.
+
+### Basque Post/Pre RMSPE Ratio
+
+The next slide turns that same logic into one ranking. Basque has the highest post/pre RMSPE ratio in the full donor-placebo run at about `7.75`. With only `16` donor regions, the exact p-value remains coarse, which is worth saying explicitly. After pruning poor-fit placebos using the usual `2x` pre-period RMSPE rule, Basque still ranks first. This is exactly the discipline I want the audience to learn: treat placebo results as fit-sensitive benchmarks, not as automatic proof.
+
+### Permutation Logic Is A Benchmark, Not A Magic Trick
+
+This point gets blurred in applied work. Placebo-by-unit checks are useful because they ask whether the treated gap is unusual relative to untreated units reassigned as if they were treated. Placebo-in-time checks are useful because they ask whether the same design would create a fake effect if treatment were moved earlier. But the first question is still whether those placebo cases had comparable pre-treatment fit. Abadie is also careful about p-values here. The permutation distribution is a benchmark generated from the available donor pool; it is more informative than mechanically reporting one thresholded significance number. Good inference reinforces a strong design; it does not create one.
+
+### Robustness Checks And Failure Modes
+
+This is where the deck should become more concrete. Vary the donor pool with substantively defensible inclusion and exclusion rules. Vary the predictor set and the pre-treatment window and see whether the result is stable or fragile. Backdate treatment when anticipation is plausible. Inspect whether high-weight donors are contaminated or whether the treated unit experiences a concurrent shock that would break the interpretation. These are not minor caveats. They are the main reasons a persuasive-looking SCM graph can still be unconvincing.
 
 ### When Classical SCM Is Enough
 
 Classical SCM is usually enough when treatment hits one unit at a known time, the donor pool is clean, the pre-treatment path is long, and the synthetic unit tracks the treated unit closely before treatment. Proposition 99 is the canonical teaching case because those pieces line up well enough to make the whole workflow legible and defensible.
 
-### When Augmentation Enters
+### When Penalization Or Augmentation Enter
 
-Augmentation should be taught as a response to weak fit, not as the next shiny thing. The Kansas example is useful precisely because classical SCM alone fits imperfectly. Augmented SCM starts from the classical weighting logic and then adds a controlled bias-correction step. The point is not unlimited flexibility. The point is to improve fit while keeping the extra extrapolation explicit enough to judge. If augmentation has to carry the entire design, that is often telling you the problem is deeper than the estimator choice.
+This is the other place where Abadie's deck usefully sharpens the story. Penalized SCM and augmented SCM solve different problems. Penalized SCM keeps the convex-weight logic but discourages putting weight on donor units that are far from the treated unit, which helps when classical solutions are unstable or non-unique. Augmented SCM starts from the same SCM design and then adds controlled bias correction when classical fit remains weak. Neither is a universal upgrade. If either extension has to do all the work, that usually means the underlying comparative design is still weak.
 
 ### Learning Arc For This Sequence
 
-The lab sequence mirrors that logic. First, use the `Synth` toy data to learn the mechanics cleanly. Second, use Proposition 99 with `tidysynth` to run the full classical workflow in a case where the design stakes are real. Third, use the Kansas tax-cut data to learn what poor fit looks like and when augmentation becomes the first principled extension rather than a default.
+The sequence now has a clearer bridge. Start with the Basque Country if you want the origin comparative-case-story and a sparse donor structure you can inspect by eye. Then use the `Synth` toy data to learn the mechanics in the cleanest stripped-down setting. After that, move to Proposition 99 with `tidysynth` for the canonical full workflow. Finally, use the Kansas tax-cut data to learn what weak classical fit looks like and why extensions like augmentation or penalization should be responses to identifiable problems rather than default upgrades.
 
 ### Closing Line
 
-The line I want to leave in the room is simple: synthetic control is persuasive only when the donor pool is defensible, the pre-treatment fit is strong, the weights and diagnostics are transparent, and the analyst stays honest about where the design may fail. If the audience remembers that sentence, the deck has done its job.
+The line I want to leave in the room is simple: synthetic control is persuasive only when support is transparent, the contextual and data requirements are met, the pre-treatment fit is strong, the diagnostic benchmark is honest, and the analyst stays disciplined about when to stop. If the audience remembers that sentence, the deck has done its job.
