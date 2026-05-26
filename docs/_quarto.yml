@@ -15,6 +15,10 @@ project:
 
 website:
   title: "Quasi-Experimental Design Labs"
+  page-footer:
+    center:
+      - text: "defenceeconomist.github.io"
+        href: https://defenceeconomist.github.io
   navbar:
     left:
       - href: notes/index.qmd
