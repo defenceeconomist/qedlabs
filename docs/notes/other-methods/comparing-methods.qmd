@@ -4,7 +4,7 @@ title: "Comparing The Main Methods"
 
 # Purpose
 
-This note will compare the four main methods in the series on a common set of dimensions so readers can move from identification logic to design choice.
+This note compares the five main designs in the series on a common set of dimensions so readers can move from identification logic to design choice.
 
 # Comparison Dimensions
 
@@ -14,6 +14,7 @@ This note will compare the four main methods in the series on a common set of di
 - Difference-in-differences: change over time relative to comparison groups
 - Synthetic control: weighted counterfactual trajectory
 - Regression discontinuity: local comparison at a threshold
+- Interrupted time series: a break in level or trend relative to the treated series' projected pre-intervention trajectory
 
 ## Main Assumption
 
@@ -21,6 +22,7 @@ This note will compare the four main methods in the series on a common set of di
 - Difference-in-differences: parallel trends
 - Synthetic control: strong pre-treatment fit and no treated-unit-specific confounding shocks at treatment time
 - Regression discontinuity: continuity at the cutoff and no manipulation
+- Interrupted time series: a credible untreated trajectory and no concurrent outcome-relevant shock at the interruption
 
 ## Data Structure
 
@@ -28,6 +30,7 @@ This note will compare the four main methods in the series on a common set of di
 - Panel or repeated cross-section for DiD
 - Long panel for synthetic control
 - Cross-sectional or panel with a running variable for RD
+- A regularly spaced outcome series with enough observations before and after the interruption for ITS
 
 ## Diagnostic Emphasis
 
@@ -35,6 +38,7 @@ This note will compare the four main methods in the series on a common set of di
 - Pre-trends
 - Pre-treatment fit and placebos
 - Density and continuity checks
+- Time plot, residual autocorrelation, seasonality, functional form, and interruption-timing checks
 
 ## Main Limitation
 
@@ -42,8 +46,18 @@ This note will compare the four main methods in the series on a common set of di
 - Difference-in-differences: trend violations
 - Synthetic control: poor donor support
 - Regression discontinuity: local external validity
+- Interrupted time series: coincident shocks and dependence on the projected trend
+
+# Important Boundaries
+
+ITS, DiD, and synthetic control all use time, but they construct the counterfactual differently:
+
+- ITS projects the treated series' own pre-intervention trajectory.
+- DiD uses the change in untreated units to represent the treated units' counterfactual change.
+- Synthetic control builds a weighted untreated trajectory that should reproduce the treated unit before treatment.
+
+If a credible contemporaneous comparison series exists, a controlled ITS is usually stronger than an uncontrolled ITS. If multiple untreated units provide a plausible comparison trend, DiD may be less dependent on extrapolating one series. If one treated aggregate unit can be closely reconstructed from a donor pool, synthetic control makes the comparison more transparent.
 
 # Planned Output
 
-This page should eventually include a one-table summary plus short method-selection guidance linked to concrete evaluation scenarios.
-
+This page should eventually include a one-table summary linked to concrete evaluation scenarios.

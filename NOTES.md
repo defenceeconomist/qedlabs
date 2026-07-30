@@ -20,7 +20,7 @@ The current major release covers:
 
 - Matching and weighting: overview notes, teaching data, source notes, matching labs, and a long-form matching methods report.
 - Synthetic control: overview notes, teaching data, source notes, method reports, mechanics labs, Proposition 99, Basque Country, Kansas augmentation, donor-pool planning, and slide decks.
-- Other methods: difference-in-differences, regression discontinuity, method comparison, and method-choice guidance.
+- Other methods: difference-in-differences, regression discontinuity, interrupted time series, method comparison, and method-choice guidance.
 - Navigation aids: a notes link graph generated before rendering from `docs/scripts/extract_link_graph.py`.
 
 ## Maintenance Rules

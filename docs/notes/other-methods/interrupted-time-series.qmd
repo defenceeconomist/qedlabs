@@ -1,0 +1,434 @@
+---
+title: "Interrupted Time Series"
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+# What The Method Is
+
+Interrupted time series (ITS) is a quasi-experimental design for evaluating an intervention introduced at a known point in time. Instead of comparing one observation before treatment with one observation after treatment, ITS uses repeated observations to estimate the outcome trajectory before the intervention and asks whether the level or trend changed when the intervention began [@wagner2002segmented; @lopezbernal2017tutorial].
+
+The untreated counterfactual is the continuation of the pre-intervention trajectory, after accounting for features such as seasonality. The estimated intervention effect is the gap between that counterfactual and the observed post-intervention trajectory. This makes ITS much stronger than a simple pre/post comparison, but it does not automatically establish causality. A competing event at the same date can produce the same pattern.
+
+# When To Use It
+
+ITS is most useful when:
+
+- an intervention, policy, shock, or service change has a clearly defined start date
+- the outcome is measured consistently at regular intervals
+- enough observations exist before treatment to characterize the underlying trend and seasonal pattern
+- enough observations exist after treatment to distinguish a lasting change from short-run noise
+- randomization is unavailable and there is no stronger threshold or comparison-group design
+
+Typical examples include national legislation, changes to clinical guidance, tax reforms, transport policies, and service redesigns. The outcome may be a continuous measure, count, rate, or proportion, but the model should match that outcome's distribution.
+
+ITS is not a defensible label for a study with only one observation before and one after an intervention. It is also weak when the interruption date was selected after inspecting the outcome, implementation was too gradual to locate in time, or the measurement system changed at the intervention date [@cochrane2024robinsits].
+
+# The Counterfactual And Estimand
+
+The basic segmented-regression model is
+
+$$
+Y_t = \beta_0 + \beta_1t + \beta_2I_t + \beta_3T^{post}_t
+      + \text{seasonality}_t + \epsilon_t,
+$$
+
+where:
+
+- $Y_t$ is the outcome at time $t$
+- $t$ is continuous calendar time
+- $I_t$ is zero before the intervention and one from the intervention onward
+- $T^{post}_t$ is zero before and at the first intervention observation, then counts elapsed periods
+- $\beta_1$ is the pre-intervention trend
+- $\beta_2$ is the immediate level change
+- $\beta_3$ is the change in trend after the intervention
+
+The post-intervention trend is $\beta_1 + \beta_3$. At $h$ periods after the intervention begins, the estimated difference from the no-intervention trajectory is
+
+$$
+\text{effect}(h) = \beta_2 + h\beta_3.
+$$
+
+This distinction matters because an intervention can have an immediate effect, a gradual effect, both, or neither. The impact model should be specified from substantive expectations before examining the results [@lopezbernal2017tutorial].
+
+::: {.callout-warning title="Code post-intervention time from zero"}
+Do not use calendar time multiplied by the intervention indicator as the post-intervention trend term. That term starts at the number of periods since the study began, so its coefficient changes the meaning of the level-change estimate. Use time elapsed since the intervention, starting at zero in the first intervention period [@xiao2021parameterization].
+:::
+
+# Core Causal Conditions
+
+## No Concurrent Outcome-Relevant Shock
+
+Nothing else should change at the intervention date in a way that would alter the outcome. This is the central threat in an uncontrolled ITS. Policy bundles, economic shocks, strikes, changes in eligibility, and other reforms can all be mistaken for the intervention effect.
+
+## A Credible Untreated Trajectory
+
+The pre-intervention series must contain enough information to extrapolate the outcome forward. A linear trend is a model choice, not a property guaranteed by the design. Curvature, structural breaks, evolving seasonality, or an unusually short baseline can make the projected counterfactual implausible.
+
+## Stable Measurement And Composition
+
+Outcome definitions, coding practices, data coverage, reporting incentives, and the composition of the population should remain comparable over time. A new reporting system introduced with the policy is an interruption in measurement as well as policy.
+
+## Pre-Specified Timing And Effect Shape
+
+The interruption date and expected effect form should come from implementation knowledge, not a search for the largest coefficient. Anticipation, phased delivery, delayed effects, and temporary implementation periods should be represented explicitly when they are plausible.
+
+## No Relevant Spillovers
+
+For a controlled ITS, the comparison series should not be affected by the intervention. Spillovers can make the control follow the treated series and attenuate the estimated contrast.
+
+# Data And Design Checklist
+
+Before modelling, record:
+
+1. The intervention date, implementation period, and any anticipation window.
+2. The unit represented by each observation and whether the same population is measured over time.
+3. The outcome definition, denominator, frequency, and measurement process.
+4. The number and span of pre- and post-intervention observations.
+5. Expected baseline trend, seasonality, lag, and duration of effect.
+6. Other events near the interruption date.
+7. Potential control series and negative-control outcomes.
+
+There is no universal minimum number of observations. The required length depends on noise, autocorrelation, seasonality, effect size, and model complexity. The practical requirement is enough pre-intervention information to estimate the counterfactual and enough post-intervention information to estimate the effect form without overfitting [@cochrane2024robinsits].
+
+# Worked Example: A Clean-Air Policy
+
+Suppose a city introduces a clean-air policy at the start of January 2023. Monthly emergency respiratory-admission rates are available from January 2018 through December 2025. The intervention is expected to reduce admissions immediately and gradually weaken the previous upward trend.
+
+The data below are simulated, so the true data-generating values are known:
+
+- baseline level: 70 admissions per 100,000
+- baseline monthly trend: 0.08
+- immediate change: -4
+- monthly trend change: -0.10
+- annual seasonality
+- AR(1) errors with correlation 0.55
+
+```{r}
+#| label: simulate-its-data
+library(ggplot2)
+library(nlme)
+
+set.seed(20260730)
+
+n_months <- 96L
+interruption_time <- 61L
+
+time <- seq_len(n_months)
+date <- seq(as.Date("2018-01-01"), by = "month", length.out = n_months)
+intervention <- as.integer(time >= interruption_time)
+time_after <- pmax(0L, time - interruption_time)
+season_sin <- sin(2 * pi * time / 12)
+season_cos <- cos(2 * pi * time / 12)
+
+ar1_error <- as.numeric(
+  arima.sim(model = list(ar = 0.55), n = n_months, sd = 1)
+)
+
+admissions_rate <- 70 +
+  0.08 * time -
+  4 * intervention -
+  0.10 * time_after +
+  6 * season_sin +
+  2 * season_cos +
+  ar1_error
+
+its_data <- data.frame(
+  date,
+  time,
+  intervention,
+  time_after,
+  season_sin,
+  season_cos,
+  admissions_rate
+)
+
+stopifnot(
+  nrow(its_data) == 96L,
+  all(diff(its_data$date) > 0),
+  its_data$intervention[interruption_time] == 1L,
+  its_data$time_after[interruption_time] == 0L,
+  all(is.finite(its_data$admissions_rate))
+)
+```
+
+The first graph should always precede estimation. It reveals the pre-intervention trend, seasonal cycle, possible outliers, and whether the proposed impact shape is remotely plausible.
+
+```{r}
+#| label: fig-its-raw
+#| fig-cap: "Simulated monthly respiratory emergency-admission rates. The dashed line marks the clean-air policy."
+#| fig-height: 4.8
+ggplot(its_data, aes(x = date, y = admissions_rate)) +
+  geom_line(linewidth = 0.6, colour = "#24527a") +
+  geom_point(size = 1.3, colour = "#24527a") +
+  geom_vline(
+    xintercept = its_data$date[interruption_time],
+    linetype = "dashed",
+    colour = "#a23b3b"
+  ) +
+  labs(
+    x = NULL,
+    y = "Admissions per 100,000",
+    title = "Respiratory admissions before and after the policy"
+  ) +
+  theme_minimal(base_size = 12)
+```
+
+## Fit The Segmented Models
+
+An ordinary linear model makes the coefficient meanings transparent. It is not the final model here because monthly residuals are correlated.
+
+```{r}
+#| label: fit-its-models
+its_formula <- admissions_rate ~
+  time + intervention + time_after + season_sin + season_cos
+
+ols_fit <- lm(its_formula, data = its_data)
+
+gls_fit <- gls(
+  its_formula,
+  data = its_data,
+  correlation = corAR1(form = ~ time),
+  method = "REML"
+)
+
+ols_terms <- coef(summary(ols_fit))[c("intervention", "time_after"), ]
+gls_terms <- summary(gls_fit)$tTable[c("intervention", "time_after"), ]
+
+model_comparison <- data.frame(
+  Model = rep(c("OLS", "GLS with AR(1) errors"), each = 2),
+  Term = rep(c("Immediate level change", "Monthly trend change"), times = 2),
+  Estimate = c(ols_terms[, "Estimate"], gls_terms[, "Value"]),
+  `Standard error` = c(ols_terms[, "Std. Error"], gls_terms[, "Std.Error"]),
+  `p-value` = c(ols_terms[, "Pr(>|t|)"], gls_terms[, "p-value"]),
+  check.names = FALSE
+)
+
+knitr::kable(
+  model_comparison,
+  digits = 3,
+  caption = "The intervention terms from the introductory OLS and primary GLS models."
+)
+```
+
+The point estimates differ because generalized least squares accounts for serial dependence when estimating the model and its uncertainty. An AR(1) structure is a defensible starting point for this simulated monthly series, not an automatic choice for every ITS. Residual diagnostics and substantive knowledge should determine the error model.
+
+## Diagnose Serial Dependence
+
+```{r}
+#| label: fig-its-residual-acf
+#| fig-cap: "Residual autocorrelation before and after modelling AR(1) errors."
+#| fig-height: 4.4
+#| fig-width: 8
+old_par <- par(mfrow = c(1, 2), mar = c(4, 4, 3, 1))
+
+acf(
+  residuals(ols_fit),
+  main = "OLS residuals",
+  xlab = "Lag (months)"
+)
+acf(
+  residuals(gls_fit, type = "normalized"),
+  main = "Normalized GLS residuals",
+  xlab = "Lag (months)"
+)
+
+par(old_par)
+```
+
+Inspect more than lag one. ACF and PACF plots, residual time plots, and sensitivity to plausible ARMA structures are more useful than applying a single test mechanically. If meaningful autocorrelation remains, standard errors and the impact model may still be wrong.
+
+## Estimate Effects At Policy-Relevant Horizons
+
+For any horizon $h$, the estimated effect is $\hat\beta_2 + h\hat\beta_3$. Its uncertainty must include the variance of both coefficients and their covariance.
+
+```{r}
+#| label: its-effect-horizons
+beta_hat <- coef(gls_fit)
+beta_vcov <- vcov(gls_fit)
+
+effect_at_horizon <- function(h) {
+  weights <- c(intervention = 1, time_after = h)
+  relevant_vcov <- beta_vcov[names(weights), names(weights), drop = FALSE]
+  estimate <- sum(weights * beta_hat[names(weights)])
+  standard_error <- sqrt(
+    as.numeric(t(weights) %*% relevant_vcov %*% weights)
+  )
+
+  c(
+    Estimate = estimate,
+    `Standard error` = standard_error,
+    `Lower 95% CI` = estimate - qnorm(0.975) * standard_error,
+    `Upper 95% CI` = estimate + qnorm(0.975) * standard_error
+  )
+}
+
+horizons <- c(0, 12, 24)
+effect_table <- as.data.frame(
+  t(vapply(horizons, effect_at_horizon, numeric(4)))
+)
+effect_table <- cbind(
+  Horizon = c("Immediate", "12 months", "24 months"),
+  effect_table
+)
+
+stopifnot(
+  all(is.finite(as.matrix(effect_table[-1]))),
+  beta_hat[["intervention"]] < 0,
+  beta_hat[["time_after"]] < 0
+)
+
+knitr::kable(
+  effect_table,
+  digits = 2,
+  caption = "Estimated change in admissions per 100,000 relative to the no-policy trajectory."
+)
+```
+
+The immediate estimate describes the discontinuity at implementation. The 12- and 24-month estimates combine that level change with the accumulating change in trend. They are not separate regression coefficients.
+
+## Plot The Estimated Counterfactual
+
+```{r}
+#| label: fig-its-counterfactual
+#| fig-cap: "Observed admissions, the fitted policy trajectory, and the estimated trajectory without the policy."
+#| fig-height: 5.2
+counterfactual_data <- transform(
+  its_data,
+  intervention = 0L,
+  time_after = 0L
+)
+
+its_data$fitted_policy <- as.numeric(predict(gls_fit, newdata = its_data))
+its_data$counterfactual <- as.numeric(
+  predict(gls_fit, newdata = counterfactual_data)
+)
+
+plot_data <- rbind(
+  data.frame(
+    date = its_data$date,
+    series = "Fitted policy trajectory",
+    value = its_data$fitted_policy
+  ),
+  data.frame(
+    date = its_data$date,
+    series = "Estimated no-policy trajectory",
+    value = its_data$counterfactual
+  )
+)
+
+ggplot(its_data, aes(x = date, y = admissions_rate)) +
+  geom_point(size = 1.1, alpha = 0.65, colour = "#4d4d4d") +
+  geom_line(
+    data = plot_data,
+    aes(y = value, colour = series, linetype = series),
+    linewidth = 0.9
+  ) +
+  geom_vline(
+    xintercept = its_data$date[interruption_time],
+    linetype = "dashed",
+    colour = "#a23b3b"
+  ) +
+  scale_colour_manual(
+    values = c(
+      "Fitted policy trajectory" = "#24527a",
+      "Estimated no-policy trajectory" = "#bf6b21"
+    )
+  ) +
+  scale_linetype_manual(
+    values = c(
+      "Fitted policy trajectory" = "solid",
+      "Estimated no-policy trajectory" = "longdash"
+    )
+  ) +
+  labs(
+    x = NULL,
+    y = "Admissions per 100,000",
+    colour = NULL,
+    linetype = NULL
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(legend.position = "bottom")
+```
+
+The graph shows what the model estimates. It does not demonstrate that the no-policy line is the true counterfactual. That causal interpretation still depends on the design conditions.
+
+# Diagnostics And Sensitivity Analysis
+
+A credible ITS analysis should address:
+
+- **Functional form:** compare the proposed linear trend with plausible non-linear specifications chosen from subject knowledge.
+- **Seasonality:** use seasonal indicators, Fourier terms, or another justified representation.
+- **Autocorrelation:** inspect residual ACF and PACF plots and compare plausible error structures.
+- **Outliers:** investigate exceptional periods rather than deleting them solely because they weaken the estimate.
+- **Implementation timing:** represent a known transition window, lag, or phase-in period instead of moving the interruption date to maximize significance.
+- **Missing observations:** explain why periods are missing and whether missingness is related to the intervention or outcome.
+- **Outcome distribution:** use appropriate count, rate, proportion, or overdispersed models when Gaussian errors are unsuitable.
+- **Concurrent events:** build a dated policy and context timeline and test negative-control outcomes where possible.
+- **Aggregation:** justify the observation interval. Aggregating fine-grained data into long intervals can bias the immediate level-change estimate when the post-intervention slope changes [@turner2026aggregation].
+
+Sensitivity analysis should be a short set of substantively plausible alternatives, not an unrestricted specification search. Report whether the conclusion depends on one trend form, one seasonal adjustment, one error model, or one treatment window.
+
+# Stronger And More Complex Designs
+
+## Controlled Interrupted Time Series
+
+When a credible contemporaneous comparison series exists, controlled ITS should usually be preferred. The control helps distinguish the intervention from shocks shared across treated and untreated settings. It should have a similar pre-intervention trajectory, be measured consistently, and remain unaffected by the policy. Both the treated series on its own and the treated-versus-control contrast should be reported [@lopezbernal2018controls].
+
+## Count And Rate Outcomes
+
+Counts may require Poisson or negative-binomial models, often with a population or exposure offset. Rates based on small denominators can have unstable variance. Overdispersion and autocorrelation remain separate problems and both need attention.
+
+## Non-Linear, Lagged, Or Gradual Effects
+
+Splines, polynomial terms, distributed lags, or transition functions may be appropriate when theory predicts curvature or delayed implementation. Extra flexibility increases the demand for data and makes the counterfactual more model-dependent, so the impact shape should be specified in advance.
+
+## Multiple Interruptions
+
+Several known policy changes can be represented with additional level and trend terms. Closely spaced interventions may not be separately identifiable, especially when the post-intervention window for one policy becomes the baseline for the next.
+
+## Negative-Control Outcomes
+
+An outcome affected by the same context and measurement system, but not plausibly affected by the intervention, can reveal coincident shocks or data artefacts. A negative-control result is a diagnostic, not proof that all time-varying confounding has been removed.
+
+# Common Failure Modes
+
+- Calling a two-point pre/post comparison an interrupted time series.
+- Choosing the interruption date or effect shape after viewing the outcome.
+- Omitting seasonality or autocorrelation without checking.
+- Treating a significant level change as evidence that no concurrent event mattered.
+- Coding post-intervention time with `time * intervention`.
+- Interpreting the slope-change coefficient as the total effect at a later date.
+- Fitting a highly flexible trend to a short pre-intervention period.
+- Ignoring a change in coding, denominator, eligibility, or population composition.
+- Using an exposed comparison series in a controlled ITS.
+- Reporting only coefficients without the observed and counterfactual trajectories.
+
+# Reporting Checklist
+
+A clear report should state:
+
+1. The intervention, estimand, interruption date, and expected impact shape.
+2. The data source, frequency, outcome definition, denominator, and number of observations on each side.
+3. The segmented-regression parameterization and why each trend or seasonal term was included.
+4. The error structure and residual diagnostics.
+5. Immediate, trend, and policy-relevant horizon effects with uncertainty.
+6. The observed trajectory, fitted trajectory, and no-intervention counterfactual.
+7. Concurrent events, anticipation, spillovers, measurement changes, and missing periods.
+8. Sensitivity analyses and any controlled or negative-control series.
+9. A causal conclusion calibrated to the remaining threats to validity.
+
+# Software
+
+For a continuous single-series ITS, base R regression and `nlme::gls()` provide a transparent starting workflow. `nlme` supports generalized least squares with correlated and unequal-variance errors, including AR(1) and broader ARMA structures. More specialized generalized linear, Bayesian, or multiple-series tools may be needed for counts, short series, hierarchical data, or complex interventions.
+
+# Key Sources
+
+- Wagner et al. introduce segmented regression for intervention effects in longitudinal policy data [@wagner2002segmented].
+- Lopez Bernal, Cummins, and Gasparrini give an applied tutorial covering impact models, seasonality, autocorrelation, overdispersion, and time-varying confounding [@lopezbernal2017tutorial].
+- Lopez Bernal, Cummins, and Gasparrini explain the design and interpretation of controlled ITS [@lopezbernal2018controls].
+- Xiao, Augusto, and Wagenaar document the common post-intervention time-coding error [@xiao2021parameterization].
+- The Cochrane Handbook frames the counterfactual and the main risk-of-bias domains for uncontrolled and controlled ITS designs [@cochrane2024robinsits].
+- Turner et al. show how temporal aggregation can bias immediate level-change estimates under segmented linear regression [@turner2026aggregation].

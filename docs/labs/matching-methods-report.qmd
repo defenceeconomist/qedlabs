@@ -1968,7 +1968,7 @@ The design question is not "what variables do we have?" It is "which variables h
 
 This appendix is a short extension to the main report. It explains where propensity-score weighting fits, why it is not the main teaching route in this report, and how to use it without turning the design into a black box.
 
-Its conceptual anchor is the repo's note on [*The Effect*: Matching](effectbook_matching_notes.qmd), especially the chapter's emphasis that many matching procedures are easiest to understand as weighting designs.
+Its conceptual anchor is the repo's note on [*The Effect*: Matching](../notes/matching/effectbook-matching-notes.qmd), especially the chapter's emphasis that many matching procedures are easiest to understand as weighting designs.
 
 #### Why This Sits Beside The Main Report {.unnumbered} 
 
@@ -2066,7 +2066,7 @@ That means propensity-score weighting is usually closer to standard textbook pra
 If you want the shortest practical route through the repo, use this order:
 
 1. Read the main sections of this report for the design-first comparison.
-2. Read the [*The Effect* notes](effectbook_matching_notes.qmd) for the weighting-first conceptual frame.
+2. Read the [*The Effect* notes](../notes/matching/effectbook-matching-notes.qmd) for the weighting-first conceptual frame.
 3. Use this appendix to connect that frame back to evaluator practice.
 4. If you want a benchmarked observational case, continue to the [NSW and CPS Benchmark Lab](../labs/nsw-cps-benchmark-lab.qmd).
 

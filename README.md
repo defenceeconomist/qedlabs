@@ -14,7 +14,7 @@ Current content includes:
 
 - matching and weighting notes plus migrated matching labs
 - synthetic-control notes plus lab and slide skeletons
-- additional notes on difference-in-differences and regression discontinuity
+- additional notes on difference-in-differences, regression discontinuity, and interrupted time series
 
 Render it with:
 

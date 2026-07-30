@@ -14,6 +14,7 @@ Ask:
 
 - Is treatment assigned using an explicit threshold?
 - Does treatment start at different times across units?
+- Did one intervention begin at a clearly defined time with a long, regularly observed outcome series?
 - Is there one main treated unit and a donor pool?
 - Is selection driven mainly by observed characteristics?
 
@@ -23,6 +24,14 @@ Ask:
 - Use difference-in-differences when treatment varies over time and untreated units can anchor the counterfactual trend.
 - Use synthetic control when a treated unit needs a transparent weighted comparator built from untreated units.
 - Use regression discontinuity when assignment changes at a known threshold and local comparison is credible.
+- Use interrupted time series when a clearly timed intervention may have changed the level or trend of a regularly observed outcome and the pre-intervention trajectory can support a defensible counterfactual.
+
+## When ITS Is And Is Not The Right Time-Based Design
+
+- Prefer controlled ITS when a credible contemporaneous comparison series is available and unaffected by the intervention.
+- Prefer DiD when treated and untreated units can support a credible comparison of changes rather than relying on extrapolation from one treated series.
+- Prefer synthetic control when one treated aggregate unit can be reconstructed closely from a donor pool before treatment.
+- Reject ITS when the data contain only one observation before and after treatment, the interruption date is ambiguous or selected from the outcome, or another major shock occurred at the same time and cannot be separated from the intervention.
 
 ## Questions To Resolve Before Committing
 
@@ -34,4 +43,3 @@ Ask:
 # Planned Extension
 
 This page should eventually include a short flowchart and worked examples of method choice under common evaluation scenarios.
-

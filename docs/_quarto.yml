@@ -94,6 +94,8 @@ website:
               text: Difference-in-Differences
             - href: notes/other-methods/regression-discontinuity.qmd
               text: Regression Discontinuity
+            - href: notes/other-methods/interrupted-time-series.qmd
+              text: Interrupted Time Series
             - href: notes/other-methods/comparing-methods.qmd
               text: Comparing Methods
             - href: notes/other-methods/choosing-a-method.qmd

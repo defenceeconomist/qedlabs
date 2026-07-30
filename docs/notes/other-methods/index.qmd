@@ -16,6 +16,10 @@ Use this when treated and untreated units are both observed over time and the de
 
 Use this when treatment assignment is governed by a rule or threshold and units close to the cutoff can support a local comparison.
 
+## [Interrupted Time Series](interrupted-time-series.qmd)
+
+Use this when an intervention begins at a known time and a sufficiently long, regularly observed outcome series can support a comparison between the observed post-intervention path and the projected pre-intervention trajectory.
+
 ## [Comparing The Main Methods](comparing-methods.qmd)
 
 Use this page when several designs are still plausible and you need to compare them on assumptions, data structure, diagnostics, and limits.
