@@ -138,6 +138,12 @@ website:
               text: Synthetic Control Design Lab
             - href: labs/synthetic-control-donor-pool-lab.qmd
               text: Synthetic Control Donor Pool Lab
+        - section: Interrupted Time Series
+          contents:
+            - href: labs/interrupted-time-series-mechanics-lab.qmd
+              text: ITS Mechanics Lab
+            - href: labs/interrupted-time-series-design-diagnostics-lab.qmd
+              text: ITS Design and Diagnostics Lab
     - id: slides
       title: "Slides"
       style: docked
@@ -153,6 +159,10 @@ website:
           text: Synthetic Control Slides
         - href: slides/scm_script.qmd
           text: Synthetic Control Presenter Script
+        - href: slides/its.qmd
+          text: Interrupted Time Series Slides
+        - href: slides/its_script.qmd
+          text: ITS Presenter Script
 
 format:
   html:

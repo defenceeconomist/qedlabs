@@ -20,6 +20,8 @@ SITE_BASE_URL = "https://defenceeconomist.github.io/qedlabs"
 LAB_STEMS = (
     "black-politicians-lab",
     "hisp-ie-practice-lab",
+    "interrupted-time-series-design-diagnostics-lab",
+    "interrupted-time-series-mechanics-lab",
     "lalonde-matching-lab",
     "nsw-cps-benchmark-lab",
     "synthetic-control-augmentation-lab",

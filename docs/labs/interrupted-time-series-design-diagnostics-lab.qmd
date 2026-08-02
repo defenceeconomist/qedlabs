@@ -1,0 +1,499 @@
+---
+title: "Lab: Interrupted Time Series Design and Diagnostics"
+format:
+  html: default
+execute:
+  echo: true
+  eval: false
+---
+
+## How To Use This Page
+
+Use this as the second interrupted time series lab, after the mechanics exercise.
+
+[Download the R Jupyter notebook](notebooks/interrupted-time-series-design-diagnostics-lab.ipynb){.cta-button download="interrupted-time-series-design-diagnostics-lab.ipynb"}
+
+- Treat each scenario as a different identification problem, not merely another model specification.
+- Write the estimand and expected impact shape before fitting anything.
+- Compare uncontrolled and controlled results before deciding what the intervention coefficient means.
+- End with a one-page design memo rather than a preferred p-value.
+
+::: {.callout-note}
+The code is shown but not executed when the site is rendered. The downloadable notebook runs offline with deterministic simulated data.
+:::
+
+## Training Goal
+
+Learn what common ITS diagnostics and stronger designs can—and cannot—repair:
+
+1. pre-specify the interruption and estimand
+2. detect omitted seasonal structure
+3. compare OLS and AR(1) uncertainty
+4. use controlled ITS to separate a shared shock from a treated-series change
+5. show why a treated-only measurement break remains unidentified
+6. use a small sensitivity set tied to specific design concerns
+
+## The Four Scenarios
+
+All four analyses use the same policy, dates, baseline trajectories, and AR(1) errors.
+
+| Scenario | What changes | Teaching purpose |
+|---|---|---|
+| Valid ITS | Only the treated series receives the policy effect | Establish the reference result |
+| Omitted seasonality | The data are unchanged, but seasonal terms are removed | Show model misspecification |
+| Concurrent shock | Both series receive a `+5` level shock at the policy date | Show what a control can repair |
+| Measurement break | Only the treated measurement process shifts by `+4` | Show what a control cannot identify |
+
+The true policy effect in the treated series is `-4` immediately and `-0.10` per month thereafter. The measurement break exactly offsets the immediate policy effect in the observed treated outcome.
+
+## What To Hand Back
+
+Produce a one-page design memo containing:
+
+- intervention, population, outcome, timing, and estimands
+- expected impact shape and why it is plausible
+- the uncontrolled and controlled immediate effects in each scenario
+- the residual evidence for seasonality and autocorrelation
+- the result of the pre-specified sensitivity set
+- a separate causal conclusion for the shared-shock and measurement-break scenarios
+
+## Step 1: Pre-Specify The Design
+
+Before running code, write down:
+
+1. **Immediate estimand:** the change in treated admissions at January 2023 relative to the no-policy trajectory.
+2. **Twelve-month estimand:** the treated-versus-no-policy difference after twelve post-policy months.
+3. **Impact shape:** an immediate reduction plus a progressively more negative trend.
+4. **Primary specification:** segmented regression with annual Fourier terms and AR(1) errors.
+5. **Control logic:** a contemporaneous unexposed series can absorb shocks common to both series.
+6. **Non-repairable threat:** a treated-only change in measurement remains indistinguishable from a treated-only outcome change.
+
+Do not change these choices after seeing the estimates.
+
+## Step 2: Load Packages And Simulate The Scenarios
+
+```{r}
+required_packages <- c("ggplot2", "nlme")
+
+missing_packages <- required_packages[!vapply(
+  required_packages,
+  requireNamespace,
+  logical(1),
+  quietly = TRUE
+)]
+
+if (length(missing_packages) > 0) {
+  install.packages(missing_packages, repos = "https://cloud.r-project.org")
+}
+
+invisible(lapply(required_packages, library, character.only = TRUE))
+
+n_months <- 96L
+interruption_time <- 61L
+
+time_data <- data.frame(
+  time = seq_len(n_months),
+  date = seq(as.Date("2018-01-01"), by = "month", length.out = n_months)
+)
+
+time_data$intervention <- as.integer(time_data$time >= interruption_time)
+time_data$time_after <- pmax(0L, time_data$time - interruption_time)
+time_data$season_sin <- sin(2 * pi * time_data$time / 12)
+time_data$season_cos <- cos(2 * pi * time_data$time / 12)
+
+simulate_ar1 <- function(seed, rho = 0.55, sd = 0.8) {
+  set.seed(seed)
+  as.numeric(arima.sim(model = list(ar = rho), n = n_months, sd = sd))
+}
+
+treated_noise <- simulate_ar1(20260801)
+comparison_noise <- simulate_ar1(20260802)
+
+seasonal_component <-
+  5 * time_data$season_sin + 1.5 * time_data$season_cos
+
+policy_effect <-
+  -4 * time_data$intervention - 0.10 * time_data$time_after
+
+shared_shock <- 5 * time_data$intervention
+measurement_break <- 4 * time_data$intervention
+
+comparison_valid <-
+  65 + 0.05 * time_data$time + seasonal_component + comparison_noise
+
+treated_valid <-
+  70 + 0.08 * time_data$time + seasonal_component +
+  policy_effect + treated_noise
+
+make_scenario <- function(name, treated_outcome, comparison_outcome) {
+  treated <- transform(
+    time_data,
+    scenario = name,
+    series = "Treated",
+    outcome = treated_outcome
+  )
+
+  comparison <- transform(
+    time_data,
+    scenario = name,
+    series = "Comparison",
+    outcome = comparison_outcome
+  )
+
+  output <- rbind(comparison, treated)
+  output$series <- relevel(factor(output$series), ref = "Comparison")
+  output[order(output$series, output$time), ]
+}
+
+valid_data <- make_scenario(
+  "Valid ITS",
+  treated_valid,
+  comparison_valid
+)
+
+concurrent_data <- make_scenario(
+  "Concurrent shock",
+  treated_valid + shared_shock,
+  comparison_valid + shared_shock
+)
+
+measurement_data <- make_scenario(
+  "Measurement break",
+  treated_valid + measurement_break,
+  comparison_valid
+)
+
+diagnostic_data <- rbind(valid_data, concurrent_data, measurement_data)
+
+stopifnot(
+  nrow(diagnostic_data) == 3L * 2L * n_months,
+  all(diagnostic_data$time_after[diagnostic_data$time == interruption_time] == 0L),
+  all(is.finite(diagnostic_data$outcome))
+)
+```
+
+## Step 3: Plot Every Scenario Before Modelling
+
+```{r, fig.height=7, fig.width=10}
+ggplot(diagnostic_data, aes(x = date, y = outcome, colour = series)) +
+  geom_line(linewidth = 0.65) +
+  geom_vline(
+    xintercept = time_data$date[interruption_time],
+    linetype = "dashed",
+    colour = "#7a3535"
+  ) +
+  facet_wrap(~ scenario, ncol = 1, scales = "free_y") +
+  scale_colour_manual(
+    values = c("Comparison" = "#bf6b21", "Treated" = "#24527a")
+  ) +
+  labs(
+    x = NULL,
+    y = "Admissions per 100,000",
+    colour = NULL
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(legend.position = "bottom")
+```
+
+Checkpoint:
+
+- Which scenario looks most persuasive if you inspect only the treated series?
+- Which concurrent changes become visible only after adding the comparison series?
+- Why can the plot not reveal whether the measurement-break discontinuity is real or administrative?
+
+## Step 4: Fit Uncontrolled And Controlled ITS
+
+```{r}
+fit_uncontrolled <- function(data) {
+  treated <- subset(data, series == "Treated")
+
+  gls(
+    outcome ~ time + intervention + time_after + season_sin + season_cos,
+    data = treated,
+    correlation = corAR1(form = ~ time),
+    method = "ML"
+  )
+}
+
+fit_controlled <- function(data) {
+  data <- data[order(data$series, data$time), ]
+
+  gls(
+    outcome ~
+      series * (time + intervention + time_after) +
+      season_sin + season_cos,
+    data = data,
+    correlation = corAR1(form = ~ time | series),
+    method = "ML"
+  )
+}
+
+scenario_data <- list(
+  "Valid ITS" = valid_data,
+  "Concurrent shock" = concurrent_data,
+  "Measurement break" = measurement_data
+)
+
+uncontrolled_fits <- lapply(scenario_data, fit_uncontrolled)
+controlled_fits <- lapply(scenario_data, fit_controlled)
+
+extract_results <- function(name) {
+  uncontrolled <- uncontrolled_fits[[name]]
+  controlled <- controlled_fits[[name]]
+
+  data.frame(
+    Scenario = name,
+    Model = c("Uncontrolled", "Controlled differential"),
+    `Immediate effect` = c(
+      coef(uncontrolled)[["intervention"]],
+      coef(controlled)[["seriesTreated:intervention"]]
+    ),
+    `Monthly trend change` = c(
+      coef(uncontrolled)[["time_after"]],
+      coef(controlled)[["seriesTreated:time_after"]]
+    ),
+    check.names = FALSE
+  )
+}
+
+scenario_results <- do.call(
+  rbind,
+  lapply(names(scenario_data), extract_results)
+)
+
+row.names(scenario_results) <- NULL
+scenario_results
+
+valid_controlled <- subset(
+  scenario_results,
+  Scenario == "Valid ITS" & Model == "Controlled differential"
+)
+concurrent_uncontrolled <- subset(
+  scenario_results,
+  Scenario == "Concurrent shock" & Model == "Uncontrolled"
+)
+concurrent_controlled <- subset(
+  scenario_results,
+  Scenario == "Concurrent shock" & Model == "Controlled differential"
+)
+measurement_controlled <- subset(
+  scenario_results,
+  Scenario == "Measurement break" & Model == "Controlled differential"
+)
+
+stopifnot(
+  valid_controlled$`Immediate effect` < -2,
+  concurrent_uncontrolled$`Immediate effect` > -1,
+  concurrent_controlled$`Immediate effect` < -2,
+  abs(measurement_controlled$`Immediate effect`) < 2,
+  all(is.finite(as.matrix(scenario_results[c(
+    "Immediate effect",
+    "Monthly trend change"
+  )])))
+)
+```
+
+Interpretation:
+
+- In the valid scenario, both designs recover a negative immediate effect.
+- In the concurrent-shock scenario, the uncontrolled model mixes the `+5` shared shock with the `-4` policy effect. The controlled interaction recovers the treated-versus-comparison difference.
+- In the measurement-break scenario, the observed treated discontinuity combines the real policy effect and the administrative shift. The control cannot tell them apart.
+
+## Step 5: Show What Omitted Seasonality Leaves Behind
+
+```{r, fig.height=4.8, fig.width=9}
+valid_treated <- subset(valid_data, series == "Treated")
+
+seasonal_fit <- gls(
+  outcome ~ time + intervention + time_after + season_sin + season_cos,
+  data = valid_treated,
+  correlation = corAR1(form = ~ time),
+  method = "ML"
+)
+
+no_season_fit <- gls(
+  outcome ~ time + intervention + time_after,
+  data = valid_treated,
+  correlation = corAR1(form = ~ time),
+  method = "ML"
+)
+
+seasonal_residuals <- residuals(seasonal_fit, type = "normalized")
+no_season_residuals <- residuals(no_season_fit, type = "normalized")
+
+old_par <- par(mfrow = c(1, 2), mar = c(4, 4, 3, 1))
+
+acf(
+  no_season_residuals,
+  lag.max = 24,
+  main = "No seasonal terms",
+  xlab = "Lag (months)"
+)
+acf(
+  seasonal_residuals,
+  lag.max = 24,
+  main = "Fourier seasonal terms",
+  xlab = "Lag (months)"
+)
+
+par(old_par)
+
+lag_12_acf <- function(x) {
+  as.numeric(acf(x, plot = FALSE, lag.max = 12)$acf[13])
+}
+
+seasonality_diagnostic <- data.frame(
+  Specification = c("No seasonal terms", "Fourier seasonal terms"),
+  `Residual ACF at lag 12` = c(
+    lag_12_acf(no_season_residuals),
+    lag_12_acf(seasonal_residuals)
+  ),
+  check.names = FALSE
+)
+
+seasonality_diagnostic
+
+stopifnot(
+  abs(seasonality_diagnostic$`Residual ACF at lag 12`[1]) >
+    abs(seasonality_diagnostic$`Residual ACF at lag 12`[2])
+)
+```
+
+Omitted seasonality is a mean-model problem. AR(1) errors should not be asked to absorb a predictable annual cycle.
+
+## Step 6: Compare OLS And AR(1) Uncertainty
+
+```{r}
+ols_valid <- lm(
+  outcome ~ time + intervention + time_after + season_sin + season_cos,
+  data = valid_treated
+)
+
+gls_valid <- seasonal_fit
+
+ols_summary <- coef(summary(ols_valid))[c("intervention", "time_after"), ]
+gls_summary <- summary(gls_valid)$tTable[c("intervention", "time_after"), ]
+
+uncertainty_comparison <- data.frame(
+  Model = rep(c("OLS", "GLS with AR(1) errors"), each = 2),
+  Term = rep(c("Immediate level change", "Monthly trend change"), times = 2),
+  Estimate = c(ols_summary[, "Estimate"], gls_summary[, "Value"]),
+  `Standard error` = c(ols_summary[, "Std. Error"], gls_summary[, "Std.Error"]),
+  check.names = FALSE
+)
+
+uncertainty_comparison
+
+stopifnot(
+  all(is.finite(uncertainty_comparison$Estimate)),
+  all(is.finite(uncertainty_comparison$`Standard error`)),
+  all(uncertainty_comparison$`Standard error` > 0)
+)
+```
+
+State precisely what the AR(1) specification changes. Then state what it cannot change about the causal interpretation.
+
+## Step 7: Run A Pre-Specified Sensitivity Set
+
+The sensitivity set addresses three named concerns:
+
+1. serial dependence: OLS versus AR(1) GLS
+2. seasonal adjustment: include versus omit the annual Fourier terms
+3. implementation transition: include all months versus omit the first three policy months
+
+```{r}
+transition_excluded <- subset(
+  valid_treated,
+  !(time %in% interruption_time:(interruption_time + 2L))
+)
+
+transition_fit <- gls(
+  outcome ~ time + intervention + time_after + season_sin + season_cos,
+  data = transition_excluded,
+  correlation = corAR1(form = ~ time),
+  method = "ML"
+)
+
+sensitivity_models <- list(
+  "OLS + seasonality" = ols_valid,
+  "AR(1) GLS + seasonality" = gls_valid,
+  "AR(1) GLS without seasonality" = no_season_fit,
+  "AR(1) GLS excluding transition" = transition_fit
+)
+
+extract_sensitivity <- function(model_name, model) {
+  estimates <- coef(model)
+  model_vcov <- vcov(model)
+  weights_12 <- c(intervention = 1, time_after = 12)
+  relevant_vcov <- model_vcov[names(weights_12), names(weights_12), drop = FALSE]
+
+  effect_12 <- sum(weights_12 * estimates[names(weights_12)])
+  effect_12_se <- sqrt(
+    as.numeric(t(weights_12) %*% relevant_vcov %*% weights_12)
+  )
+
+  data.frame(
+    Specification = model_name,
+    `Immediate effect` = estimates[["intervention"]],
+    `Monthly trend change` = estimates[["time_after"]],
+    `12-month effect` = effect_12,
+    `12-month standard error` = effect_12_se,
+    check.names = FALSE
+  )
+}
+
+sensitivity_results <- do.call(
+  rbind,
+  Map(extract_sensitivity, names(sensitivity_models), sensitivity_models)
+)
+
+row.names(sensitivity_results) <- NULL
+sensitivity_results
+
+stopifnot(
+  all(is.finite(as.matrix(sensitivity_results[-1]))),
+  all(sensitivity_results$`12-month standard error` > 0)
+)
+```
+
+Do not choose the row with the smallest p-value. Explain which specification best matches the pre-specified design and whether the substantive conclusion depends on one plausible alternative.
+
+## Step 8: Classify What Each Design Can Support
+
+Fill in the final column before reading the suggested answer.
+
+| Scenario | What the controlled estimate sees | Defensible interpretation |
+|---|---|---|
+| Valid ITS | Treated-only level and trend changes | Consistent with the simulated policy effect |
+| Concurrent shock | Difference after removing the common shock | Control strengthens attribution if it is truly unexposed |
+| Measurement break | Treated-only policy plus measurement change | Causal effect remains unidentified from these series |
+
+The shared shock is addressable because it is observed in both series. The measurement break is not addressable because it occurs only in the treated outcome and is observationally equivalent to a treated-only level change.
+
+## Final Design Memo
+
+Write one page with these headings:
+
+### Design And Estimands
+
+State the intervention, series, timing, immediate estimand, 12-month estimand, and expected impact shape.
+
+### Primary Result
+
+Report the primary AR(1) seasonal specification and compare the uncontrolled and controlled estimates.
+
+### Diagnostics And Sensitivity
+
+Summarize the seasonal residual evidence, the OLS-versus-GLS comparison, and the transition-window sensitivity.
+
+### Identification Judgment
+
+Explain why the control helps with the shared shock but cannot resolve the treated-only measurement break.
+
+### Defensible Claim
+
+State the strongest causal conclusion you would defend, followed by the most important remaining limitation.
+
+## Suggested Close
+
+A controlled model and a corrected error structure can strengthen an ITS, but they solve different problems. The error model addresses dependence. The control addresses shared shocks. Neither can make a treated-only measurement discontinuity disappear.

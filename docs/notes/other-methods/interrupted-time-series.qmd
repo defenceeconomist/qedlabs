@@ -12,6 +12,10 @@ Interrupted time series (ITS) is a quasi-experimental design for evaluating an i
 
 The untreated counterfactual is the continuation of the pre-intervention trajectory, after accounting for features such as seasonality. The estimated intervention effect is the gap between that counterfactual and the observed post-intervention trajectory. This makes ITS much stronger than a simple pre/post comparison, but it does not automatically establish causality. A competing event at the same date can produce the same pattern.
 
+::: {.callout-note title="Teach And Practise The Method"}
+Use the [Interrupted Time Series slides](../../slides/its.qmd) for the 20-minute concept sequence, then continue with the [ITS Mechanics Lab](../../labs/interrupted-time-series-mechanics-lab.qmd) and the [ITS Design and Diagnostics Lab](../../labs/interrupted-time-series-design-diagnostics-lab.qmd).
+:::
+
 # When To Use It
 
 ITS is most useful when:

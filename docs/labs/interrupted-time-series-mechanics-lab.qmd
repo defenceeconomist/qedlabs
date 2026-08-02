@@ -1,0 +1,425 @@
+---
+title: "Lab: Interrupted Time Series Mechanics"
+format:
+  html: default
+execute:
+  echo: true
+  eval: false
+---
+
+## How To Use This Page
+
+Use this as the first hands-on interrupted time series lab.
+
+[Download the R Jupyter notebook](notebooks/interrupted-time-series-mechanics-lab.ipynb){.cta-button download="interrupted-time-series-mechanics-lab.ipynb"}
+
+- Keep the [Interrupted Time Series](../notes/other-methods/interrupted-time-series.qmd) note open in another tab.
+- Run every step in order so the coding and interpretation remain aligned.
+- Record immediate, trend-change, and horizon-specific effects separately.
+- End with a design judgment that distinguishes estimation from causal identification.
+
+::: {.callout-note}
+The code is shown but not executed when the site is rendered. The downloadable notebook is designed to run from top to bottom with an R kernel.
+:::
+
+## Training Goal
+
+Use a deterministic clean-air policy simulation to make the core ITS mechanics inspectable:
+
+1. construct the intervention variables correctly
+2. interpret level and trend changes
+3. expose the common post-intervention time-coding error
+4. diagnose and model residual autocorrelation
+5. calculate effects at policy-relevant horizons
+6. plot the observed and estimated no-policy trajectories
+
+## Dataset At A Glance
+
+- Unit: one city observed monthly
+- Outcome: emergency respiratory admissions per 100,000
+- Window: January 2018 to December 2025
+- Intervention: clean-air policy beginning January 2023
+- Known data-generating effect: `-4` immediately and `-0.10` per month in the post-policy trend
+- Other structure: annual seasonality and AR(1) errors with correlation `0.55`
+
+The data are simulated so we can compare the fitted model with a known design. That makes the example useful for learning mechanics, but it does not remove the causal assumptions that would matter with real data.
+
+## What To Hand Back
+
+By the end of the lab, report:
+
+- the correctly coded interruption variables
+- the OLS and AR(1) GLS intervention estimates
+- why the incorrect parameterization changes the level coefficient without changing fitted values
+- the estimated immediate, 12-month, and 24-month effects
+- what the residual diagnostics suggest
+- one reason the model alone would still be insufficient for a causal claim
+
+## Step 1: Load Packages
+
+```{r}
+required_packages <- c("ggplot2", "nlme")
+
+missing_packages <- required_packages[!vapply(
+  required_packages,
+  requireNamespace,
+  logical(1),
+  quietly = TRUE
+)]
+
+if (length(missing_packages) > 0) {
+  install.packages(missing_packages, repos = "https://cloud.r-project.org")
+}
+
+invisible(lapply(required_packages, library, character.only = TRUE))
+```
+
+## Step 2: Simulate The Monthly Series
+
+```{r}
+set.seed(20260730)
+
+n_months <- 96L
+interruption_time <- 61L
+
+its_data <- data.frame(
+  time = seq_len(n_months),
+  date = seq(as.Date("2018-01-01"), by = "month", length.out = n_months)
+)
+
+its_data$intervention <- as.integer(its_data$time >= interruption_time)
+its_data$time_after <- pmax(0L, its_data$time - interruption_time)
+its_data$season_sin <- sin(2 * pi * its_data$time / 12)
+its_data$season_cos <- cos(2 * pi * its_data$time / 12)
+
+its_data$ar1_error <- as.numeric(
+  arima.sim(model = list(ar = 0.55), n = n_months, sd = 1)
+)
+
+its_data$admissions_rate <- 70 +
+  0.08 * its_data$time -
+  4 * its_data$intervention -
+  0.10 * its_data$time_after +
+  6 * its_data$season_sin +
+  2 * its_data$season_cos +
+  its_data$ar1_error
+
+stopifnot(
+  nrow(its_data) == 96L,
+  all(diff(its_data$date) > 0),
+  its_data$intervention[interruption_time] == 1L,
+  its_data$time_after[interruption_time] == 0L,
+  its_data$time_after[interruption_time + 12L] == 12L,
+  all(is.finite(its_data$admissions_rate))
+)
+
+head(its_data)
+tail(its_data)
+```
+
+Checkpoint:
+
+- Why is `time_after` zero in the first intervention month?
+- Which terms describe the no-policy trajectory and which terms encode the intervention effect?
+
+## Step 3: Plot Before Estimating
+
+```{r, fig.height=5.2}
+ggplot(its_data, aes(x = date, y = admissions_rate)) +
+  geom_line(linewidth = 0.65, colour = "#24527a") +
+  geom_point(size = 1.25, colour = "#24527a") +
+  geom_vline(
+    xintercept = its_data$date[interruption_time],
+    linetype = "dashed",
+    colour = "#a23b3b"
+  ) +
+  labs(
+    x = NULL,
+    y = "Admissions per 100,000",
+    title = "Respiratory admissions before and after the clean-air policy"
+  ) +
+  theme_minimal(base_size = 12)
+```
+
+Before fitting a model, describe:
+
+- the direction of the baseline trend
+- the seasonal pattern
+- the apparent immediate change
+- whether the post-policy trend appears to differ
+- any unusual observations or missing periods
+
+## Step 4: Fit The Transparent OLS Model
+
+```{r}
+its_formula <- admissions_rate ~
+  time + intervention + time_after + season_sin + season_cos
+
+ols_fit <- lm(its_formula, data = its_data)
+summary(ols_fit)
+
+ols_terms <- coef(summary(ols_fit))[c("intervention", "time_after"), ]
+ols_terms
+
+stopifnot(
+  coef(ols_fit)[["intervention"]] < 0,
+  coef(ols_fit)[["time_after"]] < 0
+)
+```
+
+Interpret the two intervention terms in outcome units:
+
+- `intervention`: the estimated immediate change in admissions per 100,000
+- `time_after`: the estimated monthly change in trend after the policy
+
+Do not interpret `time_after` as the total effect at a later month.
+
+## Step 5: Expose The Post-Time Coding Trap
+
+```{r}
+its_data$wrong_time_after <- its_data$time * its_data$intervention
+
+wrong_fit <- lm(
+  admissions_rate ~
+    time + intervention + wrong_time_after + season_sin + season_cos,
+  data = its_data
+)
+
+parameterization_comparison <- data.frame(
+  Model = c("Correct zero-based post time", "Incorrect time × intervention"),
+  `Intervention coefficient` = c(
+    coef(ols_fit)[["intervention"]],
+    coef(wrong_fit)[["intervention"]]
+  ),
+  `Slope-change coefficient` = c(
+    coef(ols_fit)[["time_after"]],
+    coef(wrong_fit)[["wrong_time_after"]]
+  ),
+  check.names = FALSE
+)
+
+parameterization_comparison
+
+maximum_fitted_difference <- max(abs(fitted(ols_fit) - fitted(wrong_fit)))
+maximum_fitted_difference
+
+stopifnot(
+  maximum_fitted_difference < 1e-8,
+  abs(coef(ols_fit)[["intervention"]] -
+    coef(wrong_fit)[["intervention"]]) > 1
+)
+```
+
+The fitted values are the same because the two columns span the same model space. The intervention coefficient is different because the incorrect interaction uses the beginning of the study—not the interruption—as its time origin. This is an interpretation error, not a model-fit warning [@xiao2021parameterization].
+
+## Step 6: Diagnose Serial Dependence
+
+```{r, fig.height=4.8, fig.width=9}
+old_par <- par(mfrow = c(1, 2), mar = c(4, 4, 3, 1))
+
+acf(
+  residuals(ols_fit),
+  main = "OLS residual ACF",
+  xlab = "Lag (months)"
+)
+pacf(
+  residuals(ols_fit),
+  main = "OLS residual PACF",
+  xlab = "Lag (months)"
+)
+
+par(old_par)
+```
+
+Checkpoint:
+
+- Is the residual dependence concentrated at lag one or spread across several lags?
+- Does the seasonal adjustment appear to have removed the annual cycle?
+- What would be risky about choosing an error model from one diagnostic alone?
+
+## Step 7: Refit With AR(1) Errors
+
+```{r}
+gls_fit <- gls(
+  its_formula,
+  data = its_data,
+  correlation = corAR1(form = ~ time),
+  method = "REML"
+)
+
+gls_terms <- summary(gls_fit)$tTable[c("intervention", "time_after"), ]
+
+model_comparison <- data.frame(
+  Model = rep(c("OLS", "GLS with AR(1) errors"), each = 2),
+  Term = rep(c("Immediate level change", "Monthly trend change"), times = 2),
+  Estimate = c(
+    ols_terms[, "Estimate"],
+    gls_terms[, "Value"]
+  ),
+  `Standard error` = c(
+    ols_terms[, "Std. Error"],
+    gls_terms[, "Std.Error"]
+  ),
+  check.names = FALSE
+)
+
+model_comparison
+
+stopifnot(
+  coef(gls_fit)[["intervention"]] < 0,
+  coef(gls_fit)[["time_after"]] < 0,
+  all(is.finite(model_comparison$Estimate)),
+  all(is.finite(model_comparison$`Standard error`))
+)
+```
+
+The GLS model changes how dependence enters estimation and uncertainty. It does not address a concurrent policy, a reporting change, or another causal threat.
+
+## Step 8: Check The Normalized GLS Residuals
+
+```{r, fig.height=4.8, fig.width=9}
+normalized_residuals <- residuals(gls_fit, type = "normalized")
+
+old_par <- par(mfrow = c(1, 2), mar = c(4, 4, 3, 1))
+
+plot(
+  its_data$date,
+  normalized_residuals,
+  type = "o",
+  pch = 16,
+  cex = 0.6,
+  xlab = "Date",
+  ylab = "Normalized residual",
+  main = "GLS residuals over time"
+)
+abline(h = 0, lty = 2, col = "gray50")
+
+acf(
+  normalized_residuals,
+  main = "Normalized GLS residual ACF",
+  xlab = "Lag (months)"
+)
+
+par(old_par)
+```
+
+Describe whether meaningful serial structure remains. Do not treat a quieter ACF as evidence that the counterfactual is causally valid.
+
+## Step 9: Estimate Effects At Policy-Relevant Horizons
+
+```{r}
+effect_at_horizon <- function(model, h) {
+  beta_hat <- coef(model)
+  beta_vcov <- vcov(model)
+  weights <- c(intervention = 1, time_after = h)
+  relevant_vcov <- beta_vcov[names(weights), names(weights), drop = FALSE]
+
+  estimate <- sum(weights * beta_hat[names(weights)])
+  standard_error <- sqrt(
+    as.numeric(t(weights) %*% relevant_vcov %*% weights)
+  )
+
+  data.frame(
+    Horizon = h,
+    Estimate = estimate,
+    `Standard error` = standard_error,
+    `Lower 95% CI` = estimate - qnorm(0.975) * standard_error,
+    `Upper 95% CI` = estimate + qnorm(0.975) * standard_error,
+    check.names = FALSE
+  )
+}
+
+horizon_effects <- do.call(
+  rbind,
+  lapply(c(0, 12, 24), function(h) effect_at_horizon(gls_fit, h))
+)
+
+horizon_effects$Horizon <- c("Immediate", "12 months", "24 months")
+horizon_effects
+
+stopifnot(
+  all(is.finite(as.matrix(horizon_effects[-1]))),
+  all(horizon_effects$Estimate < 0),
+  horizon_effects$Estimate[3] < horizon_effects$Estimate[1]
+)
+```
+
+Explain why the confidence intervals are not obtained by adding the separate standard errors for the level and trend coefficients.
+
+## Step 10: Plot The Fitted And No-Policy Trajectories
+
+```{r, fig.height=5.5}
+counterfactual_data <- transform(
+  its_data,
+  intervention = 0L,
+  time_after = 0L
+)
+
+its_data$fitted_policy <- as.numeric(predict(gls_fit, newdata = its_data))
+its_data$counterfactual <- as.numeric(
+  predict(gls_fit, newdata = counterfactual_data)
+)
+
+trajectory_data <- rbind(
+  data.frame(
+    date = its_data$date,
+    series = "Fitted policy trajectory",
+    value = its_data$fitted_policy
+  ),
+  data.frame(
+    date = its_data$date,
+    series = "Estimated no-policy trajectory",
+    value = its_data$counterfactual
+  )
+)
+
+ggplot(its_data, aes(x = date, y = admissions_rate)) +
+  geom_point(size = 1.1, alpha = 0.65, colour = "#4d4d4d") +
+  geom_line(
+    data = trajectory_data,
+    aes(y = value, colour = series, linetype = series),
+    linewidth = 0.9
+  ) +
+  geom_vline(
+    xintercept = its_data$date[interruption_time],
+    linetype = "dashed",
+    colour = "#a23b3b"
+  ) +
+  scale_colour_manual(
+    values = c(
+      "Fitted policy trajectory" = "#24527a",
+      "Estimated no-policy trajectory" = "#bf6b21"
+    )
+  ) +
+  scale_linetype_manual(
+    values = c(
+      "Fitted policy trajectory" = "solid",
+      "Estimated no-policy trajectory" = "longdash"
+    )
+  ) +
+  labs(
+    x = NULL,
+    y = "Admissions per 100,000",
+    colour = NULL,
+    linetype = NULL
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(legend.position = "bottom")
+```
+
+The graph displays the estimated counterfactual. It does not establish that no other event could have changed admissions at the same date.
+
+## Final Design Judgment
+
+Write six sentences:
+
+1. State the intervention and the immediate estimand.
+2. State the 12-month estimand and estimate.
+3. Explain what the residual diagnostics changed about the model.
+4. Explain what the coding comparison taught you.
+5. Name one concurrent event or measurement change that the model could not rule out.
+6. State the causal conclusion you would defend if these were real data.
+
+## Next Step
+
+Continue to the [ITS Design and Diagnostics Lab](interrupted-time-series-design-diagnostics-lab.qmd) to compare uncontrolled and controlled ITS under known threats to identification.

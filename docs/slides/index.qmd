@@ -57,6 +57,26 @@ Primary presentation deck for the SCM sequence.
 Use the deck for the concept sequence and the presenter notes for the fuller talk track.
 :::
 :::
+
+::: {.section-card .slide-topic-card}
+<span class="page-badge badge-core">Interrupted Time Series</span>
+
+### Interrupted Time Series
+
+Design-first introduction to segmented regression, time-series diagnostics, and controlled ITS.
+
+[Open RevealJS deck](its-revealjs.html){.topic-card-primary}
+
+::: {.topic-card-links}
+[Accessible slides page](its.qmd){.topic-card-secondary}
+[Presenter notes](its_script.qmd){.topic-card-secondary}
+[ITS labs](../labs/index.qmd#interrupted-time-series-labs){.topic-card-secondary}
+:::
+
+::: {.card-meta}
+Use the deck for the 20-minute concept sequence and the labs for mechanics and identification practice.
+:::
+:::
 :::
  
 </div>
