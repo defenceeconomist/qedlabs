@@ -11,6 +11,8 @@ execute:
 
 Use this page as a guided benchmark worksheet.
 
+[Download the R Jupyter notebook](notebooks/nsw-cps-benchmark-lab.ipynb){.cta-button download="nsw-cps-benchmark-lab.ipynb"}
+
 - Read the benchmark framing before running any model.
 - Run each design branch in order: raw, exact, CEM, entropy balancing.
 - Track retention, balance, and benchmark gap together.

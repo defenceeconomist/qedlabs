@@ -12,6 +12,7 @@ project:
   resources:
     - data/notes_link_graph_payload.json
     - assets/**
+    - labs/notebooks/*.ipynb
 
 website:
   title: "Quasi-Experimental Design Labs"

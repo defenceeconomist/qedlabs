@@ -11,6 +11,8 @@ execute:
 
 Use this page as the first full SCM application lab.
 
+[Download the R Jupyter notebook](notebooks/synthetic-control-proposition-99-lab.ipynb){.cta-button download="synthetic-control-proposition-99-lab.ipynb"}
+
 - Keep the [Synthetic Control](../notes/scm/synthetic-control.qmd) overview open in another tab.
 - Use the [California Proposition 99 notes](../notes/scm/california-tobacco-synthetic-control-notes.qmd) when you want the paper-level rationale behind each design step.
 - Do not rush to the post-treatment plot. The donor pool, predictors, and pre-treatment fit are the actual argument.

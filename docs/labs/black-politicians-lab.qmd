@@ -11,6 +11,8 @@ execute:
 
 Use this page as a guided worksheet rather than as a finished report.
 
+[Download the R Jupyter notebook](notebooks/black-politicians-lab.ipynb){.cta-button download="black-politicians-lab.ipynb"}
+
 - Read the short framing note for each step.
 - Run the starter code in your own R session.
 - Write down what you learn before moving to the next section.

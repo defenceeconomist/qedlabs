@@ -11,6 +11,8 @@ execute:
 
 Use this page as the first hands-on SCM lab.
 
+[Download the R Jupyter notebook](notebooks/synthetic-control-mechanics-lab.ipynb){.cta-button download="synthetic-control-mechanics-lab.ipynb"}
+
 - Keep the [Synthetic Control](../notes/scm/synthetic-control.qmd) overview open in another tab.
 - Use this lab to understand the grammar of classical SCM before you move to real case studies.
 - Read `dataprep()` as part of the design, not as data wrangling boilerplate.

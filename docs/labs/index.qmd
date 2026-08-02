@@ -39,6 +39,8 @@ Long-form reference report on exact matching, `CEM`, and entropy balancing befor
 ### [LaLonde Matching Lab](lalonde-matching-lab.qmd)
 
 Best first practical exercise for understanding matching design, overlap, and benchmark logic.
+
+[Download R notebook](notebooks/lalonde-matching-lab.ipynb){download="lalonde-matching-lab.ipynb"}
 :::
 
 ::: {.section-card}
@@ -47,6 +49,8 @@ Best first practical exercise for understanding matching design, overlap, and be
 ### [Black Politicians Lab](black-politicians-lab.qmd)
 
 Use this when you want a more context-specific exercise.
+
+[Download R notebook](notebooks/black-politicians-lab.ipynb){download="black-politicians-lab.ipynb"}
 :::
 
 ::: {.section-card}
@@ -55,6 +59,8 @@ Use this when you want a more context-specific exercise.
 ### [NSW and CPS Benchmark Lab](nsw-cps-benchmark-lab.qmd)
 
 Best for stress-testing matching choices against a canonical benchmark comparison.
+
+[Download R notebook](notebooks/nsw-cps-benchmark-lab.ipynb){download="nsw-cps-benchmark-lab.ipynb"}
 :::
 :::
 
@@ -65,6 +71,8 @@ Best for stress-testing matching choices against a canonical benchmark compariso
 ### [HISP IE Practice Lab](hisp-ie-practice-lab.qmd)
 
 Use this when you want a more open-ended practice page.
+
+[Download R notebook](notebooks/hisp-ie-practice-lab.ipynb){download="hisp-ie-practice-lab.ipynb"}
 :::
 :::
 
@@ -87,6 +95,8 @@ Long-form reference report on donor-pool design, pre-treatment fit, placebo logi
 ### [Synthetic Control Mechanics Lab](synthetic-control-mechanics-lab.qmd)
 
 Best first practical exercise for learning `dataprep()`, `synth()`, donor weights, and gap plots without substantive complexity.
+
+[Download R notebook](notebooks/synthetic-control-mechanics-lab.ipynb){download="synthetic-control-mechanics-lab.ipynb"}
 :::
 
 ::: {.section-card}
@@ -95,6 +105,8 @@ Best first practical exercise for learning `dataprep()`, `synth()`, donor weight
 ### [Proposition 99 With tidysynth](synthetic-control-proposition-99-lab.qmd)
 
 Canonical end-to-end SCM workflow with donor exclusions, balance checks, donor transparency, and placebo logic.
+
+[Download R notebook](notebooks/synthetic-control-proposition-99-lab.ipynb){download="synthetic-control-proposition-99-lab.ipynb"}
 :::
 
 ::: {.section-card}
@@ -103,6 +115,8 @@ Canonical end-to-end SCM workflow with donor exclusions, balance checks, donor t
 ### [Augmented SCM With Kansas](synthetic-control-augmentation-lab.qmd)
 
 Best for learning what weak classical fit looks like and when augmentation becomes defensible.
+
+[Download R notebook](notebooks/synthetic-control-augmentation-lab.ipynb){download="synthetic-control-augmentation-lab.ipynb"}
 :::
 :::
 
@@ -113,6 +127,8 @@ Best for learning what weak classical fit looks like and when augmentation becom
 ### [Synthetic Control Design Lab](synthetic-control-design-lab.qmd)
 
 Use this when you want a planning worksheet before committing to a runnable case.
+
+[Download R notebook](notebooks/synthetic-control-design-lab.ipynb){download="synthetic-control-design-lab.ipynb"}
 :::
 
 ::: {.path-card}
@@ -121,6 +137,8 @@ Use this when you want a planning worksheet before committing to a runnable case
 ### [Synthetic Control Donor Pool Lab](synthetic-control-donor-pool-lab.qmd)
 
 Use this when the main bottleneck is screening and defending the donor pool.
+
+[Download R notebook](notebooks/synthetic-control-donor-pool-lab.ipynb){download="synthetic-control-donor-pool-lab.ipynb"}
 :::
 :::
 

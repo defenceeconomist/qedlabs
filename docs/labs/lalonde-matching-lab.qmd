@@ -11,6 +11,8 @@ execute:
 
 Use this page as the guided lab version of the main matching overview.
 
+[Download the R Jupyter notebook](notebooks/lalonde-matching-lab.ipynb){.cta-button download="lalonde-matching-lab.ipynb"}
+
 - Keep the [Matching and Weighting](../notes/matching/matching-and-weighting.qmd) note open in another tab.
 - Run each step in order rather than skipping to the estimates.
 - Record balance, retention, and weighting cost as you go.

@@ -11,6 +11,8 @@ execute:
 
 Use this page as a skeleton worksheet for planning a synthetic-control study before writing full implementation code.
 
+[Download the R Jupyter notebook](notebooks/synthetic-control-design-lab.ipynb){.cta-button download="synthetic-control-design-lab.ipynb"}
+
 ## Draft Goal
 
 Build a design memo that answers:

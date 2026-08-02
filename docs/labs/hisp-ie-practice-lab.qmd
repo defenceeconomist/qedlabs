@@ -11,6 +11,8 @@ execute:
 
 Use this page as a guided replication worksheet for the HISP case-study material from *Impact Evaluation in Practice*.
 
+[Download the R Jupyter notebook](notebooks/hisp-ie-practice-lab.ipynb){.cta-button download="hisp-ie-practice-lab.ipynb"}
+
 - Run the sections in the same order as the original Stata do-file.
 - Treat the early methods as design contrasts, not as equally credible estimates.
 - Keep notes on how the estimate moves as the design gets stronger.
@@ -58,7 +60,31 @@ if (length(missing_packages) > 0) {
 
 invisible(lapply(required_packages, library, character.only = TRUE))
 
-data_dir <- Sys.getenv("HISP_IE_DATA_DIR", unset = "PATH/TO/hisp_ie_in_practice")
+data_dir <- Sys.getenv("HISP_IE_DATA_DIR", unset = "")
+
+if (!nzchar(data_dir) || !dir.exists(data_dir)) {
+  stop(
+    paste(
+      "Set HISP_IE_DATA_DIR to the existing HISP data folder before running this notebook.",
+      "For example: Sys.setenv(HISP_IE_DATA_DIR = '/absolute/path/to/hisp_ie_in_practice')"
+    ),
+    call. = FALSE
+  )
+}
+
+data_dir <- normalizePath(data_dir, mustWork = TRUE)
+evaluation_csv <- file.path(data_dir, "evaluation.csv")
+
+if (!file.exists(evaluation_csv)) {
+  stop(
+    paste0(
+      "HISP_IE_DATA_DIR does not contain evaluation.csv: ",
+      evaluation_csv
+    ),
+    call. = FALSE
+  )
+}
+
 dta_files <- list.files(data_dir, pattern = "[.]dta$", full.names = TRUE)
 
 csv_export_manifest <- dplyr::bind_rows(lapply(dta_files, function(dta_path) {
@@ -79,7 +105,7 @@ csv_export_manifest <- dplyr::bind_rows(lapply(dta_files, function(dta_path) {
   )
 }))
 
-dat <- readr::read_csv(file.path(data_dir, "evaluation.csv"), show_col_types = FALSE)
+dat <- readr::read_csv(evaluation_csv, show_col_types = FALSE)
 
 controls <- c(
   "age_hh",

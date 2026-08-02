@@ -11,6 +11,8 @@ execute:
 
 Use this page as a skeleton worksheet focused specifically on donor-pool design for synthetic control.
 
+[Download the R Jupyter notebook](notebooks/synthetic-control-donor-pool-lab.ipynb){.cta-button download="synthetic-control-donor-pool-lab.ipynb"}
+
 ## Draft Goal
 
 Pressure-test whether the untreated units available in a case study can support a credible synthetic comparison.
