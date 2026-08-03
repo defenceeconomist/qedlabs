@@ -63,7 +63,7 @@ Use the deck for the concept sequence and the presenter notes for the fuller tal
 
 ### Interrupted Time Series
 
-Design-first introduction to segmented regression, time-series diagnostics, and controlled ITS.
+Design-first sequence from data provenance and segmented regression through controlled ITS and outcome-free counterfactual validation.
 
 [Open RevealJS deck](its-revealjs.html){.topic-card-primary}
 
@@ -74,7 +74,7 @@ Design-first introduction to segmented regression, time-series diagnostics, and 
 :::
 
 ::: {.card-meta}
-Use the deck for the 20-minute concept sequence and the labs for mechanics and identification practice.
+Use the deck for the 35-minute core sequence, the optional technical appendix for advanced discussion, and the three labs for applied practice.
 :::
 :::
 :::

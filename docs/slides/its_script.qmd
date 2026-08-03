@@ -1,6 +1,6 @@
 ---
 title: "Interrupted Time Series Presenter Script"
-subtitle: "A fuller talk track for the concept deck"
+subtitle: "Talk track for the core sequence and optional appendix"
 format:
   html:
     toc: true
@@ -17,99 +17,160 @@ execute:
 
 ## How To Use This Script
 
-Use this page when you want a fuller spoken version of the ITS deck rather than cue cards.
+The core sequence takes about 35 minutes. Allow another ten minutes for the technical appendix. Keep the deck audience-facing; use this script for timing, transitions, and source reminders.
 
-- Keep the [Interrupted Time Series note](../notes/other-methods/interrupted-time-series.qmd) open for equations, code, and references.
-- Allow about one minute per content slide, with extra time for the counterfactual and controlled-ITS slides.
-- Trim examples rather than rushing the distinction between an estimated break and a causal effect.
-- Use the two labs after the deck so learners first understand the design problem and then see how the models behave.
+- Spend most time on the outcome system, outcome-free validation, and attribution limits.
+- Use the synthetic repair-service case consistently; it is a teaching simulation rather than evidence about any real service.
+- Send learners through the three labs in order.
 
-## Slide-By-Slide Script
+## Core Sequence
 
-### Title Slide
+### A break is only as credible as its no-programme path
 
-Today we are looking at interrupted time series as a way to evaluate an intervention introduced at a known time. The method is attractive because it uses the full trajectory rather than one observation before and one after. But that extra structure does not make causality automatic. The central question throughout the session is whether the no-policy trajectory is credible and whether another event could have generated the same break.
+Open with the distinction between an estimated discontinuity and a causal effect. The regression can describe a break, but the data system, untreated path, and competing explanations determine whether the break answers the evaluation question.
 
-### Session Promise
+**Sources:** Wagner et al.; Lopez Bernal et al.; Cochrane Handbook.
 
-The promise of the session is simple: by the end, you should be able to separate what the model estimates from what the design allows you to claim. We will start with the missing counterfactual, specify the expected impact shape, account for time-series structure, and then confront the threats that matter most—especially concurrent shocks and changes in measurement.
+### The workflow has three layers
 
-### 20-Minute Arc
+Introduce the three layers as a dependency chain. If the outcome changes definition, no model repairs it. If the untreated forecast is poor, the gap is not useful. If a concurrent event can create the same gap, prediction accuracy alone does not establish attribution.
 
-The sequence moves from identification to estimation and back to identification. We first ask why repeated observations improve on pre/post comparison. We then map substantive expectations into level and trend terms. After that we handle seasonality and autocorrelation. The final part asks whether the observed break is really attributable to the intervention and shows how a credible comparison series can help.
+### Begin with events, not coefficients
 
-### A Pre/Post Difference Has No Trajectory
+The example programme is announced before operational rollout and has a short transition. Those dates should come from implementation records. A later extreme context period is shown because the primary counterfactual should not automatically extend through conditions absent from training.
 
-A before-and-after average compresses the series so aggressively that it throws away the information ITS is meant to use. If admissions were already rising, the post-policy average may be higher even when the policy helped. If the policy starts at a seasonal peak, the post average may fall simply because the calendar moved on. We need the pre-policy path because it tells us what direction the outcome was already moving and how it usually fluctuated.
+### A stock and a flow describe different objects
 
-### ITS Projects the Pre-Policy Path Forward
+Open cases are a stock measured at a point in time. New requests and closures are flows during a month. The stock changes through both flows and any boundary adjustment, so a rise in closures need not map one-for-one into a lower caseload.
 
-The untreated counterfactual in an uncontrolled ITS is the projected continuation of the pre-policy trajectory. The observed post-policy data tell us what happened with the intervention; the projected line represents what the model says would have happened without it. The gap is the estimated effect. Emphasize that the orange line is an estimate, not an observed untreated city. Its causal meaning depends on whether the pre-policy model remains credible after the intervention date.
+### Reconciliation reveals what the data can support
 
-### The Expected Impact Shape Belongs in the Design
+Walk through the checks as substantive tests. A category mismatch may reveal aggregation problems. A failure of the stock-flow identity may reveal unobserved inflows or scope changes. The inferred missing term is a balancing residual until those possibilities are excluded.
 
-Interventions do not all act in the same way. A ban may produce an immediate level change. A programme that builds capacity may change the trend gradually. Some interventions plausibly do both. Others create a temporary disruption and then fade. These shapes should come from implementation knowledge and the proposed mechanism. Choosing one after looking at the graph turns the analysis into a search for the most favourable break.
+### Counts and rates answer different questions
 
-### Segmented Regression Separates Level and Trend Changes
+Counts show service volume. Rates show activity relative to exposure. Use the stock available at the start of the period when the outcome is a transition from open to closed. Explain that a denominator can itself be affected by the programme.
 
-Walk through the four central terms. The intercept and time trend describe the pre-intervention trajectory. The intervention indicator captures the discontinuity at the first intervention observation. Time after the intervention captures how the slope changes from that point onward. The post-policy slope is therefore the old slope plus the slope change. Seasonality and the error structure sit alongside these terms because repeated observations are rarely independent or season-free.
+### Repair anomalies transparently—and keep the source visible
 
-### Post-Intervention Time Must Start at Zero
+The synthetic extract contains one implausible stock value. The workflow records the source, the repair, and the reason, then compares interpolation, omission, and retention. The point is not that interpolation is always correct; it is that the analytical treatment is explicit and stress-tested.
 
-This is a small coding choice with a large interpretive consequence. If time after intervention is zero at the first treated observation, the intervention coefficient is the immediate level change at that moment. If we instead multiply calendar time by the intervention indicator, the fitted line can be identical but the intervention coefficient is shifted to an extrapolated and usually meaningless time origin. The mechanics lab demonstrates this directly by fitting both parameterizations and comparing their fitted values and coefficients.
+### A pre/post average has no trajectory
 
-### The Effect Changes With the Horizon
+The horizontal means look decisive but mix trend, season, and transition. Repeated observations matter because they identify the expected direction and regular variation before rollout.
 
-When both the level and trend change, there is no single effect that applies to every post-policy month. The immediate effect is the level-change coefficient. Twelve months later, the trend change has accumulated for twelve periods. The confidence interval must use the covariance between the two coefficients as well as their separate variances. Reporting one coefficient as “the policy effect” misses this dynamic structure.
+### ITS projects the untreated path forward
 
-### Plot the Series Before Estimating
+The no-programme line is a forecast from assumptions and pre-programme evidence. It is never an observed untreated outcome. Keep returning to that point when learners are tempted to treat the line as fact.
 
-The raw plot is the first diagnostic, not a decorative result. Look for the baseline trend, repeated seasonal movement, isolated outliers, missing periods, and any visible transition around implementation. Also ask whether the proposed impact shape looks remotely compatible with the data. If the series contains a structural break long before the policy, a single linear pre-trend may already be implausible.
+**Sources:** Lopez Bernal et al.
 
-### Seasonality Belongs in the Mean Model
+### Specify the plausible effect shape before estimation
 
-Monthly health outcomes often have strong annual cycles. If a policy begins in January, a winter peak can be mistaken for a policy jump or decline. Fourier terms give us a compact way to represent a smooth annual cycle; month indicators are another transparent option. The choice should reflect how the outcome behaves. Omitting seasonality does not merely make the plot untidy—it can distort the intervention terms and leave strong residual structure.
+Use delivery knowledge to choose immediate, gradual, combined, temporary, or phased effects. If the shape is selected from the outcome graph, the analysis has already used the answer to choose the question.
 
-### Autocorrelation Belongs in the Error Model
+### Segmented regression separates level and trend changes
 
-After accounting for the expected mean trajectory, adjacent residuals may still be correlated. Ordinary least squares treats them as independent, so its uncertainty can be misleading. In the simulation we know the errors follow an AR(1) process, making AR(1) generalized least squares a sensible model. In real work we would inspect residual time plots, ACF and PACF patterns, and compare plausible structures rather than assuming AR(1) by habit.
+The announcement pulse represents a short, prespecified response. The rollout indicator represents an immediate operational change. Time after rollout represents a change in slope. Seasonality and errors are separate parts of the model.
 
-### A Concurrent Shock Can Mimic the Policy
+**Sources:** Wagner et al.
 
-This is the central causal threat in an uncontrolled ITS. If a strike, recession, eligibility change, or second policy begins on the same date, segmented regression cannot decide which event caused the break. Better standard errors do not help because this is not an uncertainty problem; it is an identification problem. A dated context timeline and substantive investigation are therefore part of the analysis.
+### Post-intervention time starts at zero
 
-### Measurement Must Not Break With the Policy
+Emphasize that the two parameterizations can span the same fitted model. The problem is interpretation: multiplying calendar time by the indicator shifts the rollout coefficient to the study origin.
 
-The outcome has to mean the same thing across the interruption. Check definitions, denominators, system coverage, coding practices, and population composition. A new reporting system introduced with a policy may produce a clean and precisely estimated level change, but that does not make it a policy effect. A comparison series also cannot repair a measurement change that affects only the treated series.
+**Sources:** Xiao et al.
 
-### Timing Should Follow Implementation, Not Significance
+### The effect changes with the horizon
 
-Formal launch dates are not always the correct impact dates. People may anticipate a rule, implementation may phase in, or effects may take time to emerge. Represent those features when implementation evidence supports them. What we should not do is move the date or try many lags until a significant estimate appears. The timing model should describe delivery, not optimize the result.
+With both level and slope changes, there is no single effect. The immediate, six-month, and twelve-month effects differ. Their standard errors require the covariance between the two coefficients.
 
-### A Credible Control Can Remove Shared Shocks
+### Seasonality belongs in the mean model
 
-A controlled ITS compares the change in the treated series with the contemporaneous change in an unexposed series. If both series experience the same unrelated shock, the common change can be separated from the treated-versus-control contrast. The control is only helpful when it is measured comparably, tracks a plausible untreated process, and is not itself affected by the intervention. Show both the treated series alone and the controlled contrast so the design remains inspectable.
+A regular cycle is predictable structure. It should be represented in the expected trajectory, not left for the residual correlation model to absorb.
 
-### Diagnostics Are Part of the Causal Argument
+### Serial dependence belongs in the error model
 
-Diagnostics should map onto named concerns. Compare a few plausible trend forms when curvature is substantively possible. Inspect residual dependence and seasonal structure. Represent a known transition window. Test a negative-control outcome or comparison series when available. Sensitivity analysis is strongest when each alternative answers a design question; an unrestricted menu encourages specification search and makes the conclusion harder to interpret.
+AR errors can change estimation and uncertainty; HAC methods change uncertainty without changing the fitted path. Neither approach addresses a competing intervention, bad denominator, or measurement discontinuity.
 
-### Familiar Shortcuts Create Predictable Failures
+### A comparison series can remove a shared shock
 
-Three shortcuts recur. First, two observations do not make an interrupted time series because there is no trajectory to estimate. Second, convenient post-time coding can preserve fitted values while destroying the coefficient interpretation. Third, fixing autocorrelation does not eliminate a concurrent event. These failures look different in code, but all come from treating the estimator as if it supplied the design.
+The comparison helps only if it would experience the shared shock but not the programme. Similar measurement and credible pre-programme movement matter more than a convenient correlation.
 
-### Report the Trajectory, Not Just Coefficients
+**Sources:** Lopez Bernal, Cummins, and Gasparrini.
 
-A defensible report tells the reader what was interrupted, when, and why that impact shape was expected. It documents the observation frequency, outcome definition, denominator, and measurement process. It shows the observed, fitted, and no-policy trajectories, then reports immediate and horizon-specific effects with uncertainty. Finally, it states the remaining concurrent-event and measurement threats so the causal conclusion is proportionate to the evidence.
+### A control cannot repair a treated-only measurement break
 
-### The Labs Move From Mechanics to Design
+Use the scenario table to distinguish design problems. A shared shock can be differenced out. A reporting change unique to the programme area is observationally equivalent to a programme effect in these series.
 
-The first lab makes the segmented-regression machinery transparent. Learners construct the variables, see the coding trap, model autocorrelation, and calculate horizon effects. The second lab turns to identification. It compares a valid case, an omitted-seasonality specification, a shared concurrent shock, and a treated-only measurement break. The controlled model can address the shared shock, but it cannot tell a real policy effect from a treated-only measurement discontinuity.
+### Contextual variables need a causal role
 
-### Sources
+Start with a causal story. Do not adjust for variables changed by the programme. Treat correlated indicators of the same pressure as alternatives. Require common coverage and defensible future support.
 
-This slide collects the references supporting the deck. It does not need a spoken walkthrough; use it to point learners to the applied tutorial, controlled-ITS guidance, parameterization warning, segmented-regression introduction, and risk-of-bias framework.
+**Sources:** VanderWeele.
 
-### The Design Makes the Break Causal
+### Fit is not counterfactual performance
 
-Close with the practical sequence. Plot the series. Specify the timing and expected impact shape from implementation knowledge. Model seasonality and serial dependence. Then ask whether another event, reporting change, or population shift could have produced the same result. A significant break is an estimate. It becomes a causal claim only when the counterfactual and the surrounding design are credible.
+In-sample fit rewards flexibility on known data. Validation asks whether the model predicts later untreated observations. The latter is closer to the task required after rollout.
+
+### Validate at the horizons the evaluation will report
+
+Use expanding windows and identical forecast origins. Compare three-, six-, and twelve-month errors because a model strong at one step can drift badly when recursively extended.
+
+**Sources:** Bergmeir, Hyndman, and Koo.
+
+### Preserve model disagreement
+
+The validation winner is the primary model, but a near-performing model with different dynamics should remain visible. Shared conclusions are stronger; divergence shows dependence on assumptions.
+
+### Cumulative effects depend on exposure and recursion
+
+Rate effects and cumulative closure counts answer different questions. Applying expected rates to the observed stock conditions on the stock actually exposed; simulating a no-programme stock lets exposure evolve differently. Label the primary choice and show the alternative.
+
+### Prediction intervals are not causal confidence intervals
+
+Forecast intervals condition on the model. They do not automatically include uncertainty about model choice, scope, measurement, or confounding. A narrow interval can coexist with a weak causal design.
+
+### Stop when the predictors leave their training support
+
+The later context range extends far beyond training. Supplying the extreme value to the equation merely forces the old coefficient to extrapolate. It does not validate the forecast.
+
+### Sensitivity checks should name the threat
+
+Each row changes one assumption tied to a concern: timing, baseline, anomaly, boundary, or transition. Do not rank rows by significance. Ask whether the substantive conclusion survives credible alternatives.
+
+### Placebo dates are diagnostics, not magic p-values
+
+False pre-programme dates show how often the same local specification creates large discontinuities. Because dates overlap and rollout was not randomized, the comparison is a stability diagnostic rather than randomisation inference.
+
+### Report a chain of evidence
+
+A useful report moves from definitions and provenance to validation, trajectories, effects, sensitivity, and the remaining alternative explanations. Coefficients appear inside that chain rather than replacing it.
+
+### The labs build the complete workflow
+
+The first lab creates trustworthy measures and segmented effects. The second confronts identification threats. The third selects and reports a short-horizon counterfactual without using post-rollout outcomes.
+
+### The design makes the break interpretable
+
+Close by resolving the opening claim. Data validation, delivery-led timing, outcome-free counterfactual selection, and explicit limits are the practical standard. Statistical significance is one detail, not the conclusion.
+
+## Optional Technical Appendix
+
+### Dynamic intervention models are different tools
+
+An autoregressive outcome term models persistence in the series. Distributed pulses model a known response profile. Autoregressive errors model residual dependence. Do not mix them without a clear mechanism and pre-programme validation.
+
+### ARDL asks about long-run relationships
+
+ARDL examines a stable long-run relationship plus short-run adjustment. Verify that no series is integrated of order two, choose lag orders on a common sample, and respect an inconclusive bounds region. Even clear cointegration does not identify the programme effect.
+
+**Sources:** Pesaran, Shin, and Smith; Natsiopoulos and Tzeremes.
+
+### Model selection adds uncertainty
+
+Refit-and-reselect resampling carries parameter and selection uncertainty through recursive forecasting. Those intervals remain model-based because resampling cannot recreate undocumented confounding or boundary changes.
+
+### Complexity cannot rescue weak design
+
+End the appendix with a governance rule: every added method must test a named assumption, improve untreated forecasts, or represent a known mechanism. Complexity is not evidence by itself.

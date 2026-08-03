@@ -1,5 +1,5 @@
 ---
-title: "Lab: Interrupted Time Series Mechanics"
+title: "Lab: Interrupted Time Series Data and Mechanics"
 format:
   html: default
 execute:
@@ -9,53 +9,44 @@ execute:
 
 ## How To Use This Page
 
-Use this as the first hands-on interrupted time series lab.
+Use this as the first interrupted time-series lab.
 
 [Download the R Jupyter notebook](notebooks/interrupted-time-series-mechanics-lab.ipynb){.cta-button download="interrupted-time-series-mechanics-lab.ipynb"}
 
-- Keep the [Interrupted Time Series](../notes/other-methods/interrupted-time-series.qmd) note open in another tab.
-- Run every step in order so the coding and interpretation remain aligned.
-- Record immediate, trend-change, and horizon-specific effects separately.
-- End with a design judgment that distinguishes estimation from causal identification.
+- Work through the data system before fitting a model.
+- Treat the repair-service records as a deterministic teaching simulation, not evidence about a real service.
+- Keep the announcement and operational dates fixed.
+- Hand back the validation table, stock-flow reconciliation, model comparison, horizon effects, and design judgment.
 
 ::: {.callout-note}
-The code is shown but not executed when the site is rendered. The downloadable notebook is designed to run from top to bottom with an R kernel.
+The code is shown but not executed when the site is rendered. The downloadable notebook runs offline and recreates every value from the fixed seed below.
 :::
 
 ## Training Goal
 
-Use a deterministic clean-air policy simulation to make the core ITS mechanics inspectable:
+By the end of the lab, you should be able to:
 
-1. construct the intervention variables correctly
-2. interpret level and trend changes
-3. expose the common post-intervention time-coding error
-4. diagnose and model residual autocorrelation
-5. calculate effects at policy-relevant horizons
-6. plot the observed and estimated no-policy trajectories
+1. validate a regular monthly time series;
+2. distinguish stocks, flows, balancing residuals, counts, and exposure-adjusted rates;
+3. document and test an anomalous source value;
+4. encode announcement, rollout, transition, and post-rollout time correctly;
+5. compare segmented OLS with AR(1) generalized least squares; and
+6. estimate immediate and horizon-specific effects with valid covariance calculations.
 
-## Dataset At A Glance
+## The Synthetic Service
 
-- Unit: one city observed monthly
-- Outcome: emergency respiratory admissions per 100,000
-- Window: January 2018 to December 2025
-- Intervention: clean-air policy beginning January 2023
-- Known data-generating effect: `-4` immediately and `-0.10` per month in the post-policy trend
-- Other structure: annual seasonality and AR(1) errors with correlation `0.55`
+A public housing-repairs service announces an operational improvement programme in January 2021 and begins rollout in April 2021. The first three rollout months are transitional. At rollout, responsibility for 620 open cases also transfers outside the reporting boundary.
 
-The data are simulated so we can compare the fitted model with a known design. That makes the example useful for learning mechanics, but it does not remove the causal assumptions that would matter with real data.
+The extract contains:
 
-## What To Hand Back
+- the stock of open cases at month end;
+- flows of new requests and closures;
+- closure categories;
+- the number of eligible properties;
+- one deliberately corrupted stock value; and
+- an incomplete extract used only to demonstrate a missing-period audit.
 
-By the end of the lab, report:
-
-- the correctly coded interruption variables
-- the OLS and AR(1) GLS intervention estimates
-- why the incorrect parameterization changes the level coefficient without changing fitted values
-- the estimated immediate, 12-month, and 24-month effects
-- what the residual diagnostics suggest
-- one reason the model alone would still be insufficient for a causal claim
-
-## Step 1: Load Packages
+## Step 1: Load Packages And Generate The Data
 
 ```{r}
 required_packages <- c("ggplot2", "nlme")
@@ -72,354 +63,435 @@ if (length(missing_packages) > 0) {
 }
 
 invisible(lapply(required_packages, library, character.only = TRUE))
-```
 
-## Step 2: Simulate The Monthly Series
+simulate_repairs <- function(seed = 48127L) {
+  set.seed(seed)
+  n_months <- 132L
+  announcement_time <- 85L
+  implementation_time <- 88L
+  time <- seq_len(n_months)
+  date <- seq(as.Date("2014-01-01"), by = "month", length.out = n_months)
+  announcement <- as.integer(time == announcement_time)
+  implemented <- as.integer(time >= implementation_time)
+  time_after <- pmax(0L, time - implementation_time)
+  transition <- as.integer(time %in% implementation_time:(implementation_time + 2L))
+  season_sin <- sin(2 * pi * time / 12)
+  season_cos <- cos(2 * pi * time / 12)
+  demand_pressure <- 100 + 0.10 * time + 5 * season_sin +
+    as.numeric(arima.sim(list(ar = 0.45), n = n_months, sd = 1.3))
+  service_noise <- as.numeric(arima.sim(list(ar = 0.60), n = n_months, sd = 10))
+  programme_effect <- 70 * implemented + 1.1 * time_after - 25 * transition
 
-```{r}
-set.seed(20260730)
+  completed <- pmax(1L, round(
+    735 + 0.30 * time + 20 * season_cos + 0.9 * (demand_pressure - 100) +
+      programme_effect + service_noise
+  ))
+  withdrawn <- pmax(1L, round(72 + 5 * season_sin + rnorm(n_months, 0, 3)))
+  transferred <- pmax(1L, round(28 + rnorm(n_months, 0, 2)))
+  closures <- completed + withdrawn + transferred
+  new_requests <- pmax(1L, round(
+    875 + 0.55 * time + 17 * season_sin + 1.2 * (demand_pressure - 100) +
+      rnorm(n_months, 0, 8)
+  ))
+  scope_change <- ifelse(time == implementation_time, -620L, 0L)
 
-n_months <- 96L
-interruption_time <- 61L
+  open_cases <- integer(n_months)
+  open_cases[[1]] <- 4400L
+  for (index in 2:n_months) {
+    open_cases[[index]] <- open_cases[[index - 1L]] +
+      new_requests[[index]] - closures[[index]] + scope_change[[index]]
+  }
 
-its_data <- data.frame(
-  time = seq_len(n_months),
-  date = seq(as.Date("2018-01-01"), by = "month", length.out = n_months)
-)
+  eligible_properties <- round(24500 + 9 * time - 1100 * implemented)
+  published_open_cases <- open_cases
+  published_open_cases[[50]] <- round(open_cases[[50]] * 0.38)
 
-its_data$intervention <- as.integer(its_data$time >= interruption_time)
-its_data$time_after <- pmax(0L, its_data$time - interruption_time)
-its_data$season_sin <- sin(2 * pi * its_data$time / 12)
-its_data$season_cos <- cos(2 * pi * its_data$time / 12)
+  data.frame(
+    time,
+    date,
+    announcement,
+    implemented,
+    time_after,
+    transition,
+    season_sin,
+    season_cos,
+    demand_pressure,
+    completed,
+    withdrawn,
+    transferred,
+    closures,
+    new_requests,
+    scope_change,
+    open_cases,
+    published_open_cases,
+    eligible_properties
+  )
+}
 
-its_data$ar1_error <- as.numeric(
-  arima.sim(model = list(ar = 0.55), n = n_months, sd = 1)
-)
-
-its_data$admissions_rate <- 70 +
-  0.08 * its_data$time -
-  4 * its_data$intervention -
-  0.10 * its_data$time_after +
-  6 * its_data$season_sin +
-  2 * its_data$season_cos +
-  its_data$ar1_error
+source_data <- simulate_repairs()
+incomplete_extract <- source_data[-40L, ]
 
 stopifnot(
-  nrow(its_data) == 96L,
-  all(diff(its_data$date) > 0),
-  its_data$intervention[interruption_time] == 1L,
-  its_data$time_after[interruption_time] == 0L,
-  its_data$time_after[interruption_time + 12L] == 12L,
-  all(is.finite(its_data$admissions_rate))
+  nrow(source_data) == 132L,
+  identical(source_data$date, seq(
+    as.Date("2014-01-01"),
+    by = "month",
+    length.out = 132L
+  )),
+  !anyDuplicated(source_data$date),
+  all(source_data$time_after[source_data$implemented == 1L][1] == 0L)
+)
+```
+
+## Step 2: Audit Dates, Categories, And Schema
+
+```{r}
+expected_dates <- seq(
+  min(incomplete_extract$date),
+  max(incomplete_extract$date),
+  by = "month"
 )
 
-head(its_data)
-tail(its_data)
+missing_dates <- setdiff(expected_dates, incomplete_extract$date)
+
+validation_table <- data.frame(
+  Check = c(
+    "Unique dates",
+    "Complete source calendar",
+    "Incomplete extract detects one gap",
+    "Closure categories reconcile",
+    "No missing core measures"
+  ),
+  Passed = c(
+    !anyDuplicated(source_data$date),
+    identical(source_data$date, seq(min(source_data$date), max(source_data$date), by = "month")),
+    length(missing_dates) == 1L,
+    all(source_data$closures == source_data$completed + source_data$withdrawn + source_data$transferred),
+    !anyNA(source_data[c("published_open_cases", "new_requests", "closures")])
+  )
+)
+
+validation_table
+missing_dates
+
+stopifnot(all(validation_table$Passed))
+```
+
+The incomplete extract is never used for estimation. It exists to show that checking the number of rows is weaker than checking the exact expected calendar.
+
+## Step 3: Reconcile The Stock And Flows
+
+For every month after the first:
+
+$$
+\text{open}_t = \text{open}_{t-1} + \text{requests}_t - \text{closures}_t + \text{scope}_t.
+$$
+
+```{r}
+source_data$lag_published_open <- c(NA, head(source_data$published_open_cases, -1L))
+source_data$balancing_inflow_without_scope <-
+  source_data$published_open_cases - source_data$lag_published_open + source_data$closures
+source_data$balancing_inflow_with_scope <-
+  source_data$balancing_inflow_without_scope - source_data$scope_change
+source_data$reconciliation_gap <-
+  source_data$balancing_inflow_with_scope - source_data$new_requests
+
+largest_gaps <- source_data[order(abs(source_data$reconciliation_gap), decreasing = TRUE), c(
+  "date",
+  "published_open_cases",
+  "new_requests",
+  "scope_change",
+  "balancing_inflow_without_scope",
+  "balancing_inflow_with_scope",
+  "reconciliation_gap"
+)]
+
+head(largest_gaps, 5)
 ```
 
 Checkpoint:
 
-- Why is `time_after` zero in the first intervention month?
-- Which terms describe the no-policy trajectory and which terms encode the intervention effect?
+- Why does omitting `scope_change` make the rollout month look like an unusual inflow?
+- Why does the corrupted stock create gaps in two adjacent months?
+- When observed inflows are unavailable, which unobserved processes enter the balancing residual?
 
-## Step 3: Plot Before Estimating
+## Step 4: Document And Repair The Source Anomaly
 
-```{r, fig.height=5.2}
-ggplot(its_data, aes(x = date, y = admissions_rate)) +
-  geom_line(linewidth = 0.65, colour = "#24527a") +
-  geom_point(size = 1.25, colour = "#24527a") +
-  geom_vline(
-    xintercept = its_data$date[interruption_time],
-    linetype = "dashed",
-    colour = "#a23b3b"
+The published stock at February 2018 collapses for one month and rebounds without matching flows. The primary treatment uses centred interpolation; omission and retention are reserved for sensitivity analysis.
+
+```{r}
+anomaly_date <- as.Date("2018-02-01")
+anomaly_index <- which(source_data$date == anomaly_date)
+
+interpolated_value <- round(mean(source_data$published_open_cases[c(
+  anomaly_index - 1L,
+  anomaly_index + 1L
+)]))
+
+imputation_log <- data.frame(
+  date = anomaly_date,
+  variable = "published_open_cases",
+  original_value = source_data$published_open_cases[anomaly_index],
+  replacement_value = interpolated_value,
+  rule = "Centred interpolation from adjacent months",
+  reason = "One-month collapse is incompatible with recorded flows"
+)
+
+analysis_data <- source_data
+analysis_data$analysis_open_cases <- analysis_data$published_open_cases
+analysis_data$analysis_open_cases[anomaly_index] <- interpolated_value
+
+imputation_log
+
+stopifnot(
+  nrow(imputation_log) == 1L,
+  imputation_log$replacement_value > imputation_log$original_value,
+  analysis_data$analysis_open_cases[anomaly_index] == interpolated_value
+)
+```
+
+## Step 5: Construct Counts, Exposure, And Rates
+
+Closures are the event count. The cases open at the end of the previous month are the population exposed to closure during the current month.
+
+```{r}
+analysis_data$lag_open_cases <- c(NA, head(analysis_data$analysis_open_cases, -1L))
+analysis_data$closure_rate_per_1000 <-
+  1000 * analysis_data$closures / analysis_data$lag_open_cases
+analysis_data$completed_share <- analysis_data$completed / analysis_data$closures
+analysis_data$closures_per_1000_properties <-
+  1000 * analysis_data$closures / analysis_data$eligible_properties
+
+measure_summary <- data.frame(
+  Measure = c(
+    "Monthly closures",
+    "Closures per 1,000 open cases",
+    "Closures per 1,000 eligible properties",
+    "Completed share of closures"
+  ),
+  Mean = c(
+    mean(analysis_data$closures),
+    mean(analysis_data$closure_rate_per_1000, na.rm = TRUE),
+    mean(analysis_data$closures_per_1000_properties),
+    mean(analysis_data$completed_share)
+  )
+)
+
+measure_summary
+
+stopifnot(
+  all(is.finite(analysis_data$closure_rate_per_1000[-1L])),
+  all(analysis_data$completed_share > 0 & analysis_data$completed_share < 1)
+)
+```
+
+Write one sentence for the question answered by each measure. Do not use "programme effect" until you have defined the counterfactual.
+
+## Step 6: Plot The Series And Event Timeline
+
+```{r, fig.height=6, fig.width=10}
+announcement_date <- analysis_data$date[analysis_data$announcement == 1L]
+implementation_date <- analysis_data$date[min(which(analysis_data$implemented == 1L))]
+
+ggplot(analysis_data, aes(date, closure_rate_per_1000)) +
+  geom_line(colour = "#24527a", linewidth = 0.7, na.rm = TRUE) +
+  geom_point(colour = "#24527a", size = 1, na.rm = TRUE) +
+  geom_vline(xintercept = announcement_date, linetype = "dotted", colour = "#c59b3d") +
+  geom_vline(xintercept = implementation_date, linetype = "dashed", colour = "#c05a2a") +
+  annotate(
+    "rect",
+    xmin = implementation_date,
+    xmax = analysis_data$date[min(which(analysis_data$implemented == 1L)) + 2L],
+    ymin = -Inf,
+    ymax = Inf,
+    alpha = 0.08,
+    fill = "#c05a2a"
   ) +
-  labs(
-    x = NULL,
-    y = "Admissions per 100,000",
-    title = "Respiratory admissions before and after the clean-air policy"
-  ) +
+  labs(x = NULL, y = "Closures per 1,000 open cases") +
   theme_minimal(base_size = 12)
 ```
 
-Before fitting a model, describe:
+Checkpoint:
 
-- the direction of the baseline trend
-- the seasonal pattern
-- the apparent immediate change
-- whether the post-policy trend appears to differ
-- any unusual observations or missing periods
+- Is the annual cycle plausible?
+- Is a single linear pre-rollout trend adequate as a transparent benchmark?
+- What different mechanisms could operate at announcement and rollout?
 
-## Step 4: Fit The Transparent OLS Model
+## Step 7: Fit The Transparent Segmented Model
 
 ```{r}
-its_formula <- admissions_rate ~
-  time + intervention + time_after + season_sin + season_cos
+model_data <- subset(analysis_data, is.finite(closure_rate_per_1000))
 
-ols_fit <- lm(its_formula, data = its_data)
-summary(ols_fit)
+its_formula <- closure_rate_per_1000 ~
+  time + announcement + implemented + time_after + season_sin + season_cos
 
-ols_terms <- coef(summary(ols_fit))[c("intervention", "time_after"), ]
+ols_fit <- lm(its_formula, data = model_data)
+ols_terms <- coef(summary(ols_fit))[c("announcement", "implemented", "time_after"), ]
 ols_terms
 
 stopifnot(
-  coef(ols_fit)[["intervention"]] < 0,
-  coef(ols_fit)[["time_after"]] < 0
+  coef(ols_fit)[["implemented"]] > 0,
+  coef(ols_fit)[["time_after"]] > 0,
+  all(is.finite(ols_terms))
 )
 ```
 
-Interpret the two intervention terms in outcome units:
+The rollout term estimates an immediate rate change. The post-rollout trend term changes the slope. Neither coefficient by itself is "the effect" at every later month.
 
-- `intervention`: the estimated immediate change in admissions per 100,000
-- `time_after`: the estimated monthly change in trend after the policy
-
-Do not interpret `time_after` as the total effect at a later month.
-
-## Step 5: Expose The Post-Time Coding Trap
+## Step 8: Expose The Post-Time Coding Trap
 
 ```{r}
-its_data$wrong_time_after <- its_data$time * its_data$intervention
+model_data$wrong_time_after <- model_data$time * model_data$implemented
 
 wrong_fit <- lm(
-  admissions_rate ~
-    time + intervention + wrong_time_after + season_sin + season_cos,
-  data = its_data
+  closure_rate_per_1000 ~
+    time + announcement + implemented + wrong_time_after + season_sin + season_cos,
+  data = model_data
 )
 
 parameterization_comparison <- data.frame(
-  Model = c("Correct zero-based post time", "Incorrect time × intervention"),
-  `Intervention coefficient` = c(
-    coef(ols_fit)[["intervention"]],
-    coef(wrong_fit)[["intervention"]]
-  ),
-  `Slope-change coefficient` = c(
-    coef(ols_fit)[["time_after"]],
-    coef(wrong_fit)[["wrong_time_after"]]
-  ),
+  Specification = c("Elapsed post-time", "Calendar time × implemented"),
+  Implementation = c(coef(ols_fit)[["implemented"]], coef(wrong_fit)[["implemented"]]),
+  Trend_change = c(coef(ols_fit)[["time_after"]], coef(wrong_fit)[["wrong_time_after"]]),
   check.names = FALSE
 )
 
-parameterization_comparison
-
 maximum_fitted_difference <- max(abs(fitted(ols_fit) - fitted(wrong_fit)))
+parameterization_comparison
 maximum_fitted_difference
 
 stopifnot(
   maximum_fitted_difference < 1e-8,
-  abs(coef(ols_fit)[["intervention"]] -
-    coef(wrong_fit)[["intervention"]]) > 1
+  abs(coef(ols_fit)[["implemented"]] - coef(wrong_fit)[["implemented"]]) > 1
 )
 ```
 
-The fitted values are the same because the two columns span the same model space. The intervention coefficient is different because the incorrect interaction uses the beginning of the study—not the interruption—as its time origin. This is an interpretation error, not a model-fit warning [@xiao2021parameterization].
+Identical fitted values do not make the second implementation coefficient meaningful [@xiao2021parameterization].
 
-## Step 6: Diagnose Serial Dependence
+## Step 9: Diagnose Dependence And Fit AR(1) Errors
 
 ```{r, fig.height=4.8, fig.width=9}
 old_par <- par(mfrow = c(1, 2), mar = c(4, 4, 3, 1))
-
-acf(
-  residuals(ols_fit),
-  main = "OLS residual ACF",
-  xlab = "Lag (months)"
-)
-pacf(
-  residuals(ols_fit),
-  main = "OLS residual PACF",
-  xlab = "Lag (months)"
-)
-
+acf(residuals(ols_fit), main = "OLS residual ACF", xlab = "Lag (months)")
+pacf(residuals(ols_fit), main = "OLS residual PACF", xlab = "Lag (months)")
 par(old_par)
-```
 
-Checkpoint:
-
-- Is the residual dependence concentrated at lag one or spread across several lags?
-- Does the seasonal adjustment appear to have removed the annual cycle?
-- What would be risky about choosing an error model from one diagnostic alone?
-
-## Step 7: Refit With AR(1) Errors
-
-```{r}
 gls_fit <- gls(
   its_formula,
-  data = its_data,
+  data = model_data,
   correlation = corAR1(form = ~ time),
   method = "REML"
 )
 
-gls_terms <- summary(gls_fit)$tTable[c("intervention", "time_after"), ]
+gls_terms <- summary(gls_fit)$tTable[c("announcement", "implemented", "time_after"), ]
 
 model_comparison <- data.frame(
-  Model = rep(c("OLS", "GLS with AR(1) errors"), each = 2),
-  Term = rep(c("Immediate level change", "Monthly trend change"), times = 2),
+  Model = rep(c("OLS", "AR(1) GLS"), each = 2),
+  Term = rep(c("Immediate rollout", "Monthly trend change"), 2),
   Estimate = c(
-    ols_terms[, "Estimate"],
-    gls_terms[, "Value"]
+    coef(ols_fit)[c("implemented", "time_after")],
+    coef(gls_fit)[c("implemented", "time_after")]
   ),
-  `Standard error` = c(
-    ols_terms[, "Std. Error"],
-    gls_terms[, "Std.Error"]
-  ),
-  check.names = FALSE
+  Standard_error = c(
+    coef(summary(ols_fit))[c("implemented", "time_after"), "Std. Error"],
+    gls_terms[c("implemented", "time_after"), "Std.Error"]
+  )
 )
 
 model_comparison
 
 stopifnot(
-  coef(gls_fit)[["intervention"]] < 0,
-  coef(gls_fit)[["time_after"]] < 0,
   all(is.finite(model_comparison$Estimate)),
-  all(is.finite(model_comparison$`Standard error`))
+  all(model_comparison$Standard_error > 0)
 )
 ```
 
-The GLS model changes how dependence enters estimation and uncertainty. It does not address a concurrent policy, a reporting change, or another causal threat.
+State what the AR(1) model changes. Then name one concurrent event it cannot address.
 
-## Step 8: Check The Normalized GLS Residuals
-
-```{r, fig.height=4.8, fig.width=9}
-normalized_residuals <- residuals(gls_fit, type = "normalized")
-
-old_par <- par(mfrow = c(1, 2), mar = c(4, 4, 3, 1))
-
-plot(
-  its_data$date,
-  normalized_residuals,
-  type = "o",
-  pch = 16,
-  cex = 0.6,
-  xlab = "Date",
-  ylab = "Normalized residual",
-  main = "GLS residuals over time"
-)
-abline(h = 0, lty = 2, col = "gray50")
-
-acf(
-  normalized_residuals,
-  main = "Normalized GLS residual ACF",
-  xlab = "Lag (months)"
-)
-
-par(old_par)
-```
-
-Describe whether meaningful serial structure remains. Do not treat a quieter ACF as evidence that the counterfactual is causally valid.
-
-## Step 9: Estimate Effects At Policy-Relevant Horizons
+## Step 10: Estimate Effects At Policy-Relevant Horizons
 
 ```{r}
-effect_at_horizon <- function(model, h) {
-  beta_hat <- coef(model)
-  beta_vcov <- vcov(model)
-  weights <- c(intervention = 1, time_after = h)
-  relevant_vcov <- beta_vcov[names(weights), names(weights), drop = FALSE]
-
-  estimate <- sum(weights * beta_hat[names(weights)])
-  standard_error <- sqrt(
-    as.numeric(t(weights) %*% relevant_vcov %*% weights)
-  )
+effect_at_horizon <- function(model, horizon) {
+  estimates <- coef(model)
+  covariance <- vcov(model)
+  weights <- c(implemented = 1, time_after = horizon)
+  relevant_covariance <- covariance[names(weights), names(weights), drop = FALSE]
+  estimate <- sum(weights * estimates[names(weights)])
+  standard_error <- sqrt(as.numeric(t(weights) %*% relevant_covariance %*% weights))
 
   data.frame(
-    Horizon = h,
+    Horizon = horizon,
     Estimate = estimate,
-    `Standard error` = standard_error,
-    `Lower 95% CI` = estimate - qnorm(0.975) * standard_error,
-    `Upper 95% CI` = estimate + qnorm(0.975) * standard_error,
-    check.names = FALSE
+    Standard_error = standard_error,
+    Lower_95 = estimate - qnorm(0.975) * standard_error,
+    Upper_95 = estimate + qnorm(0.975) * standard_error
   )
 }
 
-horizon_effects <- do.call(
-  rbind,
-  lapply(c(0, 12, 24), function(h) effect_at_horizon(gls_fit, h))
-)
+horizon_effects <- do.call(rbind, lapply(c(0, 6, 12), function(horizon) {
+  effect_at_horizon(gls_fit, horizon)
+}))
 
-horizon_effects$Horizon <- c("Immediate", "12 months", "24 months")
+horizon_effects$Horizon <- c("Immediate", "6 months", "12 months")
 horizon_effects
 
 stopifnot(
-  all(is.finite(as.matrix(horizon_effects[-1]))),
-  all(horizon_effects$Estimate < 0),
-  horizon_effects$Estimate[3] < horizon_effects$Estimate[1]
+  all(is.finite(as.matrix(horizon_effects[-1L]))),
+  all(horizon_effects$Estimate > 0)
 )
 ```
 
-Explain why the confidence intervals are not obtained by adding the separate standard errors for the level and trend coefficients.
+Explain why the confidence interval cannot be obtained by adding the separate standard errors of the rollout and trend-change coefficients.
 
-## Step 10: Plot The Fitted And No-Policy Trajectories
+## Step 11: Plot Fitted And No-Programme Trajectories
 
-```{r, fig.height=5.5}
+```{r, fig.height=5.5, fig.width=10}
 counterfactual_data <- transform(
-  its_data,
-  intervention = 0L,
+  model_data,
+  announcement = 0L,
+  implemented = 0L,
   time_after = 0L
 )
 
-its_data$fitted_policy <- as.numeric(predict(gls_fit, newdata = its_data))
-its_data$counterfactual <- as.numeric(
-  predict(gls_fit, newdata = counterfactual_data)
-)
+model_data$fitted_programme <- as.numeric(predict(gls_fit, newdata = model_data))
+model_data$no_programme <- as.numeric(predict(gls_fit, newdata = counterfactual_data))
 
 trajectory_data <- rbind(
-  data.frame(
-    date = its_data$date,
-    series = "Fitted policy trajectory",
-    value = its_data$fitted_policy
-  ),
-  data.frame(
-    date = its_data$date,
-    series = "Estimated no-policy trajectory",
-    value = its_data$counterfactual
-  )
+  data.frame(date = model_data$date, series = "Fitted programme path", value = model_data$fitted_programme),
+  data.frame(date = model_data$date, series = "Estimated no-programme path", value = model_data$no_programme)
 )
 
-ggplot(its_data, aes(x = date, y = admissions_rate)) +
-  geom_point(size = 1.1, alpha = 0.65, colour = "#4d4d4d") +
+ggplot(model_data, aes(date, closure_rate_per_1000)) +
+  geom_point(size = 1, alpha = 0.55, colour = "#4b615b") +
   geom_line(
     data = trajectory_data,
     aes(y = value, colour = series, linetype = series),
     linewidth = 0.9
   ) +
-  geom_vline(
-    xintercept = its_data$date[interruption_time],
-    linetype = "dashed",
-    colour = "#a23b3b"
-  ) +
-  scale_colour_manual(
-    values = c(
-      "Fitted policy trajectory" = "#24527a",
-      "Estimated no-policy trajectory" = "#bf6b21"
-    )
-  ) +
-  scale_linetype_manual(
-    values = c(
-      "Fitted policy trajectory" = "solid",
-      "Estimated no-policy trajectory" = "longdash"
-    )
-  ) +
-  labs(
-    x = NULL,
-    y = "Admissions per 100,000",
-    colour = NULL,
-    linetype = NULL
-  ) +
+  geom_vline(xintercept = implementation_date, linetype = "dashed", colour = "#c05a2a") +
+  scale_colour_manual(values = c(
+    "Fitted programme path" = "#24527a",
+    "Estimated no-programme path" = "#bf6b21"
+  )) +
+  labs(x = NULL, y = "Closures per 1,000 open cases", colour = NULL, linetype = NULL) +
   theme_minimal(base_size = 12) +
   theme(legend.position = "bottom")
 ```
 
-The graph displays the estimated counterfactual. It does not establish that no other event could have changed admissions at the same date.
+The graph makes the counterfactual inspectable. It does not rule out the same-month boundary transfer or another operational change.
 
 ## Final Design Judgment
 
-Write six sentences:
+Write seven sentences:
 
-1. State the intervention and the immediate estimand.
-2. State the 12-month estimand and estimate.
-3. Explain what the residual diagnostics changed about the model.
-4. Explain what the coding comparison taught you.
-5. Name one concurrent event or measurement change that the model could not rule out.
-6. State the causal conclusion you would defend if these were real data.
+1. Define the stock, flows, and primary exposure-adjusted outcome.
+2. Explain what the balancing residual contains when scope is omitted.
+3. State how the source anomaly was treated and which sensitivity is still needed.
+4. State the announcement, rollout, and transition periods.
+5. Report the immediate and six-month rate effects.
+6. Explain what the AR(1) error model changed.
+7. Name the strongest causal conclusion the model alone can support.
 
 ## Next Step
 
-Continue to the [ITS Design and Diagnostics Lab](interrupted-time-series-design-diagnostics-lab.qmd) to compare uncontrolled and controlled ITS under known threats to identification.
+Continue to the [ITS Design and Diagnostics Lab](interrupted-time-series-design-diagnostics-lab.qmd) to test shared shocks, phased rollout, boundary changes, measurement breaks, and placebo dates.

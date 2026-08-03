@@ -144,6 +144,8 @@ website:
               text: ITS Mechanics Lab
             - href: labs/interrupted-time-series-design-diagnostics-lab.qmd
               text: ITS Design and Diagnostics Lab
+            - href: labs/interrupted-time-series-counterfactual-validation-lab.qmd
+              text: ITS Counterfactual Validation Lab
     - id: slides
       title: "Slides"
       style: docked

@@ -144,15 +144,15 @@ Use this when the main bottleneck is screening and defending the donor pool.
 
 ## Interrupted Time Series Labs {#interrupted-time-series-labs .section-heading}
 
-<p class="section-intro">Start with the segmented-regression mechanics, then test what diagnostics and a comparison series can actually repair.</p>
+<p class="section-intro">Move from trustworthy measures and segmented-regression mechanics to identification diagnostics and outcome-free counterfactual validation.</p>
 
 ::: {.section-grid}
 ::: {.section-card}
 <span class="page-badge badge-lab">Introductory</span>
 
-### [Interrupted Time Series Mechanics](interrupted-time-series-mechanics-lab.qmd)
+### [Interrupted Time Series Data and Mechanics](interrupted-time-series-mechanics-lab.qmd)
 
-Build the intervention variables, expose the post-time coding trap, model AR(1) errors, and estimate horizon-specific effects.
+Validate stocks and flows, repair a documented anomaly, construct exposure-adjusted rates, model AR(1) errors, and estimate horizon-specific effects.
 
 [Download R notebook](notebooks/interrupted-time-series-mechanics-lab.ipynb){download="interrupted-time-series-mechanics-lab.ipynb"}
 :::
@@ -162,9 +162,19 @@ Build the intervention variables, expose the post-time coding trap, model AR(1) 
 
 ### [Interrupted Time Series Design and Diagnostics](interrupted-time-series-design-diagnostics-lab.qmd)
 
-Compare uncontrolled and controlled ITS under omitted seasonality, a shared concurrent shock, and a treated-only measurement break.
+Compare uncontrolled and controlled ITS under phased rollout, shared shocks, boundary changes, measurement breaks, and prespecified robustness checks.
 
 [Download R notebook](notebooks/interrupted-time-series-design-diagnostics-lab.ipynb){download="interrupted-time-series-design-diagnostics-lab.ipynb"}
+:::
+
+::: {.section-card}
+<span class="page-badge badge-core">Advanced applied</span>
+
+### [Interrupted Time Series Counterfactual Validation](interrupted-time-series-counterfactual-validation-lab.qmd)
+
+Screen contextual predictors, compare untreated forecasting backbones on held-out pre-rollout data, report short-horizon gaps, and reject unsupported extrapolation.
+
+[Download R notebook](notebooks/interrupted-time-series-counterfactual-validation-lab.ipynb){download="interrupted-time-series-counterfactual-validation-lab.ipynb"}
 :::
 :::
 
