@@ -139,7 +139,14 @@ stopifnot(
 timeline <- data.frame(
   date = c(announcement_date, implementation_date, implementation_date + 62, as.Date("2024-01-01")),
   event = c("Programme announced", "Operational rollout", "Transition ends", "Extreme context period"),
-  y = c(1.00, 0.72, 0.44, 0.16)
+  y = c(1.00, 0.72, 0.44, 0.16),
+  label_date = c(
+    announcement_date + 45,
+    implementation_date + 45,
+    implementation_date + 62 + 45,
+    as.Date("2024-01-01") - 45
+  ),
+  label_hjust = c(0, 0, 0, 1)
 )
 
 timeline_plot <- ggplot(timeline, aes(date, y)) +
@@ -151,7 +158,11 @@ timeline_plot <- ggplot(timeline, aes(date, y)) +
   ) +
   geom_segment(aes(xend = date, yend = 0.58), colour = gold, linewidth = 0.8) +
   geom_point(colour = accent, size = 4) +
-  geom_text(aes(label = event), hjust = 0, nudge_x = 45, colour = ink, fontface = "bold") +
+  geom_text(
+    aes(x = label_date, label = event, hjust = label_hjust),
+    colour = ink,
+    fontface = "bold"
+  ) +
   coord_cartesian(ylim = c(0, 1.12), clip = "off") +
   labs(x = NULL, y = NULL) +
   deck_theme +
