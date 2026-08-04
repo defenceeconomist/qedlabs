@@ -1,5 +1,5 @@
 ---
-title: "Lab: Interrupted Time Series Data and Mechanics"
+title: "Lab: Interrupted Time Series Foundations With Seatbelts"
 format:
   html: default
 execute:
@@ -9,489 +9,298 @@ execute:
 
 ## How To Use This Page
 
-Use this as the first interrupted time-series lab.
+This is the first interrupted time-series lab. The guided core is designed for a 45–60 minute workshop; the AR(1) section is an optional extension.
 
 [Download the R Jupyter notebook](notebooks/interrupted-time-series-mechanics-lab.ipynb){.cta-button download="interrupted-time-series-mechanics-lab.ipynb"}
 
-- Work through the data system before fitting a model.
-- Treat the repair-service records as a deterministic teaching simulation, not evidence about a real service.
-- Keep the announcement and operational dates fixed.
-- Hand back the validation table, stock-flow reconciliation, model comparison, horizon effects, and design judgment.
+- Work from the intervention date and outcome definition before looking at coefficients.
+- Compare a pre/post summary with a model that preserves the trajectory.
+- Keep level and trend changes separate.
+- Interpret log-scale estimates as percentage changes at named horizons.
 
 ::: {.callout-note}
-The code is shown but not executed when the site is rendered. The downloadable notebook runs offline and recreates every value from the fixed seed below.
+The lab uses `Seatbelts`, which is included with R. It contains monthly road-casualty series for Great Britain from January 1969 through December 1984, so no external data download is required.
 :::
 
 ## Training Goal
 
-By the end of the lab, you should be able to:
+By the end of the core lab, you should be able to:
 
-1. validate a regular monthly time series;
-2. distinguish stocks, flows, balancing residuals, counts, and exposure-adjusted rates;
-3. document and test an anomalous source value;
-4. encode announcement, rollout, transition, and post-rollout time correctly;
-5. compare segmented OLS with AR(1) generalized least squares; and
-6. estimate immediate and horizon-specific effects with valid covariance calculations.
+1. turn a monthly `ts` object into an analysis data frame;
+2. code an interruption and post-intervention time correctly;
+3. fit and interpret a seasonal segmented regression;
+4. estimate effects at policy-relevant horizons; and
+5. describe why the estimated break is not automatically causal.
 
-## The Synthetic Service
+## Step 1: Load And Describe The Data
 
-A public housing-repairs service announces an operational improvement programme in January 2021 and begins rollout in April 2021. The first three rollout months are transitional. At rollout, responsibility for 620 open cases also transfers outside the reporting boundary.
-
-The extract contains:
-
-- the stock of open cases at month end;
-- flows of new requests and closures;
-- closure categories;
-- the number of eligible properties;
-- one deliberately corrupted stock value; and
-- an incomplete extract used only to demonstrate a missing-period audit.
-
-## Step 1: Load Packages And Generate The Data
+The primary outcome is `front`: front-seat passengers killed or seriously injured each month. This is a **count**, not a fatality-only measure and not a rate. Compulsory front-seat belt wearing began on 31 January 1983, so the supplied monthly `law` indicator first equals one in February 1983 [@harvey1986seatbelts; @ukparliament2012seatbelts].
 
 ```{r}
 required_packages <- c("ggplot2", "nlme")
-
 missing_packages <- required_packages[!vapply(
   required_packages,
   requireNamespace,
   logical(1),
   quietly = TRUE
 )]
-
 if (length(missing_packages) > 0) {
   install.packages(missing_packages, repos = "https://cloud.r-project.org")
 }
-
 invisible(lapply(required_packages, library, character.only = TRUE))
 
-simulate_repairs <- function(seed = 48127L) {
-  set.seed(seed)
-  n_months <- 132L
-  announcement_time <- 85L
-  implementation_time <- 88L
-  time <- seq_len(n_months)
-  date <- seq(as.Date("2014-01-01"), by = "month", length.out = n_months)
-  announcement <- as.integer(time == announcement_time)
-  implemented <- as.integer(time >= implementation_time)
-  time_after <- pmax(0L, time - implementation_time)
-  transition <- as.integer(time %in% implementation_time:(implementation_time + 2L))
-  season_sin <- sin(2 * pi * time / 12)
-  season_cos <- cos(2 * pi * time / 12)
-  demand_pressure <- 100 + 0.10 * time + 5 * season_sin +
-    as.numeric(arima.sim(list(ar = 0.45), n = n_months, sd = 1.3))
-  service_noise <- as.numeric(arima.sim(list(ar = 0.60), n = n_months, sd = 10))
-  programme_effect <- 70 * implemented + 1.1 * time_after - 25 * transition
+data("Seatbelts", package = "datasets")
 
-  completed <- pmax(1L, round(
-    735 + 0.30 * time + 20 * season_cos + 0.9 * (demand_pressure - 100) +
-      programme_effect + service_noise
-  ))
-  withdrawn <- pmax(1L, round(72 + 5 * season_sin + rnorm(n_months, 0, 3)))
-  transferred <- pmax(1L, round(28 + rnorm(n_months, 0, 2)))
-  closures <- completed + withdrawn + transferred
-  new_requests <- pmax(1L, round(
-    875 + 0.55 * time + 17 * season_sin + 1.2 * (demand_pressure - 100) +
-      rnorm(n_months, 0, 8)
-  ))
-  scope_change <- ifelse(time == implementation_time, -620L, 0L)
+seatbelts <- as.data.frame(Seatbelts)
+seatbelts$time <- seq_len(nrow(seatbelts))
+seatbelts$date <- seq(
+  as.Date("1969-01-01"),
+  by = "month",
+  length.out = nrow(seatbelts)
+)
+seatbelts$post_time <- ifelse(
+  seatbelts$law == 1,
+  seatbelts$time - min(seatbelts$time[seatbelts$law == 1]),
+  0
+)
+seatbelts$season_sin <- sin(2 * pi * seatbelts$time / 12)
+seatbelts$season_cos <- cos(2 * pi * seatbelts$time / 12)
 
-  open_cases <- integer(n_months)
-  open_cases[[1]] <- 4400L
-  for (index in 2:n_months) {
-    open_cases[[index]] <- open_cases[[index - 1L]] +
-      new_requests[[index]] - closures[[index]] + scope_change[[index]]
-  }
+intervention_date <- min(seatbelts$date[seatbelts$law == 1])
 
-  eligible_properties <- round(24500 + 9 * time - 1100 * implemented)
-  published_open_cases <- open_cases
-  published_open_cases[[50]] <- round(open_cases[[50]] * 0.38)
-
-  data.frame(
-    time,
-    date,
-    announcement,
-    implemented,
-    time_after,
-    transition,
-    season_sin,
-    season_cos,
-    demand_pressure,
-    completed,
-    withdrawn,
-    transferred,
-    closures,
-    new_requests,
-    scope_change,
-    open_cases,
-    published_open_cases,
-    eligible_properties
-  )
-}
-
-source_data <- simulate_repairs()
-incomplete_extract <- source_data[-40L, ]
+data.frame(
+  observations = nrow(seatbelts),
+  first_month = min(seatbelts$date),
+  last_month = max(seatbelts$date),
+  first_law_month = intervention_date,
+  pre_law_months = sum(seatbelts$law == 0),
+  post_law_months = sum(seatbelts$law == 1)
+)
 
 stopifnot(
-  nrow(source_data) == 132L,
-  identical(source_data$date, seq(
-    as.Date("2014-01-01"),
-    by = "month",
-    length.out = 132L
-  )),
-  !anyDuplicated(source_data$date),
-  all(source_data$time_after[source_data$implemented == 1L][1] == 0L)
+  nrow(seatbelts) == 192L,
+  intervention_date == as.Date("1983-02-01"),
+  seatbelts$post_time[seatbelts$date == intervention_date] == 0,
+  all(diff(seatbelts$date) > 0),
+  all(seatbelts$front > 0)
 )
 ```
 
-## Step 2: Audit Dates, Categories, And Schema
+Checkpoint: why is February, rather than January, the first treated monthly observation?
 
-```{r}
-expected_dates <- seq(
-  min(incomplete_extract$date),
-  max(incomplete_extract$date),
-  by = "month"
-)
+## Step 2: Plot The Series Before Modelling
 
-missing_dates <- setdiff(expected_dates, incomplete_extract$date)
-
-validation_table <- data.frame(
-  Check = c(
-    "Unique dates",
-    "Complete source calendar",
-    "Incomplete extract detects one gap",
-    "Closure categories reconcile",
-    "No missing core measures"
-  ),
-  Passed = c(
-    !anyDuplicated(source_data$date),
-    identical(source_data$date, seq(min(source_data$date), max(source_data$date), by = "month")),
-    length(missing_dates) == 1L,
-    all(source_data$closures == source_data$completed + source_data$withdrawn + source_data$transferred),
-    !anyNA(source_data[c("published_open_cases", "new_requests", "closures")])
-  )
-)
-
-validation_table
-missing_dates
-
-stopifnot(all(validation_table$Passed))
-```
-
-The incomplete extract is never used for estimation. It exists to show that checking the number of rows is weaker than checking the exact expected calendar.
-
-## Step 3: Reconcile The Stock And Flows
-
-For every month after the first:
-
-$$
-\text{open}_t = \text{open}_{t-1} + \text{requests}_t - \text{closures}_t + \text{scope}_t.
-$$
-
-```{r}
-source_data$lag_published_open <- c(NA, head(source_data$published_open_cases, -1L))
-source_data$balancing_inflow_without_scope <-
-  source_data$published_open_cases - source_data$lag_published_open + source_data$closures
-source_data$balancing_inflow_with_scope <-
-  source_data$balancing_inflow_without_scope - source_data$scope_change
-source_data$reconciliation_gap <-
-  source_data$balancing_inflow_with_scope - source_data$new_requests
-
-largest_gaps <- source_data[order(abs(source_data$reconciliation_gap), decreasing = TRUE), c(
-  "date",
-  "published_open_cases",
-  "new_requests",
-  "scope_change",
-  "balancing_inflow_without_scope",
-  "balancing_inflow_with_scope",
-  "reconciliation_gap"
-)]
-
-head(largest_gaps, 5)
-```
-
-Checkpoint:
-
-- Why does omitting `scope_change` make the rollout month look like an unusual inflow?
-- Why does the corrupted stock create gaps in two adjacent months?
-- When observed inflows are unavailable, which unobserved processes enter the balancing residual?
-
-## Step 4: Document And Repair The Source Anomaly
-
-The published stock at February 2018 collapses for one month and rebounds without matching flows. The primary treatment uses centred interpolation; omission and retention are reserved for sensitivity analysis.
-
-```{r}
-anomaly_date <- as.Date("2018-02-01")
-anomaly_index <- which(source_data$date == anomaly_date)
-
-interpolated_value <- round(mean(source_data$published_open_cases[c(
-  anomaly_index - 1L,
-  anomaly_index + 1L
-)]))
-
-imputation_log <- data.frame(
-  date = anomaly_date,
-  variable = "published_open_cases",
-  original_value = source_data$published_open_cases[anomaly_index],
-  replacement_value = interpolated_value,
-  rule = "Centred interpolation from adjacent months",
-  reason = "One-month collapse is incompatible with recorded flows"
-)
-
-analysis_data <- source_data
-analysis_data$analysis_open_cases <- analysis_data$published_open_cases
-analysis_data$analysis_open_cases[anomaly_index] <- interpolated_value
-
-imputation_log
-
-stopifnot(
-  nrow(imputation_log) == 1L,
-  imputation_log$replacement_value > imputation_log$original_value,
-  analysis_data$analysis_open_cases[anomaly_index] == interpolated_value
-)
-```
-
-## Step 5: Construct Counts, Exposure, And Rates
-
-Closures are the event count. The cases open at the end of the previous month are the population exposed to closure during the current month.
-
-```{r}
-analysis_data$lag_open_cases <- c(NA, head(analysis_data$analysis_open_cases, -1L))
-analysis_data$closure_rate_per_1000 <-
-  1000 * analysis_data$closures / analysis_data$lag_open_cases
-analysis_data$completed_share <- analysis_data$completed / analysis_data$closures
-analysis_data$closures_per_1000_properties <-
-  1000 * analysis_data$closures / analysis_data$eligible_properties
-
-measure_summary <- data.frame(
-  Measure = c(
-    "Monthly closures",
-    "Closures per 1,000 open cases",
-    "Closures per 1,000 eligible properties",
-    "Completed share of closures"
-  ),
-  Mean = c(
-    mean(analysis_data$closures),
-    mean(analysis_data$closure_rate_per_1000, na.rm = TRUE),
-    mean(analysis_data$closures_per_1000_properties),
-    mean(analysis_data$completed_share)
-  )
-)
-
-measure_summary
-
-stopifnot(
-  all(is.finite(analysis_data$closure_rate_per_1000[-1L])),
-  all(analysis_data$completed_share > 0 & analysis_data$completed_share < 1)
-)
-```
-
-Write one sentence for the question answered by each measure. Do not use "programme effect" until you have defined the counterfactual.
-
-## Step 6: Plot The Series And Event Timeline
-
-```{r, fig.height=6, fig.width=10}
-announcement_date <- analysis_data$date[analysis_data$announcement == 1L]
-implementation_date <- analysis_data$date[min(which(analysis_data$implemented == 1L))]
-
-ggplot(analysis_data, aes(date, closure_rate_per_1000)) +
-  geom_line(colour = "#24527a", linewidth = 0.7, na.rm = TRUE) +
-  geom_point(colour = "#24527a", size = 1, na.rm = TRUE) +
-  geom_vline(xintercept = announcement_date, linetype = "dotted", colour = "#c59b3d") +
-  geom_vline(xintercept = implementation_date, linetype = "dashed", colour = "#c05a2a") +
-  annotate(
-    "rect",
-    xmin = implementation_date,
-    xmax = analysis_data$date[min(which(analysis_data$implemented == 1L)) + 2L],
-    ymin = -Inf,
-    ymax = Inf,
-    alpha = 0.08,
-    fill = "#c05a2a"
+```{r, fig.height=4.8, fig.width=10}
+ggplot(seatbelts, aes(date, front)) +
+  geom_line(linewidth = 0.6, colour = "#24527a") +
+  geom_vline(
+    xintercept = intervention_date,
+    linetype = "dashed",
+    colour = "#a23b3b"
   ) +
-  labs(x = NULL, y = "Closures per 1,000 open cases") +
+  annotate(
+    "text",
+    x = intervention_date,
+    y = max(seatbelts$front),
+    label = "Law in effect",
+    hjust = -0.08,
+    vjust = 1.2,
+    colour = "#a23b3b"
+  ) +
+  labs(
+    x = NULL,
+    y = "Front-seat passengers killed or seriously injured",
+    title = "Great Britain road casualties before and after the seatbelt law"
+  ) +
   theme_minimal(base_size = 12)
 ```
 
-Checkpoint:
+Before fitting a model, record what the graph suggests about:
 
-- Is the annual cycle plausible?
-- Is a single linear pre-rollout trend adequate as a transparent benchmark?
-- What different mechanisms could operate at announcement and rollout?
+- long-run trend;
+- annual seasonality;
+- the apparent change around February 1983; and
+- the short, 23-month post-law period.
 
-## Step 7: Fit The Transparent Segmented Model
-
-```{r}
-model_data <- subset(analysis_data, is.finite(closure_rate_per_1000))
-
-its_formula <- closure_rate_per_1000 ~
-  time + announcement + implemented + time_after + season_sin + season_cos
-
-ols_fit <- lm(its_formula, data = model_data)
-ols_terms <- coef(summary(ols_fit))[c("announcement", "implemented", "time_after"), ]
-ols_terms
-
-stopifnot(
-  coef(ols_fit)[["implemented"]] > 0,
-  coef(ols_fit)[["time_after"]] > 0,
-  all(is.finite(ols_terms))
-)
-```
-
-The rollout term estimates an immediate rate change. The post-rollout trend term changes the slope. Neither coefficient by itself is "the effect" at every later month.
-
-## Step 8: Expose The Post-Time Coding Trap
+## Step 3: Show What A Pre/Post Comparison Discards
 
 ```{r}
-model_data$wrong_time_after <- model_data$time * model_data$implemented
-
-wrong_fit <- lm(
-  closure_rate_per_1000 ~
-    time + announcement + implemented + wrong_time_after + season_sin + season_cos,
-  data = model_data
+prepost_summary <- aggregate(
+  front ~ law,
+  data = seatbelts,
+  FUN = function(x) c(mean = mean(x), sd = sd(x), months = length(x))
 )
 
-parameterization_comparison <- data.frame(
-  Specification = c("Elapsed post-time", "Calendar time × implemented"),
-  Implementation = c(coef(ols_fit)[["implemented"]], coef(wrong_fit)[["implemented"]]),
-  Trend_change = c(coef(ols_fit)[["time_after"]], coef(wrong_fit)[["wrong_time_after"]]),
-  check.names = FALSE
+prepost_table <- data.frame(
+  period = c("Before law", "Law in effect"),
+  mean_front_casualties = round(prepost_summary$front[, "mean"], 1),
+  sd_front_casualties = round(prepost_summary$front[, "sd"], 1),
+  months = prepost_summary$front[, "months"]
 )
 
-maximum_fitted_difference <- max(abs(fitted(ols_fit) - fitted(wrong_fit)))
-parameterization_comparison
-maximum_fitted_difference
+prepost_table
+```
+
+The averages mix different calendar months and ignore the pre-law trend. They also compare 169 pre-law observations with only 23 post-law observations. This is a useful description, but it is not the ITS counterfactual.
+
+## Step 4: Fit A Transparent Segmented Regression
+
+The model uses a log outcome so intervention coefficients can be converted into proportional changes. A sine/cosine pair represents annual seasonality without estimating eleven separate month coefficients.
+
+```{r}
+its_formula <- log(front) ~
+  time + law + post_time + season_sin + season_cos
+
+ols_fit <- lm(its_formula, data = seatbelts)
+
+ols_terms <- coef(summary(ols_fit))[c("law", "post_time"), ]
+ols_results <- data.frame(
+  term = c("Immediate log change", "Monthly log-trend change"),
+  estimate = ols_terms[, "Estimate"],
+  standard_error = ols_terms[, "Std. Error"],
+  p_value = ols_terms[, "Pr(>|t|)"],
+  row.names = NULL
+)
+
+ols_results
+
+immediate_percent <- 100 * (exp(coef(ols_fit)[["law"]]) - 1)
+immediate_percent
 
 stopifnot(
-  maximum_fitted_difference < 1e-8,
-  abs(coef(ols_fit)[["implemented"]] - coef(wrong_fit)[["implemented"]]) > 1
+  all(is.finite(coef(ols_fit))),
+  immediate_percent > -100,
+  length(residuals(ols_fit)) == nrow(seatbelts)
 )
 ```
 
-Identical fitted values do not make the second implementation coefficient meaningful [@xiao2021parameterization].
+Interpret the two intervention terms separately:
 
-## Step 9: Diagnose Dependence And Fit AR(1) Errors
+- `law` is the estimated immediate change in February 1983 relative to the projected no-law path;
+- `post_time` is the change in monthly trend after that first law month.
 
-```{r, fig.height=4.8, fig.width=9}
-old_par <- par(mfrow = c(1, 2), mar = c(4, 4, 3, 1))
-acf(residuals(ols_fit), main = "OLS residual ACF", xlab = "Lag (months)")
-pacf(residuals(ols_fit), main = "OLS residual PACF", xlab = "Lag (months)")
-par(old_par)
+Neither coefficient alone describes every post-law month.
 
-gls_fit <- gls(
-  its_formula,
-  data = model_data,
-  correlation = corAR1(form = ~ time),
-  method = "REML"
-)
+## Step 5: Estimate Effects At Named Horizons
 
-gls_terms <- summary(gls_fit)$tTable[c("announcement", "implemented", "time_after"), ]
+At horizon $h$, the log-scale contrast is
 
-model_comparison <- data.frame(
-  Model = rep(c("OLS", "AR(1) GLS"), each = 2),
-  Term = rep(c("Immediate rollout", "Monthly trend change"), 2),
-  Estimate = c(
-    coef(ols_fit)[c("implemented", "time_after")],
-    coef(gls_fit)[c("implemented", "time_after")]
-  ),
-  Standard_error = c(
-    coef(summary(ols_fit))[c("implemented", "time_after"), "Std. Error"],
-    gls_terms[c("implemented", "time_after"), "Std.Error"]
-  )
-)
+$$
+\widehat{\delta}(h) = \widehat{\beta}_{law} + h\widehat{\beta}_{post}.
+$$
 
-model_comparison
-
-stopifnot(
-  all(is.finite(model_comparison$Estimate)),
-  all(model_comparison$Standard_error > 0)
-)
-```
-
-State what the AR(1) model changes. Then name one concurrent event it cannot address.
-
-## Step 10: Estimate Effects At Policy-Relevant Horizons
+Its standard error must include the covariance between the two coefficients.
 
 ```{r}
 effect_at_horizon <- function(model, horizon) {
-  estimates <- coef(model)
-  covariance <- vcov(model)
-  weights <- c(implemented = 1, time_after = horizon)
-  relevant_covariance <- covariance[names(weights), names(weights), drop = FALSE]
-  estimate <- sum(weights * estimates[names(weights)])
-  standard_error <- sqrt(as.numeric(t(weights) %*% relevant_covariance %*% weights))
+  weights <- c(law = 1, post_time = horizon)
+  coefficients <- coef(model)[names(weights)]
+  covariance <- vcov(model)[names(weights), names(weights)]
+  log_effect <- sum(weights * coefficients)
+  standard_error <- sqrt(drop(t(weights) %*% covariance %*% weights))
 
   data.frame(
-    Horizon = horizon,
-    Estimate = estimate,
-    Standard_error = standard_error,
-    Lower_95 = estimate - qnorm(0.975) * standard_error,
-    Upper_95 = estimate + qnorm(0.975) * standard_error
+    horizon_months = horizon,
+    percent_change = 100 * (exp(log_effect) - 1),
+    lower_95 = 100 * (exp(log_effect - 1.96 * standard_error) - 1),
+    upper_95 = 100 * (exp(log_effect + 1.96 * standard_error) - 1)
   )
 }
 
-horizon_effects <- do.call(rbind, lapply(c(0, 6, 12), function(horizon) {
-  effect_at_horizon(gls_fit, horizon)
-}))
+horizon_results <- do.call(
+  rbind,
+  lapply(c(0, 6, 12), function(h) effect_at_horizon(ols_fit, h))
+)
 
-horizon_effects$Horizon <- c("Immediate", "6 months", "12 months")
-horizon_effects
+round(horizon_results, 1)
 
 stopifnot(
-  all(is.finite(as.matrix(horizon_effects[-1L]))),
-  all(horizon_effects$Estimate > 0)
+  nrow(horizon_results) == 3L,
+  all(is.finite(as.matrix(horizon_results)))
 )
 ```
 
-Explain why the confidence interval cannot be obtained by adding the separate standard errors of the rollout and trend-change coefficients.
+Checkpoint: why should the 12-month result usually be less certain than the immediate result?
 
-## Step 11: Plot Fitted And No-Programme Trajectories
+## Step 6: Plot The Estimated No-Law Path
 
-```{r, fig.height=5.5, fig.width=10}
-counterfactual_data <- transform(
-  model_data,
-  announcement = 0L,
-  implemented = 0L,
-  time_after = 0L
-)
+```{r, fig.height=5.2, fig.width=10}
+seatbelts$fitted_observed <- exp(predict(ols_fit, newdata = seatbelts))
 
-model_data$fitted_programme <- as.numeric(predict(gls_fit, newdata = model_data))
-model_data$no_programme <- as.numeric(predict(gls_fit, newdata = counterfactual_data))
+no_law_data <- seatbelts
+no_law_data$law <- 0
+no_law_data$post_time <- 0
+seatbelts$fitted_no_law <- exp(predict(ols_fit, newdata = no_law_data))
 
-trajectory_data <- rbind(
-  data.frame(date = model_data$date, series = "Fitted programme path", value = model_data$fitted_programme),
-  data.frame(date = model_data$date, series = "Estimated no-programme path", value = model_data$no_programme)
-)
-
-ggplot(model_data, aes(date, closure_rate_per_1000)) +
-  geom_point(size = 1, alpha = 0.55, colour = "#4b615b") +
+ggplot(seatbelts, aes(date)) +
+  geom_line(aes(y = front, colour = "Observed"), linewidth = 0.55) +
+  geom_line(aes(y = fitted_observed, colour = "Fitted with law"), linewidth = 0.75) +
   geom_line(
-    data = trajectory_data,
-    aes(y = value, colour = series, linetype = series),
-    linewidth = 0.9
+    aes(y = fitted_no_law, colour = "Projected no-law path"),
+    linewidth = 0.75,
+    linetype = "dashed"
   ) +
-  geom_vline(xintercept = implementation_date, linetype = "dashed", colour = "#c05a2a") +
+  geom_vline(xintercept = intervention_date, linetype = "dotted") +
   scale_colour_manual(values = c(
-    "Fitted programme path" = "#24527a",
-    "Estimated no-programme path" = "#bf6b21"
+    "Observed" = "#303030",
+    "Fitted with law" = "#24527a",
+    "Projected no-law path" = "#bf6b21"
   )) +
-  labs(x = NULL, y = "Closures per 1,000 open cases", colour = NULL, linetype = NULL) +
+  labs(
+    x = NULL,
+    y = "Front-seat passengers killed or seriously injured",
+    colour = NULL
+  ) +
   theme_minimal(base_size = 12) +
   theme(legend.position = "bottom")
 ```
 
-The graph makes the counterfactual inspectable. It does not rule out the same-month boundary transfer or another operational change.
+The no-law line is a model projection. The gap is estimated rather than observed, and a coincident event could generate the same pattern.
+
+## Optional Extension: Account For Serial Dependence
+
+The core OLS model makes the parameterization transparent. Monthly residuals may still be correlated, so compare it with generalized least squares using AR(1) errors.
+
+```{r, fig.height=4.2, fig.width=9}
+gls_fit <- gls(
+  its_formula,
+  data = seatbelts,
+  correlation = corAR1(form = ~ time),
+  method = "REML"
+)
+
+gls_terms <- summary(gls_fit)$tTable[c("law", "post_time"), ]
+
+model_comparison <- data.frame(
+  model = rep(c("OLS", "GLS with AR(1) errors"), each = 2),
+  term = rep(c("Immediate change", "Trend change"), times = 2),
+  estimate = c(ols_terms[, "Estimate"], gls_terms[, "Value"]),
+  standard_error = c(ols_terms[, "Std. Error"], gls_terms[, "Std.Error"])
+)
+
+model_comparison
+
+par(mfrow = c(1, 2))
+acf(residuals(ols_fit), main = "OLS residuals")
+acf(residuals(gls_fit, type = "normalized"), main = "Normalized GLS residuals")
+par(mfrow = c(1, 1))
+
+stopifnot(
+  all(is.finite(gls_terms)),
+  abs(coef(gls_fit$modelStruct$corStruct, unconstrained = FALSE)) < 1
+)
+```
+
+AR(1) errors address residual dependence. They do not remove a concurrent policy, repair a changing outcome definition, or make a weak comparison series credible.
 
 ## Final Design Judgment
 
-Write seven sentences:
+Write three sentences:
 
-1. Define the stock, flows, and primary exposure-adjusted outcome.
-2. Explain what the balancing residual contains when scope is omitted.
-3. State how the source anomaly was treated and which sensitivity is still needed.
-4. State the announcement, rollout, and transition periods.
-5. Report the immediate and six-month rate effects.
-6. Explain what the AR(1) error model changed.
-7. Name the strongest causal conclusion the model alone can support.
+1. Define the outcome, intervention month, and post-law observation window.
+2. Describe the estimated immediate and 12-month changes without relying on a p-value alone.
+3. State the most important reason the estimated break may not equal the causal effect of compulsory seatbelt wearing.
 
 ## Next Step
 
-Continue to the [ITS Design and Diagnostics Lab](interrupted-time-series-design-diagnostics-lab.qmd) to test shared shocks, phased rollout, boundary changes, measurement breaks, and placebo dates.
+Continue to [Seatbelt Law Design and Robustness](interrupted-time-series-design-diagnostics-lab.qmd) to compare outcomes, candidate controls, and a compact prespecified sensitivity set.

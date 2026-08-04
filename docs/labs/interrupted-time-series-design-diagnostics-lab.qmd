@@ -1,5 +1,5 @@
 ---
-title: "Lab: Interrupted Time Series Design and Diagnostics"
+title: "Lab: Seatbelt Law Design and Robustness"
 format:
   html: default
 execute:
@@ -9,457 +9,320 @@ execute:
 
 ## How To Use This Page
 
-Use this as the second interrupted time-series lab, after the data-and-mechanics exercise.
+This is the second interrupted time-series lab. Its guided core takes about 45–60 minutes; the placebo-date exercise is optional.
 
 [Download the R Jupyter notebook](notebooks/interrupted-time-series-design-diagnostics-lab.ipynb){.cta-button download="interrupted-time-series-design-diagnostics-lab.ipynb"}
 
-- Treat each scenario as a different identification problem.
-- Keep all event dates and sensitivity checks fixed before fitting.
-- Compare uncontrolled and controlled estimates before interpreting a break.
-- Finish with a one-page design memo rather than a preferred p-value.
-
-::: {.callout-note}
-The notebook runs offline with deterministic synthetic repair-service data. Every scenario changes one named feature of the same underlying service system.
-:::
+- Treat alternative outcomes and controls as design choices, not extra regressors to add automatically.
+- Compare a short, prespecified set of defensible specifications.
+- Use sensitivity results to identify what drives the answer.
+- Finish with an attribution judgment, not a preferred p-value.
 
 ## Training Goal
 
-Learn which design and diagnostic tools address which threats:
+By the end of the core lab, you should be able to:
 
-1. shared shocks and comparison series;
-2. phased implementation and transition periods;
-3. reporting-boundary and treated-only measurement changes;
-4. omitted seasonality and serial dependence;
-5. announcement-versus-rollout timing;
-6. anomaly, baseline, scope, and transition sensitivities; and
-7. false pre-programme interruption dates.
+1. distinguish directly targeted outcomes from candidate negative controls;
+2. assess pre-intervention comparability before fitting a controlled ITS;
+3. explain when exposure and contextual variables belong in a model;
+4. compare a compact sensitivity set; and
+5. state what the design can and cannot attribute to the law.
 
-## The Five Scenarios
+## Step 1: Recreate The Seatbelts Analysis Data
 
-| Scenario | Added feature | Teaching purpose |
-|---|---|---|
-| Valid rollout | Only the programme area changes | Reference result |
-| Shared shock | Both areas rise at rollout | What a credible control can repair |
-| Phased rollout | The effect builds over six months | Why delivery shape matters |
-| Boundary change | The programme-area rate shifts with reporting scope | Why constant-scope data matter |
-| Measurement break | Programme-area recording rises at rollout | What a control cannot identify |
+The columns do not all measure the same event:
 
-## Step 1: Pre-Specify The Design
-
-Before running code, record:
-
-1. **Announcement:** January 2021.
-2. **Operational rollout:** April 2021.
-3. **Transition:** April through June 2021.
-4. **Immediate estimand:** programme-area change at operational rollout relative to its no-programme path.
-5. **Six-month estimand:** programme-versus-no-programme difference six months after rollout.
-6. **Primary error model:** annual Fourier terms and AR(1) errors.
-7. **Primary comparison:** the differential change against an unexposed area.
-8. **Sensitivity set:** alternative date, shorter baseline, anomaly omission/interpolation, known scope adjustment, transition exclusion, and false dates.
-
-Do not revise this list after viewing results.
-
-## Step 2: Generate The Scenario Panel
+| Variable | Meaning |
+|---|---|
+| `front` | Front-seat passengers killed or seriously injured |
+| `drivers` | Car drivers killed or seriously injured |
+| `DriversKilled` | Car drivers killed |
+| `rear` | Rear-seat passengers killed or seriously injured |
+| `VanKilled` | Van drivers killed |
+| `kms` | Distance driven |
+| `PetrolPrice` | Petrol price |
 
 ```{r}
 required_packages <- c("ggplot2", "nlme")
-missing_packages <- required_packages[!vapply(required_packages, requireNamespace, logical(1), quietly = TRUE)]
+missing_packages <- required_packages[!vapply(
+  required_packages,
+  requireNamespace,
+  logical(1),
+  quietly = TRUE
+)]
 if (length(missing_packages) > 0) {
   install.packages(missing_packages, repos = "https://cloud.r-project.org")
 }
 invisible(lapply(required_packages, library, character.only = TRUE))
 
-set.seed(73519)
-n_months <- 132L
-announcement_time <- 85L
-implementation_time <- 88L
+data("Seatbelts", package = "datasets")
 
-time_data <- data.frame(
-  time = seq_len(n_months),
-  date = seq(as.Date("2014-01-01"), by = "month", length.out = n_months)
+seatbelts <- as.data.frame(Seatbelts)
+seatbelts$time <- seq_len(nrow(seatbelts))
+seatbelts$date <- seq(as.Date("1969-01-01"), by = "month", length.out = nrow(seatbelts))
+seatbelts$post_time <- ifelse(
+  seatbelts$law == 1,
+  seatbelts$time - min(seatbelts$time[seatbelts$law == 1]),
+  0
 )
-time_data$announcement <- as.integer(time_data$time == announcement_time)
-time_data$implemented <- as.integer(time_data$time >= implementation_time)
-time_data$time_after <- pmax(0L, time_data$time - implementation_time)
-time_data$transition <- as.integer(time_data$time %in% implementation_time:(implementation_time + 2L))
-time_data$season_sin <- sin(2 * pi * time_data$time / 12)
-time_data$season_cos <- cos(2 * pi * time_data$time / 12)
-
-simulate_ar1 <- function(seed, rho = 0.55, sd = 4) {
-  set.seed(seed)
-  as.numeric(arima.sim(list(ar = rho), n = n_months, sd = sd))
-}
-
-comparison_base <- 178 + 0.12 * time_data$time +
-  9 * time_data$season_cos + 3 * time_data$season_sin + simulate_ar1(73520)
-treated_base <- 185 + 0.15 * time_data$time +
-  9 * time_data$season_cos + 3 * time_data$season_sin + simulate_ar1(73521)
-
-programme_effect <- 24 * time_data$implemented +
-  0.32 * time_data$time_after - 9 * time_data$transition
-shared_shock <- 18 * time_data$implemented
-phased_effect <- pmin(1, pmax(0, time_data$time - implementation_time + 1) / 6) * 26 +
-  0.22 * time_data$time_after
-boundary_shift <- 12 * time_data$implemented
-measurement_shift <- 20 * time_data$implemented
-
-make_scenario <- function(name, treated_outcome, comparison_outcome) {
-  result <- rbind(
-    transform(time_data, scenario = name, series = "Comparison area", outcome = comparison_outcome),
-    transform(time_data, scenario = name, series = "Programme area", outcome = treated_outcome)
-  )
-  result$series <- relevel(factor(result$series), ref = "Comparison area")
-  result[order(result$series, result$time), ]
-}
-
-scenario_data <- list(
-  "Valid rollout" = make_scenario("Valid rollout", treated_base + programme_effect, comparison_base),
-  "Shared shock" = make_scenario("Shared shock", treated_base + programme_effect + shared_shock, comparison_base + shared_shock),
-  "Phased rollout" = make_scenario("Phased rollout", treated_base + phased_effect, comparison_base),
-  "Boundary change" = make_scenario("Boundary change", treated_base + programme_effect + boundary_shift, comparison_base),
-  "Measurement break" = make_scenario("Measurement break", treated_base + programme_effect + measurement_shift, comparison_base)
-)
-
-diagnostic_data <- do.call(rbind, scenario_data)
-row.names(diagnostic_data) <- NULL
+seatbelts$season_sin <- sin(2 * pi * seatbelts$time / 12)
+seatbelts$season_cos <- cos(2 * pi * seatbelts$time / 12)
+intervention_date <- min(seatbelts$date[seatbelts$law == 1])
 
 stopifnot(
-  nrow(diagnostic_data) == 5L * 2L * n_months,
-  all(diagnostic_data$time_after[diagnostic_data$time == implementation_time] == 0L),
-  all(is.finite(diagnostic_data$outcome))
+  intervention_date == as.Date("1983-02-01"),
+  all(seatbelts[c("front", "drivers", "DriversKilled", "rear", "VanKilled")] > 0),
+  all(is.finite(seatbelts$kms)),
+  all(is.finite(seatbelts$PetrolPrice))
 )
 ```
 
-## Step 3: Plot Every Scenario Before Modelling
+The primary outcome remains `front` because compulsory wearing directly covered front-seat occupants. Rear-seat wearing did not become compulsory for adults until 1991, outside this dataset [@ukparliament2012seatbelts].
 
-```{r, fig.height=9, fig.width=11}
-ggplot(diagnostic_data, aes(date, outcome, colour = series)) +
-  geom_line(linewidth = 0.6) +
-  geom_vline(
-    xintercept = time_data$date[implementation_time],
-    linetype = "dashed",
-    colour = "#c05a2a"
-  ) +
-  facet_wrap(~ scenario, ncol = 1, scales = "free_y") +
-  scale_colour_manual(values = c("Comparison area" = "#bf6b21", "Programme area" = "#24527a")) +
-  labs(x = NULL, y = "Closures per 1,000 open cases", colour = NULL) +
-  theme_minimal(base_size = 11) +
-  theme(legend.position = "bottom")
+## Step 2: Compare The Outcome Family
+
+Plotting every outcome on its own scale avoids implying that a driver death and a passenger killed-or-seriously-injured observation are interchangeable.
+
+```{r, fig.height=7.2, fig.width=10}
+outcome_names <- c("front", "drivers", "DriversKilled", "rear", "VanKilled")
+outcome_labels <- c(
+  front = "Front-seat passengers: killed or seriously injured",
+  drivers = "Car drivers: killed or seriously injured",
+  DriversKilled = "Car drivers: killed",
+  rear = "Rear-seat passengers: killed or seriously injured",
+  VanKilled = "Van drivers: killed"
+)
+
+outcome_long <- do.call(rbind, lapply(outcome_names, function(name) {
+  data.frame(
+    date = seatbelts$date,
+    outcome = unname(outcome_labels[[name]]),
+    value = seatbelts[[name]]
+  )
+}))
+
+ggplot(outcome_long, aes(date, value)) +
+  geom_line(linewidth = 0.5, colour = "#24527a") +
+  geom_vline(xintercept = intervention_date, linetype = "dashed", colour = "#a23b3b") +
+  facet_wrap(~ outcome, ncol = 1, scales = "free_y") +
+  labs(x = NULL, y = "Monthly count") +
+  theme_minimal(base_size = 11)
 ```
 
 Checkpoint:
 
-- Which shared change becomes visible only after adding the comparison area?
-- Why are the boundary and measurement scenarios visually compatible with a real effect?
-- Which graph suggests that a sharp step is the wrong impact shape?
+- Which directly targeted series move in a similar direction?
+- Does the rear-seat series look unchanged enough to be a convincing negative control?
+- Why is a fall in `VanKilled` a warning against treating it as an automatically unaffected control?
 
-## Step 4: Fit Uncontrolled And Controlled ITS
+## Step 3: Estimate The Break For Each Outcome
+
+Use the same seasonal segmented model for every outcome so differences do not arise from outcome-specific specification searching.
 
 ```{r}
-fit_uncontrolled <- function(data) {
-  treated <- subset(data, series == "Programme area")
+fit_outcome <- function(outcome_name) {
+  formula <- as.formula(paste0(
+    "log(", outcome_name, ") ~ time + law + post_time + season_sin + season_cos"
+  ))
   gls(
-    outcome ~ time + announcement + implemented + time_after + season_sin + season_cos,
-    data = treated,
+    formula,
+    data = seatbelts,
     correlation = corAR1(form = ~ time),
     method = "ML"
   )
 }
 
-fit_controlled <- function(data) {
-  data <- data[order(data$series, data$time), ]
+outcome_fits <- setNames(lapply(outcome_names, fit_outcome), outcome_names)
+
+summarise_outcome <- function(outcome_name) {
+  model <- outcome_fits[[outcome_name]]
+  coefficients <- coef(model)
+  immediate <- coefficients[["law"]]
+  month_12 <- immediate + 12 * coefficients[["post_time"]]
+  data.frame(
+    outcome = unname(outcome_labels[[outcome_name]]),
+    immediate_percent = 100 * (exp(immediate) - 1),
+    month_12_percent = 100 * (exp(month_12) - 1)
+  )
+}
+
+outcome_results <- do.call(rbind, lapply(outcome_names, summarise_outcome))
+outcome_results$immediate_percent <- round(outcome_results$immediate_percent, 1)
+outcome_results$month_12_percent <- round(outcome_results$month_12_percent, 1)
+outcome_results
+
+stopifnot(
+  nrow(outcome_results) == length(outcome_names),
+  all(is.finite(outcome_results$immediate_percent)),
+  all(is.finite(outcome_results$month_12_percent))
+)
+```
+
+Agreement among directly targeted outcomes strengthens the descriptive story. Movement in nominally untargeted outcomes complicates attribution because it may indicate shared road-safety changes, changes in who sat where, or an unsuitable comparison.
+
+## Step 4: Audit Candidate Comparisons Before Controlling
+
+A comparison outcome should have a credible causal role and a stable pre-law relationship with the treated outcome. Correlation is only a diagnostic; it does not establish either condition.
+
+```{r}
+pre_law <- subset(seatbelts, law == 0)
+
+comparison_audit <- data.frame(
+  candidate = c("Rear-seat casualties", "Van-driver deaths"),
+  pre_law_log_correlation = c(
+    cor(log(pre_law$front), log(pre_law$rear)),
+    cor(log(pre_law$front), log(pre_law$VanKilled))
+  ),
+  causal_concern = c(
+    "Passenger redistribution and different exposure",
+    "Weak pre-law relationship and its own intervention-period fall"
+  )
+)
+
+comparison_audit
+```
+
+Rear-seat casualties are the more informative candidate, but they remain imperfect. The controlled model below is therefore a diagnostic contrast, not an automatic upgrade over the uncontrolled ITS.
+
+```{r}
+controlled_data <- rbind(
+  transform(seatbelts, series = "Rear-seat comparison", log_outcome = log(rear)),
+  transform(seatbelts, series = "Front-seat targeted", log_outcome = log(front))
+)
+controlled_data$series <- relevel(factor(controlled_data$series), ref = "Rear-seat comparison")
+controlled_data <- controlled_data[order(controlled_data$series, controlled_data$time), ]
+
+controlled_fit <- gls(
+  log_outcome ~ series * (time + law + post_time) + season_sin + season_cos,
+  data = controlled_data,
+  correlation = corAR1(form = ~ time | series),
+  method = "ML"
+)
+
+controlled_terms <- summary(controlled_fit)$tTable[c(
+  "seriesFront-seat targeted:law",
+  "seriesFront-seat targeted:post_time"
+), ]
+
+controlled_terms
+
+controlled_immediate_percent <- 100 * (
+  exp(coef(controlled_fit)[["seriesFront-seat targeted:law"]]) - 1
+)
+controlled_immediate_percent
+
+stopifnot(
+  all(is.finite(controlled_terms)),
+  comparison_audit$pre_law_log_correlation[[1]] >
+    comparison_audit$pre_law_log_correlation[[2]]
+)
+```
+
+The interaction asks whether the front-seat series changed differently from the rear-seat series. It does not prove that rear-seat casualties represent the untreated path front-seat casualties would have followed.
+
+## Step 5: Run A Compact Prespecified Sensitivity Set
+
+Distance driven is a plausible exposure measure and petrol price may affect travel. Both are observed contextual variables, but neither should be inserted mechanically: distance could itself respond to policy or other contemporaneous conditions, and petrol price is not the intervention.
+
+```{r}
+model_formulas <- list(
+  "Level only" = log(front) ~ time + law + season_sin + season_cos,
+  "Level and trend" = log(front) ~ time + law + post_time + season_sin + season_cos,
+  "With distance and petrol price" = log(front) ~
+    time + law + post_time + log(kms) + PetrolPrice + season_sin + season_cos
+)
+
+sensitivity_fits <- lapply(model_formulas, function(formula) {
   gls(
-    outcome ~ series * (time + implemented + time_after) + announcement + season_sin + season_cos,
-    data = data,
-    correlation = corAR1(form = ~ time | series),
+    formula,
+    data = seatbelts,
+    correlation = corAR1(form = ~ time),
     method = "ML"
   )
-}
+})
 
-uncontrolled_fits <- lapply(scenario_data, fit_uncontrolled)
-controlled_fits <- lapply(scenario_data, fit_controlled)
-
-extract_results <- function(name) {
-  uncontrolled <- uncontrolled_fits[[name]]
-  controlled <- controlled_fits[[name]]
+sensitivity_results <- do.call(rbind, lapply(names(sensitivity_fits), function(name) {
+  model <- sensitivity_fits[[name]]
   data.frame(
-    Scenario = name,
-    Model = c("Uncontrolled", "Controlled differential"),
-    Immediate = c(
-      coef(uncontrolled)[["implemented"]],
-      coef(controlled)[["seriesProgramme area:implemented"]]
-    ),
-    Trend_change = c(
-      coef(uncontrolled)[["time_after"]],
-      coef(controlled)[["seriesProgramme area:time_after"]]
-    ),
-    check.names = FALSE
+    specification = name,
+    immediate_percent = 100 * (exp(coef(model)[["law"]]) - 1),
+    AIC = AIC(model)
   )
-}
+}))
 
-scenario_results <- do.call(rbind, lapply(names(scenario_data), extract_results))
-row.names(scenario_results) <- NULL
-scenario_results
-
-shared_uncontrolled <- subset(scenario_results, Scenario == "Shared shock" & Model == "Uncontrolled")
-shared_controlled <- subset(scenario_results, Scenario == "Shared shock" & Model == "Controlled differential")
-
-stopifnot(
-  shared_uncontrolled$Immediate > shared_controlled$Immediate,
-  shared_controlled$Immediate > 5,
-  all(is.finite(as.matrix(scenario_results[c("Immediate", "Trend_change")])))
-)
-```
-
-The control removes the shared shock when it is genuinely common and the comparison is unexposed. It cannot distinguish a programme-area measurement shift from a programme-area service change.
-
-## Step 5: Represent Phased Rollout Directly
-
-```{r}
-phased_treated <- subset(scenario_data[["Phased rollout"]], series == "Programme area")
-phased_treated$ramp <- pmin(1, pmax(0, phased_treated$time - implementation_time + 1) / 6)
-
-sharp_fit <- gls(
-  outcome ~ time + implemented + time_after + season_sin + season_cos,
-  data = phased_treated,
-  correlation = corAR1(form = ~ time),
-  method = "ML"
-)
-
-ramp_fit <- gls(
-  outcome ~ time + ramp + time_after + season_sin + season_cos,
-  data = phased_treated,
-  correlation = corAR1(form = ~ time),
-  method = "ML"
-)
-
-phase_comparison <- data.frame(
-  Model = c("Sharp step", "Six-month ramp"),
-  AIC = c(AIC(sharp_fit), AIC(ramp_fit)),
-  Normalized_residual_SD = c(
-    sd(residuals(sharp_fit, type = "normalized")),
-    sd(residuals(ramp_fit, type = "normalized"))
-  )
-)
-
-phase_comparison
-stopifnot(phase_comparison$AIC[phase_comparison$Model == "Six-month ramp"] < phase_comparison$AIC[phase_comparison$Model == "Sharp step"])
-```
-
-The ramp was specified from the known six-month delivery profile. Do not infer the ramp duration by searching the outcome for the best fit.
-
-## Step 6: Diagnose Seasonality And Serial Dependence
-
-```{r, fig.height=5, fig.width=10}
-valid_treated <- subset(scenario_data[["Valid rollout"]], series == "Programme area")
-
-seasonal_fit <- gls(
-  outcome ~ time + announcement + implemented + time_after + season_sin + season_cos,
-  data = valid_treated,
-  correlation = corAR1(form = ~ time),
-  method = "ML"
-)
-
-no_season_fit <- gls(
-  outcome ~ time + announcement + implemented + time_after,
-  data = valid_treated,
-  correlation = corAR1(form = ~ time),
-  method = "ML"
-)
-
-ols_valid <- lm(
-  outcome ~ time + announcement + implemented + time_after + season_sin + season_cos,
-  data = valid_treated
-)
-
-lag_12_acf <- function(values) {
-  as.numeric(acf(values, plot = FALSE, lag.max = 12)$acf[13])
-}
-
-diagnostic_summary <- data.frame(
-  Specification = c("No seasonal terms", "Seasonal AR(1)", "Seasonal OLS"),
-  Lag_12_ACF = c(
-    lag_12_acf(residuals(no_season_fit, type = "normalized")),
-    lag_12_acf(residuals(seasonal_fit, type = "normalized")),
-    lag_12_acf(residuals(ols_valid))
-  ),
-  Immediate_SE = c(
-    summary(no_season_fit)$tTable["implemented", "Std.Error"],
-    summary(seasonal_fit)$tTable["implemented", "Std.Error"],
-    coef(summary(ols_valid))["implemented", "Std. Error"]
-  )
-)
-
-diagnostic_summary
-
-old_par <- par(mfrow = c(1, 2), mar = c(4, 4, 3, 1))
-acf(residuals(no_season_fit, type = "normalized"), lag.max = 24, main = "No seasonal terms")
-acf(residuals(seasonal_fit, type = "normalized"), lag.max = 24, main = "Seasonal AR(1)")
-par(old_par)
-
-stopifnot(
-  abs(diagnostic_summary$Lag_12_ACF[1]) > abs(diagnostic_summary$Lag_12_ACF[2]),
-  all(diagnostic_summary$Immediate_SE > 0)
-)
-```
-
-Omitted seasonality is a mean-model problem. Serial dependence is an error-model problem. Neither is an attribution strategy.
-
-## Step 7: Run The Pre-Specified Sensitivity Set
-
-```{r}
-fit_segmented <- function(data) {
-  lm(outcome ~ time + announcement + implemented + time_after + season_sin + season_cos, data = data)
-}
-
-announcement_data <- transform(
-  valid_treated,
-  alternative_post = as.integer(time >= announcement_time),
-  alternative_after = pmax(0L, time - announcement_time)
-)
-announcement_fit <- lm(
-  outcome ~ time + alternative_post + alternative_after + season_sin + season_cos,
-  data = announcement_data
-)
-
-short_baseline_fit <- fit_segmented(subset(valid_treated, time >= 25L))
-
-transition_fit <- fit_segmented(subset(
-  valid_treated,
-  !(time %in% implementation_time:(implementation_time + 2L))
-))
-
-anomaly_data <- valid_treated
-anomaly_data$outcome[anomaly_data$time == 50L] <- anomaly_data$outcome[anomaly_data$time == 50L] + 70
-anomaly_index <- which(anomaly_data$time == 50L)
-interpolated_data <- anomaly_data
-interpolated_data$outcome[anomaly_index] <- mean(anomaly_data$outcome[c(anomaly_index - 1L, anomaly_index + 1L)])
-omitted_data <- anomaly_data[-anomaly_index, ]
-
-retained_anomaly_fit <- fit_segmented(anomaly_data)
-interpolated_anomaly_fit <- fit_segmented(interpolated_data)
-omitted_anomaly_fit <- fit_segmented(omitted_data)
-
-boundary_data <- subset(scenario_data[["Boundary change"]], series == "Programme area")
-boundary_published_fit <- fit_segmented(boundary_data)
-boundary_data$constant_scope_outcome <- boundary_data$outcome - boundary_shift
-boundary_constant_scope_fit <- lm(
-  constant_scope_outcome ~ time + announcement + implemented + time_after + season_sin + season_cos,
-  data = boundary_data
-)
-
-sensitivity_results <- data.frame(
-  Specification = c(
-    "Primary rollout date",
-    "Announcement date",
-    "Shorter baseline",
-    "Exclude transition",
-    "Retain anomaly",
-    "Interpolate anomaly",
-    "Omit anomaly",
-    "Published boundary",
-    "Constant scope"
-  ),
-  Immediate = c(
-    coef(ols_valid)[["implemented"]],
-    coef(announcement_fit)[["alternative_post"]],
-    coef(short_baseline_fit)[["implemented"]],
-    coef(transition_fit)[["implemented"]],
-    coef(retained_anomaly_fit)[["implemented"]],
-    coef(interpolated_anomaly_fit)[["implemented"]],
-    coef(omitted_anomaly_fit)[["implemented"]],
-    coef(boundary_published_fit)[["implemented"]],
-    coef(boundary_constant_scope_fit)[["implemented"]]
-  )
-)
-
+row.names(sensitivity_results) <- NULL
+sensitivity_results$immediate_percent <- round(sensitivity_results$immediate_percent, 1)
+sensitivity_results$AIC <- round(sensitivity_results$AIC, 1)
 sensitivity_results
 
 stopifnot(
-  all(is.finite(sensitivity_results$Immediate)),
-  abs(
-    sensitivity_results$Immediate[sensitivity_results$Specification == "Published boundary"] -
-      sensitivity_results$Immediate[sensitivity_results$Specification == "Constant scope"]
-  ) > 5
+  nrow(sensitivity_results) == 3L,
+  all(is.finite(sensitivity_results$immediate_percent)),
+  all(is.finite(sensitivity_results$AIC))
 )
 ```
 
-Interpret each change against its named concern. Do not select the row with the largest estimate or smallest standard error.
+Do not select the row with the largest change or smallest p-value. Explain what assumption changes between rows and whether the substantive direction survives.
 
-## Step 8: Test False Pre-Programme Dates
+## Optional Extension: Test Prespecified False Dates
+
+False dates ask whether similarly large breaks appear when no seatbelt-law change occurred. Restrict false-date models to the pre-law period so the real intervention cannot contaminate them.
 
 ```{r}
-placebo_dates <- c(49L, 61L, 73L)
-pre_programme <- subset(valid_treated, time < announcement_time)
+fit_interruption_date <- function(data, interruption_date) {
+  false_data <- data
+  false_time <- min(false_data$time[false_data$date >= interruption_date])
+  false_data$interrupted <- as.integer(false_data$time >= false_time)
+  false_data$time_after_interruption <- pmax(0, false_data$time - false_time)
 
-placebo_effect <- function(interruption) {
-  placebo <- transform(
-    pre_programme,
-    placebo_post = as.integer(time >= interruption),
-    placebo_after = pmax(0L, time - interruption)
+  model <- gls(
+    log(front) ~
+      time + interrupted + time_after_interruption + season_sin + season_cos,
+    data = false_data,
+    correlation = corAR1(form = ~ time),
+    method = "ML"
   )
-  fit <- lm(
-    outcome ~ time + placebo_post + placebo_after + season_sin + season_cos,
-    data = placebo
+
+  data.frame(
+    date = interruption_date,
+    immediate_percent = 100 * (exp(coef(model)[["interrupted"]]) - 1)
   )
-  unname(coef(fit)[["placebo_post"]])
 }
 
-placebo_results <- data.frame(
-  False_interruption_time = placebo_dates,
-  Immediate = vapply(placebo_dates, placebo_effect, numeric(1))
+false_dates <- as.Date(c("1978-02-01", "1980-02-01", "1981-02-01"))
+placebo_results <- do.call(
+  rbind,
+  lapply(false_dates, function(date) fit_interruption_date(pre_law, date))
 )
 
-observed_immediate <- unname(coef(ols_valid)[["implemented"]])
-placebo_results$At_least_as_large_as_observed <-
-  abs(placebo_results$Immediate) >= abs(observed_immediate)
+actual_result <- data.frame(
+  date = intervention_date,
+  immediate_percent = sensitivity_results$immediate_percent[
+    sensitivity_results$specification == "Level and trend"
+  ]
+)
 
-placebo_results
+rbind(placebo_results, actual_result)
 
 stopifnot(
-  max(placebo_dates) < announcement_time,
-  all(is.finite(placebo_results$Immediate))
+  nrow(placebo_results) == length(false_dates),
+  all(placebo_results$date < intervention_date),
+  all(is.finite(placebo_results$immediate_percent))
 )
 ```
 
-These false dates overlap and rollout was not randomized. Use the results as a stability diagnostic, not a randomisation-inference p-value.
-
-## Step 9: Classify What Each Design Can Support
-
-Fill the last column before comparing your answers.
-
-| Scenario | What the controlled estimate sees | Defensible interpretation |
-|---|---|---|
-| Valid rollout | Programme-area differential | Consistent with the simulated service change |
-| Shared shock | Differential after removing the common rise | Attribution strengthens if the comparison is unexposed |
-| Phased rollout | An average sharp break unless the ramp is modelled | Delivery shape must be represented |
-| Boundary change | Programme-area effect plus rate-definition change | Requires constant-scope reconstruction |
-| Measurement break | Programme plus recording discontinuity | Effect remains unidentified from these series |
+Placebo dates are diagnostics, not randomization-inference p-values. A quiet placebo set cannot rule out a concurrent event at the true date.
 
 ## Final Design Memo
 
-Write one page with these headings:
+Complete five short statements:
 
-### Design And Estimands
-
-State the areas, outcome, exposure, announcement, rollout, transition, immediate estimand, and six-month estimand.
-
-### Primary Result
-
-Compare uncontrolled and controlled results for the valid and shared-shock scenarios.
-
-### Diagnostics And Sensitivity
-
-Summarize seasonal structure, OLS-versus-AR(1) uncertainty, timing, baseline, anomaly, transition, scope, and placebo evidence.
-
-### Identification Judgment
-
-Explain why the control helps with the shared shock but cannot resolve a programme-area reporting or boundary discontinuity without additional data.
-
-### Defensible Claim
-
-State the strongest conclusion you would defend and the most important remaining limitation.
+1. **Primary outcome:** why front-seat killed-or-seriously-injured casualties match the intervention.
+2. **Comparison outcome:** what rear-seat casualties add and why they are imperfect.
+3. **Sensitivity:** whether the direction changes across the three prespecified specifications.
+4. **Concurrent change:** stricter drink-driving enforcement and evidential breath testing were discussed as alternative 1983 explanations and are not measured in `Seatbelts` [@ukparliament1986seatbeltdebate].
+5. **Defensible claim:** the series show a reduction associated with the law, but this dataset alone does not isolate compulsory belt wearing from every simultaneous road-safety change.
 
 ## Next Step
 
-Continue to the [ITS Counterfactual Validation Lab](interrupted-time-series-counterfactual-validation-lab.qmd) to select a short-horizon untreated model using only pre-rollout forecast performance.
+Continue to [Interrupted Time Series Counterfactual Validation](interrupted-time-series-counterfactual-validation-lab.qmd) to choose an untreated forecasting model without using post-intervention outcomes.

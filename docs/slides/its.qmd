@@ -1,8 +1,8 @@
 ---
 title: "Interrupted Time Series"
-subtitle: "From a dated break to a defensible counterfactual"
+subtitle: "From a visible break to a defensible counterfactual"
 author: "Luke Heley"
-date: 3 August 2026
+date: 4 August 2026
 bibliography:
   - ../../evaluation-bibliography.bib
 format:
@@ -28,110 +28,85 @@ execute:
   eval: false
 ---
 
-## A break is only as credible as its no-programme path
+## A break is only as credible as its no-intervention path
 
 ::: {.kicker}
-Interrupted time series estimates how an observed trajectory differs from a projected untreated trajectory. Design, data provenance, and validation determine what that difference means.
+Interrupted time series estimates how an observed trajectory differs from a projected untreated trajectory. Timing, measurement, and competing events determine what that difference means.
 :::
 
-- define the outcome system before fitting the break
-- distinguish delivery dates from outcome-driven timing
-- validate the untreated model without post-intervention outcomes
-- treat disagreement and unsupported extrapolation as findings
+- preserve the trajectory instead of reducing it to two averages
+- specify the intervention and effect shape before estimation
+- model seasonality and dependence without confusing them with identification
+- validate counterfactual choices on untreated data
 
 ::: {.notes}
-[Sources] General ITS design principles: @wagner2002segmented; @lopezbernal2017tutorial; @cochrane2024robinsits.
+[Sources] General ITS principles: @wagner2002segmented; @lopezbernal2017tutorial; @cochrane2024robinsits.
 :::
 
-## The workflow has three layers
+## The design question comes before the model
 
-| Layer | Question |
+| Design element | Seatbelt example |
 |---|---|
-| Data system | What is counted, when, and within which boundary? |
-| Counterfactual | Which untreated path predicts held-out pre-programme data? |
-| Attribution | Could another event or measurement change create the same gap? |
+| Intervention | Compulsory front-seat belt wearing |
+| Start | 31 January 1983; February is the first treated month |
+| Primary outcome | Front-seat passengers killed or seriously injured |
+| Untreated path | Projected continuation of the pre-law series |
+| Main threat | Other road-safety changes around 1983 |
 
-The labs follow the same route: **data and mechanics → design and diagnostics → counterfactual validation**.
+The law date is external evidence, not a breakpoint selected from the casualty series [@ukparliament2012seatbelts].
 
-## Begin with events, not coefficients
+## The built-in data make the case reproducible
 
-![Synthetic repair-service timeline](assets/its-timeline.png){fig-alt="Timeline for a synthetic housing-repairs programme showing announcement, operational rollout, transition end, and a later extreme context period." width="96%"}
+`datasets::Seatbelts` contains 192 monthly observations from January 1969 through December 1984 [@rseatbeltsdata].
 
-Announcement, operational rollout, transition, and realised service changes answer different questions. Fix plausible dates from delivery evidence before inspecting outcomes.
-
-## A stock and a flow describe different objects
-
-![Open cases, new requests, and closures in the synthetic repair service](assets/its-stock-flow.png){fig-alt="Three aligned monthly series for the stock of open repair cases, the flow of new requests, and the flow of case closures." width="92%"}
-
-$$
-S_t = S_{t-1} + \text{inflows}_t - \text{outflows}_t + \text{scope changes}_t
-$$
-
-An intervention can raise closures without producing the same-sized fall in the open caseload when new demand or reporting scope also changes.
-
-## Reconciliation reveals what the data can support
-
-| Check | What failure can mean |
+| Column | Measure |
 |---|---|
-| Categories sum to the published total | Coding, suppression, or aggregation mismatch |
-| Dates are unique and continuous | Duplicate extracts or missing periods |
-| Stock-flow identity closes | Unobserved inflows, transfers, revisions, or timing differences |
-| Definitions and boundary remain stable | A statistical break rather than a service effect |
+| `front`, `drivers`, `rear` | Killed or seriously injured |
+| `DriversKilled`, `VanKilled` | Deaths only |
+| `kms` | Distance driven |
+| `PetrolPrice` | Contextual price measure |
+| `law` | Monthly intervention indicator |
 
-An inferred flow is a balancing residual unless every other term is observed on a common basis.
+Outcome labels matter: these are not interchangeable counts or ready-made rates.
 
-## Counts and rates answer different questions
+## Plot the outcome before estimating the break
 
-![Closure counts and exposure-adjusted closure rates](assets/its-count-rate.png){fig-alt="Two monthly series comparing the number of repair closures with closures per 1,000 open cases." width="88%"}
+![Monthly front-seat casualties](assets/its-seatbelts-raw.png){fig-alt="Monthly front-seat passengers killed or seriously injured in Great Britain, with February 1983 marked as the first law month." width="94%"}
 
-- counts describe system volume
-- rates describe activity relative to the cases exposed to closure
-- a changing denominator can move the rate even when counts are stable
-- use the denominator available before the period's events when the estimand is a risk or transition rate
+The graph reveals a long baseline, strong seasonality, an apparent decline, and only 23 post-law observations.
 
-## Repair anomalies transparently—and keep the source visible
+## Two averages discard the trajectory
 
-1. Detect implausible values through reconciliation and context, not visual preference.
-2. Preserve the published value and record the reason, rule, and date of any repair.
-3. Compare the primary treatment with omission and retention of the source value.
-4. Do not let a single impossible observation determine the baseline trend.
+![Pre- and post-law means](assets/its-seatbelts-prepost.png){fig-alt="Monthly front-seat casualty counts with separate horizontal averages before and after the seatbelt law." width="92%"}
 
-::: {.signal}
-Agreement between credible treatments is evidence; choosing the most favourable treatment is not.
-:::
-
-## A pre/post average has no trajectory
-
-![Pre- and post-programme means for the synthetic closure rate](assets/its-prepost.png){fig-alt="Monthly closure rates with horizontal pre- and post-programme averages, illustrating how averages hide trend, seasonality, and transition." width="92%"}
-
-Two averages discard pre-existing trend, seasonal position, and serial dependence. The missing object is the path that would have continued without the programme.
+Pre/post means mix different calendar months, ignore the baseline trend, and compare periods of very different length.
 
 ## ITS projects the untreated path forward
 
-![Observed and no-programme trajectories](assets/its-counterfactual.png){fig-alt="Observed repair-service closure rates with fitted programme and estimated no-programme trajectories after rollout." width="92%"}
+![Observed and no-law trajectories](assets/its-seatbelts-counterfactual.png){fig-alt="Observed front-seat casualties with fitted law and projected no-law trajectories." width="92%"}
 
-The gap is estimated, not observed. Its causal interpretation depends on the stability of the pre-programme relationship and the absence of competing same-date explanations [@lopezbernal2017tutorial].
+The no-law path is estimated rather than observed. Its causal meaning depends on a stable outcome system and no competing same-date explanation [@lopezbernal2017tutorial].
 
 ## Specify the plausible effect shape before estimation
 
-![Four interrupted-time-series impact shapes](assets/its-effect-shapes.png){fig-alt="Four panels showing immediate, gradual, immediate plus gradual, and temporary intervention effects." width="100%"}
+![Four intervention effect shapes](assets/its-effect-shapes.png){fig-alt="Immediate, gradual, immediate plus gradual, and temporary intervention effect shapes." width="100%"}
 
-Rollout knowledge should determine whether the model allows a level shift, slope change, temporary pulse, transition, or phased response. Flexibility chosen after viewing results is specification search.
+Delivery knowledge should determine whether the model allows a step, slope change, ramp, lag, or temporary pulse.
 
 ## Segmented regression separates level and trend changes
 
 $$
-Y_t = \beta_0 + \beta_1t + \beta_2A_t + \beta_3I_t + \beta_4T^{post}_t
-      + \text{seasonality}_t + \epsilon_t
+\log(Y_t) = \beta_0 + \beta_1t + \beta_2I_t + \beta_3T^{post}_t
+      + \gamma_1\sin(2\pi t/12) + \gamma_2\cos(2\pi t/12) + \epsilon_t
 $$
 
 | Term | Interpretation |
 |---|---|
-| $A_t$ | Prespecified announcement pulse |
-| $I_t$ | Immediate change at operational rollout |
-| $T^{post}_t$ | Change in trend after rollout |
+| $I_t$ | Immediate proportional change in the first law month |
+| $T^{post}_t$ | Change in monthly log trend after the law |
+| Sine and cosine | Annual seasonal cycle |
 
-The post-programme trend is the baseline trend plus the trend-change coefficient [@wagner2002segmented].
+At horizon $h$, the log-scale contrast is $\beta_2 + h\beta_3$.
 
 ## Post-intervention time starts at zero
 
@@ -140,213 +115,155 @@ The post-programme trend is the baseline trend plus the trend-change coefficient
 ### Interpretable coding
 
 ```r
-implemented <- as.integer(time >= 88)
-time_after <- pmax(0, time - 88)
+law_start <- min(time[law == 1])
+post_time <- ifelse(
+  law == 1,
+  time - law_start,
+  0
+)
 ```
 
-At rollout, `time_after == 0`; the implementation coefficient is the immediate change.
+At the first intervention observation, `post_time == 0`.
 :::
 
 ::: {.column width="47%"}
 ### Misleading coding
 
 ```r
-wrong_time_after <- time * implemented
+wrong_post_time <- time * law
 ```
 
-Fitted values may be identical while the implementation coefficient moves to an irrelevant time origin [@xiao2021parameterization].
+The fitted line can look identical while the law coefficient moves to an irrelevant time origin [@xiao2021parameterization].
 :::
 :::
 
-## The effect changes with the horizon
+## Report effects at named horizons
 
-![Estimated effects at three horizons](assets/its-horizon-effects.png){fig-alt="Estimated immediate, six-month, and twelve-month programme effects with confidence intervals." width="75%"}
+$$
+\widehat{\delta}(h) = \widehat{\beta}_2 + h\widehat{\beta}_3
+$$
 
-At horizon $h$, the segmented effect is $\beta_3 + h\beta_4$. Its uncertainty must include the covariance between the level and trend terms.
+$$
+\operatorname{Var}\{\widehat{\delta}(h)\}
+= \operatorname{Var}(\widehat{\beta}_2)
++ h^2\operatorname{Var}(\widehat{\beta}_3)
++ 2h\operatorname{Cov}(\widehat{\beta}_2,\widehat{\beta}_3)
+$$
 
-## Seasonality belongs in the mean model
+- immediate, 6-month, and 12-month contrasts answer different questions
+- log contrasts become percentages through $100\{\exp(\delta)-1\}$
+- later horizons usually carry more trend uncertainty
 
-![Observed closure rates and annual seasonal component](assets/its-seasonality.png){fig-alt="Monthly repair closure rates with the annual seasonal component highlighted." width="90%"}
+## Seasonality and dependence are different problems
 
-A predictable annual cycle is part of the expected outcome path. Month indicators or Fourier terms are transparent starting points; an autoregressive error should not be asked to absorb omitted seasonality.
+![Residual autocorrelation](assets/its-seatbelts-residual-acf.png){fig-alt="Residual autocorrelation for OLS and normalized AR1 residuals." width="86%"}
 
-## Serial dependence belongs in the error model
+- seasonality belongs in the expected outcome path
+- serial dependence belongs in the residual model
+- AR(1) errors can improve uncertainty estimates
+- neither choice removes concurrent confounding
 
-![Residual autocorrelation before and after AR1 modelling](assets/its-residual-acf.png){fig-alt="Residual autocorrelation plots for ordinary least squares and normalized AR1 generalized least-squares residuals." width="84%"}
+## Alternative outcomes add design evidence
 
-OLS, heteroskedasticity-and-autocorrelation-consistent uncertainty, and autoregressive errors address dependence differently. None removes concurrent confounding or repairs a measurement break.
+![Indexed driver, front-seat, and rear-seat casualty series](assets/its-seatbelts-outcomes.png){fig-alt="Indexed casualty series for front-seat passengers, car drivers, and rear-seat passengers." width="94%"}
 
-## A comparison series can remove a shared shock
+Directly targeted outcomes should tell a coherent story. Nominally untargeted outcomes can reveal shared changes—but only if their causal role is credible.
 
-![Controlled ITS under a common shock](assets/its-controlled-shock.png){fig-alt="Synthetic programme and comparison-area closure rates both responding to a shared shock after rollout." width="91%"}
+## A candidate control is not automatically untreated
 
-A controlled ITS estimates whether the programme area changed more than an unexposed comparison. Comparable measurement, a credible pre-trend, and no spillover are design requirements [@lopezbernal2018controls].
+Rear-seat casualties are informative because adult rear-seat belt wearing was not compulsory until 1991 [@ukparliament2012seatbelts]. They are still imperfect because:
 
-## A control cannot repair a treated-only measurement break
+- passengers may have moved between front and rear seats
+- exposure and severity differ by seating position
+- the pre-law relationship may not remain stable
 
-| Scenario | What the contrast can recover |
-|---|---|
-| Shared demand shock | The programme-area change beyond the common shock |
-| Boundary transfer affecting both series comparably | Potentially the differential programme change |
-| Programme-area reporting migration | Policy and measurement remain observationally combined |
-| Contaminated comparison | The contrast is no longer untreated |
+Van-driver deaths are an even weaker candidate: they track front-seat casualties poorly before the law and fall around the intervention themselves.
 
-Controls solve specific identification problems—not every same-date discontinuity.
-
-## Contextual variables need a causal role
-
-Include a contextual predictor only when it:
-
-- represents a plausible common cause or strong untreated predictor
-- is measured independently of the programme
-- is not changed by the programme
-- covers the same forecast origins and remains within defensible support
-
-Correlated measures of one mechanism are alternatives, not an automatic adjustment set.
-
-::: {.notes}
-[Sources] Theory-led covariate selection and outcome-free validation principles: @vanderweele2019; @bergmeir2018.
+::: {.signal}
+Controlled ITS is a design argument, not an interaction term alone.
 :::
+
+## Sensitivity should change one assumption at a time
+
+![Seatbelt model sensitivity](assets/its-seatbelts-robustness.png){fig-alt="Immediate percentage changes under level-only, level-and-trend, and distance-plus-petrol specifications." width="79%"}
+
+- level-only versus level-and-trend models change the effect shape
+- distance driven changes the exposure interpretation
+- petrol price is context, not the intervention
+- stability of direction is useful; it does not eliminate confounding
+
+## The 1983 break has competing explanations
+
+The Parliamentary debate reviewing the law discussed stricter drink-driving enforcement and evidential breath testing as alternative contributors to the casualty decline [@ukparliament1986seatbeltdebate].
+
+The defensible claim is therefore:
+
+> Targeted casualty series fell relative to their projected paths, and front-seat casualties fell relative to rear-seat casualties. These data alone do not isolate compulsory belt wearing from every simultaneous road-safety change.
 
 ## Fit is not counterfactual performance
 
-::: {.columns}
-::: {.column width="46%"}
-### In-sample fit
+![Pre-programme forecast validation](assets/its-validation.png){fig-alt="Normalized forecast error for three candidate untreated models at 3, 6, and 12 month horizons." width="77%"}
 
-Answers how closely a model describes observations used to estimate it.
-:::
+When no comparison series is credible:
 
-::: {.column width="46%"}
-### Pre-programme validation
+1. choose common pre-intervention forecast origins;
+2. score every candidate at the same reporting horizons;
+3. select without post-intervention outcomes;
+4. retain a near-performing comparator; and
+5. stop when predictors leave their training support.
 
-Answers how accurately the model predicts untreated observations it did not see.
-:::
-:::
+## The three labs now have one job each
 
-Model selection for the no-programme path must exclude every post-rollout outcome.
+| Lab | Core question | Data |
+|---|---|---|
+| Foundations | How do level, trend, seasonality, and dependence work? | Seatbelts |
+| Design and robustness | Which outcomes, controls, and sensitivities are defensible? | Seatbelts |
+| Counterfactual validation | Which untreated forecast survives held-out testing? | Minimal known-truth simulation |
 
-## Validate at the horizons the evaluation will report
-
-![Multi-horizon forecast validation](assets/its-validation.png){fig-alt="Normalized forecast error for seasonal-naive, trend, autoregressive, and contextual models at three, six, and twelve months." width="84%"}
-
-Use identical expanding-window origins, compare each model with a transparent naive benchmark, and aggregate predeclared horizon scores. A one-step winner need not be the best twelve-month counterfactual [@bergmeir2018].
-
-## Preserve model disagreement
-
-- use the prespecified validation rule for the primary path
-- retain a near-performing model built on a different assumption
-- report conclusions shared by both before model-specific totals
-- interpret divergence as sensitivity to trend, persistence, or context
-
-“Selected” means selected by an outcome-free forecasting rule—not proven causally true.
-
-## Cumulative effects depend on exposure and recursion
-
-For a flow outcome, report both:
-
-1. the rate gap at each policy-relevant horizon; and
-2. the cumulative observed-minus-expected flow over the same window.
-
-Applying counterfactual rates to observed exposure answers a different question from simulating the no-programme stock and its future exposure. Label the choice and test the alternative.
-
-## Prediction intervals are not causal confidence intervals
-
-Forecast intervals describe uncertainty under a specified untreated model. They do not include every source of:
-
-- model selection uncertainty
-- boundary or measurement uncertainty
-- concurrent interventions
-- missing comparison groups
-- unsupported long-run extrapolation
-
-Calibrate the claim to design uncertainty as well as model uncertainty.
-
-## Stop when the predictors leave their training support
-
-![Training and forecast support ranges](assets/its-support-audit.png){fig-alt="Ranges of a contextual predictor during pre-rollout training, the primary impact window, and an unsupported extension beyond the training range." width="82%"}
-
-Supplying an extreme observed predictor value does not make extrapolation reliable. A coefficient learned inside one range remains an assumption outside it.
-
-## Sensitivity checks should name the threat
-
-::: {.columns}
-::: {.column width="58%"}
-![Illustrative robustness checks](assets/its-robustness.png){fig-alt="Point and interval estimates for a primary model and checks using announcement timing, a shorter baseline, anomaly omission, scope adjustment, and transition exclusion." width="100%"}
-:::
-
-::: {.column width="39%"}
-- timing: announcement versus rollout
-- anomaly: repair, omit, retain
-- baseline: prespecified shorter starts
-- boundary: published versus constant scope
-- false breaks: placebo dates
-:::
-:::
-
-## Placebo dates are diagnostics, not magic p-values
-
-Apply the same local specification at false dates wholly before the intervention. Ask whether breaks of similar size occur when no programme was present.
-
-- overlapping dates are dependent
-- the real date was not randomly assigned
-- placebo results reveal instability; they do not create randomisation
+Each notebook has a 45–60 minute guided core and a clearly marked optional extension.
 
 ## Report a chain of evidence
 
-1. Define the intervention, outcome system, exposure, estimands, and timing.
-2. Show validation, reconciliation, and contextual-event evidence.
-3. Plot observed, fitted, and no-programme trajectories.
-4. Report horizon and cumulative effects with forecast uncertainty.
-5. Show the comparator model and named sensitivity checks.
-6. State what alternative explanations remain.
+1. Outcome definition and intervention evidence.
+2. Raw series and data-quality checks.
+3. Prespecified effect shape and segmented model.
+4. Residual, sensitivity, and comparison diagnostics.
+5. Named horizon-specific contrasts with uncertainty.
+6. Concurrent events and measurement limitations.
+7. The strongest claim the design can support.
 
-## The labs build the complete workflow
-
-| Lab | Learner output |
-|---|---|
-| Data and mechanics | Validated series, reconciled measures, segmented effects |
-| Design and diagnostics | Scenario comparison and causal design memo |
-| Counterfactual validation | Outcome-free model selection and forecast report |
+::: {.signal}
+A model estimates the break. The design determines what the break means.
+:::
 
 ## The design makes the break interpretable
 
-::: {.kicker}
-Validate the data system. Fix timing from delivery evidence. Select the untreated path without post-programme outcomes. Then ask which other event, boundary change, or unsupported assumption could still explain the gap.
-:::
+- preserve the trajectory
+- code the interruption from external evidence
+- distinguish level, trend, seasonality, and dependence
+- defend every comparison and contextual variable
+- validate forecasts without post-intervention outcomes
+- stop before the evidence becomes extrapolation
 
-That sequence—not a significant intervention coefficient—is the practical standard for interrupted time series.
+## Appendix: Monthly aggregation can blur the intervention {.section-slide}
 
-## Appendix: dynamic intervention models are different tools {.section-slide}
+The law began on the final day of January 1983, so February is the first fully treated month. When an intervention begins part-way through an aggregation period, a sharp monthly step can mix treated and untreated exposure and bias the apparent immediate effect [@turner2026aggregation].
 
-Autoregressive outcomes, distributed intervention pulses, and autoregressive errors answer different questions. Add dynamics only when the mechanism and pre-intervention validation support them.
+## Appendix: Dynamic intervention models answer related questions
 
-## Appendix: ARDL asks about long-run relationships
+ARIMA intervention models, state-space models, distributed lags, and segmented regression can represent different baseline and effect dynamics. The original seatbelt analysis used structural time-series modelling [@harvey1986seatbelts]. Choose complexity for a stated feature of the outcome system, not because it produces a stronger result.
 
-An autoregressive distributed-lag model asks whether an outcome and contextual series share a stable long-run relationship while allowing short-run adjustment.
+## Appendix: A control cannot repair a treated-only break
 
-- audit integration order; no variable may be integrated of order two
-- choose lag orders on a common sample
-- treat a statistic between the bounds as inconclusive
-- do not convert cointegration evidence into programme attribution
-
-::: {.notes}
-[Sources] ARDL bounds-testing framework: @pesaran2001; applied implementation guidance: @natsiopoulos2022.
-:::
-
-## Appendix: model selection adds uncertainty
-
-Refit-and-reselect simulation or bootstrap can propagate parameter and selection uncertainty through recursive forecasts. Report those intervals as model-based summaries; the procedure still cannot simulate unknown confounding or undocumented scope changes.
-
-## Appendix: complexity cannot rescue weak design
-
-::: {.signal}
-A complex model can forecast well and still answer the wrong causal question.
-:::
-
-Use advanced specifications to test a named assumption, improve an untreated forecast, or represent a known mechanism—not to manufacture a preferred result.
+A comparison can remove a genuinely shared shock. It cannot distinguish a real intervention effect from a measurement change, composition shift, or other event affecting only the treated series. Those threats require provenance, implementation evidence, or a different design.
 
 ## Sources {.smaller .scrollable}
 
-::: {#refs}
-:::
+- @harvey1986seatbelts
+- @lopezbernal2017tutorial
+- @lopezbernal2018controls
+- @rseatbeltsdata
+- @ukparliament2012seatbelts
+- @ukparliament1986seatbeltdebate
+- @wagner2002segmented
+- @xiao2021parameterization

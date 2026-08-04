@@ -63,7 +63,7 @@ Use the deck for the concept sequence and the presenter notes for the fuller tal
 
 ### Interrupted Time Series
 
-Design-first sequence from data provenance and segmented regression through controlled ITS and outcome-free counterfactual validation.
+Design-first sequence using the Great Britain seatbelt law to connect segmented regression, outcome comparisons, robustness, and counterfactual validation.
 
 [Open RevealJS deck](its-revealjs.html){.topic-card-primary}
 
@@ -74,7 +74,7 @@ Design-first sequence from data provenance and segmented regression through cont
 :::
 
 ::: {.card-meta}
-Use the deck for the 35-minute core sequence, the optional technical appendix for advanced discussion, and the three labs for applied practice.
+Use the deck for the 25–30 minute core sequence, the short technical appendix for advanced discussion, and the three focused labs for applied practice.
 :::
 :::
 :::

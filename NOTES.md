@@ -20,7 +20,7 @@ The current major release covers:
 
 - Matching and weighting: overview notes, teaching data, source notes, matching labs, and a long-form matching methods report.
 - Synthetic control: overview notes, teaching data, source notes, method reports, mechanics labs, Proposition 99, Basque Country, Kansas augmentation, donor-pool planning, and slide decks.
-- Interrupted time series: method overview, a 35-minute core deck with optional technical appendix, presenter script, and three generated R notebooks covering data mechanics, design diagnostics, and counterfactual validation.
+- Interrupted time series: a Seatbelts-based method overview and core deck, presenter script, two real-data workshops on mechanics and design robustness, and one compact synthetic counterfactual-validation lab, all with generated R notebooks.
 - Other method notes: difference-in-differences, regression discontinuity, method comparison, and method-choice guidance.
 - Navigation aids: a notes link graph generated before rendering from `docs/scripts/extract_link_graph.py`.
 

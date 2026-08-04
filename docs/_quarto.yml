@@ -141,9 +141,9 @@ website:
         - section: Interrupted Time Series
           contents:
             - href: labs/interrupted-time-series-mechanics-lab.qmd
-              text: ITS Mechanics Lab
+              text: ITS Foundations With Seatbelts
             - href: labs/interrupted-time-series-design-diagnostics-lab.qmd
-              text: ITS Design and Diagnostics Lab
+              text: Seatbelt Law Design and Robustness
             - href: labs/interrupted-time-series-counterfactual-validation-lab.qmd
               text: ITS Counterfactual Validation Lab
     - id: slides

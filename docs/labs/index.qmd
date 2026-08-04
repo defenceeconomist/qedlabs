@@ -144,15 +144,15 @@ Use this when the main bottleneck is screening and defending the donor pool.
 
 ## Interrupted Time Series Labs {#interrupted-time-series-labs .section-heading}
 
-<p class="section-intro">Move from trustworthy measures and segmented-regression mechanics to identification diagnostics and outcome-free counterfactual validation.</p>
+<p class="section-intro">Use a real seatbelt-law case for the foundations and design choices, then validate untreated forecasts in a compact known-truth exercise.</p>
 
 ::: {.section-grid}
 ::: {.section-card}
 <span class="page-badge badge-lab">Introductory</span>
 
-### [Interrupted Time Series Data and Mechanics](interrupted-time-series-mechanics-lab.qmd)
+### [ITS Foundations With Seatbelts](interrupted-time-series-mechanics-lab.qmd)
 
-Validate stocks and flows, repair a documented anomaly, construct exposure-adjusted rates, model AR(1) errors, and estimate horizon-specific effects.
+Build the monthly interruption, compare pre/post summaries with segmented regression, estimate horizon-specific percentage changes, and optionally model AR(1) errors.
 
 [Download R notebook](notebooks/interrupted-time-series-mechanics-lab.ipynb){download="interrupted-time-series-mechanics-lab.ipynb"}
 :::
@@ -160,9 +160,9 @@ Validate stocks and flows, repair a documented anomaly, construct exposure-adjus
 ::: {.section-card}
 <span class="page-badge badge-core">Intermediate</span>
 
-### [Interrupted Time Series Design and Diagnostics](interrupted-time-series-design-diagnostics-lab.qmd)
+### [Seatbelt Law Design and Robustness](interrupted-time-series-design-diagnostics-lab.qmd)
 
-Compare uncontrolled and controlled ITS under phased rollout, shared shocks, boundary changes, measurement breaks, and prespecified robustness checks.
+Compare targeted outcomes, audit imperfect controls, test exposure-adjusted specifications, and write a defensible attribution judgment.
 
 [Download R notebook](notebooks/interrupted-time-series-design-diagnostics-lab.ipynb){download="interrupted-time-series-design-diagnostics-lab.ipynb"}
 :::
@@ -172,7 +172,7 @@ Compare uncontrolled and controlled ITS under phased rollout, shared shocks, bou
 
 ### [Interrupted Time Series Counterfactual Validation](interrupted-time-series-counterfactual-validation-lab.qmd)
 
-Screen contextual predictors, compare untreated forecasting backbones on held-out pre-rollout data, report short-horizon gaps, and reject unsupported extrapolation.
+Compare three untreated forecasting models on identical held-out origins, preserve the nearest competitor, report 12-month gaps, and stop unsupported extension.
 
 [Download R notebook](notebooks/interrupted-time-series-counterfactual-validation-lab.ipynb){download="interrupted-time-series-counterfactual-validation-lab.ipynb"}
 :::
