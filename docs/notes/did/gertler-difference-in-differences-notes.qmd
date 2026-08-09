@@ -1,0 +1,127 @@
+---
+title: "Notes on Gertler et al.: Difference-in-Differences"
+subtitle: "Detailed Study Notes for Chapter 7, Second Edition"
+author: "Luke Heley"
+date: 9 August 2026
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: false
+---
+
+## Purpose
+
+These notes summarize Chapter 7 of the second edition of *Impact Evaluation in Practice* [@gertler2016ch7did]. The chapter is written for programme evaluators and focuses on the canonical design, equal trends, validity checks, and worked policy examples.
+
+## Source Baseline
+
+- Source: *Impact Evaluation in Practice*, second edition, Chapter 7
+- Authors: Paul J. Gertler, Sebastian Martinez, Patrick Premand, Laura B. Rawlings, and Christel M. J. Vermeersch
+- Publisher: Inter-American Development Bank and World Bank, 2016
+- DOI: [10.1596/978-1-4648-0779-4](https://doi.org/10.1596/978-1-4648-0779-4)
+- Accessed: 9 August 2026
+- Main sections:
+  - the DiD method
+  - how DiD is helpful
+  - the equal-trends assumption
+  - validity checks
+  - applications and limitations
+
+## Executive Summary
+
+- DiD combines a before-after comparison with an enrolled-nonenrolled comparison.
+- The comparison group's change estimates the treated group's counterfactual change.
+- Differencing removes observed and unobserved characteristics that are stable over time.
+- Differential time-varying shocks remain a central source of bias.
+- Equal trends concerns untreated outcomes, so it cannot be proven after treatment.
+- Multiple pre-treatment observations, placebo groups, placebo outcomes, and alternative controls can challenge the assumption.
+- DiD generally requires stronger assumptions than designs based on a known assignment rule.
+
+## Study Notes
+
+### Evaluating When Assignment Is Less Clear
+
+The chapter positions DiD after randomization, instrumental variables, and regression discontinuity. Those designs use an explicit assignment mechanism; DiD is introduced when the assignment rule is less clear. That makes DiD useful, but it also increases the burden of assumption and justification.
+
+This ordering is important for evaluator training. DiD should not be selected because panel data exist. It should be selected when a policy change creates treated and comparison units whose untreated changes are plausibly comparable.
+
+### The Road-Repair Example
+
+Districts choose whether to join a road-repair programme intended to improve labour-market access. A treated-district before-after comparison confounds repair with economy-wide change. A treated-versus-untreated post comparison confounds repair with why districts enrolled.
+
+The chapter combines the two:
+
+$$
+DD=(B-A)-(D-C).
+$$
+
+In the numerical example, treated employment moves from (0.60) to (0.74), while comparison employment moves from (0.78) to (0.81). The estimated effect is (0.14-0.03=0.11).
+
+The groups have different baseline levels, and that is allowed. The key claim is that the comparison group's (0.03) change represents what treated districts would have experienced without road repair.
+
+### What Differencing Removes
+
+The before-after difference removes all characteristics whose effects remain constant over time. These include observed features such as location and fixed demographics as well as unobserved stable characteristics such as persistent institutional capacity.
+
+This is DiD's genuine advantage over a post-treatment cross-section. It does not require measuring every stable cause of baseline outcome differences.
+
+It does *not* remove a new port, economic shock, concurrent programme, changing population, or measurement reform that affects treated and comparison districts differently. Those are group-specific time-varying factors and remain mixed with the treatment effect.
+
+### Equal Trends
+
+The book calls the central condition “equal trends.” In the absence of treatment, the outcome gap between treated and comparison groups must remain stable over the study interval. The treated group's untreated post-treatment path is missing, so the condition is an assumption.
+
+The chapter's graphical violation is useful: if treated outcomes would have grown faster even without the programme, importing the comparison group's slower trend overstates impact. The sign of bias depends on the direction of the untreated trend difference.
+
+### Testing the Design's Plausibility
+
+The chapter describes four checks.
+
+#### Repeated Pre-Treatment Changes
+
+Compare treated and comparison changes across more than one pre-treatment interval. At least two pre-treatment observations are needed for one observed pre-trend comparison, plus a post-treatment observation for the effect.
+
+Similarity before treatment raises confidence but cannot reveal whether an unobserved differential shock arrives at the same time as treatment.
+
+#### Fake Treatment Group
+
+Apply DiD to two groups known not to receive treatment. A nonzero estimate reveals that the proposed comparison structure generates differences even without the programme.
+
+#### Fake Outcome
+
+Estimate an effect on an outcome that treatment cannot plausibly affect. The book's tutoring example uses number of siblings. A detected “effect” signals that the groups are changing differently for reasons other than treatment.
+
+#### Alternative Comparison Groups
+
+Repeat the design using other comparison groups that each have a substantive claim to validity. Similar estimates across credible controls are reassuring; disagreement exposes dependence on counterfactual choice.
+
+These are falsification exercises. Passing all four does not prove equal trends, but failing one identifies a specific reason for concern.
+
+### Applied Examples
+
+The chapter uses applications to show how the design must match institutional variation:
+
+- electoral incentives and Brazil's Bolsa Escola implementation
+- police deployment around Jewish institutions in Buenos Aires
+- policy and programme settings in which assignment is not governed by a clean cutoff
+
+The localized policing result is a reminder to inspect spillovers and displacement. A treatment can reduce crime on protected blocks while shifting it nearby, changing the estimand and the interpretation of comparison areas.
+
+## Practical Implications for QED Labs
+
+- Keep the four-cell numerical calculation in every introductory DiD lesson.
+- Explain explicitly which two biased comparisons are being combined.
+- Ask which stable differences are removed and which changing differences remain.
+- Require at least one falsification based on timing, group, or outcome.
+- Use several pre-periods when data allow, while stating that pre-trend similarity is not proof.
+- Rank DiD below a credible assignment-rule design when both are available.
+- Extend the chapter with modern staggered-adoption methods before applying it to phased rollout.
+
+## Limits Relative to Modern Practice
+
+The chapter is strongest on the canonical evaluator-facing design. It does not resolve heterogeneous effects under staggered adoption, contaminated TWFE event studies, or modern sensitivity analysis. Those issues require the Goodman-Bacon, Callaway-Sant'Anna, Sun-Abraham, and Roth et al. notes [@goodmanbacon2021timing; @callaway2021multipletime; @sunabraham2021dynamic; @roth2023trending].
+
+## Bottom Line
+
+Gertler et al. give the clearest operational account of what DiD removes, what it leaves behind, and how an evaluator can try to falsify equal trends. It is the right first source, provided the teaching sequence later distinguishes the canonical design from staggered adoption.

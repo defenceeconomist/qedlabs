@@ -1,0 +1,127 @@
+---
+title: "Notes on The Mixtape: Difference-in-Differences"
+subtitle: "Detailed Study Notes for Chapter 9"
+author: "Luke Heley"
+date: 9 August 2026
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: false
+---
+
+## Purpose
+
+These notes follow Scott Cunningham's *Causal Inference: The Mixtape*, Chapter 9 [@cunningham2021did]. The chapter is unusually broad: it moves from the history and mechanics of DiD through inference, event studies, placebos, triple differences, and the failure of conventional two-way fixed effects under differential treatment timing.
+
+The aim is to preserve the chapter's applied logic while separating durable design lessons from software-specific demonstrations.
+
+## Source Baseline
+
+- Source: [Chapter 9, Difference-in-Differences](https://mixtape.scunning.com/09-difference_in_differences)
+- Author: Scott Cunningham
+- Accessed: 9 August 2026
+- Main sections:
+  - John Snow's cholera hypothesis
+  - estimation and the simple two-by-two design
+  - inference
+  - parallel trends, event studies, and leads
+  - placebos and triple differences
+  - two-way fixed effects with differential timing
+  - conclusion
+
+## Executive Summary
+
+- DiD is a natural-experiment design, not merely an interaction term.
+- The canonical estimate identifies the ATT when untreated potential outcomes have parallel trends.
+- Credibility depends on the assignment story, comparison group, raw data, and falsification exercises.
+- Inference must address serial dependence; repeated observations do not create independent treatment assignments.
+- Event-study leads provide evidence about pre-treatment differences but do not test the unobserved post-treatment counterfactual directly.
+- With staggered adoption, ordinary TWFE averages many two-by-two comparisons, including comparisons that use already-treated units as controls.
+- Modern group-time and interaction-weighted estimators are responses to that comparison problem, not decorative robustness checks.
+
+## Study Notes
+
+### 9.1 John Snow's Cholera Hypothesis
+
+Cunningham begins with Snow because the episode makes design prior to estimation visible. Lambeth moved its Thames intake upstream, while Southwark and Vauxhall did not. The resulting change in water quality created a treatment contrast across companies and time [@snow1855cholera].
+
+The important lesson is not that Snow happened to have four cells. Snow developed a mechanism, investigated who received which water, linked households to mortality, and argued that the groups were otherwise comparable. The natural experiment supplied a credible reason for differential exposure.
+
+For QED Labs, this is the right opening discipline: describe why treatment timing created a useful comparison before showing an equation.
+
+### 9.2 Estimation
+
+The chapter builds the estimator by showing why two tempting alternatives fail:
+
+- a post-treatment treated-control comparison retains fixed group differences
+- a treated-group before-after comparison retains common time shocks
+
+Combining them removes both in the stylized model. In potential-outcome terms, the two-by-two estimate equals the ATT plus a nonparallel-trends bias term. The identifying claim is that the untreated outcome change for the treated group would have equalled the untreated group's change.
+
+The Card-Krueger minimum-wage study then gives the canonical modern application [@cardkrueger1994minimum]. New Jersey supplies the treated group, Pennsylvania the comparison group, and the before/post surveys measure fast-food employment. Cunningham stresses treatment verification and descriptive graphics alongside the regression result.
+
+This matters because a DiD can be mechanically correct while studying a treatment that did not bind, an outcome that was measured inconsistently, or groups exposed to different shocks.
+
+### 9.3 Inference
+
+The inference section explains why panel length is not the same thing as independent information. State outcomes observed for many years are serially related, so treating every state-year as independent can make standard errors too small [@bertrand2004trustdid].
+
+The chapter discusses:
+
+- block bootstrap procedures that resample whole units rather than isolated observations
+- aggregation as one way to reduce misleading high-frequency dependence
+- cluster-robust standard errors at the treatment-assignment level
+
+The durable rule is to preserve the dependence structure created by assignment and repeated observation. Clustering should follow the design rather than a search for a preferred p-value.
+
+### 9.4 Evidence for Parallel Trends
+
+Cunningham uses event studies and parallel leads to inspect whether treated and comparison outcomes were already moving differently. A relative-time specification makes the omitted pre-treatment period the reference, plots the lead and lag coefficients, and asks whether pre-treatment departures are substantively important.
+
+Three cautions are essential:
+
+1. The actual assumption concerns post-treatment untreated potential outcomes and is never observed.
+2. Failure to reject pre-trend coefficients can reflect low power.
+3. In staggered settings, conventional TWFE leads can themselves be contaminated by heterogeneous treatment effects [@sunabraham2021dynamic].
+
+The chapter also recommends checking pre-treatment covariate balance and understanding the treatment process. A clean plot cannot substitute for an institutional reason to expect similar counterfactual trends.
+
+### 9.5 Placebos and Triple Differences
+
+Placebos ask the design to find no effect where none should exist. Cunningham covers fake timing, alternative outcomes, and comparisons that should be unaffected. A failure can reveal differential shocks, bad measurement, composition change, or a comparison group that was never credible.
+
+Triple differences add another contrast to remove a remaining confounding difference. They can be valuable when a third untreated dimension has a clear design role, but adding a third subtraction does not automatically make identification stronger. Each comparison needs its own counterfactual interpretation.
+
+The repeated-cross-section discussion is especially useful. If the types of people observed in each group change across time, the DiD can mix treatment effects with composition change. Analysts must inspect who enters the outcome denominator, not just whether the regression includes fixed effects.
+
+### 9.6 TWFE with Differential Timing
+
+The chapter's most important advanced section explains the Goodman-Bacon decomposition [@goodmanbacon2021timing]. With multiple adoption dates, TWFE is a weighted average of comparisons including:
+
+- treated cohorts versus never-treated units
+- earlier cohorts versus later cohorts before the latter are treated
+- later cohorts versus already-treated earlier cohorts
+
+The final type is dangerous when treatment effects evolve. An already-treated group is not an untreated counterfactual; its continuing outcome path includes its own treatment dynamics. The coefficient can therefore combine comparisons that answer different questions with weights driven by sample structure rather than policy relevance.
+
+Cunningham introduces Callaway-Sant'Anna group-time effects and Sun-Abraham interaction-weighted event studies as solutions [@callaway2021multipletime; @sunabraham2021dynamic]. Both make cohorts and comparison groups explicit instead of asking one TWFE coefficient to average everything implicitly.
+
+## Practical Implications for QED Labs
+
+- Teach the two-by-two table before fixed effects.
+- Require an assignment-and-timing narrative before estimation.
+- Plot treatment uptake and raw outcomes, not only model coefficients.
+- Align clustering or resampling with treatment assignment.
+- Treat pre-trend plots as evidence, not proof.
+- Include placebo timing, outcome, or group exercises in any DiD lab.
+- When adoption is staggered, default to explicit group-time comparisons and report the aggregation rule.
+- Use a Bacon decomposition to diagnose legacy TWFE results, not as permission to retain a problematic estimator.
+
+## What This Source Does Not Settle
+
+The chapter maps several modern approaches but does not make estimator choice automatic. The correct comparison group still depends on whether never-treated or not-yet-treated units support the relevant parallel-trends claim. Sensitivity to violations also needs tools beyond a conventional lead-coefficient test [@rambachanroth2023parallel; @roth2023trending].
+
+## Bottom Line
+
+Cunningham's chapter is the most useful single bridge from DiD intuition to modern staggered-adoption concerns. Its lasting message is that transparency must extend from the four-cell estimate to every comparison and weight inside a multi-period estimator.

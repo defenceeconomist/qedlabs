@@ -1,0 +1,198 @@
+---
+title: "Difference-in-Differences Sources"
+---
+
+# Scope
+
+This page is a reading map for difference-in-differences. It connects four accessible teaching sources to four papers that explain why staggered adoption requires more care, then identifies the next readings most useful for applications, inference, and sensitivity analysis.
+
+# Start Here
+
+For a compact sequence, read:
+
+1. Gertler et al. for the evaluator-facing two-by-two design and practical placebo logic [@gertler2016ch7did].
+2. Huntington-Klein for a causal-diagram explanation, implementation, event studies, and a current overview of staggered methods [@huntingtonklein2021did].
+3. Cunningham for deeper intuition, applications, inference, placebos, and the Goodman-Bacon decomposition [@cunningham2021did].
+4. Roth et al. for a map of the modern literature and a practitioner checklist [@roth2023trending].
+
+That route moves from the core counterfactual to modern estimator choice without beginning in the most formal material.
+
+# Apply The Reading
+
+Use the source notes alongside three runnable R labs:
+
+1. [Foundations](../../labs/difference-in-differences-foundations-lab.qmd) applies Gertler, Huntington-Klein, and Heiss to a canonical 2×2 design.
+2. [Staggered diagnostics](../../labs/difference-in-differences-staggered-diagnostics-lab.qmd) applies Cunningham, Goodman-Bacon, and Sun–Abraham.
+3. [Modern estimators](../../labs/difference-in-differences-modern-estimators-lab.qmd) applies `did`, `fixest`, and an optional `HonestDiD` sensitivity analysis.
+
+# Requested Teaching Sources
+
+## Gertler et al., *Impact Evaluation in Practice*, Chapter 7
+
+Use the [Gertler notes](gertler-difference-in-differences-notes.qmd) for the cleanest programme-evaluation introduction [@gertler2016ch7did].
+
+Best for:
+
+- the two counterfeit comparisons that DiD combines
+- the road-repair numerical example
+- equal-trends intuition
+- fake-group, fake-outcome, and alternative-comparison placebos
+- explaining why DiD removes time-invariant differences but not differential shocks
+
+## Huntington-Klein, *The Effect*, Chapter 18
+
+Use [The Effect notes](effectbook-difference-in-differences-notes.qmd) for a design-and-DAG account that also reaches current methods [@huntingtonklein2021did].
+
+Best for:
+
+- across-versus-within variation
+- two-way fixed effects and fixed-effects intuition
+- event-study and placebo implementation
+- rollout-design failures
+- Callaway-Sant'Anna, extended TWFE, and imputation alternatives
+
+## Cunningham, *Causal Inference: The Mixtape*, Chapter 9
+
+Use the [Mixtape notes](mixtape-difference-in-differences-notes.qmd) for the richest applied teaching chapter [@cunningham2021did].
+
+Best for:
+
+- John Snow and Card-Krueger as natural-experiment cases
+- potential-outcome derivation of the ATT
+- clustering, aggregation, and block bootstrap intuition
+- event studies, triple differences, and placebos
+- the Bacon decomposition and staggered-treatment problem
+
+## Andrew Heiss, 2026 Program Evaluation Materials
+
+Use the [Heiss notes](andrew-heiss-difference-in-differences-notes.qmd) for a compact teaching sequence plus an R workflow [@heiss2026did1; @heiss2026did2; @heiss2026didexample].
+
+Best for:
+
+- translating the design into plain language
+- connecting interactions to the DiD coefficient
+- calculating the four cells by hand
+- moving from exploratory plots to regression
+- interpreting a logged outcome in the Kentucky workers' compensation example
+
+# Modern Staggered-Adoption Core
+
+## Goodman-Bacon (2021)
+
+Read the [Goodman-Bacon notes](goodman-bacon-treatment-timing-notes.qmd) to understand what a conventional staggered-TWFE coefficient is averaging [@goodmanbacon2021timing].
+
+Core contribution:
+
+- decomposes TWFE into weighted two-by-two DiDs
+- exposes comparisons that use already-treated units as controls
+- shows why dynamic effects create bias
+- turns an opaque coefficient into inspectable comparisons and weights
+
+## Callaway and Sant'Anna (2021)
+
+Read the [Callaway-Sant'Anna notes](callaway-santanna-multiple-periods-notes.qmd) for group-time effects and explicit comparison groups [@callaway2021multipletime].
+
+Core contribution:
+
+- defines (ATT(g,t))
+- permits never-treated or not-yet-treated controls
+- supports conditional parallel trends
+- provides outcome-regression, inverse-probability-weighted, and doubly robust estimands
+- separates identification from policy-relevant aggregation
+
+## Sun and Abraham (2021)
+
+Read the [Sun-Abraham notes](sun-abraham-event-studies-notes.qmd) for dynamic effects under staggered adoption [@sunabraham2021dynamic].
+
+Core contribution:
+
+- shows that conventional TWFE leads and lags can mix effects from other relative periods
+- explains why apparent pre-trends can arise from post-treatment heterogeneity
+- proposes cohort-specific effects aggregated with an interaction-weighted estimator
+
+## Roth et al. (2023)
+
+Read the [Roth et al. notes](roth-et-al-did-synthesis-notes.qmd) after the other three modern papers [@roth2023trending].
+
+Core contribution:
+
+- organizes the literature around departures from a canonical DiD model
+- compares staggered-adoption estimators by assumptions and comparison groups
+- treats parallel trends as an assumption requiring justification and sensitivity analysis
+- broadens inference beyond a default super-population cluster-robust frame
+
+# Further Recommended Reading
+
+## Canonical Applications
+
+### Snow (1855)
+
+Snow's cholera investigation is the historical natural-experiment anchor used by both Cunningham and Huntington-Klein [@snow1855cholera]. Read it for the importance of mechanism, data construction, and comparison-group credibility rather than for modern regression machinery.
+
+### Card and Krueger (1994)
+
+The New Jersey-Pennsylvania minimum-wage study is the canonical modern two-by-two application [@cardkrueger1994minimum]. Read it alongside later replication and measurement debates to see why design credibility includes treatment verification and outcome quality.
+
+## Inference and Conditional Trends
+
+### Bertrand, Duflo, and Mullainathan (2004)
+
+This is the essential warning about serial correlation and understated conventional standard errors in DiD [@bertrand2004trustdid]. It should be read before treating a statistically significant interaction coefficient as sufficient evidence.
+
+### Abadie (2005)
+
+Abadie develops a semiparametric DiD approach for repeated cross-sections under conditional parallel trends [@abadie2005semiparametricdid]. It is the clearest bridge from simple unconditional trends to covariate-adjusted identification.
+
+### Sant'Anna and Zhao (2020)
+
+This paper combines outcome regression and propensity-score weighting so the DiD estimator remains consistent when either nuisance model is correctly specified [@santannazhao2020drdid]. It is a practical next step after Abadie and underpins modern software workflows.
+
+## Event Studies and Sensitivity
+
+### Borusyak, Jaravel, and Spiess (2024)
+
+The imputation estimator learns untreated outcomes from untreated observations and then constructs treated-cell effects [@borusyak2024eventstudy]. Read it as an alternative to both conventional TWFE and group-time matching/weighting formulations.
+
+### Roth (2022)
+
+Roth shows why screening a design on a conventional pre-trend test can distort the treatment-effect estimate that is later reported [@roth2022pretest]. This is essential for interpreting “we found no significant pre-trend.”
+
+### Rambachan and Roth (2023)
+
+This paper replaces an all-or-nothing parallel-trends claim with sensitivity analysis under bounded post-treatment departures [@rambachanroth2023parallel]. Use it when the real question is how robust the conclusion is to plausible trend violations.
+
+## Hybrid Panel Methods
+
+### Arkhangelsky et al. (2021)
+
+Synthetic DiD combines unit weights and time weights, linking the DiD and synthetic-control traditions [@arkhangelsky2021synthetic]. Read it when untreated units have informative pre-treatment paths but an unweighted parallel-trends comparison is too coarse.
+
+# Suggested Reading Orders
+
+For an evaluator-facing introduction:
+
+1. Gertler.
+2. Heiss.
+3. Huntington-Klein.
+4. Bertrand-Duflo-Mullainathan.
+5. Roth et al.
+
+For staggered policy rollout:
+
+1. Cunningham's differential-timing section.
+2. Goodman-Bacon.
+3. Callaway-Sant'Anna.
+4. Sun-Abraham.
+5. Roth et al.
+6. Borusyak-Jaravel-Spiess.
+
+For design diagnostics and sensitivity:
+
+1. Gertler's equal-trends checks.
+2. Cunningham's placebos and event studies.
+3. Roth on pre-testing.
+4. Rambachan-Roth on sensitivity.
+
+# Bottom Line
+
+The four teaching sources explain why DiD can work. The four modern papers explain why a familiar regression can stop representing that design when treatment timing and effects vary. The further readings add the two pieces most likely to be neglected in practice: defensible inference and explicit sensitivity to departures from parallel trends.

@@ -4,13 +4,9 @@ title: "Other Methods"
 
 # Scope
 
-This page groups the remaining core quasi-experimental methods in the notes section. Use it when matching is not the main candidate design and the real question is whether the evaluation is better framed around time variation, a threshold, or a cross-method comparison.
+This page groups the remaining core quasi-experimental methods in the notes section. Use it when the real question is whether the evaluation is better framed around a threshold, a single interrupted series, or a cross-method comparison. Difference-in-differences now has its own [dedicated section](../did/difference-in-differences.qmd).
 
 # Main Routes
-
-## [Difference-in-Differences](difference-in-differences.qmd)
-
-Use this when treated and untreated units are both observed over time and the design depends on a credible parallel-trends argument.
 
 ## [Regression Discontinuity](regression-discontinuity.qmd)
 

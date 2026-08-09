@@ -1,0 +1,131 @@
+---
+title: "Notes on Sun and Abraham (2021): Heterogeneous Event Studies"
+subtitle: "Detailed Study Notes on Interaction-Weighted Dynamic Effects"
+author: "Luke Heley"
+date: 9 August 2026
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: false
+---
+
+## Purpose
+
+These notes summarize Liyang Sun and Sarah Abraham's *Estimating Dynamic Treatment Effects in Event Studies with Heterogeneous Treatment Effects* [@sunabraham2021dynamic]. The paper studies the leads-and-lags version of TWFE when treatment timing varies.
+
+## Source Baseline
+
+- Authors: Liyang Sun and Sarah Abraham
+- Journal: *Journal of Econometrics*, 225(2), 175--199
+- Published: 2021
+- DOI: [10.1016/j.jeconom.2020.09.006](https://doi.org/10.1016/j.jeconom.2020.09.006)
+- Open version: [arXiv:1804.05785](https://arxiv.org/abs/1804.05785)
+- Accessed: 9 August 2026
+- Main elements:
+  - relative-time TWFE coefficients
+  - cohort-specific average treatment effects
+  - contamination under heterogeneity
+  - interaction-weighted estimator
+  - hospitalization application
+
+## Executive Summary
+
+- Conventional event-study coefficients do not necessarily equal average effects at their labelled relative time.
+- With staggered adoption and heterogeneous effects, a lead or lag can load on treatment effects from other relative periods.
+- Some weights can be non-convex, putting a coefficient outside the range of the cohort-specific effects it is intended to summarize.
+- Apparent pre-trends can arise even when anticipation is absent and untreated trends are parallel.
+- The interaction-weighted (`IW`) estimator first estimates cohort-by-relative-time effects, then averages within relative time using cohort shares.
+- Under parallel trends and no anticipation, the IW coefficient is an interpretable convex average for that event time.
+- Dynamic plots must display which cohorts support each horizon.
+
+## Study Notes
+
+### The Conventional Event-Study Model
+
+Researchers often estimate
+
+$$
+Y_{it}=\alpha_i+\lambda_t+
+\sum_{\ell\neq -1}\mu_{\ell}
+1\{t-E_i=\ell\}+\varepsilon_{it},
+$$
+
+where (E_i) is the first-treatment date and (ell) is relative time. The omitted period, often (-1), is the reference. Leads are interpreted as pre-trends and lags as dynamic treatment effects.
+
+That interpretation is valid in simple common-timing settings. Under staggered timing, the fixed-effects residualization compares cohorts at different treatment states and combines more than the coefficient label suggests.
+
+### Cohort-Specific Effects
+
+The paper defines cohort-specific average treatment effects for cohort (e) at relative period (ell), often written (CATT_{e,\ell}). These are the natural dynamic building blocks: the effect (ell) periods from treatment for units first treated at (e).
+
+Treatment effects can differ because cohorts face different institutions or because only some cohorts are observed at long exposure durations. A valid event-time summary must therefore specify how these (CATT_{e,\ell}) values are averaged.
+
+### Contamination of Leads and Lags
+
+Sun and Abraham decompose each conventional TWFE (mu_{\ell}) into a linear combination of cohort-specific effects. Under heterogeneity:
+
+- the coefficient can weight effects from the intended relative period non-convexly
+- it can also place nonzero weight on effects from other relative periods
+- a pre-treatment lead can inherit post-treatment effects from already-treated cohorts
+
+This last result is especially important. A nonzero lead is often interpreted as evidence that untreated trends were not parallel. In a conventional staggered event study, it may instead be an artefact of heterogeneous post-treatment effects.
+
+Conversely, a flat-looking pre-period does not guarantee that the post-treatment coefficients are clean. The estimator and the design diagnostic can fail together.
+
+### Assumptions for Clean Dynamic Effects
+
+The cohort-specific effects rely on:
+
+- parallel untreated potential-outcome trends between each cohort and its valid untreated controls
+- no anticipation before the permitted treatment window
+- sufficient untreated comparison support for each cohort and calendar period
+
+These assumptions are attached to specific comparisons. A saturated regression cannot create a valid control cohort when every plausible control is already affected.
+
+### The Interaction-Weighted Estimator
+
+The proposed approach has two conceptual steps.
+
+1. Estimate cohort-by-relative-time effects using a regression saturated in cohort and relative-time interactions.
+2. For each relative period (ell), average the available cohort-specific effects using the cohorts' sample shares.
+
+The resulting IW estimate is a convex average of effects at the same relative time. It is not contaminated by effects belonging to other periods.
+
+This produces an interpretable dynamic ATT path, but the set of contributing cohorts may change with (ell). Long-run lags are typically supported only by early-treated cohorts, so differences across the curve can reflect both dynamics and cohort composition.
+
+### Reference Periods and Binning
+
+One pre-treatment period must be omitted for normalization. Extreme leads and lags are often binned to avoid sparse cells, but binning imposes equality within the bin and can affect contamination in conventional specifications.
+
+A careful report identifies:
+
+- the omitted period
+- any anticipation periods excluded from the reference set
+- endpoint bins
+- cohorts contributing to every event time
+- weights used in the IW average
+
+### Empirical Illustration
+
+The paper examines hospitalization effects on out-of-pocket medical spending and labour earnings. Comparing conventional and IW paths demonstrates that relative-time coefficients can differ when cohorts have heterogeneous effects.
+
+The illustration is not merely about improved standard errors. It shows that the two approaches can estimate different weighted causal objects.
+
+## Practical Implications for QED Labs
+
+- Do not use conventional staggered-TWFE leads as the default pre-trend diagnostic.
+- Teach cohort-by-event-time cells before presenting an aggregate curve.
+- Show a support matrix indicating which cohorts contribute to each relative time.
+- Report the omitted period and endpoint bins.
+- Use simultaneous uncertainty bands when interpreting the full path.
+- Pair an IW event study with raw cohort outcome plots and a substantive parallel-trends argument.
+- Explain that clean estimation does not solve anticipation, spillovers, or absent controls.
+
+## Relationship to Other Modern Estimators
+
+Sun-Abraham focuses on dynamic event-time aggregation. Callaway-Sant'Anna starts from (ATT(g,t)) and supports several comparison and aggregation choices [@callaway2021multipletime]. Borusyak-Jaravel-Spiess uses untreated observations to impute counterfactual outcomes [@borusyak2024eventstudy]. All three prevent already-treated outcomes from serving as ordinary untreated controls, but they encode different assumptions and targets.
+
+## Bottom Line
+
+The paper changes how an event-study plot should be read. Under staggered treatment, the label “two years after treatment” does not guarantee that a conventional TWFE coefficient summarizes effects two years after treatment. Cohort-specific estimation followed by transparent within-event-time averaging restores that interpretation.

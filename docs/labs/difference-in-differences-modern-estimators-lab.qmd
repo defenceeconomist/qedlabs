@@ -1,0 +1,534 @@
+---
+title: "Lab: Modern Multi-Period Difference-in-Differences"
+format:
+  html: default
+execute:
+  echo: true
+  eval: false
+---
+
+## How To Use This Page
+
+This is the third difference-in-differences lab. The guided core takes about 45–60 minutes; the `HonestDiD` sensitivity analysis is an optional extension.
+
+[Download the R Jupyter notebook](notebooks/difference-in-differences-modern-estimators-lab.ipynb){.cta-button download="difference-in-differences-modern-estimators-lab.ipynb"}
+
+- Estimate group-time effects before choosing an aggregation.
+- Make the comparison group and parallel-trends assumption explicit.
+- Use simultaneous confidence bands for a dynamic effect path.
+- Compare estimators by target and support, not only by numerical proximity.
+
+The main workflow implements Callaway and Sant'Anna with the [`did` package](https://bcallaway11.github.io/did/) and compares it with Sun–Abraham in `fixest` [@callaway2021multipletime; @sunabraham2021dynamic]. The extension implements Rambachan and Roth with [`HonestDiD`](https://cran.r-project.org/web/packages/HonestDiD/HonestDiD.pdf) [@rambachanroth2023parallel]. See the [Callaway–Sant'Anna notes](../notes/did/callaway-santanna-multiple-periods-notes.qmd) and [modern DiD synthesis](../notes/did/roth-et-al-did-synthesis-notes.qmd).
+
+## Training Goal
+
+By the end of the core lab, you should be able to:
+
+1. define and estimate $ATT(g,t)$ for staggered adoption;
+2. distinguish never-treated from not-yet-treated comparisons;
+3. aggregate effects by cohort, event time, and calendar time;
+4. distinguish unconditional from conditional parallel trends; and
+5. explain why modern estimators can disagree without either containing a coding error.
+
+## Step 1: Load And Audit `mpdta`
+
+[`did::mpdta`](https://bcallaway11.github.io/did/reference/mpdta.html) is a balanced county-year panel based on minimum-wage applications. The outcome is log teen employment (`lemp`), `first.treat` is the first treatment year, and zero identifies never-treated counties.
+
+```{r}
+required_packages <- c(
+  "did",
+  "dplyr",
+  "ggplot2",
+  "fixest"
+)
+missing_packages <- required_packages[!vapply(
+  required_packages,
+  requireNamespace,
+  logical(1),
+  quietly = TRUE
+)]
+if (length(missing_packages) > 0) {
+  install.packages(missing_packages, repos = "https://cloud.r-project.org")
+}
+invisible(lapply(required_packages, library, character.only = TRUE))
+
+data("mpdta", package = "did")
+
+county_audit <- mpdta |>
+  arrange(countyreal, year) |>
+  group_by(countyreal) |>
+  summarise(
+    observations = n(),
+    first_year = min(year),
+    last_year = max(year),
+    cohort_values = n_distinct(first.treat),
+    treatment_reversal = any(diff(treat) < 0),
+    .groups = "drop"
+  )
+
+cohort_table <- mpdta |>
+  distinct(countyreal, first.treat) |>
+  count(first.treat, name = "counties") |>
+  mutate(
+    cohort = if_else(
+      first.treat == 0,
+      "Never treated",
+      as.character(first.treat)
+    )
+  ) |>
+  select(cohort, first.treat, counties) |>
+  arrange(first.treat)
+
+data.frame(
+  observations = nrow(mpdta),
+  counties = n_distinct(mpdta$countyreal),
+  years = n_distinct(mpdta$year)
+)
+cohort_table
+
+stopifnot(
+  !anyDuplicated(mpdta[c("countyreal", "year")]),
+  length(unique(county_audit$observations)) == 1L,
+  all(county_audit$cohort_values == 1L),
+  !any(county_audit$treatment_reversal),
+  any(mpdta$first.treat == 0),
+  n_distinct(mpdta$first.treat[mpdta$first.treat > 0]) > 1L
+)
+```
+
+## Step 2: Declare Group-Time Comparisons
+
+For cohort $g$ in year $t$, the target is
+
+$$
+ATT(g,t) = E[Y_t(1) - Y_t(0) \mid G=g].
+$$
+
+The counterfactual can be built from:
+
+- **never-treated counties**, which remain untreated throughout the panel; or
+- **not-yet-treated counties**, which are untreated at $t$ but may adopt later.
+
+```{r}
+comparison_support <- mpdta |>
+  distinct(countyreal, year, first.treat) |>
+  group_by(year) |>
+  summarise(
+    never_treated = sum(first.treat == 0),
+    not_yet_treated = sum(first.treat > year),
+    eligible_never_control = never_treated,
+    eligible_not_yet_control = never_treated + not_yet_treated,
+    .groups = "drop"
+  )
+
+comparison_support
+
+stopifnot(
+  all(comparison_support$eligible_not_yet_control >=
+    comparison_support$eligible_never_control),
+  all(comparison_support$eligible_never_control > 0)
+)
+```
+
+The not-yet-treated option can add support in early years but requires those future adopters to be valid controls before treatment.
+
+## Step 3: Plot Cohort Outcome Paths
+
+```{r, fig.height=5.2, fig.width=10}
+cohort_trends <- mpdta |>
+  mutate(
+    cohort = if_else(
+      first.treat == 0,
+      "Never treated",
+      paste("First treated", first.treat)
+    )
+  ) |>
+  group_by(cohort, first.treat, year) |>
+  summarise(mean_log_employment = mean(lemp), .groups = "drop")
+
+ggplot(
+  cohort_trends,
+  aes(year, mean_log_employment, colour = cohort, group = cohort)
+) +
+  geom_line(linewidth = 0.8) +
+  geom_point(size = 1.7) +
+  labs(
+    x = NULL,
+    y = "Mean log teen employment",
+    colour = "Cohort",
+    title = "Treatment cohorts contribute different pre- and post-treatment windows"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(legend.position = "bottom")
+```
+
+Checkpoint: which cohort contributes the longest post-treatment history, and why can that cohort receive disproportionate weight in a simple average?
+
+## Step 4: Estimate Unconditional Group-Time Effects
+
+The [`att_gt()` documentation](https://bcallaway11.github.io/did/reference/att_gt.html) makes the outcome, time, unit, cohort, comparison group, anticipation period, and base period explicit. We use a universal base period so pre-treatment pseudo-effects share the same interpretation and can feed later sensitivity analysis.
+
+```{r}
+set.seed(20260809)
+
+att_never <- att_gt(
+  yname = "lemp",
+  tname = "year",
+  idname = "countyreal",
+  gname = "first.treat",
+  xformla = ~ 1,
+  data = mpdta,
+  control_group = "nevertreated",
+  anticipation = 0,
+  base_period = "universal",
+  est_method = "dr",
+  bstrap = TRUE,
+  biters = 499,
+  cband = TRUE,
+  clustervars = "countyreal",
+  print_details = FALSE
+)
+
+summary(att_never)
+
+stopifnot(
+  inherits(att_never, "MP"),
+  length(att_never$att) > 0,
+  any(is.finite(att_never$att)),
+  att_never$DIDparams$control_group == "nevertreated"
+)
+```
+
+The default doubly robust score combines outcome regression and propensity-score components. With `xformla = ~ 1`, the design still invokes unconditional rather than covariate-conditional parallel trends.
+
+## Step 5: Control The Aggregation
+
+There is no single compulsory way to turn $ATT(g,t)$ into one result. Each aggregation answers a different question [@callaway2021multipletime].
+
+```{r}
+aggregate_simple <- aggte(att_never, type = "simple", na.rm = TRUE)
+aggregate_group <- aggte(att_never, type = "group", na.rm = TRUE)
+aggregate_dynamic <- aggte(att_never, type = "dynamic", na.rm = TRUE)
+aggregate_calendar <- aggte(att_never, type = "calendar", na.rm = TRUE)
+
+aggregation_summary <- data.frame(
+  aggregation = c("Simple", "Group", "Dynamic", "Calendar"),
+  overall_att = c(
+    aggregate_simple$overall.att,
+    aggregate_group$overall.att,
+    aggregate_dynamic$overall.att,
+    aggregate_calendar$overall.att
+  ),
+  standard_error = c(
+    aggregate_simple$overall.se,
+    aggregate_group$overall.se,
+    aggregate_dynamic$overall.se,
+    aggregate_calendar$overall.se
+  )
+)
+
+aggregation_summary
+
+stopifnot(
+  nrow(aggregation_summary) == 4L,
+  all(is.finite(aggregation_summary$overall_att)),
+  all(aggregation_summary$standard_error > 0),
+  length(aggregate_dynamic$egt) == length(aggregate_dynamic$att.egt)
+)
+```
+
+Interpret the rows separately:
+
+- `simple` averages available post-treatment group-time effects;
+- `group` gives cohort-specific averages before combining cohorts;
+- `dynamic` organizes effects by exposure length;
+- `calendar` organizes effects by calendar year.
+
+## Step 6: Plot Dynamic Effects With Simultaneous Bands
+
+```{r, fig.height=5.2, fig.width=10}
+ggdid(aggregate_dynamic) +
+  labs(
+    x = "Periods relative to treatment",
+    y = "ATT",
+    title = "Callaway–Sant'Anna dynamic effects",
+    subtitle = "Bands are simultaneous because cband = TRUE"
+  ) +
+  theme_minimal(base_size = 12)
+```
+
+Simultaneous bands address uncertainty across the displayed path. They do not turn pre-treatment estimates into proof of parallel trends or solve anticipation and spillover concerns.
+
+## Step 7: Change The Comparison Group
+
+```{r}
+set.seed(20260809)
+
+att_not_yet <- att_gt(
+  yname = "lemp",
+  tname = "year",
+  idname = "countyreal",
+  gname = "first.treat",
+  xformla = ~ 1,
+  data = mpdta,
+  control_group = "notyettreated",
+  anticipation = 0,
+  base_period = "universal",
+  est_method = "dr",
+  bstrap = TRUE,
+  biters = 499,
+  cband = TRUE,
+  clustervars = "countyreal",
+  print_details = FALSE
+)
+
+dynamic_not_yet <- aggte(att_not_yet, type = "dynamic", na.rm = TRUE)
+
+control_group_comparison <- data.frame(
+  comparison_group = c("Never treated", "Not yet treated"),
+  dynamic_overall_att = c(
+    aggregate_dynamic$overall.att,
+    dynamic_not_yet$overall.att
+  ),
+  standard_error = c(
+    aggregate_dynamic$overall.se,
+    dynamic_not_yet$overall.se
+  )
+)
+
+control_group_comparison
+
+stopifnot(
+  att_not_yet$DIDparams$control_group == "notyettreated",
+  all(is.finite(control_group_comparison$dynamic_overall_att)),
+  all(control_group_comparison$standard_error > 0)
+)
+```
+
+Do not select a control group because it produces the preferred coefficient. Defend whether future-treated counties are plausible untreated counterfactuals in each period.
+
+## Step 8: Condition On Population
+
+```{r}
+set.seed(20260809)
+
+att_conditional <- att_gt(
+  yname = "lemp",
+  tname = "year",
+  idname = "countyreal",
+  gname = "first.treat",
+  xformla = ~ lpop,
+  data = mpdta,
+  control_group = "nevertreated",
+  anticipation = 0,
+  base_period = "universal",
+  est_method = "dr",
+  bstrap = TRUE,
+  biters = 499,
+  cband = TRUE,
+  clustervars = "countyreal",
+  print_details = FALSE
+)
+
+dynamic_conditional <- aggte(att_conditional, type = "dynamic", na.rm = TRUE)
+
+parallel_trends_comparison <- data.frame(
+  assumption = c(
+    "Unconditional parallel trends",
+    "Parallel trends conditional on log population"
+  ),
+  dynamic_overall_att = c(
+    aggregate_dynamic$overall.att,
+    dynamic_conditional$overall.att
+  ),
+  standard_error = c(
+    aggregate_dynamic$overall.se,
+    dynamic_conditional$overall.se
+  )
+)
+
+parallel_trends_comparison
+
+stopifnot(
+  all(is.finite(parallel_trends_comparison$dynamic_overall_att)),
+  all(parallel_trends_comparison$standard_error > 0)
+)
+```
+
+Adding `lpop` changes the identifying assumption: untreated trends must now be parallel after conditioning on log population. It is defensible only if population is measured before the relevant outcome change and the conditional overlap is adequate.
+
+## Step 9: Compare With Sun–Abraham
+
+```{r}
+sun_abraham_fit <- feols(
+  lemp ~ sunab(first.treat, year, ref.p = -1) | countyreal + year,
+  data = mpdta,
+  vcov = ~ countyreal
+)
+
+sun_abraham_terms <- data.frame(
+  event_time = as.integer(sub(".*::", "", names(coef(sun_abraham_fit)))),
+  estimate = unname(coef(sun_abraham_fit)),
+  standard_error = unname(se(sun_abraham_fit))
+)
+
+callaway_santanna_terms <- data.frame(
+  event_time = aggregate_dynamic$egt,
+  estimate = aggregate_dynamic$att.egt,
+  standard_error = aggregate_dynamic$se.egt
+)
+
+modern_event_comparison <- bind_rows(
+  transform(callaway_santanna_terms, estimator = "Callaway–Sant'Anna"),
+  transform(sun_abraham_terms, estimator = "Sun–Abraham")
+) |>
+  mutate(
+    lower_95 = estimate - 1.96 * standard_error,
+    upper_95 = estimate + 1.96 * standard_error
+  ) |>
+  filter(
+    is.finite(estimate),
+    is.finite(standard_error),
+    event_time >= -4,
+    event_time <= 3
+  )
+
+modern_event_comparison
+
+stopifnot(
+  all(c("Callaway–Sant'Anna", "Sun–Abraham") %in%
+    modern_event_comparison$estimator),
+  any(modern_event_comparison$event_time < 0),
+  any(modern_event_comparison$event_time >= 0),
+  all(is.finite(modern_event_comparison$standard_error))
+)
+```
+
+```{r, fig.height=5.2, fig.width=10}
+ggplot(
+  modern_event_comparison,
+  aes(event_time, estimate, colour = estimator)
+) +
+  geom_hline(yintercept = 0, colour = "grey55") +
+  geom_vline(xintercept = -1, linetype = "dashed", colour = "grey55") +
+  geom_line(linewidth = 0.75) +
+  geom_point(size = 2) +
+  labs(
+    x = "Periods relative to treatment",
+    y = "Estimated effect on log teen employment",
+    colour = NULL,
+    title = "Modern estimators need not produce identical weighted targets"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(legend.position = "bottom")
+```
+
+Differences can arise from cohort weights, available comparisons, nuisance estimation, and support. Numerical agreement is reassuring but is not the criterion that defines a valid estimator.
+
+## Optional Extension: Sensitivity To Parallel-Trends Violations
+
+`HonestDiD` requires an ordered event-study coefficient vector and its full covariance matrix. To keep the exercise transparent, restrict the data to the 2006 cohort and never-treated counties. This creates a non-staggered design with two estimated pre-treatment coefficients, an omitted 2005 reference period, and two post-treatment coefficients.
+
+```{r}
+if (!requireNamespace("HonestDiD", quietly = TRUE)) {
+  install.packages("HonestDiD", repos = "https://cloud.r-project.org")
+}
+
+sensitivity_sample <- mpdta |>
+  filter(first.treat %in% c(0, 2006)) |>
+  mutate(treated_2006 = as.integer(first.treat == 2006))
+
+cohort_event_fit <- feols(
+  lemp ~ i(year, treated_2006, ref = 2005) | countyreal + year,
+  data = sensitivity_sample,
+  vcov = ~ countyreal
+)
+
+event_coefficients <- coef(cohort_event_fit)
+event_covariance <- vcov(cohort_event_fit)
+term_year <- as.integer(sub(
+  "year::([0-9]+).*",
+  "\\1",
+  names(event_coefficients)
+))
+term_order <- order(term_year)
+
+event_coefficients <- event_coefficients[term_order]
+event_covariance <- event_covariance[term_order, term_order, drop = FALSE]
+term_year <- term_year[term_order]
+
+data.frame(
+  year = term_year,
+  period = c("Pre", "Pre", "Post", "Post"),
+  estimate = unname(event_coefficients),
+  standard_error = sqrt(diag(event_covariance))
+)
+
+stopifnot(
+  identical(term_year, c(2003L, 2004L, 2006L, 2007L)),
+  length(event_coefficients) == 4L,
+  all(dim(event_covariance) == c(4L, 4L)),
+  all(is.finite(event_covariance))
+)
+```
+
+The relative-magnitudes restriction indexes how large post-treatment deviations from parallel trends may be relative to the largest observed pre-treatment deviation.
+
+```{r}
+sensitivity_results <- HonestDiD::createSensitivityResults_relativeMagnitudes(
+  betahat = event_coefficients,
+  sigma = event_covariance,
+  numPrePeriods = 2,
+  numPostPeriods = 2,
+  Mbarvec = seq(0.5, 2, by = 0.5),
+  gridPoints = 100,
+  seed = 20260809
+)
+
+original_interval <- HonestDiD::constructOriginalCS(
+  betahat = event_coefficients,
+  sigma = event_covariance,
+  numPrePeriods = 2,
+  numPostPeriods = 2
+)
+
+zero_included <- with(
+  sensitivity_results,
+  lb <= 0 & ub >= 0
+)
+first_zero_including_mbar <- if (any(zero_included)) {
+  min(sensitivity_results$Mbar[zero_included])
+} else {
+  NA_real_
+}
+
+sensitivity_results
+data.frame(first_Mbar_including_zero = first_zero_including_mbar)
+
+stopifnot(
+  nrow(sensitivity_results) == 4L,
+  all(sensitivity_results$lb <= sensitivity_results$ub),
+  all(is.finite(sensitivity_results$Mbar)),
+  nrow(original_interval) == 1L
+)
+```
+
+```{r, fig.height=5.2, fig.width=9}
+HonestDiD::createSensitivityPlot_relativeMagnitudes(
+  sensitivity_results,
+  original_interval
+)
+```
+
+The sensitivity interval for this cohort already includes zero at the first reported restriction value. The exercise is still informative: sensitivity analysis should report how conclusions change under stated violations, not manufacture a decisive result.
+
+Most importantly, this is a **2006-cohort-versus-never-treated** estimand. It is not a sensitivity analysis for the full staggered-adoption aggregate estimated earlier.
+
+## Practical Implications
+
+- Estimate $ATT(g,t)$ before deciding how to aggregate heterogeneous effects.
+- Comparison-group choice changes both support and the parallel-trends assumption.
+- Covariate adjustment replaces unconditional with conditional parallel trends; it does not weaken the need for a credible design.
+- Dynamic estimators can differ because their targets and weights differ.
+- Sensitivity analysis should name the estimand, restriction, and breakdown point together.
+- No modern package repairs anticipation, spillovers, outcome miscoding, or a substantively indefensible comparison group.

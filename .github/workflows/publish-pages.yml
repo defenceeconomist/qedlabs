@@ -66,8 +66,11 @@ jobs:
             any::WeightIt
             any::cobalt
             any::causaldata
+            any::wooldridge
             any::dagitty
             any::did
+            any::bacondecomp
+            any::HonestDiD
             any::dplyr
             any::fixest
             any::ggdag

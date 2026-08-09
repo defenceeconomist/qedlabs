@@ -1,0 +1,168 @@
+---
+title: "Difference-in-Differences"
+aliases:
+  - /notes/other-methods/difference-in-differences.html
+---
+
+# Scope
+
+Difference-in-differences (`DiD`) estimates a causal effect by comparing how an outcome changes for a treated group with how it changes for a credible comparison group. Its attraction is not the subtraction itself. It is the research design claim that the comparison group's change represents the treated group's unobserved change without treatment [@gertler2016ch7did; @cunningham2021did; @huntingtonklein2021did].
+
+This overview starts with the canonical two-group, two-period design and then moves to multiple periods, event studies, and staggered adoption. Use the [source map](difference-in-differences-sources.qmd) to choose deeper reading or open one of the source-specific notes directly.
+
+## Practice The Workflow
+
+The dedicated lab sequence moves from the transparent estimator to the modern staggered-adoption problem:
+
+1. [DiD foundations with Kentucky workers' compensation](../../labs/difference-in-differences-foundations-lab.qmd)
+2. [Staggered adoption and TWFE diagnostics](../../labs/difference-in-differences-staggered-diagnostics-lab.qmd)
+3. [Modern multi-period DiD and sensitivity](../../labs/difference-in-differences-modern-estimators-lab.qmd)
+
+# The Canonical Design
+
+Suppose group (G=1) becomes treated after a policy starts and group (G=0) remains untreated. Let (t=0) denote the pre-treatment period and (t=1) the post-treatment period. The sample DiD is
+
+$$
+\widehat{\tau}_{DiD}
+=
+(\bar{Y}_{1,1}-\bar{Y}_{1,0})
+-
+(\bar{Y}_{0,1}-\bar{Y}_{0,0}).
+$$
+
+The first difference removes stable differences between treated and comparison groups. The second difference removes shocks common to both groups. Neither subtraction alone is generally causal: a before-after comparison confounds treatment with time, while a post-treatment cross-sectional comparison confounds treatment with pre-existing group differences [@gertler2016ch7did; @huntingtonklein2021did].
+
+| Group | Before | After | Change |
+|---|---:|---:|---:|
+| Treated | (A) | (B) | (B-A) |
+| Comparison | (C) | (D) | (D-C) |
+| Difference | (A-C) | (B-D) | ((B-A)-(D-C)) |
+
+In the canonical setup, the target is usually the average treatment effect on the treated (`ATT`): the average effect for the units that actually received treatment. DiD identifies that target when the comparison trend recovers the treated units' untreated counterfactual trend.
+
+## Regression Representation
+
+The same two-by-two estimate is the interaction coefficient in
+
+$$
+Y_{it}=\alpha+\gamma Treated_i+\lambda Post_t
++\tau(Treated_i\times Post_t)+\varepsilon_{it}.
+$$
+
+Here, (gamma) absorbs the baseline group difference, (lambda) absorbs the common time change, and (	au) is the DiD estimate. With more groups and periods, unit and time fixed effects are often used, but the simple interaction's transparent interpretation does not automatically carry over to staggered treatment [@goodmanbacon2021timing].
+
+# Identification Assumptions
+
+## Parallel Trends in Untreated Potential Outcomes
+
+Parallel trends does not require treated and comparison groups to have equal outcome levels. It requires their *untreated changes* to be equal over the relevant period:
+
+$$
+E[Y_{1}^{0}-Y_{0}^{0}\mid G=1]
+=
+E[Y_{1}^{0}-Y_{0}^{0}\mid G=0].
+$$
+
+The treated group's post-treatment (Y^0) is counterfactual, so this assumption cannot be proven from observed post-treatment data. Pre-treatment trends, institutional knowledge, and negative-control exercises can make it more or less plausible, but a non-significant pre-trend test is not proof [@roth2022pretest; @roth2023trending].
+
+## No Anticipation
+
+Units should not change outcomes in expectation of treatment during periods labelled untreated. If people, firms, or agencies respond before the official start date, either redefine the treatment date to capture the first plausible response or use a method that explicitly allows a bounded anticipation window [@callaway2021multipletime].
+
+## No Interference or Unmodelled Spillovers
+
+Treatment of one unit should not change the untreated potential outcome of its comparison units. Geographic displacement, market-wide price responses, information spillovers, and resource reallocation can contaminate controls. Affected controls should be excluded, modelled through exposure, or interpreted as estimating a different contrast.
+
+## Stable Measurement and Composition
+
+An apparent outcome change can arise because the population, sample, measurement rule, or administrative recording process changes differently by group. This matters especially for repeated cross-sections, where the observed people before and after treatment are not the same. Check denominator definitions, eligibility rules, attrition, migration, and whether treatment affects inclusion in the data [@cunningham2021did].
+
+## A Well-Defined Treatment and Comparison Group
+
+Treatment timing, intensity, eligibility, and exposure must be specified before estimation. The comparison group should face the same important external shocks except for treatment. “Untreated” is not enough: the design needs a substantive explanation for why its trend approximates the treated group's missing trend.
+
+# Design-First Workflow
+
+1. **Define the causal question.** State the treatment, start date, outcome, unit, assignment level, target population, and ATT or dynamic estimand.
+2. **Reconstruct assignment and timing.** Document why treatment occurred where and when it did, including anticipation and simultaneous policies.
+3. **Choose comparison units before looking at effects.** Prefer institutional comparability over automated convenience; use pre-treatment covariates or outcomes only when refining the comparison.
+4. **Plot raw group outcomes.** Show levels and sample sizes across the full pre/post window. Do not rely only on residualized or normalized event-study coefficients.
+5. **Inspect the pre-period.** Look for trend differences, breaks, compositional changes, and outcome-specific anomalies. Use joint or simultaneous inference when appropriate.
+6. **Estimate the simplest defensible contrast.** Begin with the transparent two-by-two or common-timing model before adding covariates or flexible dynamics.
+7. **Match the estimator to treatment timing.** If adoption is staggered and effects may vary, use a heterogeneity-robust estimator rather than default two-way fixed effects.
+8. **Probe the design.** Use fake dates, unaffected outcomes, alternative credible controls, leave-one-group-out checks, and sensitivity analysis.
+9. **Report the comparison and aggregation.** Say which units serve as controls at each time and how group-time effects become the reported summary.
+
+# Diagnostics and Falsification
+
+## Outcome and Event-Study Plots
+
+Plot observed means before modelling. An event study can then display estimates by time relative to treatment. Leads help reveal pre-existing deviations; lags show effect dynamics. Interpret both cautiously:
+
+- a flat pre-period supports, but does not establish, parallel trends
+- wide intervals may hide substantively important violations
+- selecting specifications after a pre-test distorts later inference
+- conventional staggered-TWFE leads and lags may be contaminated by effects from other relative periods [@sunabraham2021dynamic; @roth2022pretest]
+
+## Placebos
+
+Useful placebo designs include:
+
+- **fake treatment dates:** estimate effects entirely within the true pre-period
+- **fake treated groups:** apply the design to units known to remain untreated
+- **unaffected outcomes:** test an outcome that the treatment should not plausibly change
+- **alternative controls:** repeat the design with other independently credible comparison groups
+
+A placebo failure is evidence against the design. A placebo pass is reassuring but does not eliminate every time-varying confounder [@gertler2016ch7did; @huntingtonklein2021did].
+
+## Sensitivity to Nonparallel Trends
+
+Instead of treating parallel trends as a binary pre-test, ask how large a post-treatment deviation from the pre-trend pattern would be needed to change the conclusion. Honest sensitivity intervals make the tolerated departure explicit [@rambachanroth2023parallel].
+
+# Estimation and Inference
+
+## Standard Errors
+
+Outcomes are usually correlated over time within the same assignment unit. Standard errors should therefore respect the treatment-assignment and serial-correlation structure, commonly by clustering at the level where treatment varies. With few treated or total clusters, ordinary cluster-robust approximations can be unreliable; design-appropriate randomization, bootstrap, or small-sample procedures may be needed [@bertrand2004trustdid; @roth2023trending].
+
+Do not choose a clustering level because it produces convenient significance. State the source of dependence, number of clusters, and inference method.
+
+## Covariates
+
+Covariates can make parallel trends more plausible when the assumption is credible conditional on pre-treatment characteristics. They do not repair a weak comparison automatically. Avoid controls that treatment can affect, and do not assume that adding a time-varying variable “controls for” different trends without a clear causal and statistical justification [@abadie2005semiparametricdid; @santannazhao2020drdid; @roth2023trending].
+
+# Staggered Adoption
+
+When groups adopt treatment at different dates, a conventional two-way fixed-effects (`TWFE`) coefficient combines many two-by-two comparisons. Some compare newly treated groups with never-treated or not-yet-treated groups; others use already-treated groups as controls. If treatment effects change across cohorts or with exposure duration, those already-treated comparisons can be misleading and implicit weights need not match the policy estimand [@goodmanbacon2021timing].
+
+The practical rule is simple: staggered adoption plus plausible effect heterogeneity should trigger a heterogeneity-robust design.
+
+## Group-Time ATT
+
+Callaway and Sant'Anna estimate (ATT(g,t)): the average effect in calendar period (t) for the cohort first treated in period (g). Each effect uses a stated comparison group, such as never-treated or not-yet-treated units. The effects can then be aggregated by cohort, calendar time, exposure length, or into an overall ATT [@callaway2021multipletime].
+
+## Interaction-Weighted Event Studies
+
+Sun and Abraham estimate cohort-by-relative-time effects and then average them using transparent cohort shares. This prevents a coefficient for one event time from absorbing treatment effects belonging to other event times and supports an interpretable dynamic path under parallel trends and no anticipation [@sunabraham2021dynamic].
+
+## Imputation
+
+The imputation approach fits the untreated outcome model using untreated observations, predicts untreated potential outcomes for treated observations, and compares those predictions with observed outcomes. It makes the counterfactual construction explicit and can aggregate the resulting treated-cell effects to the desired estimand [@borusyak2024eventstudy].
+
+# Reporting Checklist
+
+- What is the estimand, and why is it relevant to the policy question?
+- Who is treated, when, and at what level is treatment assigned?
+- Which units are controls in each period?
+- Why should untreated potential-outcome trends be parallel?
+- Is anticipation plausible, and could treatment spill into controls?
+- Are the outcome, denominator, and sample composition stable?
+- What do raw trends and design-relevant event-study estimates show?
+- Does the estimator remain valid with the observed treatment timing and plausible heterogeneity?
+- How are group-time effects aggregated?
+- Is inference clustered or otherwise aligned with assignment and serial dependence?
+- Which placebo, alternative-control, and sensitivity checks materially challenge the result?
+
+# Bottom Line
+
+DiD is credible when the comparison trend is credible. In the canonical design, the estimator is transparent and the central challenge is defending parallel trends. In staggered designs, the challenge expands: the analyst must also control which treated cohorts are compared with which controls and how heterogeneous effects are aggregated. Modern estimators improve those comparisons, but none can rescue a weak treatment story, contaminated control group, or implausible counterfactual trend [@roth2023trending].

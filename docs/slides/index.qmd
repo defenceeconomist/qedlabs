@@ -39,6 +39,26 @@ Use the accessible page when you want the outline and citations. Use the present
 :::
 
 ::: {.section-card .slide-topic-card}
+<span class="page-badge badge-core">Difference-in-Differences</span>
+
+### Difference-in-Differences
+
+Concept-first sequence from the canonical four-cell contrast to staggered adoption, modern estimators, aggregation, and parallel-trends sensitivity.
+
+[Open RevealJS deck](did-revealjs.html){.topic-card-primary}
+
+::: {.topic-card-links}
+[Accessible slides page](did.qmd){.topic-card-secondary}
+[Presenter notes](did_script.qmd){.topic-card-secondary}
+[DiD labs](../labs/index.qmd#difference-in-differences-labs){.topic-card-secondary}
+:::
+
+::: {.card-meta}
+Use the deck for the 25–30 minute core sequence, the appendix for technical follow-up, and the three focused labs for applied practice.
+:::
+:::
+
+::: {.section-card .slide-topic-card}
 <span class="page-badge badge-core">Synthetic Control</span>
 
 ### Synthetic Control

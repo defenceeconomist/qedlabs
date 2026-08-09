@@ -19,6 +19,9 @@ SITE_BASE_URL = "https://defenceeconomist.github.io/qedlabs"
 
 LAB_STEMS = (
     "black-politicians-lab",
+    "difference-in-differences-foundations-lab",
+    "difference-in-differences-modern-estimators-lab",
+    "difference-in-differences-staggered-diagnostics-lab",
     "hisp-ie-practice-lab",
     "interrupted-time-series-design-diagnostics-lab",
     "interrupted-time-series-counterfactual-validation-lab",

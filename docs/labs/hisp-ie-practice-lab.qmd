@@ -289,6 +289,8 @@ ggplot2::ggplot(
 
 The DiD branch stays in treatment localities and adds the `enrolled * round` interaction.
 
+For a dedicated explanation of the four-cell contrast, parallel trends, and log-outcome interpretation, complete the [DiD foundations lab](difference-in-differences-foundations-lab.qmd) first. The HISP branch remains a compact application inside this multi-method replication.
+
 ```{r}
 method_6_dat <- dat |>
   dplyr::filter(treatment_locality == 1) |>

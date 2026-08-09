@@ -1,0 +1,125 @@
+---
+title: "Notes on Andrew Heiss: Difference-in-Differences"
+subtitle: "Program Evaluation Sessions and Worked R Example"
+author: "Luke Heley"
+date: 9 August 2026
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: false
+---
+
+## Purpose
+
+These notes consolidate Andrew Heiss's 2026 Program Evaluation DiD materials: the two class sessions and the worked Kentucky workers' compensation example [@heiss2026did1; @heiss2026did2; @heiss2026didexample]. The value of the bundle is pedagogic: it links readings and lecture concepts to a complete R workflow.
+
+## Source Baseline
+
+- [Difference-in-differences I](https://evalsp26.classes.andrewheiss.com/content/08-content.html)
+- [Difference-in-differences II](https://evalsp26.classes.andrewheiss.com/content/09-content.html)
+- [Difference-in-differences worked example](https://evalsp26.classes.andrewheiss.com/example/diff-in-diff.html)
+- Author: Andrew Heiss
+- Course: Program Evaluation, Spring 2026
+- Accessed: 9 August 2026
+- Assigned foundations: Gertler Chapter 7 and Huntington-Klein Chapter 18
+
+## Executive Summary
+
+- The course sequence treats DiD as a quasi-experimental comparison of changes, then connects it to interactions and regression.
+- The lecture framing emphasizes why two individually biased comparisons can combine into a more credible counterfactual.
+- The worked example makes the four cells visible before fitting a model.
+- Exploratory plots and data cleaning are part of the design, not setup to skip.
+- The interaction coefficient reproduces the hand calculation in the canonical linear model.
+- Additional controls alter the conditional estimand and need design justification; a smaller coefficient is not automatically “more correct.”
+- Logged outcomes require effect interpretation on the appropriate scale.
+
+## Study Notes
+
+### Course Sequence
+
+Session I assigns Gertler and Huntington-Klein and organizes the lecture into quasi-experiments, interactions, the two-comparison intuition, and DiD assumptions. Session II provides time for continuation, questions, and R work [@heiss2026did1; @heiss2026did2].
+
+This is a strong teaching order because students see interaction terms after the counterfactual has been established. The regression encodes the design rather than defining it.
+
+### Programme Background
+
+The worked example studies a 1980 increase in Kentucky's cap on workers' compensation earnings coverage [@heiss2026didexample]. The policy affects high earners more than low earners:
+
+- treated group: high earners
+- comparison group: low earners
+- time indicator: before versus after the 1980 change
+- main outcome: logged duration of workers' compensation claims
+
+This is a repeated-cross-section application rather than a unit panel. The design therefore depends on stable composition within the high- and low-earnings groups as well as parallel untreated outcome trends.
+
+### Load and Clean Before Estimating
+
+The guide loads the `injury` data, restricts it to Kentucky, and renames variables. That restriction is substantive: including other states without redefining the design would add observations that do not belong to the stated treatment contrast.
+
+The guide also distinguishes numeric codes from genuine quantities. Industry and injury-type codes must be categorical rather than continuous. This is a useful reminder that data types can change the meaning of controls and plots.
+
+### Exploratory Analysis
+
+Before fitting the DiD model, the guide examines the distribution of claim duration and summarizes the outcome by earnings group and policy period. This reveals skewness and motivates the logged outcome.
+
+The key design plot connects group means over time. Its purpose is to show the observed changes and the comparison-group counterfactual, not to prove the missing parallel trend.
+
+### DiD by Hand
+
+The guide constructs the four means, then calculates:
+
+1. the high-earner after-before change
+2. the low-earner after-before change
+3. the difference between those changes
+
+This is the most important teaching step. Students can trace the estimate to observed cells and see exactly what the regression must reproduce.
+
+The plotted dashed counterfactual extends the control change from the treated group's baseline. The vertical gap between that path and the treated group's observed after value is the estimated effect.
+
+### DiD with Regression
+
+The canonical specification includes group, post period, and their interaction:
+
+$$
+\log(Duration_i)=\alpha+\beta HighEarn_i+\gamma After_i
++\delta(HighEarn_i\times After_i)+\varepsilon_i.
+$$
+
+The interaction coefficient (delta) equals the hand-calculated DiD. This numerical equivalence is a useful implementation check: if the simple regression and four-cell calculation disagree, the sample, weights, or coding differ.
+
+### Interpreting the Logged Outcome
+
+The example reports an effect in log weeks and translates it to a percentage change. The exact percentage transformation matters more as coefficients grow; interpreting a log-point change directly as a percentage is only an approximation.
+
+More fundamentally, choosing logs asserts that parallel trends is plausible on the log-duration scale. Huntington-Klein's warning applies: trends that are parallel in levels need not be parallel after a nonlinear transformation [@huntingtonklein2021did].
+
+### Regression with Controls
+
+The extended model adds demographics, hospitalisation, industry, injury type, and prior wage. The coefficient changes after adjustment.
+
+For design-first practice, this section needs three explicit checks:
+
+- every covariate should be determined before treatment or unaffected by the policy
+- adjustment should correspond to a conditional-parallel-trends claim
+- the model should allow sufficient flexibility rather than assume one additive relationship automatically repairs trends
+
+A changed estimate reveals dependence on specification. It does not by itself establish that the adjusted model is less biased [@santannazhao2020drdid].
+
+## Practical Implications for QED Labs
+
+- Reuse the progression from raw data to four cells to regression.
+- Make the sample restriction and variable recoding part of the written design.
+- Require the hand estimate and regression coefficient to reconcile.
+- Annotate the counterfactual trend directly on the group-mean plot.
+- State the outcome scale and translate effects carefully.
+- Add explicit clustered or design-appropriate inference when moving from this teaching example to policy panels.
+- Pair the canonical example with a separate staggered-adoption exercise rather than extending ordinary TWFE mechanically.
+
+## Limits and Extensions
+
+The worked example is deliberately canonical. It does not teach staggered adoption, cohort heterogeneity, few-cluster inference, or sensitivity to nonparallel trends. The rest of this DiD section supplies those extensions [@goodmanbacon2021timing; @callaway2021multipletime; @rambachanroth2023parallel].
+
+## Bottom Line
+
+Heiss's materials are most valuable as an implementation bridge. They show how to keep the four-cell counterfactual visible through data cleaning, plotting, manual calculation, regression, and interpretation. The main extension needed for QED Labs is to make the identifying role of controls and inference more explicit.

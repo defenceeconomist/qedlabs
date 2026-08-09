@@ -36,6 +36,14 @@ Use this route for matching and weighting concepts, assumptions, diagnostics, an
 ::: {.section-card}
 <span class="page-badge badge-overview">Overview</span>
 
+### [Difference-in-Differences](did/difference-in-differences.qmd)
+
+Use this route for canonical and staggered-adoption DiD, design checks, modern estimators, and source-specific notes.
+:::
+
+::: {.section-card}
+<span class="page-badge badge-overview">Overview</span>
+
 ### [Synthetic Control](scm/synthetic-control.qmd)
 
 Use this route for synthetic-control concepts, teaching data, and source mapping.
@@ -46,7 +54,7 @@ Use this route for synthetic-control concepts, teaching data, and source mapping
 
 ### [Other Methods](other-methods/index.qmd)
 
-Use this route for difference-in-differences, regression discontinuity, interrupted time series, and cross-method comparison.
+Use this route for regression discontinuity, interrupted time series, and cross-method comparison.
 :::
 :::
 

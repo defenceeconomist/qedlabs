@@ -1,0 +1,123 @@
+---
+title: "Notes on Goodman-Bacon (2021): Variation in Treatment Timing"
+subtitle: "Detailed Study Notes on the Two-Way Fixed-Effects Decomposition"
+author: "Luke Heley"
+date: 9 August 2026
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: false
+---
+
+## Purpose
+
+These notes summarize Andrew Goodman-Bacon's *Difference-in-Differences with Variation in Treatment Timing* [@goodmanbacon2021timing]. The paper explains exactly what a two-way fixed-effects DiD coefficient compares when groups adopt treatment at different times.
+
+## Source Baseline
+
+- Author: Andrew Goodman-Bacon
+- Journal: *Journal of Econometrics*, 225(2), 254--277
+- Published: 2021
+- DOI: [10.1016/j.jeconom.2021.03.014](https://doi.org/10.1016/j.jeconom.2021.03.014)
+- Open working-paper version: [NBER Working Paper 25018](https://www.nber.org/papers/w25018)
+- Accessed: 9 August 2026
+- Main elements:
+  - general staggered-TWFE setup
+  - decomposition theorem
+  - treatment-effect heterogeneity and dynamic-effect bias
+  - common-trends interpretation
+  - decomposition diagnostics and specification comparisons
+  - unilateral-divorce application
+
+## Executive Summary
+
+- A staggered-TWFE coefficient is a weighted average of all available two-group, two-period DiD comparisons.
+- The comparisons include treated versus never-treated, early versus later before later adoption, and later versus already-treated early cohorts.
+- Weights depend on group size and treatment variance, so the regression's implicit target need not match a policy-relevant ATT.
+- Already-treated cohorts can be invalid controls when their treatment effects evolve over exposure time.
+- Under heterogeneous or dynamic effects, TWFE can be difficult to interpret even if untreated trends are parallel.
+- The decomposition makes identifying variation visible and explains why specifications differ.
+- A decomposition is a diagnostic. It does not turn contaminated comparisons into valid controls.
+
+## Study Notes
+
+### From the Canonical Design to Staggered Timing
+
+With one treated group, one untreated group, one pre-period, and one post-period, the regression interaction equals a transparent difference of changes. Many policy applications instead observe groups adopting at different dates and estimate
+
+$$
+Y_{it}=\alpha_i+\lambda_t+\beta^{TWFE}D_{it}+\varepsilon_{it},
+$$
+
+where (D_{it}) switches on after unit (i) is treated.
+
+The coefficient is often described as “the DiD effect,” but that label hides the comparisons used to identify it. Goodman-Bacon's central contribution is to recover those comparisons from the regression.
+
+### The Decomposition Theorem
+
+The TWFE coefficient equals a weighted average of simple two-by-two estimates formed from pairs of treatment-timing groups. The main comparison types are:
+
+1. **Treated versus never treated.** A treated cohort is compared with units untreated throughout the panel.
+2. **Earlier treated versus later treated.** Before the later cohort adopts, it can serve as an untreated comparison for the early cohort.
+3. **Later treated versus earlier treated.** After the early cohort adopts, its already-treated outcomes are used as the comparison for the later cohort.
+
+The first two can be clean under the relevant parallel-trends assumption and no anticipation. The third uses treated potential outcomes to stand in for untreated change.
+
+The decomposition weights depend on the relative sizes of timing groups and the variance of treatment within each pair. Cohorts treated near the middle of the panel often create more treatment variation and receive more influence. These are regression weights, not weights chosen because a cohort or exposure length is substantively important.
+
+### Why Already-Treated Controls Cause Trouble
+
+Suppose the effect grows with time since treatment. When a later cohort becomes treated, the earlier cohort's outcome may continue moving because its own effect is maturing. Differencing the later cohort against that already-treated path subtracts treatment dynamics, not an untreated time shock.
+
+The identifying requirement therefore becomes stronger than ordinary parallel untreated trends. TWFE also needs treatment effects not to change in a way that contaminates later-versus-earlier comparisons. This restriction is implausible for many policies with phase-in, learning, adaptation, or decay.
+
+The problem is heterogeneity, not staggered timing alone. If treatment effects are genuinely homogeneous across cohorts and exposure time, the comparisons can recover a common effect. The paper's contribution is to show why that assumption must be stated rather than inherited silently from the regression.
+
+### Estimand and Common Trends
+
+The paper connects the decomposition to a variance-weighted ATT and a variance-weighted common-trends condition. This explains why a TWFE coefficient need not equal a simple average across treated units or treated periods.
+
+For reporting, the crucial questions become:
+
+- Which timing cohorts receive most weight?
+- How much identifying variation comes from comparisons with never-treated units?
+- How much comes from already-treated controls?
+- Which exposure durations dominate the result?
+- Is that implicit weighted target the effect the evaluation intended to estimate?
+
+### Decomposition as a Diagnostic
+
+The paper recommends plotting each two-by-two estimate against its weight and summing weights by comparison type. This converts the coefficient into a map of its identifying variation.
+
+It also develops a decomposition of differences between specifications. When estimates change after dropping never-treated units, adding trends, changing weights, or modifying time effects, the change can be separated into:
+
+- different underlying two-by-two estimates
+- different weights on those estimates
+- both
+
+This is more informative than calling one specification “robust” because its point estimate is similar.
+
+### Unilateral-Divorce Application
+
+The paper applies the decomposition to staggered adoption of unilateral-divorce laws and female suicide. The exercise shows how treatment-timing groups contribute differently and how already-treated comparisons interact with changing effects.
+
+The application is best read as a diagnostic demonstration. It shows that specification choices can change both the set of comparisons and their weights, so a coefficient's stability or movement needs an explanation in design terms.
+
+## Practical Implications for QED Labs
+
+- Never introduce staggered TWFE as a straightforward extension of two-by-two DiD.
+- Require a table of treatment cohorts and observation support before estimation.
+- Decompose legacy TWFE estimates and plot comparison-type weights.
+- Name the comparisons that use already-treated controls.
+- Compare the regression's implicit weighting with the intended policy estimand.
+- If dynamic or cohort heterogeneity is plausible, use a heterogeneity-robust estimator as the main analysis.
+- Retain TWFE, if at all, as a clearly labelled benchmark whose homogeneity assumptions are defended.
+
+## Relationship to Other Sources
+
+Goodman-Bacon diagnoses the aggregation problem. Callaway-Sant'Anna replaces it with explicit group-time effects [@callaway2021multipletime]. Sun-Abraham focuses on contaminated relative-time coefficients [@sunabraham2021dynamic]. Roth et al. explain how these approaches fit into a broader modern workflow [@roth2023trending].
+
+## Bottom Line
+
+The paper's lasting contribution is interpretive: a staggered-TWFE coefficient is not one DiD comparison but a weighted collection of them. Once treatment effects can change, the analyst must decide which comparisons and weights belong in the estimand instead of allowing ordinary least squares to decide implicitly.

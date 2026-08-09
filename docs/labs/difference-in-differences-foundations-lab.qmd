@@ -1,0 +1,334 @@
+---
+title: "Lab: Difference-in-Differences Foundations With Kentucky Workers' Compensation"
+format:
+  html: default
+execute:
+  echo: true
+  eval: false
+---
+
+## How To Use This Page
+
+This is the first difference-in-differences lab. The guided core takes about 45–60 minutes and starts with the four means that define the canonical two-group, two-period estimator.
+
+[Download the R Jupyter notebook](notebooks/difference-in-differences-foundations-lab.ipynb){.cta-button download="difference-in-differences-foundations-lab.ipynb"}
+
+- Declare the treated group, comparison group, policy date, outcome, and estimand before fitting a model.
+- Calculate the contrast by hand before using an interaction regression.
+- Separate a numerical estimate from the assumptions that give it a causal interpretation.
+- Treat covariate adjustment and standard errors as design decisions, not automatic upgrades.
+
+The workflow draws on Gertler et al.'s counterfactual framing, Huntington-Klein's design-first treatment, and Andrew Heiss's worked example [@gertler2016ch7did; @huntingtonklein2021did; @heiss2026didexample]. See the [DiD overview](../notes/did/difference-in-differences.qmd) and [Heiss source notes](../notes/did/andrew-heiss-difference-in-differences-notes.qmd) for the underlying reading.
+
+## Training Goal
+
+By the end of the lab, you should be able to:
+
+1. identify the four cells in a canonical DiD design;
+2. calculate the DiD contrast manually and recover it with regression;
+3. interpret a log-outcome estimate on a percentage scale;
+4. state the parallel-trends and composition assumptions precisely; and
+5. explain what robust standard errors and covariate adjustment do—and do not—solve.
+
+## Step 1: Declare The Design
+
+Kentucky raised its cap on covered weekly earnings in 1980. The change affected high earners but not low earners, so high earners form the policy-exposed group and low earners form the comparison group. The outcome is the log duration of workers' compensation benefits following an injury [@meyer1995workerscomp].
+
+| Design component | Definition |
+|---|---|
+| Treated group | High-earning Kentucky claimants |
+| Comparison group | Low-earning Kentucky claimants |
+| Before/after indicator | Claim occurred before or after the 1980 change |
+| Outcome | Log weeks receiving benefits |
+| Target contrast | Change for high earners minus the contemporaneous change for low earners |
+
+The records are repeated cross-sections of claims, not a panel following the same injured workers over time. Under parallel trends, no anticipation, stable group composition, and no spillovers, the contrast can be interpreted as the average policy effect for the exposed group.
+
+## Step 2: Load And Audit The Data
+
+The `injury` data are distributed with the [`wooldridge` R package](https://search.r-project.org/CRAN/refmans/wooldridge/html/injury.html). We use the package copy rather than downloading a separate CSV.
+
+```{r}
+required_packages <- c("wooldridge", "dplyr", "ggplot2", "fixest")
+missing_packages <- required_packages[!vapply(
+  required_packages,
+  requireNamespace,
+  logical(1),
+  quietly = TRUE
+)]
+if (length(missing_packages) > 0) {
+  install.packages(missing_packages, repos = "https://cloud.r-project.org")
+}
+invisible(lapply(required_packages, library, character.only = TRUE))
+
+data("injury", package = "wooldridge")
+
+injury_ky <- injury |>
+  filter(ky == 1) |>
+  transmute(
+    duration = durat,
+    log_duration = ldurat,
+    after_change = afchnge,
+    high_earner = highearn,
+    male,
+    married,
+    age,
+    hospitalized = hosp,
+    industry = factor(indust),
+    injury_type = factor(injtype),
+    log_pre_wage = lprewage
+  )
+
+cell_counts <- with(injury_ky, table(after_change, high_earner))
+
+data.frame(
+  observations = nrow(injury_ky),
+  before_claims = sum(injury_ky$after_change == 0),
+  after_claims = sum(injury_ky$after_change == 1),
+  low_earner_claims = sum(injury_ky$high_earner == 0),
+  high_earner_claims = sum(injury_ky$high_earner == 1)
+)
+
+cell_counts
+
+stopifnot(
+  nrow(injury_ky) == 5626L,
+  all(cell_counts > 0),
+  all(is.finite(injury_ky$log_duration)),
+  all(injury_ky$duration > 0)
+)
+```
+
+Checkpoint: what would fail if the policy also materially changed which low earners filed claims after 1980?
+
+## Step 3: Plot The Four Cells
+
+```{r, fig.height=5, fig.width=9}
+cell_means <- injury_ky |>
+  group_by(after_change, high_earner) |>
+  summarise(
+    mean_log_duration = mean(log_duration),
+    standard_error = sd(log_duration) / sqrt(n()),
+    claims = n(),
+    .groups = "drop"
+  ) |>
+  mutate(
+    period = factor(
+      after_change,
+      levels = c(0, 1),
+      labels = c("Before 1980", "After 1980")
+    ),
+    group = factor(
+      high_earner,
+      levels = c(0, 1),
+      labels = c("Low earners", "High earners")
+    ),
+    lower_95 = mean_log_duration - 1.96 * standard_error,
+    upper_95 = mean_log_duration + 1.96 * standard_error
+  )
+
+ggplot(
+  cell_means,
+  aes(period, mean_log_duration, colour = group, group = group)
+) +
+  geom_line(linewidth = 0.8) +
+  geom_pointrange(
+    aes(ymin = lower_95, ymax = upper_95),
+    linewidth = 0.7
+  ) +
+  labs(
+    x = NULL,
+    y = "Mean log benefit duration",
+    colour = NULL,
+    title = "The canonical DiD plot contains four group-period means"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(legend.position = "bottom")
+```
+
+The graph describes the observed means. With only one before period, it cannot show whether the two groups followed parallel trends before the policy.
+
+## Step 4: Calculate Difference-in-Differences By Hand
+
+Let $\bar{Y}_{g,t}$ denote a group-period mean. The canonical contrast is
+
+$$
+\widehat{ATT}_{DiD} =
+(\bar{Y}_{T,post} - \bar{Y}_{T,pre}) -
+(\bar{Y}_{C,post} - \bar{Y}_{C,pre}).
+$$
+
+```{r}
+cell_value <- function(after_value, high_value) {
+  cell_means |>
+    filter(
+      after_change == after_value,
+      high_earner == high_value
+    ) |>
+    pull(mean_log_duration)
+}
+
+treated_before <- cell_value(0, 1)
+treated_after <- cell_value(1, 1)
+control_before <- cell_value(0, 0)
+control_after <- cell_value(1, 0)
+
+treated_change <- treated_after - treated_before
+control_change <- control_after - control_before
+did_manual <- treated_change - control_change
+
+did_table <- data.frame(
+  group = c("Low earners", "High earners", "Difference"),
+  before = c(control_before, treated_before, treated_before - control_before),
+  after = c(control_after, treated_after, treated_after - control_after),
+  change = c(control_change, treated_change, did_manual)
+)
+
+did_table |>
+  mutate(across(where(is.numeric), ~ round(.x, 3)))
+```
+
+Checkpoint: identify the unobserved counterfactual mean that the low-earner change is being used to construct.
+
+## Step 5: Recover The Same Contrast With Regression
+
+```{r}
+basic_fit <- feols(
+  log_duration ~ high_earner * after_change,
+  data = injury_ky,
+  vcov = "hetero"
+)
+
+did_regression <- coef(basic_fit)[["high_earner:after_change"]]
+did_standard_error <- se(basic_fit)[["high_earner:after_change"]]
+
+basic_result <- data.frame(
+  estimate_log_points = did_regression,
+  heteroskedasticity_robust_se = did_standard_error,
+  lower_95 = did_regression - 1.96 * did_standard_error,
+  upper_95 = did_regression + 1.96 * did_standard_error
+)
+
+basic_result
+
+stopifnot(
+  abs(did_manual - did_regression) < 1e-10,
+  is.finite(did_standard_error),
+  did_standard_error > 0
+)
+```
+
+The interaction coefficient is algebraically identical to the manual DiD contrast. Regression has not changed the identifying comparison; it has made inference and extensions easier.
+
+## Step 6: Interpret The Log Outcome
+
+For a log outcome, $100\widehat{\delta}$ is a convenient small-effect approximation. The exact conversion is $100[\exp(\widehat{\delta})-1]$.
+
+```{r}
+percentage_approximation <- 100 * did_regression
+percentage_exact <- 100 * (exp(did_regression) - 1)
+
+data.frame(
+  interpretation = c("Approximation", "Exact transformation"),
+  percent_change = c(percentage_approximation, percentage_exact)
+)
+
+stopifnot(
+  percentage_exact > percentage_approximation,
+  percentage_exact > 0
+)
+```
+
+State the result as an estimated percentage change in benefit duration for high earners relative to the low-earner counterfactual—not as a change in “logged weeks.”
+
+## Step 7: Compare A Prespecified Adjusted Model
+
+Heiss's example adds claimant, injury, and industry characteristics. This can improve precision and address observed composition differences only if the variables are measured consistently and are not consequences of the policy [@heiss2026didexample]. It cannot repair differential unobserved trends. Because some covariates are missing, compare models on a common complete-case sample before attributing a coefficient change to adjustment.
+
+```{r}
+adjustment_variables <- c(
+  "male",
+  "married",
+  "age",
+  "hospitalized",
+  "industry",
+  "injury_type",
+  "log_pre_wage"
+)
+
+adjusted_sample <- injury_ky |>
+  filter(if_all(all_of(adjustment_variables), ~ !is.na(.x)))
+
+basic_common_sample_fit <- feols(
+  log_duration ~ high_earner * after_change,
+  data = adjusted_sample,
+  vcov = "hetero"
+)
+
+adjusted_fit <- feols(
+  log_duration ~ high_earner * after_change +
+    male + married + age + hospitalized +
+    industry + injury_type + log_pre_wage,
+  data = adjusted_sample,
+  vcov = "hetero"
+)
+
+model_comparison <- data.frame(
+  model = c(
+    "Unadjusted, full sample",
+    "Unadjusted, common sample",
+    "Adjusted, common sample"
+  ),
+  observations = c(
+    nobs(basic_fit),
+    nobs(basic_common_sample_fit),
+    nobs(adjusted_fit)
+  ),
+  estimate = c(
+    coef(basic_fit)[["high_earner:after_change"]],
+    coef(basic_common_sample_fit)[["high_earner:after_change"]],
+    coef(adjusted_fit)[["high_earner:after_change"]]
+  ),
+  robust_se = c(
+    se(basic_fit)[["high_earner:after_change"]],
+    se(basic_common_sample_fit)[["high_earner:after_change"]],
+    se(adjusted_fit)[["high_earner:after_change"]]
+  )
+)
+
+model_comparison$exact_percent <- 100 * (exp(model_comparison$estimate) - 1)
+model_comparison
+
+stopifnot(
+  nrow(model_comparison) == 3L,
+  nobs(basic_common_sample_fit) == nobs(adjusted_fit),
+  nobs(adjusted_fit) < nobs(basic_fit),
+  all(is.finite(as.matrix(model_comparison[c("estimate", "robust_se", "exact_percent")])))
+)
+```
+
+Checkpoint: for each added variable, ask whether it is a pre-policy characteristic, a measure that could respond to the policy, or a proxy for changing claim composition.
+
+## Step 8: Audit Identification And Inference
+
+Complete this table before writing a causal conclusion.
+
+| Issue | What the data show | What remains assumed |
+|---|---|---|
+| Parallel trends | One pre-policy mean per group | The untreated group gap would otherwise have remained stable |
+| No anticipation | Policy timing is coded before/after | Claims and behaviour did not adjust before the recorded change |
+| Composition | Claim characteristics can be compared | The policy did not differentially change who appears in each group |
+| Spillovers | Low earners were not directly covered by the higher cap | Their claims were not indirectly affected |
+| Inference | Thousands of claims permit heteroskedasticity-robust calculations | There are only two policy groups and one policy change |
+
+The robust standard error allows unequal residual variance across claims. It does not create thousands of independent policy assignments, and clustering on only two earnings groups would not provide reliable cluster inference. The design's identifying variation remains group by period.
+
+## Practical Implications
+
+- The four-cell calculation is the design; the regression interaction is its representation.
+- A two-period design cannot use pre-policy leads to diagnose parallel trends.
+- Covariate adjustment may improve comparability or precision, but only after the covariates' causal timing is defended.
+- Individual-level sample size should not be confused with the number of independent policy shocks.
+- A defensible conclusion reports the estimate, the comparison group, and the unsupported assumptions together.
+
+Next, use the [staggered-adoption diagnostics lab](difference-in-differences-staggered-diagnostics-lab.qmd) to see why the meaning of TWFE changes when treatment begins at different times.

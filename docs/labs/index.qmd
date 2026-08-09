@@ -76,6 +76,42 @@ Use this when you want a more open-ended practice page.
 :::
 :::
 
+## Difference-in-Differences Labs {#difference-in-differences-labs .section-heading}
+
+<p class="section-intro">Move from a transparent 2×2 contrast to staggered-adoption diagnostics, explicit group-time effects, and sensitivity analysis.</p>
+
+::: {.section-grid}
+::: {.section-card}
+<span class="page-badge badge-lab">Introductory</span>
+
+### [DiD Foundations With Kentucky Workers' Compensation](difference-in-differences-foundations-lab.qmd)
+
+Calculate the four-cell contrast by hand, recover it with an interaction regression, interpret a log outcome, and audit the assumptions hidden by a two-period design.
+
+[Download R notebook](notebooks/difference-in-differences-foundations-lab.ipynb){download="difference-in-differences-foundations-lab.ipynb"}
+:::
+
+::: {.section-card}
+<span class="page-badge badge-core">Intermediate</span>
+
+### [Staggered Adoption and TWFE Diagnostics](difference-in-differences-staggered-diagnostics-lab.qmd)
+
+Map castle-law adoption cohorts, reconstruct TWFE with the Goodman-Bacon decomposition, and compare conventional and Sun–Abraham event studies.
+
+[Download R notebook](notebooks/difference-in-differences-staggered-diagnostics-lab.ipynb){download="difference-in-differences-staggered-diagnostics-lab.ipynb"}
+:::
+
+::: {.section-card}
+<span class="page-badge badge-applied">Advanced</span>
+
+### [Modern Multi-Period Difference-in-Differences](difference-in-differences-modern-estimators-lab.qmd)
+
+Estimate and aggregate group-time effects with `did`, compare control groups and Sun–Abraham, then optionally probe parallel-trends sensitivity with `HonestDiD`.
+
+[Download R notebook](notebooks/difference-in-differences-modern-estimators-lab.ipynb){download="difference-in-differences-modern-estimators-lab.ipynb"}
+:::
+:::
+
 ## Synthetic Control Labs {#scm-labs .section-heading}
 
 <p class="section-intro">Start with the core report, then move from SCM mechanics to the canonical case and then to the first principled extension.</p>

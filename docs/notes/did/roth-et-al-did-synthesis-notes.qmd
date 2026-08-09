@@ -1,0 +1,153 @@
+---
+title: "Notes on Roth et al. (2023): What's Trending in DiD?"
+subtitle: "Detailed Study Notes on the Modern Econometrics Synthesis"
+author: "Luke Heley"
+date: 9 August 2026
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: false
+---
+
+## Purpose
+
+These notes summarize Jonathan Roth, Pedro H. C. Sant'Anna, Alyssa Bilinski, and John Poe's *What's Trending in Difference-in-Differences? A Synthesis of the Recent Econometrics Literature* [@roth2023trending]. The paper organizes modern DiD around departures from a canonical design and gives practitioners a decision framework.
+
+## Source Baseline
+
+- Authors: Jonathan Roth, Pedro H. C. Sant'Anna, Alyssa Bilinski, and John Poe
+- Journal: *Journal of Econometrics*, 235(2), 2218--2244
+- Published: 2023
+- DOI: [10.1016/j.jeconom.2023.03.008](https://doi.org/10.1016/j.jeconom.2023.03.008)
+- Open version: [arXiv:2201.01194](https://arxiv.org/abs/2201.01194)
+- Accessed: 9 August 2026
+- Main structure:
+  - canonical DiD framework
+  - multiple periods and variation in treatment timing
+  - departures from parallel trends
+  - alternative inference frameworks
+  - practitioner checklist and future directions
+
+## Executive Summary
+
+- Modern DiD methods solve different problems; there is no universally best replacement for TWFE.
+- The canonical model clarifies which assumption each extension relaxes.
+- With staggered timing and heterogeneous effects, researchers should use estimators with explicit controls and aggregation weights.
+- Parallel trends must be justified on a stated functional form and may be made conditional on pre-treatment covariates.
+- Event-study plots remain useful, but pre-testing is low-powered and can distort subsequent estimates.
+- Sensitivity analysis is often more honest than asserting exact parallel trends.
+- Inference depends on whether uncertainty comes from sampling, treatment assignment, or shocks and on the number of clusters.
+- Context determines the appropriate control group, trend restriction, estimator, and inference method.
+
+## Study Notes
+
+### The Canonical Benchmark
+
+The paper begins with a deliberately simple setting: two groups, two periods, a binary treatment that turns on once, no anticipation, parallel untreated trends, and a well-defined sampling framework. In that setting, the DiD is transparent and familiar regression estimators recover the ATT.
+
+This benchmark is not presented as realistic in every detail. Its purpose is diagnostic. Each modern method can be understood as relaxing one component while retaining or strengthening others.
+
+### Multiple Periods and Treatment Timing
+
+With common treatment timing, multiple periods help display pre-trends and dynamics. With staggered timing, conventional TWFE creates forbidden comparisons involving already-treated units [@goodmanbacon2021timing]. Treatment-effect heterogeneity can then generate negative or unintuitive implicit weighting.
+
+The synthesis recommends methods that explicitly state:
+
+- the treated cohort and time whose effect is being estimated
+- the control group, such as never-treated or not-yet-treated units
+- the pre-period used to construct the change
+- the weights used to aggregate cohort-time effects
+
+Callaway-Sant'Anna, Sun-Abraham, and imputation approaches all improve transparency, but differ in control sets, pre-period restrictions, efficiency, covariate handling, and estimands [@callaway2021multipletime; @sunabraham2021dynamic; @borusyak2024eventstudy].
+
+The paper's recommendation is stronger than “run a Bacon decomposition.” Diagnostics show the size of the TWFE problem; heterogeneity-robust estimators remove the undesirable comparisons.
+
+### Choosing Among Staggered Estimators
+
+Estimator choice depends on design facts.
+
+- Never-treated controls avoid future treatment but may be structurally different.
+- Not-yet-treated controls provide more information but require no anticipation and valid trends for later cohorts.
+- Using the last untreated period as a base imposes different restrictions from averaging a long pre-period.
+- Dynamic aggregation can change cohort composition across exposure time.
+
+An evaluator should therefore begin with the treatment calendar and plausible counterfactual groups, not a package comparison table.
+
+### Conditional Parallel Trends
+
+If unconditional trends are implausible because groups differ on pre-treatment characteristics, identification may rely on parallel trends conditional on covariates. The paper discusses regression adjustment, weighting, and doubly robust procedures.
+
+It regards doubly robust methods as a useful default when overlap is adequate because they remain valid if either the outcome-change model or propensity-score model is correctly specified [@santannazhao2020drdid]. Limited overlap remains a warning: no estimator can create comparable controls outside the observed support.
+
+Time-varying covariates demand special caution. A covariate affected by treatment is a bad control, and a variable associated with changing trends may require stronger structure than an additive regression term supplies.
+
+### Assessing Parallel Trends
+
+Event-study plots communicate pre-treatment differences and the timing of post-treatment change. In staggered settings, the plots should use heterogeneity-robust estimates rather than conventional TWFE leads.
+
+The paper emphasizes several limits:
+
+- failure to reject pre-trends may reflect low power
+- testing many leads with pointwise intervals invites selective interpretation
+- choosing a model after a pre-test can bias the reported effect [@roth2022pretest]
+- exact parallel trends may be implausible on any scale
+
+Simultaneous confidence bands improve joint interpretation, but the deeper recommendation is to use institutional evidence and sensitivity analysis rather than a pass/fail test.
+
+### Sensitivity to Trend Violations
+
+The synthesis surveys approaches that allow controlled deviations from parallel trends. Rambachan-Roth, for example, bounds post-treatment departures relative to the pre-treatment pattern and reports how conclusions change as the restriction weakens [@rambachanroth2023parallel].
+
+This reframes the question from “Are trends parallel?” to “How nonparallel could they be before the policy conclusion changes?” That is more useful for decision-makers and more transparent about residual uncertainty.
+
+### Inference
+
+The paper separates different sources of uncertainty.
+
+#### Super-Population Sampling
+
+If units are sampled from a wider population, cluster-robust inference may approximate uncertainty across assignment units, provided there are enough clusters and the dependence structure is correctly specified.
+
+#### Few Clusters
+
+With few treated or total clusters, standard asymptotics can perform poorly. Wild bootstrap, randomization-based, or small-sample methods may be needed, but their validity depends on assumptions about assignment and errors.
+
+#### Design-Based Inference
+
+If the observed units are fixed and treatment timing is the source of randomness, design-based inference asks how assignment could have varied. This can be more natural for a finite set of states or countries, but it requires a credible assignment mechanism.
+
+The practical message is not to default mechanically to `cluster = unit`. State the population, assignment process, dependence, and number of clusters that justify the chosen uncertainty calculation.
+
+### Practitioner Checklist
+
+The paper's checklist can be condensed into five questions:
+
+1. Is treatment timing common or staggered?
+2. Which comparison units identify each effect?
+3. Why should parallel trends hold, and on which outcome scale?
+4. Does estimation match the identifying assumptions and intended aggregation?
+5. Does inference match the source of uncertainty and cluster structure?
+
+For uncertain parallel trends, add conditional adjustment, event-study evidence, and sensitivity analysis rather than treating any one as definitive.
+
+### Connections to Other Panel Methods
+
+The conclusion links DiD with synthetic control and hybrid estimators [@arkhangelsky2021synthetic]. These methods begin from different baseline data-generating models, but they address the same counterfactual problem: how untreated units and pre-treatment outcomes can reconstruct the treated path.
+
+The choice should follow fit between design assumptions and the application, not a hierarchy in which a newer estimator automatically dominates.
+
+## Practical Implications for QED Labs
+
+- Build DiD teaching around a decision tree, not one default regression.
+- Require a treatment-timing table and an explicit control-group statement.
+- Use heterogeneity-robust event studies for staggered adoption.
+- Prefer doubly robust conditional-trends methods when covariate adjustment is justified and overlap is adequate.
+- Pair pre-trend plots with simultaneous bands and a discussion of power.
+- Include a Rambachan-Roth-style sensitivity exercise in advanced labs.
+- Make students justify whether inference is sampling-based, design-based, or shock-based.
+- Report cohort support and aggregation weights alongside overall and dynamic effects.
+
+## Bottom Line
+
+Roth et al. provide the best map of modern DiD because they resist a one-estimator answer. Credible practice means aligning the comparison group, parallel-trends assumption, estimator, aggregation, and inference with the treatment process and policy question.

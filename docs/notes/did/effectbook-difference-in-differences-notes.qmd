@@ -1,0 +1,124 @@
+---
+title: "Notes on The Effect: Difference-in-Differences"
+subtitle: "Detailed Study Notes for Chapter 18"
+author: "Luke Heley"
+date: 9 August 2026
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: false
+---
+
+## Purpose
+
+These notes summarize Nick Huntington-Klein's *The Effect*, Chapter 18 [@huntingtonklein2021did]. The chapter connects DiD to causal diagrams and across-within variation, demonstrates implementation, and then updates the design for rollout settings.
+
+## Source Baseline
+
+- Source: [Chapter 18, Difference-in-Differences](https://theeffectbook.net/ch-DifferenceinDifference.html)
+- Author: Nick Huntington-Klein
+- Accessed: 9 August 2026
+- Main structure:
+  - how DiD works
+  - how DiD is performed
+  - how the pros handle multiple treatment periods
+
+## Executive Summary
+
+- DiD combines within-group changes with across-group comparisons to close back doors through group and time.
+- The comparison group's change stands in for the treated group's missing untreated change.
+- The canonical regression identifies an ATT, not a universal ATE.
+- Parallel trends depends on the scale of the outcome; it is not invariant to nonlinear transformations.
+- Prior-trend and placebo exercises support an argument but cannot observe the identifying counterfactual.
+- Long-term effects require dynamic estimands rather than one pooled “after” coefficient.
+- Covariates require a reason tied to conditional trends and must not be post-treatment controls.
+- Staggered rollout breaks the simple TWFE interpretation when effects vary, so the chapter recommends modern cohort-aware estimators.
+
+## Study Notes
+
+### 18.1 How Does It Work?
+
+#### Across-Within Variation
+
+The chapter starts from two confounding paths. A before-after comparison is confounded by time; a treated-untreated comparison is confounded by group. DiD combines within variation for each group with an across-group comparison of those changes.
+
+This framing is useful because it makes fixed effects secondary. Group fixed effects summarize stable differences, and time fixed effects summarize common shocks, but causal identification comes from the claim that no omitted group-specific time change would have occurred without treatment.
+
+#### Dirty Water
+
+The Snow example illustrates the design with Lambeth and other water suppliers [@snow1855cholera]. The treatment is an upstream water intake, the outcome is cholera mortality, and the earlier period reveals that baseline levels differ. DiD does not need equal levels; it needs the untreated gap to remain stable.
+
+#### Parallel Trends and Outcome Scale
+
+One of the chapter's strongest warnings is that parallel trends is scale-dependent. Two series can be parallel in levels but not logs, proportions, odds, or another nonlinear transformation. The analyst must justify the outcome scale on which the counterfactual change is plausible. This is a design choice, not a cosmetic modelling preference.
+
+### 18.2 How Is It Performed?
+
+#### Two-Way Fixed Effects
+
+For common treatment timing, the chapter shows both equivalent forms:
+
+$$
+Y_{gt}=\alpha_g+\alpha_t+\beta Treated_{gt}+\varepsilon_{gt}
+$$
+
+and the explicit two-by-two interaction between treated group and post period. The coefficient is the difference in changes when the model is linear. The chapter appropriately cautions that nonlinear models do not inherit the same interaction interpretation.
+
+The organ-donation example uses California's active-choice wording and other states as controls. The worked code in R, Stata, and Python clusters uncertainty at the state level and keeps the comparison visible.
+
+#### Treatment Effects
+
+The untreated group is never observed under treatment, so the design identifies the effect for the treated group. The resulting ATT is a direct consequence of the missing counterfactual being reconstructed for those who actually receive treatment.
+
+This should shape reporting. “The policy effect” is too broad when the design supports “the average effect for the treated states during the analysed post-period.”
+
+#### Supporting Parallel Trends
+
+The chapter recommends raw pre-treatment plots, lead coefficients, and placebo treatment dates. A fake date is especially intuitive: discard true post-treatment data, pretend treatment occurred earlier, and require the design not to find an effect.
+
+These exercises are falsification opportunities. They cannot verify the unobserved post-treatment untreated outcome. A credible write-up therefore combines them with a substantive comparison-group argument.
+
+#### Long-Term Effects
+
+A single post indicator averages effects across all included post-treatment periods. If effects emerge slowly, fade, reverse, or accumulate, that average is not enough. The chapter develops dynamic treatment effects by interacting treated-group status with time and plotting coefficients relative to an omitted pre-period.
+
+The figure should be read as both a diagnostic and an estimand display: leads show pre-treatment differences, while lags show how effects evolve. The chosen reference period and endpoint binning need to be reported.
+
+#### Control Variables
+
+The chapter asks what controls are supposed to accomplish in a DiD design. Stable group differences are already removed; a covariate is useful when it helps make untreated changes comparable. Time-varying controls can be consequences of treatment or can impose unacknowledged restrictions on effect heterogeneity.
+
+The practical lesson is to use pre-treatment characteristics with a conditional-parallel-trends method when that is the intended design, rather than add a grab bag of covariates to ordinary TWFE [@abadie2005semiparametricdid; @santannazhao2020drdid].
+
+#### Rollout Designs
+
+When treatment begins at different dates, ordinary TWFE uses already-treated units as controls for newly treated units [@goodmanbacon2021timing]. If effects vary by cohort or exposure duration, these comparisons no longer recover clean untreated changes and can even reverse the sign of the underlying effects.
+
+The chapter surveys three modern routes:
+
+- Callaway-Sant'Anna group-time ATT estimates [@callaway2021multipletime]
+- cohort-saturated or extended fixed-effects approaches for dynamic effects
+- Borusyak-Jaravel-Spiess imputation based on untreated observations [@borusyak2024eventstudy]
+
+The common principle is to stop using already-treated outcomes as though they were untreated and to report the aggregation of cohort-time effects.
+
+### 18.3 How the Pros Do It
+
+The advanced section turns estimator choice into a design choice. Callaway-Sant'Anna makes the control set and cohort explicit. Cohort-interacted dynamic models allow treatment paths to differ. Imputation predicts the missing untreated outcome directly from untreated data.
+
+The chapter also links matching to comparison-group construction and points toward synthetic DiD. These extensions can improve comparability, but only with pre-treatment information and an estimand that remains clear [@arkhangelsky2021synthetic].
+
+## Practical Implications for QED Labs
+
+- Use causal diagrams to distinguish time and group confounding.
+- State the outcome scale on which parallel trends is asserted.
+- Label the effect as an ATT and name the treated population and time window.
+- Plot raw series before event-study coefficients.
+- Use fake-date exercises as falsification, not confirmation.
+- Treat covariate adjustment as conditional identification, not generic precision improvement.
+- Replace staggered TWFE with a cohort-aware estimator unless effect homogeneity is genuinely defensible.
+
+## Bottom Line
+
+Huntington-Klein provides the cleanest conceptual route from causal diagrams to modern DiD. The chapter's distinctive contributions are its emphasis on outcome scale and its insistence that rollout designs require different estimators, not merely more fixed effects.

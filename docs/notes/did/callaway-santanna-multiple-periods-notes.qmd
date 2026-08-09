@@ -1,0 +1,143 @@
+---
+title: "Notes on Callaway and Sant'Anna (2021): Multiple Time Periods"
+subtitle: "Detailed Study Notes on Group-Time Average Treatment Effects"
+author: "Luke Heley"
+date: 9 August 2026
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: false
+---
+
+## Purpose
+
+These notes summarize Brantly Callaway and Pedro H. C. Sant'Anna's *Difference-in-Differences with Multiple Time Periods* [@callaway2021multipletime]. The paper provides identification, estimation, inference, and aggregation tools for staggered DiD with treatment-effect heterogeneity.
+
+## Source Baseline
+
+- Authors: Brantly Callaway and Pedro H. C. Sant'Anna
+- Journal: *Journal of Econometrics*, 225(2), 200--230
+- Published: 2021
+- DOI: [10.1016/j.jeconom.2020.12.001](https://doi.org/10.1016/j.jeconom.2020.12.001)
+- Open version: [arXiv:1803.09015](https://arxiv.org/abs/1803.09015)
+- Accessed: 9 August 2026
+- Main sections:
+  - setup and identification
+  - conditional parallel trends and comparison groups
+  - group-time effects and aggregation
+  - estimation and simultaneous inference
+  - minimum-wage application
+
+## Executive Summary
+
+- The basic estimand is (ATT(g,t)), the average effect at time (t) for the cohort first treated at time (g).
+- Cohort-time effects remain well-defined under heterogeneous and dynamic treatment effects.
+- Comparison groups are explicit: either never-treated or not-yet-treated units.
+- Parallel trends may hold unconditionally or conditional on pre-treatment covariates.
+- Outcome regression, inverse-probability weighting, and doubly robust approaches identify the same group-time targets under their respective conditions.
+- Group-time effects can be aggregated by cohort, calendar time, exposure duration, or into an overall ATT.
+- A multiplier bootstrap supports simultaneous confidence bands rather than isolated pointwise intervals.
+- The method makes estimator choice inseparable from comparison-group and aggregation choices.
+
+## Study Notes
+
+### Setup and Cohorts
+
+Treatment is absorbing: once a unit becomes treated, it remains treated. Units are grouped by first-treatment period (g), with a separate never-treated group when available. Potential outcomes distinguish never-treated paths from paths under first treatment in each period.
+
+The paper's key building block is
+
+$$
+ATT(g,t)=E[Y_t(g)-Y_t(0)\mid G_g=1],
+$$
+
+the average effect in period (t) for units first treated in (g). This is more granular than a single TWFE coefficient and preserves both cohort and calendar-time heterogeneity.
+
+### No Anticipation
+
+Before cohort (g) is treated, its potential outcomes should not depend on its future treatment. The framework can allow a bounded anticipation window by redefining which periods are considered unaffected. This is substantively useful for announced policies, phased eligibility, or investments made before formal rollout.
+
+The analyst should not choose the anticipation window from the post-treatment pattern. It should come from institutional knowledge about when behaviour could first change.
+
+### Parallel Trends and Comparison Groups
+
+The framework offers different versions of parallel trends tied to the comparison group.
+
+#### Never-Treated Controls
+
+For each treated cohort, never-treated units provide the untreated outcome change. This avoids using eventual treatment exposure in the control group, but it may be implausible if never-treated units are structurally different.
+
+#### Not-Yet-Treated Controls
+
+Units scheduled for later adoption can act as controls while still untreated. This expands support and may improve comparability, but it requires no anticipation and a parallel-trends claim involving those later cohorts.
+
+The choice is not a software toggle to leave unexplained. It changes the identifying assumption and the population supplying the counterfactual.
+
+### Conditional Parallel Trends
+
+The paper allows untreated trends to be parallel after conditioning on covariates (X). This matters when treated cohorts and controls have different observed characteristics associated with outcome changes.
+
+Only pre-treatment characteristics should define the adjustment. Overlap is also required: the covariate distribution of each treated cohort must be supported by its selected control group. If overlap is weak, weights become unstable and the conditional estimand may describe a narrow effective population.
+
+### Estimands
+
+The constructive identification results lead to three main estimand forms:
+
+- **outcome regression:** model the control group's outcome change as a function of covariates
+- **inverse-probability weighting:** reweight controls to resemble a treated cohort
+- **doubly robust:** combine both so consistency requires one of the two nuisance models to be correctly specified
+
+Double robustness is protection against one nuisance-model misspecification, not against failed parallel trends, anticipation, interference, or absent overlap [@santannazhao2020drdid].
+
+### Aggregation
+
+Estimating every (ATT(g,t)) creates many valid but potentially unwieldy effects. The paper therefore distinguishes aggregation targets:
+
+- **group-specific:** average post-treatment effects for each cohort
+- **calendar-time:** average effects among groups treated by a given date
+- **dynamic:** average by exposure duration (t-g)
+- **overall:** average across treated cohort-time cells with explicit weights
+
+Aggregation can answer different questions. A dynamic average can change composition across event time because only early cohorts contribute long exposure durations. Reports should show support and weights rather than present the curve as if the same groups appear at every horizon.
+
+### Inference
+
+The paper establishes large-sample properties and uses a multiplier bootstrap for simultaneous confidence bands. Simultaneous bands are important when readers inspect an entire event-time path or jointly assess pre-treatment coefficients. Pointwise intervals do not control uncertainty across the full set of estimates.
+
+Inference still depends on the sampling and clustering structure. Few clusters or nonstandard assignment require additional care beyond invoking the package default [@roth2023trending].
+
+### Minimum-Wage Application
+
+The empirical example studies state minimum-wage changes and teen employment from 2001 to 2007. It demonstrates how the group-time framework can produce conclusions that differ from conventional TWFE when treatment timing, dynamics, and heterogeneity interact.
+
+The paper treats that contrast cautiously. The broader lesson is that method choice can matter qualitatively in common staggered designs, so the estimator must be chosen from assumptions and targets rather than familiarity.
+
+### Software Translation
+
+The R package `did` implements the framework. A disciplined workflow needs to record:
+
+- first-treatment date coding
+- never-treated versus not-yet-treated controls
+- panel versus repeated-cross-section setting
+- covariates and overlap checks
+- anticipation allowance
+- base period
+- aggregation type and weights
+- clustering and confidence-band method
+
+Without those items, an `att_gt()` result is not reproducible as a design.
+
+## Practical Implications for QED Labs
+
+- Teach (ATT(g,t)) as the basic staggered estimand.
+- Make learners choose and defend the control group before running software.
+- Plot cohort sizes, treatment dates, and group-time support.
+- Report overlap and weight concentration when conditioning on covariates.
+- Show cohort, dynamic, and overall aggregations side by side and explain why they differ.
+- Use simultaneous bands for event-time paths.
+- Keep the simple TWFE coefficient only as a diagnostic contrast.
+
+## Bottom Line
+
+Callaway and Sant'Anna replace an opaque staggered-TWFE average with explicit cohort-time effects. The method's strength is not just robustness to heterogeneity; it is the requirement to name the control group, parallel-trends condition, and aggregation target that together define the causal estimate.

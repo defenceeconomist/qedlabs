@@ -37,6 +37,7 @@ website:
       title: "Notes"
       style: docked
       search: true
+      collapse-level: 1
       contents:
         - href: notes/index.qmd
           text: Notes Overview
@@ -61,6 +62,27 @@ website:
               text: LaLonde Background Appendix
             - href: notes/matching/weightit-entropy-balancing-notes.qmd
               text: WeightIt Entropy Balancing
+        - section: Difference-in-Differences
+          href: notes/did/difference-in-differences.qmd
+          contents:
+            - href: notes/did/difference-in-differences-sources.qmd
+              text: Difference-in-Differences Sources
+            - href: notes/did/mixtape-difference-in-differences-notes.qmd
+              text: Mixtape Difference-in-Differences
+            - href: notes/did/effectbook-difference-in-differences-notes.qmd
+              text: The Effect Difference-in-Differences
+            - href: notes/did/gertler-difference-in-differences-notes.qmd
+              text: Gertler Difference-in-Differences
+            - href: notes/did/andrew-heiss-difference-in-differences-notes.qmd
+              text: Andrew Heiss Difference-in-Differences
+            - href: notes/did/goodman-bacon-treatment-timing-notes.qmd
+              text: Goodman-Bacon Treatment Timing
+            - href: notes/did/callaway-santanna-multiple-periods-notes.qmd
+              text: Callaway-Sant'Anna Multiple Periods
+            - href: notes/did/sun-abraham-event-studies-notes.qmd
+              text: Sun-Abraham Event Studies
+            - href: notes/did/roth-et-al-did-synthesis-notes.qmd
+              text: Roth et al. DiD Synthesis
         - section: Synthetic Control
           href: notes/scm/synthetic-control.qmd
           contents:
@@ -91,8 +113,6 @@ website:
         - section: Other Methods
           href: notes/other-methods/index.qmd
           contents:
-            - href: notes/other-methods/difference-in-differences.qmd
-              text: Difference-in-Differences
             - href: notes/other-methods/regression-discontinuity.qmd
               text: Regression Discontinuity
             - href: notes/other-methods/interrupted-time-series.qmd
@@ -124,6 +144,14 @@ website:
               text: NSW and CPS Benchmark Lab
             - href: labs/hisp-ie-practice-lab.qmd
               text: HISP IE Practice Lab
+        - section: Difference-in-Differences
+          contents:
+            - href: labs/difference-in-differences-foundations-lab.qmd
+              text: DiD Foundations With Kentucky Workers' Compensation
+            - href: labs/difference-in-differences-staggered-diagnostics-lab.qmd
+              text: Staggered Adoption and TWFE Diagnostics
+            - href: labs/difference-in-differences-modern-estimators-lab.qmd
+              text: Modern Multi-Period DiD
         - section: Synthetic Control Design
           contents:
             - href: labs/synthetic-control-methods-report.qmd
@@ -157,6 +185,10 @@ website:
           text: Why We Do Matching
         - href: slides/why_matching_script.qmd
           text: Why Matching Presenter Script
+        - href: slides/did.qmd
+          text: Difference-in-Differences Slides
+        - href: slides/did_script.qmd
+          text: DiD Presenter Script
         - href: slides/scm.qmd
           text: Synthetic Control Slides
         - href: slides/scm_script.qmd
