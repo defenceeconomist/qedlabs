@@ -12,6 +12,8 @@ script_path <- if (length(script_arg)) {
   normalizePath("docs/scripts/generate_its_slide_assets.R")
 }
 asset_dir <- file.path(dirname(dirname(script_path)), "slides", "assets")
+lab_data_dir <- file.path(dirname(dirname(script_path)), "labs", "data")
+source(file.path(lab_data_dir, "load-data.R"))
 dir.create(asset_dir, recursive = TRUE, showWarnings = FALSE)
 
 palette <- c(
@@ -42,7 +44,7 @@ save_asset <- function(plot, filename, width = 11, height = 6) {
   )
 }
 
-data("Seatbelts", package = "datasets")
+Seatbelts <- qed_data("Seatbelts", lab_data_dir)
 seatbelts <- as.data.frame(Seatbelts)
 seatbelts$time <- seq_len(nrow(seatbelts))
 seatbelts$date <- seq(as.Date("1969-01-01"), by = "month", length.out = nrow(seatbelts))

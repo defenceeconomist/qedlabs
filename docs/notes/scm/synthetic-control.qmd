@@ -1,17 +1,16 @@
 ---
 title: "Synthetic Control"
-bibliography: synthetic-control.bib
 ---
 
 # Scope
 
-This note summarizes the development of synthetic control methods and the main ways they are now used in UK policy evaluation. It is based on the SCM literature review in `../blog`, but the emphasis here is not Barrow-specific. The focus is method development, diagnostics, spillovers, small-area data, and the pattern of UK applications [@AbadieGard03; @AbadieDiamondHainmueller10; @Abadie_Using_Synthetic_Controls_2021].
+This note summarizes the development of synthetic control methods and the main ways they are now used in UK policy evaluation. It is based on the SCM literature review in `../blog`, but the emphasis here is not Barrow-specific. The focus is method development, diagnostics, spillovers, small-area data, and the pattern of UK applications [@abadie2003economic; @abadie2010synthetic; @abadie2021using].
 
 # What The Method Adds
 
-Synthetic control is a comparative case-study design for settings with one treated unit, or a very small number of treated units, observed over time. The method builds a weighted combination of untreated donor units so that the weighted donor path reproduces the treated unit's pre-treatment trajectory as closely as possible. The post-treatment gap between the treated unit and its synthetic analogue is then interpreted as the estimated effect of the intervention [@AbadieGard03; @AbadieDiamondHainmueller10].
+Synthetic control is a comparative case-study design for settings with one treated unit, or a very small number of treated units, observed over time. The method builds a weighted combination of untreated donor units so that the weighted donor path reproduces the treated unit's pre-treatment trajectory as closely as possible. The post-treatment gap between the treated unit and its synthetic analogue is then interpreted as the estimated effect of the intervention [@abadie2003economic; @abadie2010synthetic].
 
-The important design point is that SCM does not ask whether untreated units share a common trend on average. It asks whether some transparent weighted combination of untreated units can reconstruct the treated unit before treatment. That makes SCM attractive when ordinary difference-in-differences feels too coarse for a single treated place with idiosyncratic dynamics [@Abadie_Diamond_Hainmueller_2015; @Abadie_Using_Synthetic_Controls_2021].
+The important design point is that SCM does not ask whether untreated units share a common trend on average. It asks whether some transparent weighted combination of untreated units can reconstruct the treated unit before treatment. That makes SCM attractive when ordinary difference-in-differences feels too coarse for a single treated place with idiosyncratic dynamics [@Abadie_Diamond_Hainmueller_2015; @abadie2021using].
 
 In practice, SCM is strongest when:
 
@@ -26,29 +25,29 @@ If you want a source-following companion to this overview, start with [Basque Co
 
 # Core Design Conditions
 
-The credibility of SCM still turns on a small set of design conditions that have not changed since the original applications [@AbadieGard03; @AbadieDiamondHainmueller10; @Abadie_Using_Synthetic_Controls_2021].
+The credibility of SCM still turns on a small set of design conditions that have not changed since the original applications [@abadie2003economic; @abadie2010synthetic; @abadie2021using].
 
 ## Support In The Donor Pool
 
-Standard SCM restricts donor weights to a convex combination. That is a feature, not a bug: it stops arbitrary extrapolation. But it also means the treated unit must lie within, or at least very near, the support of the donor pool. If no weighted average of donors can match the treated unit before treatment, the design is weak [@Abadie_Using_Synthetic_Controls_2021; @Abadie_LHour_2021_PenalizedSCM].
+Standard SCM restricts donor weights to a convex combination. That is a feature, not a bug: it stops arbitrary extrapolation. But it also means the treated unit must lie within, or at least very near, the support of the donor pool. If no weighted average of donors can match the treated unit before treatment, the design is weak [@abadie2021using; @Abadie_LHour_2021_PenalizedSCM].
 
 ## Strong Pre-Treatment Fit
 
-SCM is only persuasive when treated and synthetic outcomes line up tightly before treatment. Pre-treatment fit is the main empirical reason to believe the synthetic unit tracks the treated unit's untreated path. If the fit is poor, an attractive post-treatment graph should not rescue the design [@AbadieDiamondHainmueller10; @Abadie_Using_Synthetic_Controls_2021].
+SCM is only persuasive when treated and synthetic outcomes line up tightly before treatment. Pre-treatment fit is the main empirical reason to believe the synthetic unit tracks the treated unit's untreated path. If the fit is poor, an attractive post-treatment graph should not rescue the design [@abadie2010synthetic; @abadie2021using].
 
 ## No Concurrent Treated-Unit Shock
 
-If another major shock hits the treated unit at the same time as treatment, SCM may attribute that shock to the intervention. This is the same basic confounding problem that appears in other quasi-experimental designs, but it is especially acute in single-case work [@Abadie_Diamond_Hainmueller_2015; @Abadie_Using_Synthetic_Controls_2021].
+If another major shock hits the treated unit at the same time as treatment, SCM may attribute that shock to the intervention. This is the same basic confounding problem that appears in other quasi-experimental designs, but it is especially acute in single-case work [@Abadie_Diamond_Hainmueller_2015; @abadie2021using].
 
 ## No Spillovers Into Donors
 
-The donor pool must remain untreated. If the intervention affects nearby or economically linked areas, those donors no longer provide a clean untreated counterfactual. This matters a great deal in regional and industrial-policy settings, where supply chains, commuting flows, and displaced activity can contaminate neighboring areas [@Abadie_Using_Synthetic_Controls_2021; @DiStefano_Mellace_2024_InclusiveSCM_arxiv; @Melnychuk_2024_IterativeSCM].
+The donor pool must remain untreated. If the intervention affects nearby or economically linked areas, those donors no longer provide a clean untreated counterfactual. This matters a great deal in regional and industrial-policy settings, where supply chains, commuting flows, and displaced activity can contaminate neighboring areas [@abadie2021using; @DiStefano_Mellace_2024_InclusiveSCM_arxiv; @Melnychuk_2024_IterativeSCM].
 
 # How The Method Has Developed
 
 ## From Canonical SCM To A Broader Design Toolkit
 
-The original SCM papers established the core logic: use transparent donor weights to replace ad hoc comparative case selection and judge credibility through pre-treatment fit and visual diagnostics [@AbadieGard03; @AbadieDiamondHainmueller10]. Later work made clear that SCM should be understood less as a narrow estimator and more as a design family for comparative case studies [@Abadie_Diamond_Hainmueller_2015; @Abadie_Using_Synthetic_Controls_2021].
+The original SCM papers established the core logic: use transparent donor weights to replace ad hoc comparative case selection and judge credibility through pre-treatment fit and visual diagnostics [@abadie2003economic; @abadie2010synthetic]. Later work made clear that SCM should be understood less as a narrow estimator and more as a design family for comparative case studies [@Abadie_Diamond_Hainmueller_2015; @abadie2021using].
 
 That shift matters in practice. Applied SCM is now less about running one optimizer and more about designing a feasible donor pool, showing support, reporting diagnostics, and being explicit about where the design may fail.
 
@@ -62,7 +61,7 @@ Modern SCM practice puts diagnostics at the center rather than at the end. A cre
 - placebo-by-unit or placebo-in-time exercises
 - sensitivity to donor-pool and predictor choices
 
-This is now standard applied advice in both the research literature and practitioner-facing guidance [@AbadieDiamondHainmueller10; @Abadie_Using_Synthetic_Controls_2021; @McClelland_Mucciolo_2022_Update_SCM_State_Policy].
+This is now standard applied advice in both the research literature and practitioner-facing guidance [@abadie2010synthetic; @abadie2021using; @McClelland_Mucciolo_2022_Update_SCM_State_Policy].
 
 The key practical point is that placebo exercises are diagnostic, not a substitute for design quality. If the donor pool is weak or pre-treatment fit is poor, placebo-based reassurance is thin.
 
@@ -70,7 +69,7 @@ The key practical point is that placebo exercises are diagnostic, not a substitu
 
 One major line of development responds to the fact that exact or near-exact pre-treatment balance is often unavailable.
 
-Augmented SCM combines synthetic-control weighting with an outcome model for bias correction. The practical use case is straightforward: when standard SCM does not fit well enough, augmentation can reduce bias without abandoning the comparative-case structure entirely [@BenMichael_Feller_Rothstein_2021_AugmentedSCM].
+Augmented SCM combines synthetic-control weighting with an outcome model for bias correction. The practical use case is straightforward: when standard SCM does not fit well enough, augmentation can reduce bias without abandoning the comparative-case structure entirely [@benmichael2021augmented].
 
 Penalized SCM addresses settings with more disaggregated data and many potential donors. It relaxes the simple "convex combination of a few donors" intuition by adding regularization, which can help when the treated unit sits awkwardly relative to the donor pool or when very fine-grained data create unstable fits [@Abadie_LHour_2021_PenalizedSCM].
 
@@ -115,7 +114,7 @@ The tradeoff is that small-area data can be noisy and spillovers become harder t
 
 # Practical Implications For Evaluators
 
-If the goal is to use SCM in a UK policy setting, the literature points to a fairly disciplined workflow [@Abadie_Using_Synthetic_Controls_2021; @McClelland_Mucciolo_2022_Update_SCM_State_Policy].
+If the goal is to use SCM in a UK policy setting, the literature points to a fairly disciplined workflow [@abadie2021using; @McClelland_Mucciolo_2022_Update_SCM_State_Policy].
 
 - Define the treated geography at the scale where the intervention actually operates, not at the scale where data happen to be easy to obtain.
 - Treat donor-pool construction as an identification decision. Excluding contaminated or clearly incomparable units is part of the design, not a post hoc robustness exercise.
@@ -127,4 +126,4 @@ If the goal is to use SCM in a UK policy setting, the literature points to a fai
 
 # Bottom Line
 
-SCM has developed from a niche comparative case-study method into a broader evaluation toolkit. In the UK it now sits comfortably inside applied work on regional policy, infrastructure, cluster policy, and small-area interventions. But the method's credibility still comes from old-fashioned design discipline: a plausible donor pool, strong pre-treatment fit, transparent weights, and honest treatment of spillovers and support limits [@AbadieDiamondHainmueller10; @Abadie_Using_Synthetic_Controls_2021].
+SCM has developed from a niche comparative case-study method into a broader evaluation toolkit. In the UK it now sits comfortably inside applied work on regional policy, infrastructure, cluster policy, and small-area interventions. But the method's credibility still comes from old-fashioned design discipline: a plausible donor pool, strong pre-treatment fit, transparent weights, and honest treatment of spillovers and support limits [@abadie2010synthetic; @abadie2021using].

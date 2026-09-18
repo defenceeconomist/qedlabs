@@ -11,7 +11,14 @@ execute:
 
 Use this page as a skeleton worksheet for planning a synthetic-control study before writing full implementation code.
 
-[Download the R Jupyter notebook](notebooks/synthetic-control-design-lab.ipynb){.cta-button download="synthetic-control-design-lab.ipynb"}
+<!-- lab-downloads:start -->
+::: {.resource-links}
+[Quarto document](downloads/synthetic-control-design-lab.qmd){download="synthetic-control-design-lab.qmd"}
+[R Jupyter notebook](notebooks/synthetic-control-design-lab.ipynb){download="synthetic-control-design-lab.ipynb"}
+[Complete lab ZIP](downloads/synthetic-control-design-lab.zip){download="synthetic-control-design-lab.zip"}
+[Data and setup](data.qmd#synthetic-control-design-lab)
+:::
+<!-- lab-downloads:end -->
 
 ## Draft Goal
 

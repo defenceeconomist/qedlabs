@@ -11,7 +11,14 @@ execute:
 
 Use this page as a guided worksheet rather than as a finished report.
 
-[Download the R Jupyter notebook](notebooks/black-politicians-lab.ipynb){.cta-button download="black-politicians-lab.ipynb"}
+<!-- lab-downloads:start -->
+::: {.resource-links}
+[Quarto document](downloads/black-politicians-lab.qmd){download="black-politicians-lab.qmd"}
+[R Jupyter notebook](notebooks/black-politicians-lab.ipynb){download="black-politicians-lab.ipynb"}
+[Complete lab ZIP](downloads/black-politicians-lab.zip){download="black-politicians-lab.zip"}
+[Data and setup](data.qmd#black-politicians-lab)
+:::
+<!-- lab-downloads:end -->
 
 - Read the short framing note for each step.
 - Run the starter code in your own R session.
@@ -103,8 +110,14 @@ If you are teaching this live, a simple `35-45` minute structure works well:
 Start by loading the packages, bringing in the data, and creating a compact analysis object.
 
 ```{r}
+data_helpers <- c("data/load-data.R", "../data/load-data.R", "docs/labs/data/load-data.R")
+data_helpers <- data_helpers[file.exists(data_helpers)]
+if (!length(data_helpers)) stop("Extract the complete lab ZIP, including its data folder, before running.")
+source(data_helpers[[1]])
+```
+
+```{r}
 required_packages <- c(
-  "causaldata",
   "MatchIt",
   "WeightIt",
   "cobalt",
@@ -120,12 +133,12 @@ missing_packages <- required_packages[!vapply(
 )]
 
 if (length(missing_packages) > 0) {
-  install.packages(missing_packages, repos = "https://cloud.r-project.org")
+  stop("Install the documented R environment first; missing: ", paste(missing_packages, collapse=", "), call.=FALSE)
 }
 
 invisible(lapply(required_packages, library, character.only = TRUE))
 
-dat <- causaldata::black_politicians |>
+dat <- qed_data("black_politicians") |>
   mutate(
     treat = as.integer(leg_black),
     outcome = as.integer(responded)

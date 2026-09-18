@@ -6,6 +6,10 @@ docs/.quarto/
 docs/_site/
 data/
 docs/data/
+!docs/labs/data/
+!docs/labs/data/**
+*_cache/
+*_files/
 
 # Editor and notebook noise
 .Rproj.user/
@@ -13,9 +17,11 @@ docs/data/
 
 # Python caches
 __pycache__/
+.qedlabs-tools/
 *.pyc
 
 # Local DiD execution environments and checks
 .qedlabs-validation/
 .qedlabs-cache/
 .venv-did/
+.venv-rdd/

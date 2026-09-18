@@ -1,0 +1,211 @@
+---
+title: 'Lab: Sharp RD foundations with government transfers'
+format:
+  html:
+    toc: true
+    embed-resources: true
+engine: knitr
+execute:
+  echo: true
+  eval: true
+  error: false
+references:
+- URL: https://portal.heley.uk/researchlibrary/books/the-effect
+  accessed:
+    date-parts:
+    - - 2026
+      - 9
+      - 18
+  author:
+  - family: Huntington-Klein
+    given: Nick
+  id: huntingtonklein2025rdd
+  issued:
+    date-parts:
+    - - 2025
+  note: Research Library HTML snapshot; year follows the library catalogue
+  title: 'The effect: An introduction to research design and causality. Chapter 20:
+    Regression discontinuity'
+  title-short: The effect
+  type: webpage
+- DOI: 10.1257/app.3.3.1
+  author:
+  - family: Manacorda
+    given: Marco
+  - family: Miguel
+    given: Edward
+  - family: Vigorito
+    given: Andrea
+  container-title: 'American Economic Journal: Applied Economics'
+  id: manacorda2011transfers
+  issue: '3'
+  issued:
+    date-parts:
+    - - 2011
+  page: 1-28
+  title: Government transfers and political support
+  type: article-journal
+  volume: '3'
+---
+
+## How to use this lab
+
+Allow 45–60 minutes. You should be comfortable with basic regression and R data frames. Restore the [tested environment](https://defenceeconomist.github.io/qedlabs/labs/regression-discontinuity-reproducibility.html), then run every cell in order in a fresh kernel. Every run loads and verifies the bundled local data. No data are downloaded. The HTML page displays code; the downloadable notebook executes it.
+
+
+
+[RDD overview](https://defenceeconomist.github.io/qedlabs/notes/other-methods/regression-discontinuity.html) · [Source reading map](https://defenceeconomist.github.io/qedlabs/notes/rdd/regression-discontinuity-sources.html)
+
+## Learning objectives
+
+1. Describe the assignment rule before fitting a model.
+2. Recover the local jump from two fitted intercepts and a weighted interaction regression.
+3. Distinguish score units, treatment direction, and robust bias-corrected inference.
+4. Explain why the estimate is local and why statistical significance does not establish continuity.
+
+## Research question and design
+
+Does threshold-based access to Uruguay's PANES transfer programme change reported support for government? These teaching data come from Manacorda, Miguel and Vigorito and the worked example in *The Effect* [@manacorda2011transfers; @huntingtonklein2025rdd]. They are a simplified teaching sample, not a replication of every paper specification.
+
+| Component | Definition |
+|---|---|
+| Running variable | `Income_Centered`, an assignment-income measure already centered at zero |
+| Treatment side | Below zero; verify against `Participation` |
+| Outcome | `Support`: 0 = worse than previous government, 0.5 = same, 1 = better |
+| Population | Survey observations already restricted to about ±0.02 of the threshold |
+| Estimand | Effect of programme access at the threshold, under continuity and no competing discontinuity |
+
+The outcome is a **support score**, not a binary probability. A change of 0.03 means 0.03 score units, or 3 points on a rescaled 0–100 index; it does not mean a 3-percentage-point change in the probability of supporting government. The programme includes benefits beyond a single cash payment, so interpret the treatment as the programme package.
+
+## 1. Load and audit the data
+
+```{r}
+data_helpers <- c("data/load-data.R", "../data/load-data.R", "docs/labs/data/load-data.R")
+data_helpers <- data_helpers[file.exists(data_helpers)]
+if (!length(data_helpers)) stop("Extract the complete lab ZIP, including its data folder, before running.")
+source(data_helpers[[1]])
+```
+
+```{r}
+# Restore the isolated library documented on the setup page before running.
+required <- c("rdrobust", "rddensity", "digest", "jsonlite")
+missing <- required[!vapply(required, requireNamespace, logical(1), quietly=TRUE)]
+if (length(missing)) stop("Restore the RDD environment; missing: ", paste(missing, collapse=", "))
+load_data <- function(name) as.data.frame(qed_data(name))
+require_support <- function(x, h, cutoff=0, order=2) {
+  x <- as.numeric(x) - cutoff
+  if (!is.finite(h) || h <= 0 || !all(is.finite(x))) stop("Nonfinite score or invalid bandwidth")
+  for (side in list(x[x < 0 & x > -h], x[x >= 0 & x < h])) {
+    if (length(side) < 10 || length(unique(side)) < order+2)
+      stop("Insufficient observations or distinct scores on a cutoff side")
+  }
+  invisible(TRUE)
+}
+rd_fit <- function(y, x, h=NULL, p=1, cutoff=0, treatment=NULL) {
+  args <- list(y=as.numeric(y), x=as.numeric(x), c=cutoff, p=p, q=p+1,
+               kernel="triangular", vce="hc0", bwselect="mserd", masspoints="adjust",
+               stdvars=TRUE, level=95, bwrestrict=TRUE, scaleregul=1)
+  if (!is.null(h)) {
+    require_support(x, h, cutoff, p+1)
+    args$h <- h; args$b <- h
+  }
+  if (!is.null(treatment)) args$fuzzy <- as.numeric(treatment)
+  do.call(rdrobust::rdrobust, args)
+}
+rd_row <- function(fit, label) {
+  data.frame(model=label, jump=fit$coef[1,1], bias_corrected=fit$coef[3,1],
+             se_robust=fit$se[3,1], ci_low=fit$ci[3,1], ci_high=fit$ci[3,2],
+             h_left=fit$bws[1,1], h_right=fit$bws[1,2],
+             b_left=fit$bws[2,1], b_right=fit$bws[2,2],
+             n_left=fit$N_h[1], n_right=fit$N_h[2], row.names=NULL)
+}
+binned_plot <- function(x, y, width, ylabel, xlabel="Centered assignment score") {
+  bins <- cut(x, breaks=seq(-width, width, length.out=31), include.lowest=TRUE)
+  means <- aggregate(cbind(x,y), list(bin=bins), mean)
+  plot(means$x, means$y, pch=19, col="#174c63", xlab=xlabel, ylab=ylabel)
+  abline(v=0, lty=2)
+  invisible(means)
+}
+print(vapply(required, function(p) as.character(packageVersion(p)), character(1)))
+```
+```{r}
+gt <- load_data("gov_transfers")
+stopifnot(identical(names(gt), c("Income_Centered", "Education", "Age", "Participation", "Support")))
+stopifnot(!anyNA(gt[c("Income_Centered", "Participation", "Support")]))
+x <- gt$Income_Centered; y <- gt$Support
+stopifnot(!any(x == 0), all(gt$Participation == as.integer(x < 0)))
+stopifnot(setequal(unique(y), c(0, 0.5, 1)))
+print(table(participation=gt$Participation, eligible=x < 0))
+print(colSums(is.na(gt)))
+print(c(n=nrow(gt), x_min=min(x), x_max=max(x)))
+```
+
+**Checkpoint:** the two assignment groups should contain 821 nonparticipants and 1,127 participants. Education has 51 missing values, but the outcome analysis does not use it. No outcome observations should be dropped because a later covariate is missing.
+
+## 2. Plot before estimating
+
+Use bins that split at zero; do not draw a smoothing line across the cutoff.
+
+```{r}
+binned_plot(x, y, 0.02, "Mean government-support score")
+```
+
+**Question:** why can a smooth income–support slope coexist with a valid RD design? The assumption rules out an untreated jump at zero, not a relationship between income and support.
+
+## 3. Calculate the local linear jump
+
+Set the bandwidth to 0.01 and use triangular weights. Scale the centered score by the bandwidth for numerical stability; this changes slope units but not the intercept jump.
+
+```{r}
+h <- 0.01
+require_support(x, h)
+keep <- abs(x) < h
+u <- x[keep]/h; outcome <- y[keep]; z <- as.integer(u >= 0)
+w <- 1-abs(u)
+manual_fit <- lm(outcome ~ u*z, weights=w)
+manual_jump <- unname(coef(manual_fit)["z"])
+left_fit <- lm(outcome ~ u, weights=w, subset=z == 0)
+right_fit <- lm(outcome ~ u, weights=w, subset=z == 1)
+intercept_jump <- unname(coef(right_fit)[1] - coef(left_fit)[1])
+stopifnot(abs(manual_jump-intercept_jump) < 1e-10)
+print(c(left_intercept=coef(left_fit)[1], right_intercept=coef(right_fit)[1],
+        right_minus_left=manual_jump, programme_effect=-manual_jump))
+binned_plot(x, y, 0.02, "Mean government-support score")
+for (side in c(0,1)) {
+  fit <- if (side == 0) left_fit else right_fit
+  grid <- if (side == 0) seq(-h,0,length.out=50) else seq(0,h,length.out=50)
+  lines(grid, coef(fit)[1]+coef(fit)[2]*grid/h)
+}
+```
+
+The package convention is right minus left. Here the programme is on the left, so its estimated effect is the **negative** of that jump. The fitted coefficient is not the difference between the two unadjusted sample means.
+
+## 4. Separate point estimation from inference
+
+Compare the manual estimate with the conventional local linear estimate from `rdrobust`, using the same kernel and bandwidth. Then request MSE-based bandwidth selection. Both calls explicitly use a local linear point fit, local quadratic bias fit, HC0 residual variance, and 95% robust bias-corrected intervals. Fixed comparisons use `b=h`; automatic selection chooses both bandwidths.
+
+```{r}
+fixed <- rd_fit(y, x, h=0.01)
+automatic <- rd_fit(y, x)
+results <- rbind(rd_row(fixed, "fixed_0.01"), rd_row(automatic, "automatic_mserd"))
+stopifnot(abs(manual_jump-results$jump[1]) < 1e-7)
+results$programme_effect <- -results$jump
+results$programme_bc <- -results$bias_corrected
+results$programme_ci_low <- -results$ci_high
+results$programme_ci_high <- -results$ci_low
+print(results)
+metrics <- data.frame(metric=c("manual_jump","intercept_jump","n","education_missing"),
+                      value=c(manual_jump,intercept_jump,nrow(gt),sum(is.na(gt$Education))))
+```
+
+The displayed robust interval belongs to the **bias-corrected** estimate, not a conventional coefficient with an unrelated standard error. Reversing the effect sign also reverses and swaps its interval endpoints. A bandwidth selector optimizes a statistical criterion; it cannot justify the programme's assignment process.
+
+## 5. Interpretation and worked checkpoints
+
+With `h=b=0.01`, there are **537 observations below** and **400 above** zero. The manual and package conventional right-minus-left jumps are **−0.033481754**, so the programme-effect estimate is **+0.033481754 support-score units**. The bias-corrected programme estimate is **−0.041604922**, with a robust 95% interval **[−0.187963996, 0.104754151]**. Do not attach that interval to the conventional coefficient without explaining the bias correction.
+
+Automatic MSE selection gives `h=0.005420072`, `b=0.010634554` and a conventional programme estimate **−0.023492132**. The sign change and uncertainty are part of the finding, not an error to hide. These are verified outputs from the [reproduction record](https://defenceeconomist.github.io/qedlabs/labs/regression-discontinuity-reproducibility.html), not evidence that the causal assumptions hold.
+
+Write a short conclusion naming the programme package, cutoff population, score units, estimate and interval method. Identify two reasons continuity could fail: a competing policy threshold and selective score manipulation. A broad average effect or a national expansion requires additional assumptions.
+
+Continue to [RDD diagnostics](https://defenceeconomist.github.io/qedlabs/labs/regression-discontinuity-diagnostics-lab.html), where the same sample exposes how analytic choices affect the conclusion.

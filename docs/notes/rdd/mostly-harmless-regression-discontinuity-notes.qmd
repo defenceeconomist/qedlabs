@@ -1,0 +1,43 @@
+---
+title: "Angrist and Pischke: Sharp and Fuzzy RD"
+subtitle: "Mostly Harmless Econometrics, Chapter 6, library PDF"
+date: 2026-09-18
+---
+
+## Source baseline
+
+The library PDF is catalogued as **2008** and contains draft-style cross-reference artifacts. These notes cite that file [@angristpischke2008rdd], not the pagination of the published 2009 book. Read [§6.1, Sharp RD](https://portal.heley.uk/researchlibrary/books/mostly-harmless-econometrics/read/mostly-harmless-econometrics:6-1-sharp-rd), PDF pages 205–212, and [§6.2, Fuzzy RD is IV](https://portal.heley.uk/researchlibrary/books/mostly-harmless-econometrics/read/mostly-harmless-econometrics:6-2-fuzzy-rd-is-iv), pages 212–218. The latter section record extends to page 219, where the next chapter begins.
+
+## A known rule does much of the design work
+
+In sharp RD, treatment is determined by the running variable at the threshold. The challenge is to distinguish a discontinuous treatment effect from the smooth relationship between the score and outcomes.
+
+The chapter explores parametric specifications, including centering and interactions, before a local approach. A narrow window reduces the distance over which one must model the conditional mean, at the cost of precision. Local linear methods address boundary bias more directly than unadjusted local averages.
+
+## Sharp RD: incumbency
+
+The close-election example compares constituencies whose party barely won or barely lost, then examines subsequent electoral outcomes. Past vote margin is the running variable; victory changes at zero.
+
+The comparison is not between all incumbents and challengers. Strong parties may win repeatedly for reasons unrelated to the advantage of holding office. The threshold comparison aims to distinguish underlying strength from the effect of a marginal victory.
+
+Pre-treatment electoral outcomes and the density of vote margins provide checks. Close elections are not automatically beyond manipulation: recounts and administrative procedures belong in the institutional assessment.
+
+## Fuzzy RD: distinguish three objects
+
+Keep separate:
+
+1. The **first stage**: the rule-induced jump in treatment receipt or intensity.
+2. The **reduced form**: the outcome jump at the rule's cutoff.
+3. The **fuzzy effect**: their ratio, or the corresponding local IV estimate.
+
+For binary treatment, the effect concerns compliers at the threshold. Locality refers both to the score and to the response to eligibility. The ratio does not recover an average effect for everybody near the threshold without the conditions stated in the [overview](../other-methods/regression-discontinuity.qmd).
+
+## Class size and institutional detail
+
+The Maimonides-rule example exploits changes in predicted class size as grade enrolment passes multiples of 40. Actual class size does not perfectly follow the rule, making the design fuzzy. The rule supplies an instrument, while enrolment also needs to be accounted for because its smooth relationship with outcomes may matter.
+
+This application has a treatment with many possible values and multiple cutoffs. Interpretation concerns rule-induced class-size changes. The binary-complier formula is an introduction, not a complete description of every continuous-treatment IV estimand.
+
+## Reading an older treatment critically
+
+The text predates much of the subsequent robust bias-corrected inference literature. Its polynomial and narrow-window comparisons help explain estimation but are not a complete current inference protocol. Pair it with [The Effect](effectbook-regression-discontinuity-notes.qmd), distinguishing the older institutional examples from later statistical refinements.

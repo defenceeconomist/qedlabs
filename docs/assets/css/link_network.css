@@ -24,6 +24,7 @@
 .link-graph-search {
   flex: 1 1 260px;
   max-width: 420px;
+  min-width: 0;
 }
 
 .link-graph-search input {
@@ -57,13 +58,14 @@
 }
 
 .link-graph-canvas-wrap {
-  background: linear-gradient(180deg, #ffffff, #fffaf2);
-  border: 1px solid #e7dccd;
+  background: #fafcfc;
+  border: 1px solid var(--site-border, #dce2e5);
   border-radius: 0.5rem;
   height: var(--link-graph-height);
   min-height: var(--link-graph-height);
   overflow: hidden;
   position: relative;
+  min-width: 0;
 }
 
 .link-graph-svg,

@@ -51,7 +51,7 @@ Keeping these columns separate prevents a software option from becoming an unsup
 
 ## Connection to the labs
 
-The [modern R lab](../../labs/difference-in-differences-modern-estimators-lab.qmd) uses doubly robust group-time estimation; the [Python companion](../../labs/difference-in-differences-modern-estimators-python-lab.qmd) makes the nuisance option explicit. The paper's two-period contribution is a building block; Callaway–Sant'Anna specifies the staggered group-time comparisons and their aggregation.
+The [modern R lab](../../labs/difference-in-differences-modern-estimators-lab.qmd) uses doubly robust group-time estimation with an explicit nuisance specification. The paper's two-period contribution is a building block; Callaway–Sant'Anna specifies the staggered group-time comparisons and their aggregation.
 
 
 [Reading map](difference-in-differences-sources.qmd) · [Method overview](difference-in-differences.qmd) · [Applications and datasets](difference-in-differences-applications.qmd)

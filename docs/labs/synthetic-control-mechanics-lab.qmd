@@ -11,7 +11,14 @@ execute:
 
 Use this page as the first hands-on SCM lab.
 
-[Download the R Jupyter notebook](notebooks/synthetic-control-mechanics-lab.ipynb){.cta-button download="synthetic-control-mechanics-lab.ipynb"}
+<!-- lab-downloads:start -->
+::: {.resource-links}
+[Quarto document](downloads/synthetic-control-mechanics-lab.qmd){download="synthetic-control-mechanics-lab.qmd"}
+[R Jupyter notebook](notebooks/synthetic-control-mechanics-lab.ipynb){download="synthetic-control-mechanics-lab.ipynb"}
+[Complete lab ZIP](downloads/synthetic-control-mechanics-lab.zip){download="synthetic-control-mechanics-lab.zip"}
+[Data and setup](data.qmd#synthetic-control-mechanics-lab)
+:::
+<!-- lab-downloads:end -->
 
 - Keep the [Synthetic Control](../notes/scm/synthetic-control.qmd) overview open in another tab.
 - Use this lab to understand the grammar of classical SCM before you move to real case studies.
@@ -54,6 +61,13 @@ By the end of the lab, you should be able to report:
 ## Step 1: Load Packages And Inspect The Toy Panel
 
 ```{r}
+data_helpers <- c("data/load-data.R", "../data/load-data.R", "docs/labs/data/load-data.R")
+data_helpers <- data_helpers[file.exists(data_helpers)]
+if (!length(data_helpers)) stop("Extract the complete lab ZIP, including its data folder, before running.")
+source(data_helpers[[1]])
+```
+
+```{r}
 required_packages <- c(
   "Synth",
   "dplyr",
@@ -68,12 +82,12 @@ missing_packages <- required_packages[!vapply(
 )]
 
 if (length(missing_packages) > 0) {
-  install.packages(missing_packages, repos = "https://cloud.r-project.org")
+  stop("Install the documented R environment first; missing: ", paste(missing_packages, collapse=", "), call.=FALSE)
 }
 
 invisible(lapply(required_packages, library, character.only = TRUE))
 
-data("synth.data", package = "Synth")
+synth.data <- qed_data("synth.data")
 
 synth.data |>
   tibble::as_tibble() |>

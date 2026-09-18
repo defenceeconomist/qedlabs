@@ -1,60 +1,130 @@
 ---
-title: "Regression Discontinuity"
+title: "Regression Discontinuity Design"
+date: 2026-09-18
 ---
 
-# Scope
+[Practical guide: how to do regression discontinuity](../rdd/how-to-do-regression-discontinuity.qmd)
 
-This note will explain regression discontinuity design as a local comparison around a known treatment cutoff [@cunningham2018regression; @gertler2010ch6regression].
+## The design in one comparison
 
-# Planned Sections
+Regression discontinuity design (RDD, or RD) uses a treatment rule that changes at a known threshold. It compares outcomes immediately on either side, allowing the outcome to vary smoothly with the score used for assignment. An outcome jump can identify a causal effect if the corresponding potential outcomes would otherwise be continuous at the cutoff [@gertler2016ch6rdd; @cunningham2021rdd].
 
-## What The Method Is
+The design comes from the allocation rule. Finding a convenient breakpoint in an outcome plot does not create an RD design. Nor does including a score and a treatment indicator in a regression establish identification.
 
-- Running variable
-- Threshold-based assignment
-- Local average treatment effect at the cutoff
+These notes synthesize six evaluation and causal-inference texts in the Research Library. The [source map](../rdd/regression-discontinuity-sources.qmd) gives editions, reading locations, and detailed notes.
 
-## When To Use It
+## Assignment, receipt, and the estimand
 
-- Treatment assignment changes sharply at a rule-based threshold
-- Units near the cutoff are plausibly comparable
-- The running variable is observed precisely
+Let $X_i$ be a pre-treatment **running variable**, $c$ the **cutoff**, $Z_i=\mathbf{1}(X_i\geq c)$ the eligibility indicator, $D_i$ actual treatment receipt, and $Y_i$ the outcome. Eligibility is on the right here; reverse the orientation for programmes that treat low scores.
 
-## Core Assumptions
+| Design | What changes at the cutoff? | Target under the required assumptions |
+|---|---|---|
+| Sharp RD | Treatment receipt changes deterministically from zero to one | Average treatment effect at the cutoff |
+| Fuzzy RD | Treatment probability changes by a nonzero amount | Effect for people at the cutoff whose treatment responds to eligibility |
+| Eligibility effect | Access or an offer changes | Effect of crossing the eligibility threshold, whether or not everyone participates |
 
-- Continuity of potential outcomes at the cutoff
-- No precise manipulation of the running variable
-- Correct handling of bandwidth and functional form
+In a sharp design, $D_i=Z_i$. With potential outcomes $Y_i(1)$ and $Y_i(0)$, continuity identifies
 
-## Data Requirements
+$$
+\tau_{\mathrm{SRD}}(c)
+=\lim_{x\to c^+}E[Y_i\mid X_i=x]
+-\lim_{x\to c^-}E[Y_i\mid X_i=x]
+=E[Y_i(1)-Y_i(0)\mid X_i=c].
+$$
 
-- Running variable
-- Known cutoff
-- Sufficient density near the threshold
-- Outcome measured after assignment
+This effect is local to a value of the running variable. It is not automatically the average effect for all participants. Textbooks sometimes call it a local average treatment effect; reserve **complier LATE** for the additional restriction in a fuzzy design [@angristpischke2008rdd].
 
-## Workflow
+For fuzzy RD, let $\Delta_Y(c)$ be the right-minus-left outcome jump and $\Delta_D(c)$ the corresponding treatment-probability jump. Then
 
-1. Verify the assignment rule and cutoff.
-2. Plot outcomes against the running variable.
-3. Choose a bandwidth.
-4. Estimate local treatment effects.
-5. Check sensitivity to bandwidth and polynomial choices.
+$$
+\tau_{\mathrm{FRD}}(c)=\frac{\Delta_Y(c)}{\Delta_D(c)}.
+$$
 
-## Diagnostics And Risks
+The ratio has a local complier interpretation with continuity conditions for the relevant potential outcomes and treatment choices, a nonzero first stage, exclusion of other eligibility effects, and monotonicity: crossing toward eligibility does not reduce treatment for some people while increasing it for others. Eligibility must affect the outcome through the treatment being studied. These are substantive IV conditions, not consequences of dividing two coefficients [@angristpischke2008rdd].
 
-- Density tests near the cutoff
-- Covariate continuity checks
-- Bandwidth sensitivity
-- Local interpretation only
+### An illustrative calculation
 
-## Worked Example
+Suppose a grant threshold raises participation from 0.20 to 0.70, and the fitted outcome at the cutoff rises from 40 to 44 units. The eligibility effect is $4$ units. The fuzzy treatment effect is $4/(0.70-0.20)=8$ units for local compliers, under the assumptions above. These are invented teaching numbers, not an empirical library result. Inference for the ratio must account for uncertainty in both jumps; dividing separately reported interval endpoints is not valid.
 
-Eligibility for a grant based on a score threshold, comparing units just above and below the cutoff.
+When eligibility lies below the cutoff, the conventional right-minus-left outcome jump has the opposite sign to the treated-minus-untreated sharp effect. For a fuzzy ratio, orient both jumps consistently.
 
-## Software
+## What makes the comparison credible?
 
-- `rdrobust`
-- `rddensity`
-- `ggplot2`
+### Continuity and the assignment process
 
+Expected outcomes under either treatment state must be continuous through $c$. They may slope or curve with $X$; they need not be flat or equal across a wide window. Investigate how the score was calculated, when it was recorded, who could revise it, whether the threshold was set before applicants were known, and how exceptions were handled [@cunningham2021rdd; @huntingtonklein2025rdd].
+
+Sharp RD has no treated and untreated observations at the same exact score. Continuity supplies the limiting comparison across the boundary. Matching on the running variable cannot supply the missing overlap.
+
+### Sorting and competing interventions
+
+Precise sorting around the threshold can place systematically different people on each side. Examine incentives and administrative discretion as well as the score distribution. A smooth density is reassuring evidence, not proof of comparable potential outcomes. Heaping, rounding, selective missingness, and coarse recording can also compromise the comparison [@huntingtonklein2025rdd].
+
+If several benefits start at the same threshold, RD may identify their joint effect. It does not isolate one component without further variation or assumptions. Spillovers across the threshold can similarly change the comparison and the effect being estimated [@gertler2016ch6rdd; @henry2015comparison].
+
+### Continuity differs from local randomization
+
+Continuity-based RD estimates limits at the cutoff. A local-randomization approach assumes a finite window in which assignment can be analysed as a specified random process and potential outcomes are suitably unrelated to the score. That can justify randomization inference, but requires its own window and assignment argument. A small bandwidth alone does not establish the stronger claim [@cunningham2021rdd].
+
+## Data and estimation
+
+Collect the original assignment score, cutoff and rule version, eligibility, actual receipt, post-treatment outcomes, and pre-treatment covariates or outcomes. Retain units on both sides, including eligible nonparticipants. Document missing outcomes and exclusions by score and eligibility. Record the assignment unit and any nesting, such as pupils within schools.
+
+### Fit the two sides locally
+
+For a sharp design, a local linear specification within $|X_i-c|\leq h$ is
+
+$$
+Y_i=\alpha+\tau Z_i+\beta_-(X_i-c)
++\gamma Z_i(X_i-c)+\varepsilon_i.
+$$
+
+Centering makes $\tau$ the fitted jump at $c$; the interaction permits different slopes. This describes a local fit, not one global straight line across the entire score range. Kernel weights can emphasize observations closer to the cutoff [@cunningham2021rdd; @huntingtonklein2025rdd].
+
+The **bandwidth** $h$ controls which observations inform estimation. Wider windows improve precision but increase reliance on correctly approximating the score–outcome relationship. Narrower windows generally reduce approximation bias but use fewer observations. Plot bins are a separate choice: bin width is not estimation bandwidth.
+
+Use a defensible bandwidth procedure and report sensitivity to narrower and wider windows. Prefer local low-order fits to unrestricted high-order global polynomials. Do not choose a specification because it produces the desired significance. Read older textbook polynomial checks alongside the later local-estimation discussion [@gertler2016ch6rdd; @cunningham2021rdd].
+
+### Match inference to estimation
+
+Ordinary heteroskedasticity-robust standard errors do not themselves correct intervals for smoothing bias. Robust bias-corrected RD inference adjusts for estimated bias and the uncertainty introduced by estimating it. Separately, dependence within assignment groups may require cluster-aware inference. Record the estimator, bandwidths, polynomial orders, weighting, and interval method [@huntingtonklein2025rdd].
+
+The maintained [`rdrobust` documentation](https://github.com/rdpackages/rdrobust) distinguishes estimation and robust bias-corrected inference, bandwidth selection, and RD plotting. [`rddensity`](https://github.com/rdpackages/rddensity) supplies density-discontinuity procedures. These aids do not establish the allocation story or repair a weak first stage.
+
+## Diagnostics that challenge the design
+
+| Check | What to inspect | What a reassuring result cannot establish |
+|---|---|---|
+| Assignment and first stage | Eligibility and receipt against the original score | That no other policy changes at the threshold |
+| Outcome plot | Binned means and separate local fits, with clear scales | That an apparent jump is causal |
+| Density and score audit | Bunching, rounding, overrides, gaps and discrete support | Absence of every form of selection |
+| Baseline balance | Pre-treatment outcomes and covariates at the cutoff | Continuity of unobserved potential outcomes |
+| Placebo cutoffs | Artificial thresholds within a common treatment regime | Validity at the actual threshold |
+| Bandwidth sensitivity | Estimates, intervals, sample sizes and support on each side | That the most stable estimate is necessarily unbiased |
+
+These checks combine the diagnostic discussions in Gertler, Cunningham, and Huntington-Klein. Interpret failed checks substantively, including multiple testing and limited power. Adding an imbalanced covariate mechanically does not repair a discontinuous confounder [@gertler2016ch6rdd; @cunningham2021rdd; @huntingtonklein2025rdd].
+
+Removing observations immediately around the threshold—a **donut RD**—also removes those closest to the target. It requires more extrapolation and a reason for the exclusion, and is not an automatic cure for heaping or sorting. A coarse score likewise needs an argument about the gap between support points; sample size alone does not solve that problem [@huntingtonklein2025rdd].
+
+## Interpretation and reporting
+
+Practice these decisions in the [R RDD labs](../../labs/index.qmd#regression-discontinuity-labs):
+
+1. **Sharp RD foundations** — [R](../../labs/regression-discontinuity-foundations-lab.qmd): assignment, local lines and treatment direction.
+2. **Design diagnostics and sensitivity** — [R](../../labs/regression-discontinuity-diagnostics-lab.qmd): density, covariates, placebos, bandwidths and donuts.
+3. **Fuzzy RD and local IV** — [R](../../labs/regression-discontinuity-fuzzy-lab.qmd): first stages, local ratios, exclusion and discrete scores.
+
+The [setup and reproduction record](../../labs/regression-discontinuity-reproducibility.qmd) documents source files, pinned environments and verified numerical checkpoints.
+
+RDD is often directly relevant to slightly expanding eligibility. It is less directly informative about abolishing a programme or extending it far beyond the cutoff. Even marginal expansion needs an argument that delivery, uptake, and wider effects would remain comparable [@gertler2016ch6rdd].
+
+Report:
+
+1. The question, running variable, cutoff, treatment direction and allocation process.
+2. Whether the target is an eligibility effect, sharp cutoff effect, or fuzzy complier effect.
+3. The case for continuity, including other threshold policies and opportunities for sorting.
+4. First-stage and outcome plots, score support, and observations on each side.
+5. Bandwidth, functional form, weighting and inference choices, with sensitivity results.
+6. Falsification findings, uncertainty, and the population to which the result applies.
+
+Read [Rossi, Lipsey and Freeman](../rdd/rossi-regression-discontinuity-notes.qmd) and [Henry](../rdd/henry-regression-discontinuity-notes.qmd) for evaluation planning. Compare [DiD](../did/difference-in-differences.qmd) and [interrupted time series](interrupted-time-series.qmd) for designs based on changes over time.

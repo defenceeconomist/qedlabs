@@ -1,89 +1,72 @@
 # Quasi-Experimental Design Labs
 
-The goals of Quasi-Experimental Design Labs is to compile and disseminate guidance on running quasi-experimental designs.
+A Quarto academic reference with two main sections:
 
-## Site Structure
+- **Notes:** method overviews, practical R guides, and source-based reading.
+- **Labs:** 18 R labs and worksheets, with teaching decks and presenter notes grouped by method.
 
-A Quarto site now lives under `docs/` with three top-level sections:
+The practical guides cover interrupted time series, difference-in-differences,
+and sharp/fuzzy regression discontinuity. Existing slide URLs remain under
+`docs/slides/`; the former Slides overview redirects to Labs.
 
-- `notes`
-- `labs`
-- `slides`
+## Offline Lab Downloads
 
-Current content includes:
+Every lab has a downloadable Quarto document, an R Jupyter notebook, and a complete
+ZIP containing both documents and all its data. All 16 teaching datasets are
+committed under `docs/labs/data/` and linked from the site's data catalogue.
+This includes HISP's original CSV, Stata file and replication script.
 
-- matching and weighting notes plus migrated matching labs
-- synthetic-control notes plus lab and slide skeletons
-- interrupted-time-series notes, Seatbelts-based slides and presenter script, and three focused runnable labs
-- difference-in-differences knowledge base, paired R/Python labs, and introductory slides
-- additional notes on regression discontinuity
+Extract a complete ZIP and keep `data/` beside the documents. Select the **R**
+kernel in Jupyter and run cells in order, or run `quarto render NAME.qmd`.
+Individual document downloads work with the all-data ZIP extracted beside them.
+The two SCM planning worksheets have writing prompts rather than executable code.
 
-Render it with:
-
-```bash
-quarto render docs
-```
-
-## Run The Labs In JupyterLab With R
-
-Runnable lab pages have downloadable notebooks linked from the
-[Labs overview](https://defenceeconomist.github.io/qedlabs/labs/). Most notebooks use the Jupyter `ir` kernel and install missing lab-specific R
-packages when they are first run. The DiD sequence also includes Python notebooks;
-use its pinned environments for reproducible execution.
-
-Install JupyterLab and register the R kernel once:
+Lab execution does not download data or install software. Prepare R 4.5.1, Quarto,
+Jupyter and the R packages before going offline:
 
 ```bash
-python3 -m pip install jupyterlab
-R -e 'install.packages("IRkernel", repos = "https://cloud.r-project.org"); IRkernel::installspec()'
-jupyter lab
+python3 -m pip install jupyterlab PyYAML nbformat nbclient
+Rscript docs/scripts/setup_lab_environment.R
+Rscript -e 'IRkernel::installspec()'
 ```
 
-The HISP notebook needs the external replication data described on its lab
-page. Set the data directory before launching JupyterLab so the R kernel
-inherits it:
+The setup script may use the network; the labs do not. Method-specific tested R
+lockfiles remain in `docs/labs/reproducibility/`. Detailed prerequisites are in
+[offline setup](docs/labs/offline-setup.md). Python remains a build/validation
+tool, but no Python teaching notebooks or Python analysis kernel are required.
 
-```bash
-HISP_IE_DATA_DIR=/absolute/path/to/hisp_ie_in_practice jupyter lab
-```
+## Generation and Validation
 
-The committed notebooks are generated from the Quarto lab sources. Refresh
-them after changing a lab, or check that they are current, with:
+The website labs are the canonical teaching sources. Generated downloads must not
+be edited directly. They contain generated references from the sole maintained
+bibliography, `evaluation-bibliography.bib`.
 
 ```bash
 python3 docs/scripts/generate_lab_notebooks.py
 python3 docs/scripts/generate_lab_notebooks.py --check
-```
-
-## GitHub Pages
-
-The site now publishes from GitHub Actions on pushes to `main`.
-
-- The workflow renders `docs/_site/`.
-- It uploads the rendered site as a regular Actions artifact named `site`.
-- It deploys that same build to GitHub Pages.
-
-Local rendering stays unchanged:
-
-```bash
+python3 docs/scripts/test_generate_lab_notebooks.py
+python3 docs/scripts/validate_bibliography.py
+python3 docs/scripts/test_validate_bibliography.py
+python3 docs/scripts/validate_offline_labs.py --execute --render
+python3 docs/scripts/validate_did_labs.py
+python3 docs/scripts/validate_rdd_labs.py
 quarto render docs
 ```
 
-## Difference-in-Differences collection
+Pandoc is required for structured citation conversion. The scripts use Quarto's
+bundled Pandoc; set `PANDOC` to a standalone executable if needed. Validation
+executes extracted bundles in fresh R kernels and retains logs under the ignored
+`.qedlabs-validation/` directory. The CI execution step uses a network namespace
+with only loopback available. Numerical baselines preserve the original verified
+results; tests do not refresh them automatically.
 
-Start with [the reading map](docs/notes/did/difference-in-differences-sources.qmd),
-[application catalogue](docs/notes/did/difference-in-differences-applications.qmd),
-and [introductory deck](docs/slides/did.qmd).
+Data snapshots are not regenerated during builds. To deliberately update them,
+prepare the pinned source files and package versions, run
+`docs/scripts/vendor_lab_data.R`, and review provenance, checksums and results.
+Retain source notices and investigate redistribution conditions before adding data.
 
-The [DiD setup and reproduction record](docs/labs/difference-in-differences-reproducibility.qmd)
-contains isolated Python 3.11 and R 4.5.1 setup instructions, dependency locks,
-verified estimates, and documented software limitations. Generate notebooks from
-Quarto sources, then run:
+## Publishing
 
-```bash
-python docs/scripts/test_generate_lab_notebooks.py
-python docs/scripts/validate_did_labs.py --extensions
-```
-
-Validation launches fresh kernels and compares equivalent R/Python estimates;
-a successful website render alone does not execute these labs.
+GitHub Actions renders the site and PDF reports and publishes GitHub Pages on
+pushes to `main`. Feature-branch pushes do not publish. The workflow and existing
+URLs are retained; no separate hosting service is used.

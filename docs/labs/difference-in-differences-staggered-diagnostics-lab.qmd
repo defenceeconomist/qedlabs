@@ -1,5 +1,7 @@
 ---
 title: "Lab: Staggered Adoption and TWFE Diagnostics"
+aliases:
+  - /labs/difference-in-differences-staggered-diagnostics-python-lab.html
 format:
   html: default
 execute:
@@ -11,7 +13,14 @@ execute:
 
 This is the second difference-in-differences lab. The guided core takes about 45–60 minutes and examines what a two-way fixed-effects estimate compares when treatment begins in different years.
 
-[Download the R Jupyter notebook](notebooks/difference-in-differences-staggered-diagnostics-lab.ipynb){.cta-button download="difference-in-differences-staggered-diagnostics-lab.ipynb"}
+<!-- lab-downloads:start -->
+::: {.resource-links}
+[Quarto document](downloads/difference-in-differences-staggered-diagnostics-lab.qmd){download="difference-in-differences-staggered-diagnostics-lab.qmd"}
+[R Jupyter notebook](notebooks/difference-in-differences-staggered-diagnostics-lab.ipynb){download="difference-in-differences-staggered-diagnostics-lab.ipynb"}
+[Complete lab ZIP](downloads/difference-in-differences-staggered-diagnostics-lab.zip){download="difference-in-differences-staggered-diagnostics-lab.zip"}
+[Data and setup](data.qmd#difference-in-differences-staggered-diagnostics-lab)
+:::
+<!-- lab-downloads:end -->
 
 - Audit adoption timing and untreated support before estimating an effect.
 - Treat the TWFE coefficient as a weighted collection of 2×2 comparisons.
@@ -20,7 +29,7 @@ This is the second difference-in-differences lab. The guided core takes about 45
 
 The case comes from Cunningham's castle-doctrine example [@cunningham2021did; @cheng2013castle]. The interpretation follows Goodman-Bacon and Sun–Abraham [@goodmanbacon2021timing; @sunabraham2021dynamic]. See the [Mixtape notes](../notes/did/mixtape-difference-in-differences-notes.qmd), [Goodman-Bacon notes](../notes/did/goodman-bacon-treatment-timing-notes.qmd), and [Sun–Abraham notes](../notes/did/sun-abraham-event-studies-notes.qmd).
 
-[Python companion](difference-in-differences-staggered-diagnostics-python-lab.qmd) · [Tested environment and reproduction record](difference-in-differences-reproducibility.qmd)
+[Tested environment and reproduction record](difference-in-differences-reproducibility.qmd)
 
 ## Training Goal
 
@@ -37,9 +46,15 @@ By the end of the lab, you should be able to:
 The `causaldata::castle` panel combines castle-doctrine adoption with state violent-crime outcomes. The lab uses log homicide as the outcome and `post` as the absorbing treatment indicator. The package documentation links the data to Cheng and Hoekstra's application.
 
 ```{r}
+data_helpers <- c("data/load-data.R", "../data/load-data.R", "docs/labs/data/load-data.R")
+data_helpers <- data_helpers[file.exists(data_helpers)]
+if (!length(data_helpers)) stop("Extract the complete lab ZIP, including its data folder, before running.")
+source(data_helpers[[1]])
+```
+
+```{r}
 required_packages <- c(
   "digest",
-  "causaldata",
   "dplyr",
   "ggplot2",
   "fixest",
@@ -52,16 +67,11 @@ missing_packages <- required_packages[!vapply(
   quietly = TRUE
 )]
 if (length(missing_packages) > 0) {
-  install.packages(missing_packages, repos = "https://cloud.r-project.org")
+  stop("Install the documented R environment first; missing: ", paste(missing_packages, collapse=", "), call.=FALSE)
 }
 invisible(lapply(required_packages, library, character.only = TRUE))
 
-# Match the Python lab's immutable upstream data and verify its checksum.
-data_file <- tempfile(fileext = ".rda")
-download.file("https://raw.githubusercontent.com/cran/causaldata/6d25e70297812a2e89a1a20e3bc24b32f6d3fbaf/data/castle.rda", data_file, mode = "wb", quiet = TRUE)
-stopifnot(digest::digest(file = data_file, algo = "sha256") == "d7e50add4a642a1320f254e96cab436a19d0f2d9f0434632c511a8f05de8a355")
-load(data_file)
-unlink(data_file)
+castle <- qed_data("castle")
 
 castle_panel <- castle |>
   select(sid, year, post, l_homicide) |>

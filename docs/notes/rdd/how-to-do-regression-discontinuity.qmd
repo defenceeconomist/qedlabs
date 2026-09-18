@@ -1,0 +1,298 @@
+---
+title: "How to Do Regression Discontinuity Design"
+subtitle: "Sharp and fuzzy cutoff designs, from assignment rules to local effects in R"
+format: html
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+Regression discontinuity (RD) uses a discontinuity in treatment assignment at a
+known threshold. Units just below and just above the cutoff can provide a local
+comparison when their untreated potential outcomes would otherwise vary smoothly
+with the assignment score. The design comes from the rule, not from finding a
+break in an outcome plot.
+
+This guide walks through a sharp design, its diagnostics, and a compact fuzzy
+extension. It assumes basic regression and R. Every example uses
+[data bundled in the repository](../../labs/data.qmd); no data are fetched during
+execution. The [sharp RD lab](../../labs/regression-discontinuity-foundations-lab.qmd)
+provides the companion Quarto document, R notebook and offline ZIP.
+
+## 1. Establish the assignment mechanism
+
+Identify the running variable, cutoff, eligibility rule, actual treatment receipt,
+outcome, and population. Determine when the score was measured and who could
+influence it. Verify which side receives treatment: a coefficient defined as
+right minus left is not always a treated-minus-untreated effect.
+
+In a **sharp** design, crossing the cutoff changes treatment deterministically.
+In a **fuzzy** design, it changes the probability of treatment. A weak jump in
+receipt is not a sharp design with inconvenient noncompliance; it changes the
+estimand and adds instrumental-variable assumptions [@gertler2016ch6rdd;
+@cunningham2021rdd; @huntingtonklein2025rdd].
+
+The sharp example concerns Uruguay's PANES programme. The supplied score is
+centered at the eligibility threshold; participation is on the **negative** side.
+The outcome `Support` takes values 0, 0.5, and 1. It is a government-support score,
+not a binary probability. The treatment is access to a programme package, not a
+cleanly isolated cash payment [@manacorda2011transfers].
+
+RD requires continuity of relevant potential-outcome means at the threshold and
+no other discontinuous intervention that would explain the outcome jump. Sorting,
+score manipulation, selective observation, and coincident eligibility rules can
+undermine that comparison. A large sample or an attractive curve does not resolve
+those threats.
+
+## 2. Audit the score and treatment coding
+
+```{r}
+source("../../labs/data/load-data.R")
+library(rdrobust)
+library(rddensity)
+library(ggplot2)
+gt <- as.data.frame(qed_data("gov_transfers"))
+stopifnot(nrow(gt) == 1948,
+          !anyNA(gt[c("Income_Centered", "Participation", "Support")]),
+          !any(gt$Income_Centered == 0),
+          all(gt$Participation == as.integer(gt$Income_Centered < 0)))
+with(gt, table(participation=Participation, below=Income_Centered < 0))
+colSums(is.na(gt))
+```
+
+The outcome survey is already restricted to roughly 0.02 on either side. That
+restriction is a feature of the supplied data, not evidence that 0.02 is an optimal
+analysis bandwidth. Record the available range, number of observations, distinct
+score values, and any heaping. Missing education values should not silently remove
+otherwise usable outcomes from the main analysis.
+
+The cutoff is fixed by the assignment mechanism. Do not search across candidate
+cutoffs and then present the most pronounced break as a prespecified policy rule.
+When the original score is not centered, subtract the known cutoff once and verify
+that eligibility still agrees with its sign.
+
+## 3. Plot before fitting the effect model
+
+```{r}
+gt$side <- as.integer(gt$Income_Centered >= 0)
+gt$bin <- cut(gt$Income_Centered, breaks=seq(-0.02,0.02,by=0.001),
+              include.lowest=TRUE)
+binned <- aggregate(cbind(Income_Centered, Support, Participation) ~ bin + side,
+                     data=gt, FUN=mean)
+ggplot(binned, aes(Income_Centered, Support, color=factor(side))) +
+  geom_point(size=2) + geom_vline(xintercept=0, linetype=2) +
+  scale_color_manual(values=c("#177b72", "#245ca4"), guide="none") +
+  labs(x="Centered assignment score", y="Mean government-support score") +
+  theme_minimal(base_size=12)
+```
+
+Plot the receipt probability as well as the outcome if the assignment mechanism
+is in doubt. Binning helps reveal the data; it is not the estimator. A visual bin
+width and a regression bandwidth are separate choices. Keep bins from straddling
+the cutoff, expose the available support, and avoid making an apparent jump depend
+on a convenient axis range.
+
+Do not fit one high-order global polynomial through the entire sample simply
+because it bends towards both clouds of points. Local low-order fits make the
+comparison near the threshold explicit and reduce dependence on distant scores.
+
+## 4. Recover a local jump transparently
+
+For a first calculation, use a fixed half-width $h=0.01$, a triangular kernel,
+and a separate linear slope on each side. The right-minus-left jump is the
+coefficient on the right-side indicator when score zero is the intercept.
+
+```{r}
+h <- 0.01
+local <- subset(gt, abs(Income_Centered) < h)
+local$weight <- 1 - abs(local$Income_Centered)/h
+manual <- lm(Support ~ side * Income_Centered, data=local, weights=weight)
+jump <- unname(coef(manual)["side"])
+left <- lm(Support ~ Income_Centered, data=subset(local, side == 0), weights=weight)
+right <- lm(Support ~ Income_Centered, data=subset(local, side == 1), weights=weight)
+stopifnot(abs(jump - (coef(right)[1]-coef(left)[1])) < 1e-10,
+          sum(local$side == 0) == 537, sum(local$side == 1) == 400)
+data.frame(right_minus_left=jump, programme_effect=-jump)
+```
+
+This gives a conventional programme-effect estimate of about +0.0335 **score
+units**, because treatment is on the left. It is not a 3.35-percentage-point
+increase in the probability of supporting government: the outcome includes the
+intermediate value 0.5. The coefficient is local to the threshold, not an average
+effect for all programme participants.
+
+Ordinary weighted-regression intervals do not account for the approximation bias
+of a local regression at a boundary. Use appropriate RD inference for the reported
+effect, and keep that inferential choice distinct from this algebraic check.
+
+## 5. Use bias-aware inference and report bandwidths
+
+```{r}
+fit_rd <- function(y, x, h=NULL, treatment=NULL) {
+  args <- list(y=y, x=x, c=0, p=1, q=2, kernel="triangular",
+               vce="hc0", masspoints="adjust", stdvars=TRUE,
+               bwselect="mserd", bwrestrict=TRUE, scaleregul=1, level=95)
+  if (!is.null(h)) { args$h <- h; args$b <- h }
+  if (!is.null(treatment)) args$fuzzy <- treatment
+  do.call(rdrobust, args)
+}
+fixed <- fit_rd(gt$Support, gt$Income_Centered, h=0.01)
+automatic <- fit_rd(gt$Support, gt$Income_Centered)
+programme_row <- function(fit, label) {
+  data.frame(model=label, conventional=-fit$coef[1,1],
+             bias_corrected=-fit$coef[3,1],
+             lower=-fit$ci[3,2], upper=-fit$ci[3,1],
+             h_left=fit$bws[1,1], h_right=fit$bws[1,2],
+             b_left=fit$bws[2,1], b_right=fit$bws[2,2],
+             n_left=fit$N_h[1], n_right=fit$N_h[2])
+}
+stopifnot(abs(unname(fixed$coef[1,1]) - jump) < 1e-8)
+knitr::kable(rbind(programme_row(fixed,"Fixed window"),
+                   programme_row(automatic,"MSE-selected window")), digits=4)
+```
+
+`p=1` fits a local line and `q=2` supplies the higher-order bias calculation.
+The estimation bandwidth $h$ and bias bandwidth $b$ serve different roles. We
+first fix both at 0.01 to make the demonstration reproducible, then let the
+MSE selector choose them. Automatic selection is not a certification that the
+assignment design is valid.
+
+The fixed-window bias-corrected programme effect is approximately -0.0416, with
+a robust interval from -0.1880 to 0.1048. Its sign differs from the conventional
+point estimate. Show that difference rather than attaching a bias-corrected interval
+to an unlabeled conventional estimate. When reversing treatment direction, negate
+the estimate **and swap the negated interval endpoints**.
+
+The automatic conventional estimate also changes sign in this example. That is
+substantive evidence of sensitivity, not a reason to hide the selected bandwidth.
+Report the result as local and imprecise under these specifications, rather than
+choosing the row most consistent with the desired conclusion.
+
+## 6. Examine threats to continuity
+
+Use the separate score dataset for the density check. The outcome survey's sample
+selection could distort its score distribution, so it is not an interchangeable
+substitute for the density sample.
+
+```{r}
+scores <- qed_data("gov_transfers_density")
+xd <- scores$Income_Centered
+xd <- xd[abs(xd) < 0.02]
+stopifnot(nrow(scores) == 52549, length(xd) == 20463)
+density <- rddensity(xd, c=0, p=2, q=3, fitselect="unrestricted",
+                     kernel="triangular", vce="jackknife", massPoints=TRUE,
+                     regularize=TRUE, bwselect="comb", bino=FALSE)
+summary(density)
+```
+
+A discontinuity in density can be a warning about sorting or recording rules.
+An insignificant result is not proof of no manipulation. Ask whether units knew
+the threshold, whether the score could be changed precisely, and whether the
+recorded score is the assignment score rather than a later revision.
+
+Inspect substantively relevant covariates measured before treatment. The timing
+of `Age` and `Education` in this teaching file is not established as pre-treatment,
+so call their analyses observed-covariate checks, not confirmed baseline balance
+tests. Education has 51 missing values; use variable-specific complete cases
+and report their counts rather than dropping those records from every analysis.
+
+## 7. Plan sensitivity checks that test a concern
+
+```{r}
+bandwidths <- c(0.005, 0.01, 0.015, 0.02)
+sensitivity <- do.call(rbind, lapply(bandwidths, function(h) {
+  programme_row(fit_rd(gt$Support, gt$Income_Centered, h=h), paste("h =", h))
+}))
+knitr::kable(sensitivity, digits=4)
+```
+
+A bandwidth grid exposes the bias/variance tradeoff and the role of more distant
+units. A local quadratic comparison asks whether curvature matters. Placebo
+cutoffs should lie within one treatment regime; their estimation and bias windows
+must not cross the real threshold. For example, placebos at +/-0.01 with
+$h=b=0.004$ remain within their own regimes.
+
+A donut exclusion removes observations closest to the cutoff. That can address a
+specific heaping concern, but it also removes the observations most directly
+informing the limiting comparison and requires extrapolation back to zero. It is
+not a generic cure for manipulation. Prespecify the reason and report the changed
+sample. The [diagnostics lab](../../labs/regression-discontinuity-diagnostics-lab.qmd)
+implements these comparisons and rejects insufficient support.
+
+## 8. Extend to a fuzzy design
+
+The second example uses birth-quarter variation in veteran status and homeownership
+[@fetter2013mortgages]. Crossing zero changes the probability of veteran status;
+it does not deterministically assign it. Under relevance, continuity, exclusion,
+and an appropriately oriented monotonicity assumption, a local Wald ratio can
+identify an effect for compliers near the cutoff:
+
+$$
+\tau_{FRD}=\frac{\lim_{x\downarrow0}E[Y\mid X=x]-\lim_{x\uparrow0}E[Y\mid X=x]}
+{\lim_{x\downarrow0}E[D\mid X=x]-\lim_{x\uparrow0}E[D\mid X=x]}.
+$$
+
+Use identical observations, weights and score controls for the numerator and
+denominator. Veteran status falls from left to right in the supplied score
+orientation; do not reverse only one jump. Exclusion concerns every other channel
+through which crossing the threshold can affect homeownership. Even a valid
+effect of veteran status is not automatically an isolated mortgage-subsidy effect.
+
+```{r}
+raw <- as.data.frame(qed_data("mortgages"))
+columns <- c("qob_minus_kw", "vet_wwko", "home_ownership")
+vet <- raw[complete.cases(raw[columns]) & !is.na(raw$qob_minus_kw) &
+             abs(raw$qob_minus_kw) < 12, columns]
+stopifnot(nrow(raw) == 214144, nrow(vet) == 56901)
+with(vet, c(left_scores=length(unique(qob_minus_kw[qob_minus_kw < 0])),
+            right_scores=length(unique(qob_minus_kw[qob_minus_kw >= 0]))))
+local_ratio <- function(h) {
+  d <- subset(vet, abs(qob_minus_kw) < h)
+  d$side <- as.integer(d$qob_minus_kw >= 0)
+  d$weight <- 1 - abs(d$qob_minus_kw)/h
+  first <- lm(vet_wwko ~ side*qob_minus_kw, data=d, weights=weight)
+  reduced <- lm(home_ownership ~ side*qob_minus_kw, data=d, weights=weight)
+  first_jump <- unname(coef(first)["side"])
+  reduced_jump <- unname(coef(reduced)["side"])
+  if (!is.finite(first_jump) || abs(first_jump) < 0.01) stop("Unusable first stage")
+  data.frame(h=h, first_stage=first_jump, reduced_form=reduced_jump,
+             conventional_ratio=reduced_jump/first_jump)
+}
+knitr::kable(do.call(rbind, lapply(c(6,9,12), local_ratio)), digits=4)
+fuzzy <- fit_rd(vet$home_ownership, vet$qob_minus_kw, h=12,
+                treatment=vet$vet_wwko)
+summary(fuzzy)
+```
+
+At 12 quarters, the first-stage jump is about -0.1213 and the outcome jump about
+-0.0226, yielding a conventional ratio near 0.1863, or 18.63 percentage points of
+homeownership probability. The fuzzy bias-corrected estimate is around 0.3093
+with an interval of approximately [0.1057, 0.5130]. The conventional ratio changes
+materially at 6 and 9 quarters. These are not interchangeable estimates.
+
+The first-stage cutoff of 0.01 in the code is a numerical safeguard, **not** a
+general weak-instrument test. Report first-stage uncertainty and use inference
+appropriate to weak identification when needed. Do not obtain IV standard errors
+by treating fitted treatment as an observed regressor in an ordinary second stage.
+The [fuzzy lab](../../labs/regression-discontinuity-fuzzy-lab.qmd) checks the ratio
+against weighted IV with the same design matrices.
+
+## 9. Respect coarse support and locality
+
+There are only 12 distinct birth-quarter scores on each side of zero in the widest
+window, despite tens of thousands of people. More records at the same score do
+not create observations arbitrarily close to the cutoff. The extrapolation and
+functional-form assumptions therefore deserve explicit discussion. Do not apply
+a continuous-score density test to these discrete quarters, or assume that
+clustering by quarter automatically fixes approximation bias.
+
+Finally, report the running-variable definition, treatment direction, cutoff,
+kernel, polynomial orders, $h$ and $b$, effective sample sizes, distinct score
+support, missingness rules, and both conventional and bias-aware results. Include
+plots, diagnostic evidence and sensitivity checks without using a checklist of
+large p-values as proof of validity. State who the local effect concerns and why
+it may not generalize far from the threshold. The [RDD reading map](regression-discontinuity-sources.qmd)
+connects these practical choices to the evaluation texts.
+
+## References

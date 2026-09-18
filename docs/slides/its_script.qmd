@@ -3,8 +3,6 @@ title: "Interrupted Time Series Presenter Script"
 subtitle: "Seatbelts workshop sequence"
 author: "Luke Heley"
 date: 4 August 2026
-bibliography:
-  - ../../evaluation-bibliography.bib
 format:
   html:
     toc: true

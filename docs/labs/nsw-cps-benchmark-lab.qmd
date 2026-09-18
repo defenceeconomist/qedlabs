@@ -11,7 +11,14 @@ execute:
 
 Use this page as a guided benchmark worksheet.
 
-[Download the R Jupyter notebook](notebooks/nsw-cps-benchmark-lab.ipynb){.cta-button download="nsw-cps-benchmark-lab.ipynb"}
+<!-- lab-downloads:start -->
+::: {.resource-links}
+[Quarto document](downloads/nsw-cps-benchmark-lab.qmd){download="nsw-cps-benchmark-lab.qmd"}
+[R Jupyter notebook](notebooks/nsw-cps-benchmark-lab.ipynb){download="nsw-cps-benchmark-lab.ipynb"}
+[Complete lab ZIP](downloads/nsw-cps-benchmark-lab.zip){download="nsw-cps-benchmark-lab.zip"}
+[Data and setup](data.qmd#nsw-cps-benchmark-lab)
+:::
+<!-- lab-downloads:end -->
 
 - Read the benchmark framing before running any model.
 - Run each design branch in order: raw, exact, CEM, entropy balancing.
@@ -89,8 +96,14 @@ Core setup:
 ## Step 1: Load Packages And Build Analysis Datasets
 
 ```{r}
+data_helpers <- c("data/load-data.R", "../data/load-data.R", "docs/labs/data/load-data.R")
+data_helpers <- data_helpers[file.exists(data_helpers)]
+if (!length(data_helpers)) stop("Extract the complete lab ZIP, including its data folder, before running.")
+source(data_helpers[[1]])
+```
+
+```{r}
 required_packages <- c(
-  "causaldata",
   "MatchIt",
   "WeightIt",
   "cobalt",
@@ -106,18 +119,18 @@ missing_packages <- required_packages[!vapply(
 )]
 
 if (length(missing_packages) > 0) {
-  install.packages(missing_packages, repos = "https://cloud.r-project.org")
+  stop("Install the documented R environment first; missing: ", paste(missing_packages, collapse=", "), call.=FALSE)
 }
 
 invisible(lapply(required_packages, library, character.only = TRUE))
 
-nsw <- causaldata::nsw_mixtape |>
+nsw <- qed_data("nsw_mixtape") |>
   mutate(
     treat = as.integer(treat),
     outcome = re78
   )
 
-cps <- causaldata::cps_mixtape |>
+cps <- qed_data("cps_mixtape") |>
   mutate(
     treat = as.integer(treat),
     outcome = re78

@@ -1,66 +1,92 @@
 ---
 title: "Notes"
 page-layout: full
+body-classes: resource-index
 toc: false
 ---
 
-<div class="landing-stack">
+<div class="resource-directory">
 
-::: {.landing-hero}
-<span class="hero-eyebrow">Method notes</span>
-
-# Start with the overview, then drop into sources
-
-This section collects the method notes and source-based reading pages that support the rest of the site. Use it to orient to a design, compare alternatives, and then move into specific source notes only when you need more detail.
-
-<div class="page-metadata">
-  <span>Method overviews</span>
-  <span>Source notes</span>
-  <span>Notes map</span>
-</div>
+::: {.directory-intro #start-with-the-overview-then-drop-into-sources}
+Quasi-experimental methods, their identifying assumptions, and the evidence behind them. Each method connects an overview to detailed source notes and applied examples.
 :::
 
-## Main Sections {#main-sections .section-heading}
+## Main Sections {#main-sections .directory-heading}
 
-<p class="section-intro">The section headers in the sidebar now serve as the overview pages for each method group.</p>
-
-::: {.section-grid}
-::: {.section-card}
-<span class="page-badge badge-overview">Overview</span>
+::: {.resource-list}
+::: {.resource-row}
+::: {.resource-summary}
+<span class="resource-meta">Overview</span>
 
 ### [Matching and Weighting](matching/matching-and-weighting.qmd)
+:::
+
+::: {.resource-body}
 
 Use this route for matching and weighting concepts, assumptions, diagnostics, and source-specific notes.
 :::
+:::
 
-::: {.section-card}
-<span class="page-badge badge-overview">Overview</span>
+::: {.resource-row}
+::: {.resource-summary}
+<span class="resource-meta">Overview</span>
 
 ### [Difference-in-Differences](did/difference-in-differences.qmd)
+:::
+
+::: {.resource-body}
 
 Use this route for canonical and staggered-adoption DiD, design checks, modern estimators, and source-specific notes.
 :::
+:::
 
-::: {.section-card}
-<span class="page-badge badge-overview">Overview</span>
+::: {.resource-row}
+::: {.resource-summary}
+<span class="resource-meta">Overview</span>
 
 ### [Synthetic Control](scm/synthetic-control.qmd)
+:::
+
+::: {.resource-body}
 
 Use this route for synthetic-control concepts, teaching data, and source mapping.
 :::
+:::
 
-::: {.section-card}
-<span class="page-badge badge-overview">Overview</span>
+::: {.resource-row}
+::: {.resource-summary}
+<span class="resource-meta">Overview</span>
+
+### [Regression Discontinuity](other-methods/regression-discontinuity.qmd)
+:::
+
+::: {.resource-body}
+
+Use this route for threshold-based assignment, sharp and fuzzy RD, diagnostics, and notes from six evaluation texts.
+:::
+:::
+
+::: {.resource-row}
+::: {.resource-summary}
+<span class="resource-meta">Overview</span>
 
 ### [Other Methods](other-methods/index.qmd)
-
-Use this route for regression discontinuity, interrupted time series, and cross-method comparison.
-:::
 :::
 
-## Notes Map {#notes-map .section-heading}
+::: {.resource-body}
 
-<p class="section-intro">Internal pages are limited to the Notes section. External nodes show the sources those notes link to.</p>
+Use this route for interrupted time series, cross-method comparison, and further design guidance.
+:::
+:::
+:::
+
+## Practical Guides {.directory-heading}
+
+[Interrupted time series](other-methods/how-to-do-interrupted-time-series.qmd) ·
+[Difference-in-differences](did/how-to-do-difference-in-differences.qmd) ·
+[Regression discontinuity](rdd/how-to-do-regression-discontinuity.qmd)
+
+## Notes Map {#notes-map .directory-heading}
 
 
 ```{=html}
@@ -84,7 +110,6 @@ Use this route for regression discontinuity, interrupted time series, and cross-
   <div class="link-graph-legend">
     <span class="link-graph-legend-item link-graph-legend-item-internal"><span class="kind-pill internal">internal</span> Notes pages</span>
     <span class="link-graph-legend-item link-graph-legend-item-external"><span class="kind-pill external">external</span> Linked external sources</span>
-    <span class="link-graph-legend-note">Hover or click a node to highlight its links, then drag to reposition or scroll to zoom.</span>
   </div>
   <div id="link-graph-root" class="link-graph-root">
     <div class="link-graph-canvas-wrap">

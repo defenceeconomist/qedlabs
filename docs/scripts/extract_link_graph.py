@@ -11,7 +11,7 @@ import yaml
 
 
 DEFAULT_ROOT = Path(__file__).resolve().parent.parent
-EXCLUDE_PARTS = {".quarto", "_site", "site_libs", "assets", "data", "scripts"}
+EXCLUDE_PARTS = {".quarto", "_site", "site_libs", "assets", "data", "scripts", "downloads"}
 MARKDOWN_LINK_RE = re.compile(r"\[[^\]]+\]\(([^)]+)\)")
 URL_RE = re.compile(r"https?://[^\s<>{}\"')]+")
 CITATION_RE = re.compile(r"(?<![\w/])@([A-Za-z0-9_:.+-]+)")

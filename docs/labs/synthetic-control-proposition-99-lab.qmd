@@ -11,7 +11,14 @@ execute:
 
 Use this page as the first full SCM application lab.
 
-[Download the R Jupyter notebook](notebooks/synthetic-control-proposition-99-lab.ipynb){.cta-button download="synthetic-control-proposition-99-lab.ipynb"}
+<!-- lab-downloads:start -->
+::: {.resource-links}
+[Quarto document](downloads/synthetic-control-proposition-99-lab.qmd){download="synthetic-control-proposition-99-lab.qmd"}
+[R Jupyter notebook](notebooks/synthetic-control-proposition-99-lab.ipynb){download="synthetic-control-proposition-99-lab.ipynb"}
+[Complete lab ZIP](downloads/synthetic-control-proposition-99-lab.zip){download="synthetic-control-proposition-99-lab.zip"}
+[Data and setup](data.qmd#synthetic-control-proposition-99-lab)
+:::
+<!-- lab-downloads:end -->
 
 - Keep the [Synthetic Control](../notes/scm/synthetic-control.qmd) overview open in another tab.
 - Use the [California Proposition 99 notes](../notes/scm/california-tobacco-synthetic-control-notes.qmd) when you want the paper-level rationale behind each design step.
@@ -55,6 +62,13 @@ By the end of the lab, you should be able to report:
 ## Step 1: Load Packages And Inspect The Panel
 
 ```{r}
+data_helpers <- c("data/load-data.R", "../data/load-data.R", "docs/labs/data/load-data.R")
+data_helpers <- data_helpers[file.exists(data_helpers)]
+if (!length(data_helpers)) stop("Extract the complete lab ZIP, including its data folder, before running.")
+source(data_helpers[[1]])
+```
+
+```{r}
 required_packages <- c(
   "tidysynth",
   "dplyr",
@@ -71,12 +85,12 @@ missing_packages <- required_packages[!vapply(
 )]
 
 if (length(missing_packages) > 0) {
-  install.packages(missing_packages, repos = "https://cloud.r-project.org")
+  stop("Install the documented R environment first; missing: ", paste(missing_packages, collapse=", "), call.=FALSE)
 }
 
 invisible(lapply(required_packages, library, character.only = TRUE))
 
-data("smoking", package = "tidysynth")
+smoking <- qed_data("smoking")
 
 smoking |>
   glimpse()

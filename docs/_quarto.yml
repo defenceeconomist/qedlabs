@@ -13,6 +13,9 @@ project:
     - data/notes_link_graph_payload.json
     - assets/**
     - labs/notebooks/*.ipynb
+    - labs/downloads/**
+    - labs/data/**
+    - labs/offline-setup.md
     - labs/reproducibility/**
 
 website:
@@ -27,8 +30,6 @@ website:
         text: Notes
       - href: labs/index.qmd
         text: Labs
-      - href: slides/index.qmd
-        text: Slides
     right:
       - icon: github
         href: https://github.com/defenceeconomist/qedlabs
@@ -66,6 +67,8 @@ website:
         - section: Difference-in-Differences
           href: notes/did/difference-in-differences.qmd
           contents:
+            - href: notes/did/how-to-do-difference-in-differences.qmd
+              text: How to Do Difference-in-Differences
             - href: notes/did/difference-in-differences-sources.qmd
               text: Difference-in-Differences Sources
             - href: notes/did/difference-in-differences-applications.qmd
@@ -123,13 +126,32 @@ website:
               text: Mixtape Sessions Synthetic Control
             - href: notes/scm/synthetic-controls-methods-practice-notes.qmd
               text: "Synthetic Controls: Methods and Practice"
+        - section: Regression Discontinuity
+          href: notes/other-methods/regression-discontinuity.qmd
+          contents:
+            - href: notes/rdd/how-to-do-regression-discontinuity.qmd
+              text: How to Do Regression Discontinuity
+            - href: notes/rdd/regression-discontinuity-sources.qmd
+              text: RDD Sources and Reading Map
+            - href: notes/rdd/gertler-regression-discontinuity-notes.qmd
+              text: Gertler RDD
+            - href: notes/rdd/mixtape-regression-discontinuity-notes.qmd
+              text: Mixtape RDD
+            - href: notes/rdd/effectbook-regression-discontinuity-notes.qmd
+              text: The Effect RDD
+            - href: notes/rdd/mostly-harmless-regression-discontinuity-notes.qmd
+              text: Angrist–Pischke Sharp and Fuzzy RD
+            - href: notes/rdd/rossi-regression-discontinuity-notes.qmd
+              text: Rossi Cutting-Point Designs
+            - href: notes/rdd/henry-regression-discontinuity-notes.qmd
+              text: Henry Comparison-Group Designs
         - section: Other Methods
           href: notes/other-methods/index.qmd
           contents:
-            - href: notes/other-methods/regression-discontinuity.qmd
-              text: Regression Discontinuity
             - href: notes/other-methods/interrupted-time-series.qmd
               text: Interrupted Time Series
+            - href: notes/other-methods/how-to-do-interrupted-time-series.qmd
+              text: How to Do Interrupted Time Series
             - href: notes/other-methods/comparing-methods.qmd
               text: Comparing Methods
             - href: notes/other-methods/choosing-a-method.qmd
@@ -145,8 +167,14 @@ website:
       contents:
         - href: labs/index.qmd
           text: Labs Overview
+        - href: labs/data.qmd
+          text: Data and Offline Setup
         - section: Matching
           contents:
+            - href: slides/why_matching.qmd
+              text: Why We Do Matching Slides
+            - href: slides/why_matching_script.qmd
+              text: Matching Presenter Notes
             - href: labs/matching-methods-report.qmd
               text: Matching Methods Report
             - href: labs/lalonde-matching-lab.qmd
@@ -159,22 +187,34 @@ website:
               text: HISP IE Practice Lab
         - section: Difference-in-Differences
           contents:
+            - href: slides/did.qmd
+              text: Difference-in-Differences Slides
+            - href: slides/did_script.qmd
+              text: DiD Presenter Notes
             - href: labs/difference-in-differences-foundations-lab.qmd
               text: DiD Foundations With Kentucky Workers' Compensation
             - href: labs/difference-in-differences-staggered-diagnostics-lab.qmd
               text: Staggered Adoption and TWFE Diagnostics
             - href: labs/difference-in-differences-modern-estimators-lab.qmd
               text: Modern Multi-Period DiD
-            - href: labs/difference-in-differences-foundations-python-lab.qmd
-              text: Python DiD Foundations
-            - href: labs/difference-in-differences-staggered-diagnostics-python-lab.qmd
-              text: Python Staggered Diagnostics
-            - href: labs/difference-in-differences-modern-estimators-python-lab.qmd
-              text: Python Modern DiD
             - href: labs/difference-in-differences-reproducibility.qmd
               text: DiD Setup and Reproduction Record
+        - section: Regression Discontinuity
+          contents:
+            - href: labs/regression-discontinuity-foundations-lab.qmd
+              text: Sharp RD Foundations (R)
+            - href: labs/regression-discontinuity-diagnostics-lab.qmd
+              text: RD Diagnostics (R)
+            - href: labs/regression-discontinuity-fuzzy-lab.qmd
+              text: Fuzzy RD and Local IV (R)
+            - href: labs/regression-discontinuity-reproducibility.qmd
+              text: RDD Setup and Reproduction Record
         - section: Synthetic Control Design
           contents:
+            - href: slides/scm.qmd
+              text: Synthetic Control Slides
+            - href: slides/scm_script.qmd
+              text: Synthetic Control Presenter Notes
             - href: labs/synthetic-control-methods-report.qmd
               text: Synthetic Control Methods Report
             - href: labs/synthetic-control-mechanics-lab.qmd
@@ -189,39 +229,25 @@ website:
               text: Synthetic Control Donor Pool Lab
         - section: Interrupted Time Series
           contents:
+            - href: slides/its.qmd
+              text: Interrupted Time Series Slides
+            - href: slides/its_script.qmd
+              text: ITS Presenter Notes
             - href: labs/interrupted-time-series-mechanics-lab.qmd
               text: ITS Foundations With Seatbelts
             - href: labs/interrupted-time-series-design-diagnostics-lab.qmd
               text: Seatbelt Law Design and Robustness
             - href: labs/interrupted-time-series-counterfactual-validation-lab.qmd
               text: ITS Counterfactual Validation Lab
-    - id: slides
-      title: "Slides"
-      style: docked
-      search: true
-      contents:
-        - href: slides/index.qmd
-          text: Slides Overview
-        - href: slides/why_matching.qmd
-          text: Why We Do Matching
-        - href: slides/why_matching_script.qmd
-          text: Why Matching Presenter Script
-        - href: slides/did.qmd
-          text: Difference-in-Differences Slides
-        - href: slides/did_script.qmd
-          text: DiD Presenter Script
-        - href: slides/scm.qmd
-          text: Synthetic Control Slides
-        - href: slides/scm_script.qmd
-          text: Synthetic Control Presenter Script
-        - href: slides/its.qmd
-          text: Interrupted Time Series Slides
-        - href: slides/its_script.qmd
-          text: ITS Presenter Script
 
 format:
   html:
     theme: cosmo
+    grid:
+      body-width: 760px
+      sidebar-width: 250px
+      margin-width: 220px
+      gutter-width: 1.5rem
     css:
       - assets/css/site.css
       - assets/css/link_network.css

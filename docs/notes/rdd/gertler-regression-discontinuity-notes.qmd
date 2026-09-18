@@ -1,0 +1,41 @@
+---
+title: "Gertler et al.: Regression Discontinuity Design"
+subtitle: "Impact Evaluation in Practice, second edition, Chapter 6"
+date: 2026-09-18
+---
+
+## Source and reading locations
+
+These notes summarize the 2016 second edition [@gertler2016ch6rdd]. Chapter 6 spans PDF pages 143–157 (printed pages 113–127). Start with [eligibility indices](https://portal.heley.uk/researchlibrary/books/impact-evaluation-in-practice/read/impact-evaluation-in-practice:evaluating-programs-that-use-an-eligibility-index), then read the fuzzy-design, validity, limitations, and checklist sections. The [source map](regression-discontinuity-sources.qmd) records retrieval details.
+
+## Begin with programme rules
+
+The chapter starts with programmes that rank potential beneficiaries using an eligibility index. A poverty score, test score, or farm-size measure determines access at a known cutoff. The comparison is between units close to that boundary, rather than all beneficiaries and all nonbeneficiaries.
+
+The fertilizer illustration uses a 50-hectare threshold: farms just below receive a subsidy, while those just above do not. Farm size can affect output smoothly. Identification depends on there being no other reason for output to jump at that exact threshold.
+
+Four requirements organize the chapter: an adequately fine ranking variable; a known cutoff; no competing programme using the same cutoff if one wants an isolated effect; and resistance to selective score manipulation. A few unordered categories cannot supply the local comparison described here.
+
+## The HISP example
+
+The Health Insurance Subsidy Program example uses a poverty index from 20 to 100, with eligibility at 58 or below. The chapter checks the score distribution and actual enrolment before estimating effects. In this teaching example, all eligible households enrol and ineligible households do not, giving a sharp design.
+
+The subsequent health-expenditure discontinuity concerns households around the poverty threshold. It cannot be applied automatically to the poorest households or treated as the effect of national expansion. The chapter asks readers to distinguish that local effect from the randomized-assignment result.
+
+Treatment is on the **low-score side**, so a right-minus-left outcome contrast needs its sign interpreted carefully. No numerical HISP estimate is reproduced here: the library's figures and table have separate media records, and the design argument does not depend on copying an unchecked table value.
+
+## Imperfect compliance changes the target
+
+If eligible units decline treatment or ineligible units gain access, the design is fuzzy. Threshold-based eligibility becomes an instrument for receipt, with the additional IV assumptions discussed in the book's preceding chapter.
+
+The effect is local twice over: it concerns units near the cutoff and, within that population, those whose participation responds to eligibility. It is not an effect for always-participants or never-participants. The [overview](../other-methods/regression-discontinuity.qmd) states the first-stage, exclusion and monotonicity conditions explicitly.
+
+## Validity and policy relevance
+
+The chapter recommends checking score bunching, baseline relationships, compliance, and other programmes sharing the threshold. Institutional investigation remains necessary: a density plot cannot reveal every administrative exception or competing intervention.
+
+The local estimand suits a question about expanding or contracting eligibility at the margin. It is less suited to deciding whether the entire programme should exist. That is a mismatch between the question and the estimand, not necessarily a flaw in estimation.
+
+## Reading alongside later methods
+
+Use Gertler to teach the allocation story, local comparison and policy interpretation. Its discussion of wider bandwidths and polynomial alternatives is introductory. Pair it with [Cunningham](mixtape-regression-discontinuity-notes.qmd) and [Huntington-Klein](effectbook-regression-discontinuity-notes.qmd) for local estimation and bias-aware inference, rather than making high-order polynomial experimentation the default analysis plan.

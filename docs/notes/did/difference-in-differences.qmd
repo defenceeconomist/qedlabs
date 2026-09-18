@@ -4,6 +4,8 @@ aliases:
   - /notes/other-methods/difference-in-differences.html
 ---
 
+[Practical guide: how to do difference-in-differences](how-to-do-difference-in-differences.qmd)
+
 # Scope
 
 Difference-in-differences (`DiD`) estimates a causal effect by comparing how an outcome changes for a treated group with how it changes for a credible comparison group. Its attraction is not the subtraction itself. It is the research design claim that the comparison group's change represents the treated group's unobserved change without treatment [@gertler2016ch7did; @cunningham2021did; @huntingtonklein2021did].
@@ -194,4 +196,4 @@ DiD is credible when the comparison trend is credible. In the canonical design, 
 | Imputation | Untreated model fitted using untreated observations | Outcome model, supported targets, aggregation | Extrapolation and model identification |
 | HonestDiD | Sensitivity applied to an appropriate coefficient vector | Target, covariance, violation class and magnitude | Not an estimator that repairs arbitrary design failures |
 
-Use the [application catalogue](difference-in-differences-applications.qmd) to choose paired R/Python exercises and the [reproduction record](../../labs/difference-in-differences-reproducibility.qmd) to distinguish validated results from proposed extensions.
+Use the [application catalogue](difference-in-differences-applications.qmd) to choose R exercises and the [reproduction record](../../labs/difference-in-differences-reproducibility.qmd) to distinguish validated results from proposed extensions.

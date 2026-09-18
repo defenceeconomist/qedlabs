@@ -1,0 +1,1500 @@
+{
+  "lalonde": {
+    "file": "lalonde.rds",
+    "sha256": "430235420d0c3bd8f6b0dceb14f6d4c49e72b00d9d8b1b7c6883b6c20273deb4",
+    "rows": 614,
+    "columns": ["treat", "age", "educ", "race", "married", "nodegree", "re74", "re75", "re78"],
+    "class": "data.frame",
+    "package": "MatchIt",
+    "package_version": "4.7.2",
+    "license": "GPL (>= 2)",
+    "source": "https://kosukeimai.github.io/MatchIt/,\nhttps://github.com/kosukeimai/MatchIt",
+    "original_sha256": null,
+    "variables": {
+      "treat": {
+        "class": "integer",
+        "missing": 0
+      },
+      "age": {
+        "class": "integer",
+        "missing": 0
+      },
+      "educ": {
+        "class": "integer",
+        "missing": 0
+      },
+      "race": {
+        "class": "factor",
+        "missing": 0
+      },
+      "married": {
+        "class": "integer",
+        "missing": 0
+      },
+      "nodegree": {
+        "class": "integer",
+        "missing": 0
+      },
+      "re74": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "re75": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "re78": {
+        "class": "numeric",
+        "missing": 0
+      }
+    }
+  },
+  "black_politicians": {
+    "file": "black_politicians.rds",
+    "sha256": "8a52535b3b7884f5786fd9b8f188319dfc991b43efadcd8a3dd1992adea3b3dd",
+    "rows": 5593,
+    "columns": ["leg_black", "treat_out", "responded", "totalpop", "medianhhincom", "black_medianhh", "white_medianhh", "blackpercent", "statessquireindex", "nonblacknonwhite", "urbanpercent", "leg_senator", "leg_democrat", "south"],
+    "class": ["tbl_df", "tbl", "data.frame"],
+    "package": "causaldata",
+    "package_version": "0.1.4",
+    "license": "MIT + file LICENSE",
+    "source": "https://github.com/NickCH-K/causaldata",
+    "original_sha256": null,
+    "variables": {
+      "leg_black": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "treat_out": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "responded": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "totalpop": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "medianhhincom": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "black_medianhh": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "white_medianhh": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "blackpercent": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "statessquireindex": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "nonblacknonwhite": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "urbanpercent": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "leg_senator": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "leg_democrat": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "south": {
+        "class": "numeric",
+        "missing": 0
+      }
+    }
+  },
+  "nsw_mixtape": {
+    "file": "nsw_mixtape.rds",
+    "sha256": "13c9f0b2717a980c6c0f9a9080e8e7ae64c5fc412320cab3ceceb9c061837baa",
+    "rows": 445,
+    "columns": ["data_id", "treat", "age", "educ", "black", "hisp", "marr", "nodegree", "re74", "re75", "re78"],
+    "class": ["tbl_df", "tbl", "data.frame"],
+    "package": "causaldata",
+    "package_version": "0.1.4",
+    "license": "MIT + file LICENSE",
+    "source": "https://github.com/NickCH-K/causaldata",
+    "original_sha256": null,
+    "variables": {
+      "data_id": {
+        "class": "character",
+        "missing": 0
+      },
+      "treat": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "age": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "educ": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "black": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "hisp": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "marr": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "nodegree": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "re74": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "re75": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "re78": {
+        "class": "numeric",
+        "missing": 0
+      }
+    }
+  },
+  "cps_mixtape": {
+    "file": "cps_mixtape.rds",
+    "sha256": "5c07e2553b339787d5755af1258f58c537b09eedee4645ed1069a80717887e91",
+    "rows": 15992,
+    "columns": ["data_id", "treat", "age", "educ", "black", "hisp", "marr", "nodegree", "re74", "re75", "re78"],
+    "class": ["tbl_df", "tbl", "data.frame"],
+    "package": "causaldata",
+    "package_version": "0.1.4",
+    "license": "MIT + file LICENSE",
+    "source": "https://github.com/NickCH-K/causaldata",
+    "original_sha256": null,
+    "variables": {
+      "data_id": {
+        "class": "character",
+        "missing": 0
+      },
+      "treat": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "age": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "educ": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "black": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "hisp": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "marr": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "nodegree": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "re74": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "re75": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "re78": {
+        "class": "numeric",
+        "missing": 0
+      }
+    }
+  },
+  "Seatbelts": {
+    "file": "Seatbelts.rds",
+    "sha256": "b9e18c043e2a8655bedc4bc93eb749073174ae174140f2bae6e85ef7071202a7",
+    "rows": 192,
+    "columns": ["DriversKilled", "drivers", "front", "rear", "kms", "PetrolPrice", "VanKilled", "law"],
+    "class": ["mts", "ts", "matrix", "array"],
+    "package": "datasets",
+    "package_version": "4.5.1",
+    "license": "Part of R 4.5.1",
+    "source": "https://cran.r-project.org/package=datasets",
+    "original_sha256": null,
+    "variables": {
+      "DriversKilled": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "drivers": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "front": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "rear": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "kms": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "PetrolPrice": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "VanKilled": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "law": {
+        "class": "numeric",
+        "missing": 0
+      }
+    }
+  },
+  "synth.data": {
+    "file": "synth.data.rds",
+    "sha256": "47f629894e2fa2f3715a623c81924969dbbc1908078b41ce48d159cb57e6e360",
+    "rows": 168,
+    "columns": ["unit.num", "year", "name", "Y", "X1", "X2", "X3"],
+    "class": "data.frame",
+    "package": "Synth",
+    "package_version": "1.1-10",
+    "license": "GPL (>= 2)",
+    "source": "https://web.stanford.edu/~jhain/",
+    "original_sha256": null,
+    "variables": {
+      "unit.num": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "year": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "name": {
+        "class": "character",
+        "missing": 0
+      },
+      "Y": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "X1": {
+        "class": "numeric",
+        "missing": 96
+      },
+      "X2": {
+        "class": "numeric",
+        "missing": 24
+      },
+      "X3": {
+        "class": "numeric",
+        "missing": 56
+      }
+    }
+  },
+  "smoking": {
+    "file": "smoking.rds",
+    "sha256": "7b0d79021a4b7566d079ef530b5d93a7bacb143eb172b8d860368f833d93414b",
+    "rows": 1209,
+    "columns": ["state", "year", "cigsale", "lnincome", "beer", "age15to24", "retprice"],
+    "class": ["tbl_df", "tbl", "data.frame"],
+    "package": "tidysynth",
+    "package_version": "0.2.1",
+    "license": "MIT + file LICENSE",
+    "source": "https://cran.r-project.org/package=tidysynth",
+    "original_sha256": null,
+    "variables": {
+      "state": {
+        "class": "character",
+        "missing": 0
+      },
+      "year": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "cigsale": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "lnincome": {
+        "class": "numeric",
+        "missing": 195
+      },
+      "beer": {
+        "class": "numeric",
+        "missing": 663
+      },
+      "age15to24": {
+        "class": "numeric",
+        "missing": 390
+      },
+      "retprice": {
+        "class": "numeric",
+        "missing": 0
+      }
+    }
+  },
+  "kansas": {
+    "file": "kansas.rds",
+    "sha256": "1b1e01bc5d5f657be28f16a1f8e0e3ce1363d003c0536809a7839135b050ec3e",
+    "rows": 5250,
+    "columns": ["fips", "year", "qtr", "state", "gdp", "revenuepop", "rev_state_total", "rev_local_total", "popestimate", "qtrly_estabs_count", "month1_emplvl", "month2_emplvl", "month3_emplvl", "total_qtrly_wages", "taxable_qtrly_wages", "avg_wkly_wage", "year_qtr", "treated", "gdpcapita", "lngdp", "lngdpcapita", "revstatecapita", "revlocalcapita", "emplvl1capita", "emplvl2capita", "emplvl3capita", "emplvlcapita", "totalwagescapita", "taxwagescapita", "avgwklywagecapita", "estabscapita", "abb"],
+    "class": ["tbl_df", "tbl", "data.frame"],
+    "package": "augsynth",
+    "package_version": "0.2.0",
+    "license": "MIT + file LICENSE",
+    "source": "https://cran.r-project.org/package=augsynth",
+    "original_sha256": null,
+    "variables": {
+      "fips": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "year": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "qtr": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "state": {
+        "class": "character",
+        "missing": 0
+      },
+      "gdp": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "revenuepop": {
+        "class": "numeric",
+        "missing": 2250
+      },
+      "rev_state_total": {
+        "class": "numeric",
+        "missing": 2850
+      },
+      "rev_local_total": {
+        "class": "numeric",
+        "missing": 2850
+      },
+      "popestimate": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "qtrly_estabs_count": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "month1_emplvl": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "month2_emplvl": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "month3_emplvl": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "total_qtrly_wages": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "taxable_qtrly_wages": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "avg_wkly_wage": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "year_qtr": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "treated": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "gdpcapita": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "lngdp": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "lngdpcapita": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "revstatecapita": {
+        "class": "numeric",
+        "missing": 2850
+      },
+      "revlocalcapita": {
+        "class": "numeric",
+        "missing": 2850
+      },
+      "emplvl1capita": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "emplvl2capita": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "emplvl3capita": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "emplvlcapita": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "totalwagescapita": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "taxwagescapita": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "avgwklywagecapita": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "estabscapita": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "abb": {
+        "class": "character",
+        "missing": 0
+      }
+    }
+  },
+  "injury": {
+    "file": "injury.rds",
+    "sha256": "0f52ce1933cd9c38e4f6149ca0684fd6f56ad797a56a8797b08f53f1f84c26bb",
+    "rows": 7150,
+    "columns": ["durat", "afchnge", "highearn", "male", "married", "hosp", "indust", "injtype", "age", "prewage", "totmed", "injdes", "benefit", "ky", "mi", "ldurat", "afhigh", "lprewage", "lage", "ltotmed", "head", "neck", "upextr", "trunk", "lowback", "lowextr", "occdis", "manuf", "construc", "highlpre"],
+    "class": "data.frame",
+    "package": "wooldridge",
+    "package_version": "1.4-7",
+    "license": "GPL-3",
+    "source": "https://raw.githubusercontent.com/cran/wooldridge/5c16676c8c8e6685985d98661c55088c878902be/data/injury.RData",
+    "original_sha256": "ec9d7cb7f50140fc64756856b0ad5a76151d13d6ec65ca2c66118df1eea3748f",
+    "variables": {
+      "durat": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "afchnge": {
+        "class": "integer",
+        "missing": 0
+      },
+      "highearn": {
+        "class": "integer",
+        "missing": 0
+      },
+      "male": {
+        "class": "integer",
+        "missing": 16
+      },
+      "married": {
+        "class": "integer",
+        "missing": 297
+      },
+      "hosp": {
+        "class": "integer",
+        "missing": 0
+      },
+      "indust": {
+        "class": "integer",
+        "missing": 25
+      },
+      "injtype": {
+        "class": "integer",
+        "missing": 0
+      },
+      "age": {
+        "class": "integer",
+        "missing": 4
+      },
+      "prewage": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "totmed": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "injdes": {
+        "class": "integer",
+        "missing": 0
+      },
+      "benefit": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "ky": {
+        "class": "integer",
+        "missing": 0
+      },
+      "mi": {
+        "class": "integer",
+        "missing": 0
+      },
+      "ldurat": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "afhigh": {
+        "class": "integer",
+        "missing": 0
+      },
+      "lprewage": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "lage": {
+        "class": "numeric",
+        "missing": 4
+      },
+      "ltotmed": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "head": {
+        "class": "integer",
+        "missing": 0
+      },
+      "neck": {
+        "class": "integer",
+        "missing": 0
+      },
+      "upextr": {
+        "class": "integer",
+        "missing": 0
+      },
+      "trunk": {
+        "class": "integer",
+        "missing": 0
+      },
+      "lowback": {
+        "class": "integer",
+        "missing": 0
+      },
+      "lowextr": {
+        "class": "integer",
+        "missing": 0
+      },
+      "occdis": {
+        "class": "integer",
+        "missing": 0
+      },
+      "manuf": {
+        "class": "integer",
+        "missing": 25
+      },
+      "construc": {
+        "class": "integer",
+        "missing": 25
+      },
+      "highlpre": {
+        "class": "numeric",
+        "missing": 0
+      }
+    }
+  },
+  "castle": {
+    "file": "castle.rds",
+    "sha256": "6e21efacfca19e408a3b33b92d57cf39d42ff3a2f21348b9ec9084bbb0443fb7",
+    "rows": 550,
+    "columns": ["year", "sid", "robbery_gun_r", "jhcitizen_c", "jhpolice_c", "homicide", "robbery", "assault", "burglary", "larceny", "motor", "murder", "unemployrt", "blackm_15_24", "whitem_15_24", "blackm_25_44", "whitem_25_44", "poverty", "r20001", "r20002", "r20003", "r20004", "r20011", "r20012", "r20013", "r20014", "r20021", "r20022", "r20023", "r20024", "r20031", "r20032", "r20033", "r20034", "r20041", "r20042", "r20043", "r20044", "r20051", "r20052", "r20053", "r20054", "r20061", "r20062", "r20063", "r20064", "r20071", "r20072", "r20073", "r20074", "r20081", "r20082", "r20083", "r20084", "r20091", "r20092", "r20093", "r20094", "r20101", "r20102", "r20103", "r20104", "trend_1", "trend_2", "trend_3", "trend_4", "trend_5", "trend_6", "trend_7", "trend_8", "trend_9", "trend_10", "trend_11", "trend_12", "trend_13", "trend_14", "trend_15", "trend_16", "trend_17", "trend_18", "trend_19", "trend_20", "trend_21", "trend_22", "trend_23", "trend_24", "trend_25", "trend_26", "trend_27", "trend_28", "trend_29", "trend_30", "trend_31", "trend_32", "trend_33", "trend_34", "trend_35", "trend_36", "trend_37", "trend_38", "trend_39", "trend_40", "trend_41", "trend_42", "trend_43", "trend_44", "trend_45", "trend_46", "trend_47", "trend_48", "trend_49", "trend_50", "trend_51", "l_homicide", "l_larceny", "l_motor", "l_police", "l_income", "l_prisoner", "l_lagprisoner", "l_exp_subsidy", "l_exp_pubwelfare", "post", "lead1", "lead2", "lead3", "lead4", "lead5", "lead6", "lead7", "lead8", "lead9", "lag0", "lag1", "lag2", "lag3", "lag4", "lag5", "popwt"],
+    "class": ["tbl_df", "tbl", "data.frame"],
+    "package": "causaldata",
+    "package_version": "0.1.4",
+    "license": "MIT + file LICENSE",
+    "source": "https://raw.githubusercontent.com/cran/causaldata/6d25e70297812a2e89a1a20e3bc24b32f6d3fbaf/data/castle.rda",
+    "original_sha256": "d7e50add4a642a1320f254e96cab436a19d0f2d9f0434632c511a8f05de8a355",
+    "variables": {
+      "year": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "sid": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "robbery_gun_r": {
+        "class": "numeric",
+        "missing": 6
+      },
+      "jhcitizen_c": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "jhpolice_c": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "homicide": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "robbery": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "assault": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "burglary": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "larceny": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "motor": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "murder": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "unemployrt": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "blackm_15_24": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "whitem_15_24": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "blackm_25_44": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "whitem_25_44": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "poverty": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "r20001": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "r20002": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "r20003": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "r20004": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "r20011": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "r20012": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "r20013": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "r20014": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "r20021": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "r20022": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "r20023": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "r20024": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "r20031": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "r20032": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "r20033": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "r20034": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "r20041": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "r20042": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "r20043": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "r20044": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "r20051": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "r20052": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "r20053": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "r20054": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "r20061": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "r20062": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "r20063": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "r20064": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "r20071": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "r20072": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "r20073": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "r20074": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "r20081": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "r20082": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "r20083": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "r20084": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "r20091": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "r20092": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "r20093": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "r20094": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "r20101": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "r20102": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "r20103": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "r20104": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "trend_1": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "trend_2": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "trend_3": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "trend_4": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "trend_5": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "trend_6": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "trend_7": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "trend_8": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "trend_9": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "trend_10": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "trend_11": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "trend_12": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "trend_13": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "trend_14": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "trend_15": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "trend_16": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "trend_17": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "trend_18": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "trend_19": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "trend_20": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "trend_21": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "trend_22": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "trend_23": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "trend_24": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "trend_25": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "trend_26": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "trend_27": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "trend_28": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "trend_29": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "trend_30": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "trend_31": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "trend_32": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "trend_33": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "trend_34": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "trend_35": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "trend_36": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "trend_37": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "trend_38": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "trend_39": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "trend_40": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "trend_41": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "trend_42": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "trend_43": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "trend_44": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "trend_45": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "trend_46": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "trend_47": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "trend_48": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "trend_49": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "trend_50": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "trend_51": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "l_homicide": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "l_larceny": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "l_motor": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "l_police": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "l_income": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "l_prisoner": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "l_lagprisoner": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "l_exp_subsidy": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "l_exp_pubwelfare": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "post": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "lead1": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "lead2": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "lead3": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "lead4": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "lead5": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "lead6": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "lead7": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "lead8": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "lead9": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "lag0": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "lag1": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "lag2": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "lag3": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "lag4": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "lag5": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "popwt": {
+        "class": "numeric",
+        "missing": 0
+      }
+    }
+  },
+  "mpdta": {
+    "file": "mpdta.rds",
+    "sha256": "a06c334dd97912a85df5c2aa69f5df7785ab6b4baaade5596ab6221d8968a421",
+    "rows": 2500,
+    "columns": ["year", "countyreal", "lpop", "lemp", "first.treat", "treat"],
+    "class": "data.frame",
+    "package": "did",
+    "package_version": "2.5.1",
+    "license": "GPL-3",
+    "source": "https://raw.githubusercontent.com/cran/did/453a1be859411edc1c8933891940cb3a570d7095/data/mpdta.rda",
+    "original_sha256": "0be3bc5eaaedaa50e047deaf45ad0e193e7210df1644103c63a6c1baa75965d4",
+    "variables": {
+      "year": {
+        "class": "integer",
+        "missing": 0
+      },
+      "countyreal": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "lpop": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "lemp": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "first.treat": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "treat": {
+        "class": "numeric",
+        "missing": 0
+      }
+    }
+  },
+  "gov_transfers": {
+    "file": "gov_transfers.rds",
+    "sha256": "c9a824c483f34e75f138ba3a538358e2dcf9ccf3e081fe10df48655e45a99878",
+    "rows": 1948,
+    "columns": ["Income_Centered", "Education", "Age", "Participation", "Support"],
+    "class": ["spec_tbl_df", "tbl_df", "tbl", "data.frame"],
+    "package": "causaldata",
+    "package_version": "0.1.4",
+    "license": "MIT + file LICENSE",
+    "source": "https://github.com/NickCH-K/causaldata",
+    "original_sha256": "9606f45afced94c73bbefe107523bfea559671e18cf9110877650d4245692592",
+    "variables": {
+      "Income_Centered": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "Education": {
+        "class": "numeric",
+        "missing": 51
+      },
+      "Age": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "Participation": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "Support": {
+        "class": "numeric",
+        "missing": 0
+      }
+    }
+  },
+  "gov_transfers_density": {
+    "file": "gov_transfers_density.rds",
+    "sha256": "89952b79bf65171d183e333d551dcb9709c5473ee5320a2940da8572dd662f55",
+    "rows": 52549,
+    "columns": "Income_Centered",
+    "class": ["spec_tbl_df", "tbl_df", "tbl", "data.frame"],
+    "package": "causaldata",
+    "package_version": "0.1.4",
+    "license": "MIT + file LICENSE",
+    "source": "https://github.com/NickCH-K/causaldata",
+    "original_sha256": "fcbe11a89cab9d5d9faa81cecc7a0116badb4a022e39163fb2ea7253a3eb65dd",
+    "variables": {
+      "Income_Centered": {
+        "class": "numeric",
+        "missing": 0
+      }
+    }
+  },
+  "mortgages": {
+    "file": "mortgages.rds",
+    "sha256": "fa9f86907ca56c81a0a92f9cf912b64daf2de8c02d044ba53cd1c6d1271e7512",
+    "rows": 214144,
+    "columns": ["bpl", "qob", "nonwhite", "vet_wwko", "home_ownership", "qob_minus_kw"],
+    "class": ["spec_tbl_df", "tbl_df", "tbl", "data.frame"],
+    "package": "causaldata",
+    "package_version": "0.1.4",
+    "license": "MIT + file LICENSE",
+    "source": "https://github.com/NickCH-K/causaldata",
+    "original_sha256": "dd903337190958d94b059eb37fb2061f24d04cffa3a2689b108394283b56e6f0",
+    "variables": {
+      "bpl": {
+        "class": "character",
+        "missing": 0
+      },
+      "qob": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "nonwhite": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "vet_wwko": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "home_ownership": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "qob_minus_kw": {
+        "class": "numeric",
+        "missing": 0
+      }
+    }
+  },
+  "hisp": {
+    "file": "hisp.rds",
+    "sha256": "713ff707d82cc9e5f1e7c7f4be453c57009e2e82103f6c97981ebb3765a2762f",
+    "rows": 19827,
+    "columns": ["locality_identifier", "household_identifier", "treatment_locality", "promotion_locality", "eligible", "enrolled", "enrolled_rp", "poverty_index", "round", "health_expenditures", "age_hh", "age_sp", "educ_hh", "educ_sp", "female_hh", "indigenous", "hhsize", "dirtfloor", "bathroom", "land", "hospital_distance", "hospital"],
+    "class": "data.frame",
+    "source": "https://www.worldbank.org/en/programs/sief-trust-fund/publication/impact-evaluation-in-practice",
+    "source_revision": "Repository commit 3152e4d; original HISP second-edition teaching bundle",
+    "license": "World Bank accompanying teaching materials; retain attribution and original disclaimer; no additional license asserted",
+    "additional_files": ["hisp/evaluation.csv", "hisp/evaluation.dta", "hisp/HISP Book replication.do"],
+    "variables": {
+      "locality_identifier": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "household_identifier": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "treatment_locality": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "promotion_locality": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "eligible": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "enrolled": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "enrolled_rp": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "poverty_index": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "round": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "health_expenditures": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "age_hh": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "age_sp": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "educ_hh": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "educ_sp": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "female_hh": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "indigenous": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "hhsize": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "dirtfloor": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "bathroom": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "land": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "hospital_distance": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "hospital": {
+        "class": "numeric",
+        "missing": 8570
+      }
+    },
+    "additional_sha256": {
+      "hisp/evaluation.csv": "6ed539cc2ab5c7df45df0f445b389d2c6ace208ca78bf833227dbe8d6e216001",
+      "hisp/evaluation.dta": "473ab8f4b9d74739a2a6a21c7cc75cec60ad1f8f0aeba8526e9fdb557fe24dc4",
+      "hisp/HISP Book replication.do": "838e0396ff806b1f655ceea53a90c9dd2442e0ef19e518b1828661f703fe39fd"
+    }
+  },
+  "service": {
+    "file": "service.rds",
+    "sha256": "fb328cfc1a032a98d89101bf3ca559fae564c626ee94fa320e1a81828f61f18d",
+    "rows": 120,
+    "columns": ["time", "date", "implemented", "post_time", "season_sin", "season_cos", "context", "untreated_outcome", "programme_effect", "observed_outcome"],
+    "class": "data.frame",
+    "seed": 48127,
+    "source": "QED Labs: simulate_service() in interrupted-time-series-counterfactual-validation-lab.qmd",
+    "license": "Repository-authored synthetic teaching data; no real people or records",
+    "variables": {
+      "time": {
+        "class": "integer",
+        "missing": 0
+      },
+      "date": {
+        "class": "Date",
+        "missing": 0
+      },
+      "implemented": {
+        "class": "integer",
+        "missing": 0
+      },
+      "post_time": {
+        "class": "integer",
+        "missing": 0
+      },
+      "season_sin": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "season_cos": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "context": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "untreated_outcome": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "programme_effect": {
+        "class": "numeric",
+        "missing": 0
+      },
+      "observed_outcome": {
+        "class": "numeric",
+        "missing": 0
+      }
+    }
+  }
+}

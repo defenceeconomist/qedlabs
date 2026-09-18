@@ -1,228 +1,439 @@
 ---
 title: "Labs"
 page-layout: full
+body-classes: resource-index
+aliases:
+  - /slides/
 toc: false
 ---
 
-<div class="landing-stack">
+<div class="resource-directory" id="slide-library">
 
-::: {.landing-hero}
-<span class="hero-eyebrow">Applied labs</span>
+::: {.directory-intro #practice-the-design-choices-not-just-the-estimator}
+<span id="short-decks-for-the-method-sequence"></span>
 
-# Practice the design choices, not just the estimator
-
-This section collects worksheet-style pages for hands-on design work. Use it when you want to move from abstract method guidance into benchmark examples, tradeoff decisions, and concrete diagnostics.
-
-<div class="page-metadata">
-  <span>Hands-on exercises</span>
-  <span>Benchmark examples</span>
-  <span>Design-first workflow</span>
-</div>
+Teaching decks, presenter notes, and applied exercises grouped by method. Work from foundational comparisons to diagnostics and extensions, with Quarto documents, R notebooks, and bundled data alongside each lab. [Data catalogue and offline setup](data.qmd).
 :::
 
-## Matching Labs {#matching-labs .section-heading}
+## Matching {#matching-labs .directory-heading}
 
-<p class="section-intro">These are the strongest practical pages on the site.</p>
+::: {.resource-list}
+::: {.resource-row}
+::: {.resource-summary}
+<span class="resource-meta">Teaching deck</span>
 
-::: {.section-grid}
-::: {.section-card}
-<span class="page-badge badge-guide">Core report</span>
+### Why We Do Matching
+:::
+
+::: {.resource-body}
+Confounding, comparability, and design: the introductory teaching sequence for matching.
+
+[Open RevealJS deck](../slides/why_matching-revealjs.html){.resource-primary}
+
+::: {.resource-links}
+[Accessible slides page](../slides/why_matching.qmd)
+[Presenter notes](../slides/why_matching_script.qmd)
+:::
+:::
+:::
+
+::: {.resource-row}
+::: {.resource-summary}
+<span class="resource-meta">Core report</span>
 
 ### [Matching Methods Report](matching-methods-report.qmd)
+:::
+
+::: {.resource-body}
 
 Long-form reference report on exact matching, `CEM`, and entropy balancing before you move into the shorter worksheet labs.
 :::
+:::
 
-::: {.section-card}
-<span class="page-badge badge-lab">Core lab</span>
+::: {.resource-row}
+::: {.resource-summary}
+<span class="resource-meta">Core lab</span>
 
 ### [LaLonde Matching Lab](lalonde-matching-lab.qmd)
+:::
+
+::: {.resource-body}
 
 Best first practical exercise for understanding matching design, overlap, and benchmark logic.
 
-[Download R notebook](notebooks/lalonde-matching-lab.ipynb){download="lalonde-matching-lab.ipynb"}
+[Quarto](downloads/lalonde-matching-lab.qmd){download="lalonde-matching-lab.qmd"} · [R notebook](notebooks/lalonde-matching-lab.ipynb){download="lalonde-matching-lab.ipynb"} · [Complete ZIP](downloads/lalonde-matching-lab.zip){download="lalonde-matching-lab.zip"} · [Data](data.qmd#lalonde-matching-lab)
+:::
 :::
 
-::: {.section-card}
-<span class="page-badge badge-applied">Applied case</span>
+::: {.resource-row}
+::: {.resource-summary}
+<span class="resource-meta">Applied case</span>
 
 ### [Black Politicians Lab](black-politicians-lab.qmd)
+:::
+
+::: {.resource-body}
 
 Use this when you want a more context-specific exercise.
 
-[Download R notebook](notebooks/black-politicians-lab.ipynb){download="black-politicians-lab.ipynb"}
+[Quarto](downloads/black-politicians-lab.qmd){download="black-politicians-lab.qmd"} · [R notebook](notebooks/black-politicians-lab.ipynb){download="black-politicians-lab.ipynb"} · [Complete ZIP](downloads/black-politicians-lab.zip){download="black-politicians-lab.zip"} · [Data](data.qmd#black-politicians-lab)
+:::
 :::
 
-::: {.section-card}
-<span class="page-badge badge-lab">Benchmark</span>
+::: {.resource-row}
+::: {.resource-summary}
+<span class="resource-meta">Benchmark</span>
 
 ### [NSW and CPS Benchmark Lab](nsw-cps-benchmark-lab.qmd)
+:::
+
+::: {.resource-body}
 
 Best for stress-testing matching choices against a canonical benchmark comparison.
 
-[Download R notebook](notebooks/nsw-cps-benchmark-lab.ipynb){download="nsw-cps-benchmark-lab.ipynb"}
+[Quarto](downloads/nsw-cps-benchmark-lab.qmd){download="nsw-cps-benchmark-lab.qmd"} · [R notebook](notebooks/nsw-cps-benchmark-lab.ipynb){download="nsw-cps-benchmark-lab.ipynb"} · [Complete ZIP](downloads/nsw-cps-benchmark-lab.zip){download="nsw-cps-benchmark-lab.zip"} · [Data](data.qmd#nsw-cps-benchmark-lab)
 :::
 :::
-
-::: {.path-grid}
-::: {.path-card}
-<span class="page-badge badge-applied">Applied case</span>
+::: {.resource-row}
+::: {.resource-summary}
+<span class="resource-meta">Applied case</span>
 
 ### [HISP IE Practice Lab](hisp-ie-practice-lab.qmd)
+:::
+
+::: {.resource-body}
 
 Use this when you want a more open-ended practice page.
 
-[Download R notebook](notebooks/hisp-ie-practice-lab.ipynb){download="hisp-ie-practice-lab.ipynb"}
+[Quarto](downloads/hisp-ie-practice-lab.qmd){download="hisp-ie-practice-lab.qmd"} · [R notebook](notebooks/hisp-ie-practice-lab.ipynb){download="hisp-ie-practice-lab.ipynb"} · [Complete ZIP](downloads/hisp-ie-practice-lab.zip){download="hisp-ie-practice-lab.zip"} · [Data](data.qmd#hisp-ie-practice-lab)
+:::
 :::
 :::
 
-## Difference-in-Differences Labs {#difference-in-differences-labs .section-heading}
+## Difference-in-Differences {#difference-in-differences-labs .directory-heading}
+
+[Practical R guide](../notes/did/how-to-do-difference-in-differences.qmd)
 
 [Environment setup and verified outputs](difference-in-differences-reproducibility.qmd) · [Applications and data](../notes/did/difference-in-differences-applications.qmd)
 
 <p class="section-intro">Move from a transparent 2×2 contrast to staggered-adoption diagnostics, explicit group-time effects, and sensitivity analysis.</p>
 
-::: {.section-grid}
-::: {.section-card}
-<span class="page-badge badge-lab">Introductory</span>
+::: {.resource-list}
+::: {.resource-row}
+::: {.resource-summary}
+<span class="resource-meta">Teaching deck · 45–60 minutes</span>
+
+### Difference-in-Differences
+:::
+
+::: {.resource-body}
+A 22-slide introduction from the canonical four-cell contrast to staggered adoption, modern estimators, aggregation, and parallel-trends sensitivity, with a technical appendix.
+
+[Open RevealJS deck](../slides/did-revealjs.html){.resource-primary}
+
+::: {.resource-links}
+[Accessible slides page](../slides/did.qmd)
+[Presenter notes](../slides/did_script.qmd)
+:::
+:::
+:::
+
+::: {.resource-row}
+::: {.resource-summary}
+<span class="resource-meta">Introductory</span>
 
 ### [DiD Foundations With Kentucky Workers' Compensation](difference-in-differences-foundations-lab.qmd)
+:::
+
+::: {.resource-body}
 
 Calculate the four-cell contrast by hand, recover it with an interaction regression, interpret a log outcome, and audit the assumptions hidden by a two-period design.
 
-[Download R notebook](notebooks/difference-in-differences-foundations-lab.ipynb){download="difference-in-differences-foundations-lab.ipynb"}
+[Quarto](downloads/difference-in-differences-foundations-lab.qmd){download="difference-in-differences-foundations-lab.qmd"} · [R notebook](notebooks/difference-in-differences-foundations-lab.ipynb){download="difference-in-differences-foundations-lab.ipynb"} · [Complete ZIP](downloads/difference-in-differences-foundations-lab.zip){download="difference-in-differences-foundations-lab.zip"} · [Data](data.qmd#difference-in-differences-foundations-lab)
 
-[Python companion](difference-in-differences-foundations-python-lab.qmd) · [Download Python notebook](notebooks/difference-in-differences-foundations-python-lab.ipynb){download="difference-in-differences-foundations-python-lab.ipynb"}
+:::
 :::
 
-::: {.section-card}
-<span class="page-badge badge-core">Intermediate</span>
+::: {.resource-row}
+::: {.resource-summary}
+<span class="resource-meta">Intermediate</span>
 
 ### [Staggered Adoption and TWFE Diagnostics](difference-in-differences-staggered-diagnostics-lab.qmd)
+:::
+
+::: {.resource-body}
 
 Map castle-law adoption cohorts, reconstruct TWFE with the Goodman-Bacon decomposition, and compare conventional and Sun–Abraham event studies.
 
-[Download R notebook](notebooks/difference-in-differences-staggered-diagnostics-lab.ipynb){download="difference-in-differences-staggered-diagnostics-lab.ipynb"}
+[Quarto](downloads/difference-in-differences-staggered-diagnostics-lab.qmd){download="difference-in-differences-staggered-diagnostics-lab.qmd"} · [R notebook](notebooks/difference-in-differences-staggered-diagnostics-lab.ipynb){download="difference-in-differences-staggered-diagnostics-lab.ipynb"} · [Complete ZIP](downloads/difference-in-differences-staggered-diagnostics-lab.zip){download="difference-in-differences-staggered-diagnostics-lab.zip"} · [Data](data.qmd#difference-in-differences-staggered-diagnostics-lab)
 
-[Python companion](difference-in-differences-staggered-diagnostics-python-lab.qmd) · [Download Python notebook](notebooks/difference-in-differences-staggered-diagnostics-python-lab.ipynb){download="difference-in-differences-staggered-diagnostics-python-lab.ipynb"}
+:::
 :::
 
-::: {.section-card}
-<span class="page-badge badge-applied">Advanced</span>
+::: {.resource-row}
+::: {.resource-summary}
+<span class="resource-meta">Advanced</span>
 
 ### [Modern Multi-Period Difference-in-Differences](difference-in-differences-modern-estimators-lab.qmd)
+:::
+
+::: {.resource-body}
 
 Estimate and aggregate group-time effects with `did`, compare control groups and Sun–Abraham, then optionally probe parallel-trends sensitivity with `HonestDiD`.
 
-[Download R notebook](notebooks/difference-in-differences-modern-estimators-lab.ipynb){download="difference-in-differences-modern-estimators-lab.ipynb"}
+[Quarto](downloads/difference-in-differences-modern-estimators-lab.qmd){download="difference-in-differences-modern-estimators-lab.qmd"} · [R notebook](notebooks/difference-in-differences-modern-estimators-lab.ipynb){download="difference-in-differences-modern-estimators-lab.ipynb"} · [Complete ZIP](downloads/difference-in-differences-modern-estimators-lab.zip){download="difference-in-differences-modern-estimators-lab.zip"} · [Data](data.qmd#difference-in-differences-modern-estimators-lab)
 
-[Python companion](difference-in-differences-modern-estimators-python-lab.qmd) · [Download Python notebook](notebooks/difference-in-differences-modern-estimators-python-lab.ipynb){download="difference-in-differences-modern-estimators-python-lab.ipynb"}
+:::
+:::
+:::
+
+## Regression Discontinuity {#regression-discontinuity-labs .directory-heading}
+
+[Practical R guide](../notes/rdd/how-to-do-regression-discontinuity.qmd)
+
+[Environment setup and verified outputs](regression-discontinuity-reproducibility.qmd) · [RDD notes](../notes/other-methods/regression-discontinuity.qmd)
+
+<p class="section-intro">Work through government transfers and veteran status to connect cutoff designs, diagnostic evidence and local causal claims.</p>
+
+::: {.resource-list}
+::: {.resource-row}
+::: {.resource-summary}
+<span class="resource-meta">Introductory · 45–60 minutes</span>
+
+### [Sharp RD foundations](regression-discontinuity-foundations-lab.qmd)
+:::
+
+::: {.resource-body}
+
+Audit transfer assignment, fit separate local lines, and interpret the correctly signed effect on government support.
+
+[R lab](regression-discontinuity-foundations-lab.qmd)
+
+[Quarto](downloads/regression-discontinuity-foundations-lab.qmd){download="regression-discontinuity-foundations-lab.qmd"} · [R notebook](notebooks/regression-discontinuity-foundations-lab.ipynb){download="regression-discontinuity-foundations-lab.ipynb"} · [Complete ZIP](downloads/regression-discontinuity-foundations-lab.zip){download="regression-discontinuity-foundations-lab.zip"} · [Data](data.qmd#regression-discontinuity-foundations-lab)
 :::
 :::
 
-## Synthetic Control Labs {#scm-labs .section-heading}
+::: {.resource-row}
+::: {.resource-summary}
+<span class="resource-meta">Intermediate · 60–75 minutes</span>
+
+### [Design diagnostics and sensitivity](regression-discontinuity-diagnostics-lab.qmd)
+:::
+
+::: {.resource-body}
+
+Examine score density, observed covariates, placebo cutoffs, bandwidths, polynomial orders and donut exclusions.
+
+[R lab](regression-discontinuity-diagnostics-lab.qmd)
+
+[Quarto](downloads/regression-discontinuity-diagnostics-lab.qmd){download="regression-discontinuity-diagnostics-lab.qmd"} · [R notebook](notebooks/regression-discontinuity-diagnostics-lab.ipynb){download="regression-discontinuity-diagnostics-lab.ipynb"} · [Complete ZIP](downloads/regression-discontinuity-diagnostics-lab.zip){download="regression-discontinuity-diagnostics-lab.zip"} · [Data](data.qmd#regression-discontinuity-diagnostics-lab)
+:::
+:::
+
+::: {.resource-row}
+::: {.resource-summary}
+<span class="resource-meta">Advanced · 60–90 minutes</span>
+
+### [Fuzzy RD and local IV](regression-discontinuity-fuzzy-lab.qmd)
+:::
+
+::: {.resource-body}
+
+Connect veteran-status and home-ownership jumps to a matched local IV estimate, then assess exclusion and coarse quarterly support.
+
+[R lab](regression-discontinuity-fuzzy-lab.qmd)
+
+[Quarto](downloads/regression-discontinuity-fuzzy-lab.qmd){download="regression-discontinuity-fuzzy-lab.qmd"} · [R notebook](notebooks/regression-discontinuity-fuzzy-lab.ipynb){download="regression-discontinuity-fuzzy-lab.ipynb"} · [Complete ZIP](downloads/regression-discontinuity-fuzzy-lab.zip){download="regression-discontinuity-fuzzy-lab.zip"} · [Data](data.qmd#regression-discontinuity-fuzzy-lab)
+:::
+:::
+
+:::
+
+## Synthetic Control {#scm-labs .directory-heading}
 
 <p class="section-intro">Start with the core report, then move from SCM mechanics to the canonical case and then to the first principled extension.</p>
 
-::: {.section-grid}
-::: {.section-card}
-<span class="page-badge badge-guide">Core report</span>
+::: {.resource-list}
+::: {.resource-row}
+::: {.resource-summary}
+<span class="resource-meta">Teaching deck</span>
+
+### Synthetic Control
+:::
+
+::: {.resource-body}
+Design-first causal comparison for aggregate interventions, from donor selection and pre-treatment fit to placebo diagnostics and extensions.
+
+[Open RevealJS deck](../slides/scm-revealjs.html){.resource-primary}
+
+::: {.resource-links}
+[Accessible slides page](../slides/scm.qmd)
+[Presenter notes](../slides/scm_script.qmd)
+:::
+:::
+:::
+
+::: {.resource-row}
+::: {.resource-summary}
+<span class="resource-meta">Core report</span>
 
 ### [Synthetic Control Methods Report](synthetic-control-methods-report.qmd)
+:::
+
+::: {.resource-body}
 
 Long-form reference report on donor-pool design, pre-treatment fit, placebo logic, and when to move beyond classical SCM.
 :::
+:::
 
-::: {.section-card}
-<span class="page-badge badge-lab">Introductory</span>
+::: {.resource-row}
+::: {.resource-summary}
+<span class="resource-meta">Introductory</span>
 
 ### [Synthetic Control Mechanics Lab](synthetic-control-mechanics-lab.qmd)
+:::
+
+::: {.resource-body}
 
 Best first practical exercise for learning `dataprep()`, `synth()`, donor weights, and gap plots without substantive complexity.
 
-[Download R notebook](notebooks/synthetic-control-mechanics-lab.ipynb){download="synthetic-control-mechanics-lab.ipynb"}
+[Quarto](downloads/synthetic-control-mechanics-lab.qmd){download="synthetic-control-mechanics-lab.qmd"} · [R notebook](notebooks/synthetic-control-mechanics-lab.ipynb){download="synthetic-control-mechanics-lab.ipynb"} · [Complete ZIP](downloads/synthetic-control-mechanics-lab.zip){download="synthetic-control-mechanics-lab.zip"} · [Data](data.qmd#synthetic-control-mechanics-lab)
+:::
 :::
 
-::: {.section-card}
-<span class="page-badge badge-core">Intermediate</span>
+::: {.resource-row}
+::: {.resource-summary}
+<span class="resource-meta">Intermediate</span>
 
 ### [Proposition 99 With tidysynth](synthetic-control-proposition-99-lab.qmd)
+:::
+
+::: {.resource-body}
 
 Canonical end-to-end SCM workflow with donor exclusions, balance checks, donor transparency, and placebo logic.
 
-[Download R notebook](notebooks/synthetic-control-proposition-99-lab.ipynb){download="synthetic-control-proposition-99-lab.ipynb"}
+[Quarto](downloads/synthetic-control-proposition-99-lab.qmd){download="synthetic-control-proposition-99-lab.qmd"} · [R notebook](notebooks/synthetic-control-proposition-99-lab.ipynb){download="synthetic-control-proposition-99-lab.ipynb"} · [Complete ZIP](downloads/synthetic-control-proposition-99-lab.zip){download="synthetic-control-proposition-99-lab.zip"} · [Data](data.qmd#synthetic-control-proposition-99-lab)
+:::
 :::
 
-::: {.section-card}
-<span class="page-badge badge-applied">Advanced</span>
+::: {.resource-row}
+::: {.resource-summary}
+<span class="resource-meta">Advanced</span>
 
 ### [Augmented SCM With Kansas](synthetic-control-augmentation-lab.qmd)
+:::
+
+::: {.resource-body}
 
 Best for learning what weak classical fit looks like and when augmentation becomes defensible.
 
-[Download R notebook](notebooks/synthetic-control-augmentation-lab.ipynb){download="synthetic-control-augmentation-lab.ipynb"}
+[Quarto](downloads/synthetic-control-augmentation-lab.qmd){download="synthetic-control-augmentation-lab.qmd"} · [R notebook](notebooks/synthetic-control-augmentation-lab.ipynb){download="synthetic-control-augmentation-lab.ipynb"} · [Complete ZIP](downloads/synthetic-control-augmentation-lab.zip){download="synthetic-control-augmentation-lab.zip"} · [Data](data.qmd#synthetic-control-augmentation-lab)
 :::
 :::
-
-::: {.path-grid}
-::: {.path-card}
-<span class="page-badge badge-skeleton">Design worksheet</span>
+::: {.resource-row}
+::: {.resource-summary}
+<span class="resource-meta">Design worksheet</span>
 
 ### [Synthetic Control Design Lab](synthetic-control-design-lab.qmd)
+:::
+
+::: {.resource-body}
 
 Use this when you want a planning worksheet before committing to a runnable case.
 
-[Download R notebook](notebooks/synthetic-control-design-lab.ipynb){download="synthetic-control-design-lab.ipynb"}
+[Quarto](downloads/synthetic-control-design-lab.qmd){download="synthetic-control-design-lab.qmd"} · [R notebook](notebooks/synthetic-control-design-lab.ipynb){download="synthetic-control-design-lab.ipynb"} · [Complete ZIP](downloads/synthetic-control-design-lab.zip){download="synthetic-control-design-lab.zip"} · [Data](data.qmd#synthetic-control-design-lab)
+:::
 :::
 
-::: {.path-card}
-<span class="page-badge badge-skeleton">Donor worksheet</span>
+::: {.resource-row}
+::: {.resource-summary}
+<span class="resource-meta">Donor worksheet</span>
 
 ### [Synthetic Control Donor Pool Lab](synthetic-control-donor-pool-lab.qmd)
+:::
+
+::: {.resource-body}
 
 Use this when the main bottleneck is screening and defending the donor pool.
 
-[Download R notebook](notebooks/synthetic-control-donor-pool-lab.ipynb){download="synthetic-control-donor-pool-lab.ipynb"}
+[Quarto](downloads/synthetic-control-donor-pool-lab.qmd){download="synthetic-control-donor-pool-lab.qmd"} · [R notebook](notebooks/synthetic-control-donor-pool-lab.ipynb){download="synthetic-control-donor-pool-lab.ipynb"} · [Complete ZIP](downloads/synthetic-control-donor-pool-lab.zip){download="synthetic-control-donor-pool-lab.zip"} · [Data](data.qmd#synthetic-control-donor-pool-lab)
+:::
 :::
 :::
 
-## Interrupted Time Series Labs {#interrupted-time-series-labs .section-heading}
+## Interrupted Time Series {#interrupted-time-series-labs .directory-heading}
+
+[Practical R guide](../notes/other-methods/how-to-do-interrupted-time-series.qmd)
 
 <p class="section-intro">Use a real seatbelt-law case for the foundations and design choices, then validate untreated forecasts in a compact known-truth exercise.</p>
 
-::: {.section-grid}
-::: {.section-card}
-<span class="page-badge badge-lab">Introductory</span>
+::: {.resource-list}
+::: {.resource-row}
+::: {.resource-summary}
+<span class="resource-meta">Teaching deck · 25–30 minutes</span>
+
+### Interrupted Time Series
+:::
+
+::: {.resource-body}
+The Great Britain seatbelt law connects segmented regression, outcome comparisons, robustness, and counterfactual validation, with a short technical appendix.
+
+[Open RevealJS deck](../slides/its-revealjs.html){.resource-primary}
+
+::: {.resource-links}
+[Accessible slides page](../slides/its.qmd)
+[Presenter notes](../slides/its_script.qmd)
+:::
+:::
+:::
+
+::: {.resource-row}
+::: {.resource-summary}
+<span class="resource-meta">Introductory</span>
 
 ### [ITS Foundations With Seatbelts](interrupted-time-series-mechanics-lab.qmd)
+:::
+
+::: {.resource-body}
 
 Build the monthly interruption, compare pre/post summaries with segmented regression, estimate horizon-specific percentage changes, and optionally model AR(1) errors.
 
-[Download R notebook](notebooks/interrupted-time-series-mechanics-lab.ipynb){download="interrupted-time-series-mechanics-lab.ipynb"}
+[Quarto](downloads/interrupted-time-series-mechanics-lab.qmd){download="interrupted-time-series-mechanics-lab.qmd"} · [R notebook](notebooks/interrupted-time-series-mechanics-lab.ipynb){download="interrupted-time-series-mechanics-lab.ipynb"} · [Complete ZIP](downloads/interrupted-time-series-mechanics-lab.zip){download="interrupted-time-series-mechanics-lab.zip"} · [Data](data.qmd#interrupted-time-series-mechanics-lab)
+:::
 :::
 
-::: {.section-card}
-<span class="page-badge badge-core">Intermediate</span>
+::: {.resource-row}
+::: {.resource-summary}
+<span class="resource-meta">Intermediate</span>
 
 ### [Seatbelt Law Design and Robustness](interrupted-time-series-design-diagnostics-lab.qmd)
+:::
+
+::: {.resource-body}
 
 Compare targeted outcomes, audit imperfect controls, test exposure-adjusted specifications, and write a defensible attribution judgment.
 
-[Download R notebook](notebooks/interrupted-time-series-design-diagnostics-lab.ipynb){download="interrupted-time-series-design-diagnostics-lab.ipynb"}
+[Quarto](downloads/interrupted-time-series-design-diagnostics-lab.qmd){download="interrupted-time-series-design-diagnostics-lab.qmd"} · [R notebook](notebooks/interrupted-time-series-design-diagnostics-lab.ipynb){download="interrupted-time-series-design-diagnostics-lab.ipynb"} · [Complete ZIP](downloads/interrupted-time-series-design-diagnostics-lab.zip){download="interrupted-time-series-design-diagnostics-lab.zip"} · [Data](data.qmd#interrupted-time-series-design-diagnostics-lab)
+:::
 :::
 
-::: {.section-card}
-<span class="page-badge badge-core">Advanced applied</span>
+::: {.resource-row}
+::: {.resource-summary}
+<span class="resource-meta">Advanced applied</span>
 
 ### [Interrupted Time Series Counterfactual Validation](interrupted-time-series-counterfactual-validation-lab.qmd)
+:::
+
+::: {.resource-body}
 
 Compare three untreated forecasting models on identical held-out origins, preserve the nearest competitor, report 12-month gaps, and stop unsupported extension.
 
-[Download R notebook](notebooks/interrupted-time-series-counterfactual-validation-lab.ipynb){download="interrupted-time-series-counterfactual-validation-lab.ipynb"}
+[Quarto](downloads/interrupted-time-series-counterfactual-validation-lab.qmd){download="interrupted-time-series-counterfactual-validation-lab.qmd"} · [R notebook](notebooks/interrupted-time-series-counterfactual-validation-lab.ipynb){download="interrupted-time-series-counterfactual-validation-lab.ipynb"} · [Complete ZIP](downloads/interrupted-time-series-counterfactual-validation-lab.zip){download="interrupted-time-series-counterfactual-validation-lab.zip"} · [Data](data.qmd#interrupted-time-series-counterfactual-validation-lab)
+:::
 :::
 :::
 
-<div class="principle-banner">
+<div class="working-rule">
   <h2>Working rule</h2>
   <p>Define the design before estimating, document the tradeoffs introduced by the design, and state clearly what the resulting comparison can and cannot support.</p>
 </div>

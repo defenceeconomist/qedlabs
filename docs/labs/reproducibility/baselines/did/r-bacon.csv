@@ -1,0 +1,4 @@
+"type","comparisons","total_weight","contribution_to_twfe"
+"Treated vs Untreated",5,0.898808835434254,0.070500759162042
+"Earlier vs Later Treated",10,0.0770787556377934,-0.00220269183968068
+"Later vs Earlier Treated",10,0.0241124089279519,0.00110036196154613

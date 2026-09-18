@@ -1,0 +1,37 @@
+---
+title: "Rossi, Lipsey and Freeman: Cutting-Point Designs"
+subtitle: "Evaluation: A Systematic Approach, Chapter 9"
+date: 2026-09-18
+---
+
+## Source and locator
+
+These notes summarize the RDD discussion in the library's 2004 *Evaluation: A Systematic Approach* [@rossi2004ch9assessing]. Open [Chapter 9, Assessing Program Impact: Alternative Designs](https://portal.heley.uk/researchlibrary/books/evaluation-systematic-approach/read/evaluation-systematic-approach:ch09-chapter-9-assessing-program-impact-alternative-designs). The main passage is on **PDF pages 247–249**; the summary returns to it on page 256. These are file page numbers, not printed pagination.
+
+## Why explicit selection is valuable
+
+The chapter contrasts reconstructing how people selected into a programme with knowing the allocation variable in advance. If need, merit or risk is measured and an explicit threshold determines access, the evaluator can describe selection directly.
+
+The authors call this a cutting-point design. Its attraction is practical as well as statistical: allocation can follow programme priorities while the boundary supplies a comparison. Randomly withholding services is not the only possible route to credible evidence.
+
+The claim is conditional on properly representing the known selection process. Knowing the rule is an advantage, not a guarantee that any regression including the score removes all bias. The [overview](../other-methods/regression-discontinuity.qmd) makes the continuity requirement explicit.
+
+## The released-prisoner example
+
+The chapter describes a California programme in which unemployment-insurance eligibility depended on prior work in prison. The work requirement creates the allocation threshold; the outcome is subsequent rearrest.
+
+Trace the design from the administrative measure to the eligibility formula, the population near the boundary, and any other process changing at the same point. The question concerns access to the payment arrangement represented by that rule.
+
+The extracted passage changes terminology between days and hours worked. These notes therefore do not reproduce the numerical threshold or effect magnitude as a verified finding. Replication would require checking the original application and resolving the measure before constructing the running variable.
+
+## Comparing designs
+
+Rossi and colleagues treat a properly implemented cutoff design as less vulnerable to selection bias than many constructed comparison groups. The reasoning is that selection is explicit rather than inferred from participants and nonparticipants.
+
+That is not a universal ranking independent of implementation. An RD with manipulated scores or another policy at the cutoff can be less credible than a well-supported alternative. Conversely, a strong rule can support a local comparison even when treated and untreated populations differ substantially overall.
+
+## Practical use
+
+Use this source when scoping an evaluation with programme managers. Ask which scores govern services, how consistently thresholds are applied, what exceptions exist, and whether original scores and outcomes are retained on both sides. This conversation precedes estimator choice.
+
+The chapter is not a guide to modern bandwidth selection or inference. Pair it with [Gertler](gertler-regression-discontinuity-notes.qmd) for local policy interpretation and [Cunningham](mixtape-regression-discontinuity-notes.qmd) for continuity and estimation.

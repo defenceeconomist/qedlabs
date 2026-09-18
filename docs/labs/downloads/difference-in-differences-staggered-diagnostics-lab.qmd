@@ -1,0 +1,470 @@
+---
+title: 'Lab: Staggered Adoption and TWFE Diagnostics'
+format:
+  html:
+    toc: true
+    embed-resources: true
+engine: knitr
+execute:
+  echo: true
+  eval: true
+  error: false
+references:
+- URL: https://mixtape-1ed.netlify.app/09-difference_in_differences
+  accessed:
+    date-parts:
+    - - 2026
+      - 8
+      - 9
+  author:
+  - family: Cunningham
+    given: Scott
+  container-title: 'Causal inference: The mixtape'
+  id: cunningham2021did
+  issued:
+    date-parts:
+    - - 2021
+  publisher: Yale University Press
+  title: Difference-in-differences
+  type: chapter
+- DOI: 10.3368/jhr.48.3.821
+  URL: https://doi.org/10.3368/jhr.48.3.821
+  author:
+  - family: Cheng
+    given: Cheng
+  - family: Hoekstra
+    given: Mark
+  container-title: Journal of Human Resources
+  id: cheng2013castle
+  issue: '3'
+  issued:
+    date-parts:
+    - - 2013
+  page: 821-854
+  title: Does strengthening self-defense law deter crime or escalate violence? Evidence
+    from expansions to castle doctrine
+  type: article-journal
+  volume: '48'
+- DOI: 10.1016/j.jeconom.2021.03.014
+  URL: https://doi.org/10.1016/j.jeconom.2021.03.014
+  author:
+  - family: Goodman-Bacon
+    given: Andrew
+  container-title: Journal of Econometrics
+  id: goodmanbacon2021timing
+  issue: '2'
+  issued:
+    date-parts:
+    - - 2021
+  page: 254-277
+  title: Difference-in-differences with variation in treatment timing
+  type: article-journal
+  volume: '225'
+- DOI: 10.1016/j.jeconom.2020.09.006
+  URL: https://doi.org/10.1016/j.jeconom.2020.09.006
+  author:
+  - family: Sun
+    given: Liyang
+  - family: Abraham
+    given: Sarah
+  container-title: Journal of Econometrics
+  id: sunabraham2021dynamic
+  issue: '2'
+  issued:
+    date-parts:
+    - - 2021
+  page: 175-199
+  title: Estimating dynamic treatment effects in event studies with heterogeneous
+    treatment effects
+  type: article-journal
+  volume: '225'
+- DOI: 10.1257/aeri.20210236
+  URL: https://doi.org/10.1257/aeri.20210236
+  author:
+  - family: Roth
+    given: Jonathan
+  container-title: 'American Economic Review: Insights'
+  id: roth2022pretest
+  issue: '3'
+  issued:
+    date-parts:
+    - - 2022
+  page: 305-322
+  title: 'Pretest with caution: Event-study estimates after testing for parallel trends'
+  title-short: Pretest with caution
+  type: article-journal
+  volume: '4'
+---
+
+## How To Use This Page
+
+This is the second difference-in-differences lab. The guided core takes about 45–60 minutes and examines what a two-way fixed-effects estimate compares when treatment begins in different years.
+
+
+
+- Audit adoption timing and untreated support before estimating an effect.
+- Treat the TWFE coefficient as a weighted collection of 2×2 comparisons.
+- Identify when already-treated units become controls for later-treated units.
+- Compare a conventional event study with an interaction-weighted alternative.
+
+The case comes from Cunningham's castle-doctrine example [@cunningham2021did; @cheng2013castle]. The interpretation follows Goodman-Bacon and Sun–Abraham [@goodmanbacon2021timing; @sunabraham2021dynamic]. See the [Mixtape notes](https://defenceeconomist.github.io/qedlabs/notes/did/mixtape-difference-in-differences-notes.html), [Goodman-Bacon notes](https://defenceeconomist.github.io/qedlabs/notes/did/goodman-bacon-treatment-timing-notes.html), and [Sun–Abraham notes](https://defenceeconomist.github.io/qedlabs/notes/did/sun-abraham-event-studies-notes.html).
+
+[Tested environment and reproduction record](https://defenceeconomist.github.io/qedlabs/labs/difference-in-differences-reproducibility.html)
+
+## Training Goal
+
+By the end of the lab, you should be able to:
+
+1. construct and validate first-treatment cohorts;
+2. assess which untreated comparisons exist in each year;
+3. decompose a static TWFE coefficient into 2×2 comparisons;
+4. explain why later-versus-earlier comparisons can be problematic; and
+5. compare conventional and interaction-weighted event-study profiles.
+
+## Step 1: Load The State-Year Panel
+
+The `causaldata::castle` panel combines castle-doctrine adoption with state violent-crime outcomes. The lab uses log homicide as the outcome and `post` as the absorbing treatment indicator. The package documentation links the data to Cheng and Hoekstra's application.
+
+```{r}
+data_helpers <- c("data/load-data.R", "../data/load-data.R", "docs/labs/data/load-data.R")
+data_helpers <- data_helpers[file.exists(data_helpers)]
+if (!length(data_helpers)) stop("Extract the complete lab ZIP, including its data folder, before running.")
+source(data_helpers[[1]])
+```
+
+```{r}
+required_packages <- c(
+  "digest",
+  "dplyr",
+  "ggplot2",
+  "fixest",
+  "bacondecomp"
+)
+missing_packages <- required_packages[!vapply(
+  required_packages,
+  requireNamespace,
+  logical(1),
+  quietly = TRUE
+)]
+if (length(missing_packages) > 0) {
+  stop("Install the documented R environment first; missing: ", paste(missing_packages, collapse=", "), call.=FALSE)
+}
+invisible(lapply(required_packages, library, character.only = TRUE))
+
+castle <- qed_data("castle")
+
+castle_panel <- castle |>
+  select(sid, year, post, l_homicide) |>
+  arrange(sid, year) |>
+  group_by(sid) |>
+  mutate(
+    first_treat = if (any(post == 1)) min(year[post == 1]) else 0L,
+    event_time = if_else(first_treat == 0L, -1000L, year - first_treat)
+  ) |>
+  ungroup()
+
+panel_audit <- castle_panel |>
+  group_by(sid) |>
+  summarise(
+    observations = n(),
+    first_year = min(year),
+    last_year = max(year),
+    treatment_reversal = any(diff(post) < 0),
+    cohort_values = n_distinct(first_treat),
+    .groups = "drop"
+  )
+
+data.frame(
+  states = n_distinct(castle_panel$sid),
+  years = n_distinct(castle_panel$year),
+  observations = nrow(castle_panel),
+  treated_states = n_distinct(castle_panel$sid[castle_panel$first_treat > 0]),
+  never_treated_states = n_distinct(castle_panel$sid[castle_panel$first_treat == 0])
+)
+
+stopifnot(
+  !anyDuplicated(castle_panel[c("sid", "year")]),
+  length(unique(panel_audit$observations)) == 1L,
+  !any(panel_audit$treatment_reversal),
+  all(panel_audit$cohort_values == 1L),
+  any(castle_panel$first_treat == 0L),
+  n_distinct(castle_panel$first_treat[castle_panel$first_treat > 0]) > 1L
+)
+```
+
+The absorbing-treatment check matters: modern staggered DiD methods generally assume units do not leave treatment after adoption.
+
+## Step 2: Map Cohorts And Untreated Support
+
+```{r}
+cohort_table <- castle_panel |>
+  distinct(sid, first_treat) |>
+  count(first_treat, name = "states") |>
+  mutate(
+    cohort = if_else(
+      first_treat == 0L,
+      "Never treated",
+      as.character(first_treat)
+    )
+  ) |>
+  select(cohort, first_treat, states) |>
+  arrange(first_treat)
+
+support_table <- castle_panel |>
+  distinct(sid, year, first_treat) |>
+  group_by(year) |>
+  summarise(
+    never_treated = sum(first_treat == 0L),
+    not_yet_treated = sum(first_treat > year),
+    eligible_controls = sum(first_treat == 0L | first_treat > year),
+    already_treated = sum(first_treat > 0L & first_treat <= year),
+    .groups = "drop"
+  )
+
+cohort_table
+support_table
+
+stopifnot(
+  sum(cohort_table$states) == n_distinct(castle_panel$sid),
+  all(support_table$eligible_controls >= support_table$never_treated),
+  all(support_table$eligible_controls + support_table$already_treated ==
+    n_distinct(castle_panel$sid))
+)
+```
+
+Checkpoint: in the final sample year, which states can still provide an untreated comparison without using already-treated observations?
+
+## Step 3: Plot Outcome Paths By Adoption Cohort
+
+```{r, fig.height=5.4, fig.width=10}
+cohort_trends <- castle_panel |>
+  mutate(
+    cohort = if_else(
+      first_treat == 0L,
+      "Never treated",
+      paste("First treated", first_treat)
+    )
+  ) |>
+  group_by(cohort, first_treat, year) |>
+  summarise(mean_log_homicide = mean(l_homicide), .groups = "drop")
+
+ggplot(
+  cohort_trends,
+  aes(year, mean_log_homicide, colour = cohort, group = cohort)
+) +
+  geom_line(linewidth = 0.75) +
+  geom_point(size = 1.5) +
+  labs(
+    x = NULL,
+    y = "Mean log homicide rate",
+    colour = "Adoption cohort",
+    title = "Castle-doctrine adoption is staggered across state cohorts"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(legend.position = "bottom")
+```
+
+The graph is an outcome audit, not an estimator. Look for different pre-adoption movement, sparse late-event support, and cohort-specific changes that make a single weighted average hard to interpret.
+
+## Step 4: Estimate Static TWFE
+
+```{r}
+twfe_fit <- feols(
+  l_homicide ~ post | sid + year,
+  data = castle_panel,
+  vcov = ~ sid
+)
+
+twfe_result <- data.frame(
+  estimate = coef(twfe_fit)[["post"]],
+  state_clustered_se = se(twfe_fit)[["post"]],
+  lower_95 = confint(twfe_fit)["post", 1],
+  upper_95 = confint(twfe_fit)["post", 2]
+)
+
+twfe_result
+
+stopifnot(
+  nobs(twfe_fit) == nrow(castle_panel),
+  is.finite(twfe_result$estimate),
+  twfe_result$state_clustered_se > 0
+)
+```
+
+State clustering allows arbitrary within-state error dependence. It does not determine whether the comparisons embedded in the coefficient identify a meaningful ATT.
+
+## Step 5: Decompose The TWFE Coefficient
+
+[`bacondecomp::bacon()`](https://cran.r-project.org/web/packages/bacondecomp/bacondecomp.pdf) expresses the static TWFE coefficient as a weighted average of 2×2 DiD estimates [@goodmanbacon2021timing].
+
+```{r}
+bacon_parts <- bacondecomp::bacon(
+  l_homicide ~ post,
+  data = as.data.frame(castle_panel),
+  id_var = "sid",
+  time_var = "year",
+  quietly = TRUE
+)
+
+bacon_summary <- bacon_parts |>
+  mutate(weighted_estimate = estimate * weight) |>
+  group_by(type) |>
+  summarise(
+    comparisons = n(),
+    total_weight = sum(weight),
+    contribution_to_twfe = sum(weighted_estimate),
+    .groups = "drop"
+  ) |>
+  arrange(desc(total_weight))
+
+bacon_reconstruction <- sum(bacon_parts$estimate * bacon_parts$weight)
+
+bacon_summary
+data.frame(
+  twfe_coefficient = coef(twfe_fit)[["post"]],
+  bacon_weighted_average = bacon_reconstruction,
+  difference = coef(twfe_fit)[["post"]] - bacon_reconstruction
+)
+
+stopifnot(
+  abs(sum(bacon_parts$weight) - 1) < 1e-8,
+  abs(coef(twfe_fit)[["post"]] - bacon_reconstruction) < 1e-8,
+  all(c(
+    "Earlier vs Later Treated",
+    "Later vs Earlier Treated",
+    "Treated vs Untreated"
+  ) %in% bacon_parts$type)
+)
+```
+
+“Later vs Earlier Treated” means the earlier cohort is already treated while it serves as the comparison. If effects evolve after adoption, that comparison can subtract one treatment effect from another rather than recover a clean untreated counterfactual.
+
+## Step 6: Inspect The Decomposition
+
+```{r, fig.height=5.2, fig.width=10}
+ggplot(
+  bacon_parts,
+  aes(estimate, weight, colour = type)
+) +
+  geom_point(alpha = 0.8, size = 2.5) +
+  geom_vline(
+    xintercept = coef(twfe_fit)[["post"]],
+    linetype = "dashed",
+    colour = "grey35"
+  ) +
+  labs(
+    x = "2×2 DiD estimate",
+    y = "TWFE weight",
+    colour = "Comparison type",
+    title = "The static TWFE estimate combines substantively different comparisons"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(legend.position = "bottom")
+```
+
+Checkpoint: identify the comparison type whose validity depends most directly on treatment effects not changing with exposure length.
+
+## Step 7: Compare Event-Study Estimators
+
+The conventional event study interacts relative-time indicators with treatment status inside a TWFE model. The Sun–Abraham specification instead estimates cohort-by-relative-time effects and aggregates them, avoiding already-treated cohorts as controls for the interaction-weighted effect [@sunabraham2021dynamic].
+
+```{r}
+conventional_event_fit <- feols(
+  l_homicide ~ i(event_time, ref = c(-1000, -1)) | sid + year,
+  data = castle_panel,
+  vcov = ~ sid
+)
+
+sun_abraham_fit <- feols(
+  l_homicide ~ sunab(first_treat, year, ref.p = -1) | sid + year,
+  data = castle_panel,
+  vcov = ~ sid
+)
+
+extract_event_terms <- function(model, estimator) {
+  estimates <- coef(model)
+  standard_errors <- se(model)
+  event_time <- as.integer(sub(".*::", "", names(estimates)))
+
+  data.frame(
+    estimator = estimator,
+    event_time = event_time,
+    estimate = unname(estimates),
+    standard_error = unname(standard_errors),
+    lower_95 = unname(estimates - 1.96 * standard_errors),
+    upper_95 = unname(estimates + 1.96 * standard_errors)
+  ) |>
+    filter(event_time >= -5, event_time <= 4)
+}
+
+event_comparison <- bind_rows(
+  extract_event_terms(conventional_event_fit, "Conventional TWFE"),
+  extract_event_terms(sun_abraham_fit, "Sun–Abraham")
+)
+
+event_comparison
+
+stopifnot(
+  all(c("Conventional TWFE", "Sun–Abraham") %in% event_comparison$estimator),
+  all(event_comparison$event_time >= -5 & event_comparison$event_time <= 4),
+  any(event_comparison$event_time < 0),
+  any(event_comparison$event_time >= 0),
+  all(is.finite(event_comparison$estimate))
+)
+```
+
+```{r, fig.height=5.4, fig.width=10}
+ggplot(
+  event_comparison,
+  aes(event_time, estimate, colour = estimator)
+) +
+  geom_hline(yintercept = 0, colour = "grey55") +
+  geom_vline(xintercept = -1, linetype = "dashed", colour = "grey55") +
+  geom_ribbon(
+    aes(ymin = lower_95, ymax = upper_95, fill = estimator),
+    alpha = 0.12,
+    colour = NA
+  ) +
+  geom_line(linewidth = 0.75) +
+  geom_point(size = 2) +
+  scale_x_continuous(breaks = -5:4) +
+  labs(
+    x = "Years relative to adoption (-1 omitted)",
+    y = "Estimated log-homicide effect",
+    colour = NULL,
+    fill = NULL,
+    title = "Estimator choice changes the staggered event-study profile"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(legend.position = "bottom")
+```
+
+The estimators use the same displayed event window and omitted period, but their implicit comparisons differ. A lead confidence interval covering zero is not proof that parallel trends holds: lead tests can have low power, and conditioning analysis on a passed pre-test can distort inference [@roth2022pretest].
+
+## Step 8: Write A Design Assessment
+
+Answer each question before choosing a preferred estimate:
+
+1. Are never-treated states substantively credible controls for adopting states?
+2. Could states change behaviour before a law becomes effective?
+3. Could castle-doctrine laws or firearm behaviour spill across state borders?
+4. Do late post-treatment event times rely on only one or two early cohorts?
+5. How much of static TWFE comes from already-treated comparisons?
+6. Do the conventional and Sun–Abraham profiles tell the same substantive story?
+
+## Practical Implications
+
+- Treatment timing is part of the design, not a nuisance variable.
+- Static TWFE can be reconstructed exactly while still combining questionable comparisons.
+- Clustered standard errors address within-state dependence, not treatment-effect contamination.
+- Event-study leads are diagnostics, not an assumption test that can certify the design.
+- Modern estimators improve comparison discipline but cannot make a substantively poor control group credible.
+
+Next, use the [modern multi-period lab](https://defenceeconomist.github.io/qedlabs/labs/difference-in-differences-modern-estimators-lab.html) to estimate explicit group-time effects and control their aggregation.
+
+## Worked answers
+
+- Future adopters cease to be untreated controls after adoption.
+- Nonnegative Bacon weights on 2×2 estimates do not rule out negative implicit weights on underlying treatment effects.
+- Agreement between estimators does not establish parallel trends; disagreement prompts an audit of comparisons, support, and target weights.
+- State clustering handles within-state dependence, not confounding.

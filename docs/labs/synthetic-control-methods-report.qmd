@@ -3,9 +3,6 @@ title: "Synthetic Control for Causal Inference"
 subtitle: "Classical SCM, donor-pool design, and placebo diagnostics"
 author: "Luke Heley"
 date: 6 April 2026
-bibliography:
-  - ../references.bib
-  - ../../evaluation-bibliography.bib
 link-citations: true
 format:
   html:

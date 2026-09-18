@@ -1,5 +1,7 @@
 ---
 title: "Lab: Modern Multi-Period Difference-in-Differences"
+aliases:
+  - /labs/difference-in-differences-modern-estimators-python-lab.html
 format:
   html: default
 execute:
@@ -11,7 +13,14 @@ execute:
 
 This is the third difference-in-differences lab. The guided core takes about 45–60 minutes; the `HonestDiD` sensitivity analysis is an optional extension.
 
-[Download the R Jupyter notebook](notebooks/difference-in-differences-modern-estimators-lab.ipynb){.cta-button download="difference-in-differences-modern-estimators-lab.ipynb"}
+<!-- lab-downloads:start -->
+::: {.resource-links}
+[Quarto document](downloads/difference-in-differences-modern-estimators-lab.qmd){download="difference-in-differences-modern-estimators-lab.qmd"}
+[R Jupyter notebook](notebooks/difference-in-differences-modern-estimators-lab.ipynb){download="difference-in-differences-modern-estimators-lab.ipynb"}
+[Complete lab ZIP](downloads/difference-in-differences-modern-estimators-lab.zip){download="difference-in-differences-modern-estimators-lab.zip"}
+[Data and setup](data.qmd#difference-in-differences-modern-estimators-lab)
+:::
+<!-- lab-downloads:end -->
 
 - Estimate group-time effects before choosing an aggregation.
 - Make the comparison group and parallel-trends assumption explicit.
@@ -20,7 +29,7 @@ This is the third difference-in-differences lab. The guided core takes about 45�
 
 The main workflow implements Callaway and Sant'Anna with the [`did` package](https://bcallaway11.github.io/did/) and compares it with Sun–Abraham in `fixest` [@callaway2021multipletime; @sunabraham2021dynamic]. The extension implements Rambachan and Roth with [`HonestDiD`](https://cran.r-project.org/web/packages/HonestDiD/HonestDiD.pdf) [@rambachanroth2023parallel]. See the [Callaway–Sant'Anna notes](../notes/did/callaway-santanna-multiple-periods-notes.qmd) and [modern DiD synthesis](../notes/did/roth-et-al-did-synthesis-notes.qmd).
 
-[Python companion](difference-in-differences-modern-estimators-python-lab.qmd) · [Tested environment and reproduction record](difference-in-differences-reproducibility.qmd)
+[Tested environment and reproduction record](difference-in-differences-reproducibility.qmd)
 
 ## Training Goal
 
@@ -37,6 +46,13 @@ By the end of the core lab, you should be able to:
 [`did::mpdta`](https://bcallaway11.github.io/did/reference/mpdta.html) is a balanced county-year panel based on minimum-wage applications. The outcome is log teen employment (`lemp`), `first.treat` is the first treatment year, and zero identifies never-treated counties.
 
 ```{r}
+data_helpers <- c("data/load-data.R", "../data/load-data.R", "docs/labs/data/load-data.R")
+data_helpers <- data_helpers[file.exists(data_helpers)]
+if (!length(data_helpers)) stop("Extract the complete lab ZIP, including its data folder, before running.")
+source(data_helpers[[1]])
+```
+
+```{r}
 required_packages <- c(
   "digest",
   "did",
@@ -51,16 +67,11 @@ missing_packages <- required_packages[!vapply(
   quietly = TRUE
 )]
 if (length(missing_packages) > 0) {
-  install.packages(missing_packages, repos = "https://cloud.r-project.org")
+  stop("Install the documented R environment first; missing: ", paste(missing_packages, collapse=", "), call.=FALSE)
 }
 invisible(lapply(required_packages, library, character.only = TRUE))
 
-# Match the Python lab's immutable upstream data and verify its checksum.
-data_file <- tempfile(fileext = ".rda")
-download.file("https://raw.githubusercontent.com/cran/did/453a1be859411edc1c8933891940cb3a570d7095/data/mpdta.rda", data_file, mode = "wb", quiet = TRUE)
-stopifnot(digest::digest(file = data_file, algo = "sha256") == "0be3bc5eaaedaa50e047deaf45ad0e193e7210df1644103c63a6c1baa75965d4")
-load(data_file)
-unlink(data_file)
+mpdta <- qed_data("mpdta")
 
 
 mpdta <- mpdta |> mutate(exposed = as.integer(first.treat > 0 & year >= first.treat))
@@ -445,7 +456,7 @@ Differences can arise from cohort weights, available comparisons, nuisance estim
 
 ```{r}
 if (!requireNamespace("HonestDiD", quietly = TRUE)) {
-  install.packages("HonestDiD", repos = "https://cloud.r-project.org")
+  stop("Install HonestDiD before running this optional extension.", call.=FALSE)
 }
 
 sensitivity_sample <- mpdta |>

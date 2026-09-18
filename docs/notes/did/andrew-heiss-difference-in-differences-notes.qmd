@@ -130,11 +130,11 @@ Spring 2026 worked example: Kentucky injury data, group means, interaction regre
 
 The following exercise is QED Labs teaching commentary.
 
-### Reproducing a teaching result in two languages
+### Reproducing a teaching result
 
-The [R foundations lab](../../labs/difference-in-differences-foundations-lab.qmd) and [Python companion](../../labs/difference-in-differences-foundations-python-lab.qmd) use identical upstream data and the same Kentucky filter. They test equality of the manual contrast and unadjusted regression interaction.
+The [R foundations lab](../../labs/difference-in-differences-foundations-lab.qmd) uses the bundled data and the Kentucky filter. It tests equality of the manual contrast and unadjusted regression interaction.
 
-**Exercise:** a Python coefficient differs from the R result. What do you inspect first?
+**Exercise:** a new coefficient differs from the verified R result. What do you inspect first?
 
 **Worked answer:** compare row counts, the four cell means, group coding, outcome transformation, and missing-value exclusions. Robust standard errors alone should not change an OLS coefficient. Adding controls or switching weights can change it. Compare the same statistical object before treating disagreement as a language problem.
 

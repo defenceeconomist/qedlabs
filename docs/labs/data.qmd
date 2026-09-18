@@ -1,0 +1,270 @@
+---
+title: "Lab Data and Offline Setup"
+---
+
+All lab inputs are stored in this repository. No lab downloads data or installs
+packages when it runs. Prepare R and its packages once, then work offline.
+
+[All lab data (ZIP)](downloads/all-lab-data.zip){download="all-lab-data.zip"} · [Data manifest](data/manifest.json) · [Offline setup](offline-setup.md)
+
+## Run a complete lab
+
+Extract its complete ZIP and keep the `data/` folder beside the `.qmd` and `.ipynb`.
+Select the R kernel in Jupyter and run cells in order, or render the Quarto file.
+Individual documents also work with the all-data ZIP extracted into the same directory.
+The data loader verifies SHA-256 hashes and fails on missing or changed files;
+it never falls back to an internet download.
+
+Software installation is separate. Install the packages listed in the lab's setup
+cell plus `digest`, `jsonlite`, `IRkernel`, `knitr` and `rmarkdown` before going offline.
+See the [DiD environment](difference-in-differences-reproducibility.qmd) and
+[RDD environment](regression-discontinuity-reproducibility.qmd) for tested locks.
+
+## Datasets
+
+RDS snapshots preserve R types, factor levels and time-series metadata. The
+manifest records variables, missing values, source revisions and checksums.
+Original package documentation and license notices are retained alongside the files.
+Do not interchange the MatchIt LaLonde sample with the NSW/CPS benchmark samples.
+
+### lalonde {#lalonde}
+
+614 records. [R data](data/lalonde.rds){download="lalonde.rds"} · [Variable documentation](data/provenance/lalonde.txt)
+
+Source: https://kosukeimai.github.io/MatchIt/, https://github.com/kosukeimai/MatchIt
+
+Distribution notice: GPL (>= 2).
+
+### black_politicians {#black-politicians}
+
+5,593 records. [R data](data/black_politicians.rds){download="black_politicians.rds"} · [Variable documentation](data/provenance/black_politicians.txt)
+
+Source: https://github.com/NickCH-K/causaldata
+
+Distribution notice: MIT + file LICENSE.
+
+### nsw_mixtape {#nsw-mixtape}
+
+445 records. [R data](data/nsw_mixtape.rds){download="nsw_mixtape.rds"} · [Variable documentation](data/provenance/nsw_mixtape.txt)
+
+Source: https://github.com/NickCH-K/causaldata
+
+Distribution notice: MIT + file LICENSE.
+
+### cps_mixtape {#cps-mixtape}
+
+15,992 records. [R data](data/cps_mixtape.rds){download="cps_mixtape.rds"} · [Variable documentation](data/provenance/cps_mixtape.txt)
+
+Source: https://github.com/NickCH-K/causaldata
+
+Distribution notice: MIT + file LICENSE.
+
+### Seatbelts {#seatbelts}
+
+192 records. [R data](data/Seatbelts.rds){download="Seatbelts.rds"} · [Variable documentation](data/provenance/Seatbelts.txt)
+
+Source: https://cran.r-project.org/package=datasets
+
+Distribution notice: Part of R 4.5.1.
+
+### synth.data {#synth.data}
+
+168 records. [R data](data/synth.data.rds){download="synth.data.rds"} · [Variable documentation](data/provenance/synth.data.txt)
+
+Source: https://web.stanford.edu/~jhain/
+
+Distribution notice: GPL (>= 2).
+
+### smoking {#smoking}
+
+1,209 records. [R data](data/smoking.rds){download="smoking.rds"} · [Variable documentation](data/provenance/smoking.txt)
+
+Source: https://cran.r-project.org/package=tidysynth
+
+Distribution notice: MIT + file LICENSE.
+
+### kansas {#kansas}
+
+5,250 records. [R data](data/kansas.rds){download="kansas.rds"} · [Variable documentation](data/provenance/kansas.txt)
+
+Source: https://cran.r-project.org/package=augsynth
+
+Distribution notice: MIT + file LICENSE.
+
+### injury {#injury}
+
+7,150 records. [R data](data/injury.rds){download="injury.rds"} · [Variable documentation](data/provenance/injury.txt)
+
+Source: https://raw.githubusercontent.com/cran/wooldridge/5c16676c8c8e6685985d98661c55088c878902be/data/injury.RData
+
+Distribution notice: GPL-3.
+
+### castle {#castle}
+
+550 records. [R data](data/castle.rds){download="castle.rds"} · [Variable documentation](data/provenance/castle.txt)
+
+Source: https://raw.githubusercontent.com/cran/causaldata/6d25e70297812a2e89a1a20e3bc24b32f6d3fbaf/data/castle.rda
+
+Distribution notice: MIT + file LICENSE.
+
+### mpdta {#mpdta}
+
+2,500 records. [R data](data/mpdta.rds){download="mpdta.rds"} · [Variable documentation](data/provenance/mpdta.txt)
+
+Source: https://raw.githubusercontent.com/cran/did/453a1be859411edc1c8933891940cb3a570d7095/data/mpdta.rda
+
+Distribution notice: GPL-3.
+
+### gov_transfers {#gov-transfers}
+
+1,948 records. [R data](data/gov_transfers.rds){download="gov_transfers.rds"} · [Variable documentation](data/provenance/gov_transfers.txt)
+
+Source: https://github.com/NickCH-K/causaldata
+
+Distribution notice: MIT + file LICENSE.
+
+### gov_transfers_density {#gov-transfers-density}
+
+52,549 records. [R data](data/gov_transfers_density.rds){download="gov_transfers_density.rds"} · [Variable documentation](data/provenance/gov_transfers_density.txt)
+
+Source: https://github.com/NickCH-K/causaldata
+
+Distribution notice: MIT + file LICENSE.
+
+### mortgages {#mortgages}
+
+214,144 records. [R data](data/mortgages.rds){download="mortgages.rds"} · [Variable documentation](data/provenance/mortgages.txt)
+
+Source: https://github.com/NickCH-K/causaldata
+
+Distribution notice: MIT + file LICENSE.
+
+### hisp {#hisp}
+
+19,827 records. [R data](data/hisp.rds){download="hisp.rds"} · [Variable documentation](data/provenance/hisp.txt)
+
+Source: https://www.worldbank.org/en/programs/sief-trust-fund/publication/impact-evaluation-in-practice
+
+Distribution notice: World Bank accompanying teaching materials; retain attribution and [original disclaimer](data/provenance/HISP-NOTICE.md); no additional license asserted.
+
+[CSV](data/hisp/evaluation.csv) · [Stata data](data/hisp/evaluation.dta) · [Original replication script](data/hisp/HISP%20Book%20replication.do)
+
+These are the original World Bank teaching materials recovered from repository history. The original Stata script is archival: run the R lab for an offline workflow.
+
+### service {#service}
+
+120 records. [R data](data/service.rds){download="service.rds"} · [Variable documentation](data/provenance/service.txt)
+
+Source: QED Labs: simulate_service() in interrupted-time-series-counterfactual-validation-lab.qmd
+
+Distribution notice: Repository-authored synthetic teaching data; no real people or records.
+
+## Data by lab
+
+### Lab: Black Politicians {#black-politicians-lab}
+
+[black_politicians](#black-politicians)
+
+[Complete lab ZIP](downloads/black-politicians-lab.zip){download="black-politicians-lab.zip"} · [Lab page](black-politicians-lab.qmd)
+
+### Lab: Difference-in-Differences Foundations With Kentucky Workers' Compensation {#difference-in-differences-foundations-lab}
+
+[injury](#injury)
+
+[Complete lab ZIP](downloads/difference-in-differences-foundations-lab.zip){download="difference-in-differences-foundations-lab.zip"} · [Lab page](difference-in-differences-foundations-lab.qmd)
+
+### Lab: Staggered Adoption and TWFE Diagnostics {#difference-in-differences-staggered-diagnostics-lab}
+
+[castle](#castle)
+
+[Complete lab ZIP](downloads/difference-in-differences-staggered-diagnostics-lab.zip){download="difference-in-differences-staggered-diagnostics-lab.zip"} · [Lab page](difference-in-differences-staggered-diagnostics-lab.qmd)
+
+### Lab: Modern Multi-Period Difference-in-Differences {#difference-in-differences-modern-estimators-lab}
+
+[mpdta](#mpdta)
+
+[Complete lab ZIP](downloads/difference-in-differences-modern-estimators-lab.zip){download="difference-in-differences-modern-estimators-lab.zip"} · [Lab page](difference-in-differences-modern-estimators-lab.qmd)
+
+### Lab: HISP IE in Practice {#hisp-ie-practice-lab}
+
+[hisp](#hisp)
+
+[Complete lab ZIP](downloads/hisp-ie-practice-lab.zip){download="hisp-ie-practice-lab.zip"} · [Lab page](hisp-ie-practice-lab.qmd)
+
+### Lab: Interrupted Time Series Foundations With Seatbelts {#interrupted-time-series-mechanics-lab}
+
+[Seatbelts](#seatbelts)
+
+[Complete lab ZIP](downloads/interrupted-time-series-mechanics-lab.zip){download="interrupted-time-series-mechanics-lab.zip"} · [Lab page](interrupted-time-series-mechanics-lab.qmd)
+
+### Lab: Seatbelt Law Design and Robustness {#interrupted-time-series-design-diagnostics-lab}
+
+[Seatbelts](#seatbelts)
+
+[Complete lab ZIP](downloads/interrupted-time-series-design-diagnostics-lab.zip){download="interrupted-time-series-design-diagnostics-lab.zip"} · [Lab page](interrupted-time-series-design-diagnostics-lab.qmd)
+
+### Lab: Interrupted Time Series Counterfactual Validation {#interrupted-time-series-counterfactual-validation-lab}
+
+[service](#service)
+
+[Complete lab ZIP](downloads/interrupted-time-series-counterfactual-validation-lab.zip){download="interrupted-time-series-counterfactual-validation-lab.zip"} · [Lab page](interrupted-time-series-counterfactual-validation-lab.qmd)
+
+### Lab: LaLonde Matching {#lalonde-matching-lab}
+
+[lalonde](#lalonde)
+
+[Complete lab ZIP](downloads/lalonde-matching-lab.zip){download="lalonde-matching-lab.zip"} · [Lab page](lalonde-matching-lab.qmd)
+
+### Lab: NSW and CPS Benchmark {#nsw-cps-benchmark-lab}
+
+[nsw_mixtape](#nsw-mixtape), [cps_mixtape](#cps-mixtape)
+
+[Complete lab ZIP](downloads/nsw-cps-benchmark-lab.zip){download="nsw-cps-benchmark-lab.zip"} · [Lab page](nsw-cps-benchmark-lab.qmd)
+
+### Lab: Sharp RD foundations with government transfers {#regression-discontinuity-foundations-lab}
+
+[gov_transfers](#gov-transfers)
+
+[Complete lab ZIP](downloads/regression-discontinuity-foundations-lab.zip){download="regression-discontinuity-foundations-lab.zip"} · [Lab page](regression-discontinuity-foundations-lab.qmd)
+
+### Lab: RDD design diagnostics and sensitivity {#regression-discontinuity-diagnostics-lab}
+
+[gov_transfers](#gov-transfers), [gov_transfers_density](#gov-transfers-density)
+
+[Complete lab ZIP](downloads/regression-discontinuity-diagnostics-lab.zip){download="regression-discontinuity-diagnostics-lab.zip"} · [Lab page](regression-discontinuity-diagnostics-lab.qmd)
+
+### Lab: Fuzzy RD and local IV with veteran home ownership {#regression-discontinuity-fuzzy-lab}
+
+[mortgages](#mortgages)
+
+[Complete lab ZIP](downloads/regression-discontinuity-fuzzy-lab.zip){download="regression-discontinuity-fuzzy-lab.zip"} · [Lab page](regression-discontinuity-fuzzy-lab.qmd)
+
+### Lab: Augmented SCM With Kansas {#synthetic-control-augmentation-lab}
+
+[kansas](#kansas)
+
+[Complete lab ZIP](downloads/synthetic-control-augmentation-lab.zip){download="synthetic-control-augmentation-lab.zip"} · [Lab page](synthetic-control-augmentation-lab.qmd)
+
+### Lab: Synthetic Control Design {#synthetic-control-design-lab}
+
+Design worksheet; no supplied dataset is required.
+
+[Complete lab ZIP](downloads/synthetic-control-design-lab.zip){download="synthetic-control-design-lab.zip"} · [Lab page](synthetic-control-design-lab.qmd)
+
+### Lab: Synthetic Control Donor Pool Design {#synthetic-control-donor-pool-lab}
+
+Design worksheet; no supplied dataset is required.
+
+[Complete lab ZIP](downloads/synthetic-control-donor-pool-lab.zip){download="synthetic-control-donor-pool-lab.zip"} · [Lab page](synthetic-control-donor-pool-lab.qmd)
+
+### Lab: Synthetic Control Mechanics {#synthetic-control-mechanics-lab}
+
+[synth.data](#synth.data)
+
+[Complete lab ZIP](downloads/synthetic-control-mechanics-lab.zip){download="synthetic-control-mechanics-lab.zip"} · [Lab page](synthetic-control-mechanics-lab.qmd)
+
+### Lab: Proposition 99 With tidysynth {#synthetic-control-proposition-99-lab}
+
+[smoking](#smoking)
+
+[Complete lab ZIP](downloads/synthetic-control-proposition-99-lab.zip){download="synthetic-control-proposition-99-lab.zip"} · [Lab page](synthetic-control-proposition-99-lab.qmd)

@@ -1,0 +1,39 @@
+---
+title: "Cunningham: Regression Discontinuity"
+subtitle: "Causal Inference: The Mixtape, first edition, Chapter 6"
+date: 2026-09-18
+---
+
+## Source and scope
+
+These notes use the library's **2021 first-edition Mixtape** [@cunningham2021rdd], especially [§6.2, Estimation Using an RDD](https://portal.heley.uk/researchlibrary/books/causal-inference-mixtape/read/causal-inference-mixtape:regression-discontinuity-6-2-estimation-using-an-rdd) and [§6.3, Challenges to Identification](https://portal.heley.uk/researchlibrary/books/causal-inference-mixtape/read/causal-inference-mixtape:regression-discontinuity-6-3-challenges-to-identification). Library positions 48–54 are HTML section positions, not printed pages. The separately catalogued *Remix* is a different source and is not substituted here.
+
+## Continuity is a counterfactual claim
+
+Cunningham explains RD through potential outcomes. The conditional mean under treatment and the conditional mean without treatment each pass smoothly through the threshold. Observed outcomes switch between those functions at the assignment boundary, producing the jump attributed to treatment.
+
+Smoothness does not mean outcomes must be unrelated to the score. Strong slopes are compatible with RD. What is excluded is another discontinuous cause at the same cutoff. The drinking-law example illustrates why institutions matter: other changes at age 21 must be considered before attributing an outcome jump to legal access to alcohol.
+
+Continuity cannot be tested directly because each person supplies only one observed treatment state. Baseline outcomes, unaffected outcomes and institutional comparisons challenge the argument indirectly.
+
+## A misspecified curve can look like treatment
+
+The simulations show how straight lines fitted over a broad nonlinear relationship can manufacture a discontinuity with a zero true effect. Flexible modelling is necessary, but unrestricted complexity is not a solution by itself.
+
+Center the score at the threshold and permit different functions on each side. Distinguish historical polynomial specifications used to explain the method from a preferred implementation. The chapter discusses high-order-polynomial concerns, boundary bias in local means, and local regression.
+
+Show how the estimated jump changes across credible local windows and low-order fits, reporting uncertainty and support. Assess a justified set of analyses rather than searching for the most favourable coefficient.
+
+## Two forms of locality
+
+Continuity-based RD identifies a limiting average effect at the cutoff. The chapter also introduces local randomization: within a defensible finite neighbourhood, assignment may be treated as if random under additional assumptions. That motivates randomization inference. A narrow bandwidth alone does not establish those assumptions.
+
+## Diagnostics are evidence, not certification
+
+Cunningham combines density checks for sorting, checks for jumps in predetermined covariates, and placebo cutoffs within a common treatment regime. Each addresses a different implication of the design argument.
+
+The birth-weight discussion adds a complication. Rounding can produce heaps of observations with unusual outcomes even when a conventional density test does not flag the exact threshold. Inspect recording practices and support rather than relying on one nonsignificant test.
+
+## Teaching use
+
+Read this after [Gertler](gertler-regression-discontinuity-notes.qmd). Its strongest contribution is connecting the causal assumption to the shape of the data and showing how estimation can misrepresent that shape. Use the [Angrist–Pischke notes](mostly-harmless-regression-discontinuity-notes.qmd) to develop fuzzy RD's IV conditions and complier interpretation.

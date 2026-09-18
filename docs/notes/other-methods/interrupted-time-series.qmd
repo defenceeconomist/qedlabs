@@ -6,6 +6,8 @@ execute:
   message: false
 ---
 
+[Practical guide: how to do interrupted time series](how-to-do-interrupted-time-series.qmd)
+
 # What The Method Is
 
 Interrupted time series (ITS) evaluates an intervention introduced at a known point in a regularly observed series. Instead of comparing one observation before treatment with one after treatment, it estimates the trajectory before the intervention and asks whether the level or trend changed when the intervention began [@wagner2002segmented; @lopezbernal2017tutorial].

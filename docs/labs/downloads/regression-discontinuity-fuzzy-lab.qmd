@@ -1,0 +1,234 @@
+---
+title: 'Lab: Fuzzy RD and local IV with veteran home ownership'
+format:
+  html:
+    toc: true
+    embed-resources: true
+engine: knitr
+execute:
+  echo: true
+  eval: true
+  error: false
+references:
+- URL: https://portal.heley.uk/researchlibrary/books/the-effect
+  accessed:
+    date-parts:
+    - - 2026
+      - 9
+      - 18
+  author:
+  - family: Huntington-Klein
+    given: Nick
+  id: huntingtonklein2025rdd
+  issued:
+    date-parts:
+    - - 2025
+  note: Research Library HTML snapshot; year follows the library catalogue
+  title: 'The effect: An introduction to research design and causality. Chapter 20:
+    Regression discontinuity'
+  title-short: The effect
+  type: webpage
+- DOI: 10.1257/pol.5.2.111
+  author:
+  - family: Fetter
+    given: Daniel K.
+  container-title: 'American Economic Journal: Economic Policy'
+  id: fetter2013mortgages
+  issue: '2'
+  issued:
+    date-parts:
+    - - 2013
+  page: 111-147
+  title: How do mortgage subsidies affect home ownership? Evidence from the mid-century
+    GI bills
+  type: article-journal
+  volume: '5'
+---
+
+## How to use this lab
+
+Allow 60–90 minutes. You should be comfortable with basic regression and R data frames. Restore the [tested environment](https://defenceeconomist.github.io/qedlabs/labs/regression-discontinuity-reproducibility.html), then run every cell in order in a fresh kernel. Every run loads and verifies the bundled local data. No data are downloaded. The HTML page displays code; the downloadable notebook executes it.
+
+
+
+[RDD overview](https://defenceeconomist.github.io/qedlabs/notes/other-methods/regression-discontinuity.html) · [Source reading map](https://defenceeconomist.github.io/qedlabs/notes/rdd/regression-discontinuity-sources.html)
+
+## Learning objectives
+
+1. Separate assignment, receipt and outcomes.
+2. Recover the same conventional local effect as a Wald ratio, an IV fit and fuzzy RD.
+3. Distinguish conventional estimates from robust bias-corrected estimates and intervals.
+4. Assess the first stage, discrete-score support, exclusion restriction and local interpretation.
+
+## Research question and design
+
+Does veteran status induced by a birth-cohort threshold affect home ownership? The data derive from Fetter's study of mid-century GI Bills and the worked example in *The Effect* [@fetter2013mortgages; @huntingtonklein2025rdd]. This exercise reproduces an **unadjusted local teaching contrast**, not the paper's full covariate-adjusted specification.
+
+| Component | Definition |
+|---|---|
+| Running variable | `qob_minus_kw`, quarter of birth centered on the supplied threshold |
+| Instrument | `z = 1(qob_minus_kw >= 0)`; keep the supplied orientation |
+| Actual treatment | `vet_wwko`, veteran of World War II or the Korean War |
+| Outcome | `home_ownership`, a binary indicator |
+| Primary window | Strictly within 12 quarters; sensitivity within 6 and 9 |
+| Target | Local IV effect of veteran status for threshold compliers, conditional on the IV and score-model assumptions |
+
+The catalogue's eligibility wording is not enough to determine first-stage direction: veteran rates **fall** across this score's zero. The first-stage and reduced-form jumps must therefore retain their signs. The score has half-integer quarterly support, not arbitrarily close observations. Finite-support extrapolation is a substantive limitation, even with many people.
+
+## 1. Load data and inspect the cutoff
+
+```{r}
+data_helpers <- c("data/load-data.R", "../data/load-data.R", "docs/labs/data/load-data.R")
+data_helpers <- data_helpers[file.exists(data_helpers)]
+if (!length(data_helpers)) stop("Extract the complete lab ZIP, including its data folder, before running.")
+source(data_helpers[[1]])
+```
+
+```{r}
+# Restore the isolated library documented on the setup page before running.
+required <- c("rdrobust", "rddensity", "digest", "jsonlite")
+missing <- required[!vapply(required, requireNamespace, logical(1), quietly=TRUE)]
+if (length(missing)) stop("Restore the RDD environment; missing: ", paste(missing, collapse=", "))
+load_data <- function(name) as.data.frame(qed_data(name))
+require_support <- function(x, h, cutoff=0, order=2) {
+  x <- as.numeric(x) - cutoff
+  if (!is.finite(h) || h <= 0 || !all(is.finite(x))) stop("Nonfinite score or invalid bandwidth")
+  for (side in list(x[x < 0 & x > -h], x[x >= 0 & x < h])) {
+    if (length(side) < 10 || length(unique(side)) < order+2)
+      stop("Insufficient observations or distinct scores on a cutoff side")
+  }
+  invisible(TRUE)
+}
+rd_fit <- function(y, x, h=NULL, p=1, cutoff=0, treatment=NULL) {
+  args <- list(y=as.numeric(y), x=as.numeric(x), c=cutoff, p=p, q=p+1,
+               kernel="triangular", vce="hc0", bwselect="mserd", masspoints="adjust",
+               stdvars=TRUE, level=95, bwrestrict=TRUE, scaleregul=1)
+  if (!is.null(h)) {
+    require_support(x, h, cutoff, p+1)
+    args$h <- h; args$b <- h
+  }
+  if (!is.null(treatment)) args$fuzzy <- as.numeric(treatment)
+  do.call(rdrobust::rdrobust, args)
+}
+rd_row <- function(fit, label) {
+  data.frame(model=label, jump=fit$coef[1,1], bias_corrected=fit$coef[3,1],
+             se_robust=fit$se[3,1], ci_low=fit$ci[3,1], ci_high=fit$ci[3,2],
+             h_left=fit$bws[1,1], h_right=fit$bws[1,2],
+             b_left=fit$bws[2,1], b_right=fit$bws[2,2],
+             n_left=fit$N_h[1], n_right=fit$N_h[2], row.names=NULL)
+}
+binned_plot <- function(x, y, width, ylabel, xlabel="Centered assignment score") {
+  bins <- cut(x, breaks=seq(-width, width, length.out=31), include.lowest=TRUE)
+  means <- aggregate(cbind(x,y), list(bin=bins), mean)
+  plot(means$x, means$y, pch=19, col="#174c63", xlab=xlabel, ylab=ylabel)
+  abline(v=0, lty=2)
+  invisible(means)
+}
+print(vapply(required, function(p) as.character(packageVersion(p)), character(1)))
+```
+```{r}
+raw <- load_data("mortgages")
+required_columns <- c("qob_minus_kw","vet_wwko","home_ownership")
+stopifnot(all(required_columns %in% names(raw)))
+window <- raw[!is.na(raw$qob_minus_kw) & abs(raw$qob_minus_kw)<12,]
+print(colSums(is.na(window[required_columns])))
+vet <- window[complete.cases(window[required_columns]),]
+x <- vet$qob_minus_kw;d <- vet$vet_wwko;y <- vet$home_ownership
+stopifnot(setequal(unique(d),c(0,1)),setequal(unique(y),c(0,1)),!any(x==0))
+print(c(source_n=nrow(raw),window_n=nrow(window),complete_n=nrow(vet)))
+print(list(left_support=sort(unique(x[x<0])),right_support=sort(unique(x[x>0]))))
+quarter_means <- aggregate(cbind(vet_wwko,home_ownership)~qob_minus_kw,data=vet,mean)
+par(mfrow=c(1,2))
+plot(quarter_means$qob_minus_kw,quarter_means$vet_wwko,pch=19,
+     xlab="Centered birth quarter",ylab="Veteran probability");abline(v=0,lty=2)
+plot(quarter_means$qob_minus_kw,quarter_means$home_ownership,pch=19,
+     xlab="Centered birth quarter",ylab="Home-ownership probability");abline(v=0,lty=2)
+par(mfrow=c(1,1))
+```
+
+**Checkpoint:** the full file has 214,144 records. Report the number of distinct quarters, not just people, in the analysis window. The two panels are the **first stage** and **reduced form**; the outcome plot is not a fitted second-stage IV equation.
+
+## 2. Match the local first stage, reduced form and IV
+
+Use the same complete-case sample, triangular weights and linear score controls in both regressions. The exogenous controls are an intercept, scaled score `u=x/h`, and the score-by-cutoff interaction `u*z`. Veteran status is endogenous and `z` is the excluded instrument. There is one endogenous treatment and one excluded instrument; do not accidentally treat actual participation as assignment.
+
+The ratio guard below rejects jumps smaller than one percentage point. This is a transparent classroom numerical safeguard, **not a general weak-instrument test**. Report the first-stage uncertainty as well.
+
+```{r}
+safe_wald <- function(reduced_form, first_stage, minimum=0.01) {
+  if (!all(is.finite(c(reduced_form,first_stage))) || abs(first_stage)<minimum)
+    stop("Unusable first stage: local ratio is unstable")
+  reduced_form/first_stage
+}
+local_iv <- function(y,d,x,h) {
+  require_support(x,h)
+  keep <- abs(x)<h
+  u <- x[keep]/h;yy <- y[keep];dd <- d[keep]
+  z <- as.numeric(u>=0);w <- 1-abs(u)
+  exog <- cbind(1,u,u*z)
+  Z <- cbind(exog,z);X <- cbind(exog,dd)
+  first <- lm.wfit(Z,dd,w)
+  reduced <- lm.wfit(Z,yy,w)
+  first_jump <- unname(first$coefficients[4]);reduced_jump <- unname(reduced$coefficients[4])
+  ratio <- safe_wald(reduced_jump,first_jump)
+  # Just-identified weighted IV moment equation, with a heteroskedastic sandwich.
+  A <- solve(crossprod(Z,w*X))
+  beta <- drop(A %*% crossprod(Z,w*yy))
+  residual <- yy-drop(X %*% beta)
+  variance <- A %*% crossprod(Z,(w*residual)^2*Z) %*% t(A)
+  bread_first <- solve(crossprod(Z,w*Z))
+  variance_first <- bread_first %*% crossprod(Z,(w*first$residuals)^2*Z) %*% bread_first
+  estimate <- beta[4];se <- sqrt(variance[4,4])
+  stopifnot(abs(ratio-estimate)<1e-7)
+  data.frame(bandwidth=h,first_stage=first_jump,first_se=sqrt(variance_first[4,4]),
+    reduced_form=reduced_jump,ratio=ratio,iv_estimate=estimate,iv_se=se,
+    n_left=sum(u<0),n_right=sum(u>=0),support_left=length(unique(u[u<0])),
+    support_right=length(unique(u[u>=0])))
+}
+iv_results <- do.call(rbind,lapply(c(6,9,12),function(h) local_iv(y,d,x,h)))
+stopifnot(all(iv_results$first_stage<0))
+print(iv_results)
+```
+
+The calculation solves the weighted IV moment equations. It does not use ordinary second-stage OLS standard errors as if the fitted treatment were observed without estimation. The reported IV standard error is heteroskedasticity-robust but does **not** correct score-function approximation bias or eliminate the discrete-support limitation.
+
+## 3. Fuzzy RD and robust bias correction
+
+Use the same fixed windows and kernel with `p=1`, `q=2`, `b=h`, HC0 residual variance and mass-point handling. For each window, estimate treatment and outcome jumps separately and also pass actual veteran status to the fuzzy estimator. The conventional fuzzy coefficient should equal the conventional ratio. The bias-corrected coefficient need not equal a naive ratio of separately bias-corrected jumps.
+
+```{r}
+fuzzy_rows <- list();stage_rows <- list()
+for (h in c(6,9,12)) {
+  sample <- abs(x)<h
+  ff <- rd_fit(y[sample],x[sample],h=h,treatment=d[sample])
+  fs <- rd_fit(d[sample],x[sample],h=h)
+  rf <- rd_fit(y[sample],x[sample],h=h)
+  fuzzy_rows[[length(fuzzy_rows)+1]] <- rd_row(ff,paste0("h",h))
+  stage_rows[[length(stage_rows)+1]] <- rd_row(fs,paste0("first_h",h))
+  stage_rows[[length(stage_rows)+1]] <- rd_row(rf,paste0("reduced_h",h))
+  conventional_ratio <- safe_wald(rf$coef[1,1],fs$coef[1,1])
+  target <- iv_results$ratio[iv_results$bandwidth==h]
+  stopifnot(abs(conventional_ratio-target)<1e-7,abs(ff$coef[1,1]-target)<1e-7)
+}
+fuzzy_results <- do.call(rbind,fuzzy_rows);stages <- do.call(rbind,stage_rows)
+print(fuzzy_results);print(stages)
+plot(c(6,9,12),fuzzy_results$bias_corrected,type="b",pch=19,
+     ylim=range(fuzzy_results$ci_low,fuzzy_results$ci_high),
+     xlab="Bandwidth in quarters",ylab="Fuzzy effect on home ownership (RBC 95% CI)")
+arrows(c(6,9,12),fuzzy_results$ci_low,c(6,9,12),fuzzy_results$ci_high,
+       angle=90,code=3,length=.05);abline(h=0,lty=2)
+```
+
+## 4. Interpretation and worked checkpoints
+
+Within 12 quarters, **56,901 complete observations** remain: **28,776 below** and **28,125 above** zero, with **12 distinct quarters per side** and no missing required fields in this window. The right-minus-left first stage is **−0.121322680** (robust SE **0.009093182**); the reduced form is **−0.022603652**. Their ratio and the matched local IV estimate are **+0.186310193**, about **18.63 percentage points** in home ownership under the stated assumptions.
+
+The conventional ratio is **0.445121959** at six quarters and **0.243435664** at nine quarters. At 12 quarters, fuzzy `rdrobust` gives a **bias-corrected estimate 0.309322544** and robust 95% interval **[0.105684869, 0.512960219]**. This is not the conventional ratio with its ordinary IV standard error. The large changes across windows deserve substantive discussion; the [reproduction record](https://defenceeconomist.github.io/qedlabs/labs/regression-discontinuity-reproducibility.html) provides all three windows.
+
+Home ownership is binary, so multiply a treatment-effect coefficient by 100 to express a percentage-point change. Do not change the numerator's sign without changing the denominator's sign. Here a negative first stage is expected from the supplied orientation; define monotonicity toward the side that raises veteran status.
+
+The local IV interpretation requires a relevant threshold, continuity/model assumptions, exclusion, and monotonicity. Birth cohort may relate to outcomes through other historical experiences. Veteran status changes more than access to a mortgage subsidy. An effect of veteran status is not automatically the isolated effect of mortgage subsidies.
+
+The nearest scores are −0.5 and +0.5 quarters. There are only 6, 9 or 12 distinct values on each side in these windows. Mass-point adjustment helps software account for repeated scores; it does not create observations arbitrarily close to zero. The reported intervals remain conditional on approximation assumptions, and neither clustering by quarter nor a continuous-density test is a generic repair. Avoid claiming reliable design-based coverage just because there are many individual records.
+
+**Deliverable:** report the 12-quarter first stage, reduced form, conventional ratio and bias-corrected interval; contrast the 6- and 9-quarter results. Explain which assumption would be needed to isolate a mortgage-subsidy effect and what further evidence would support the coarse-score extrapolation.

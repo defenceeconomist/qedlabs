@@ -1,0 +1,355 @@
+---
+title: 'Lab: Seatbelt Law Design and Robustness'
+format:
+  html:
+    toc: true
+    embed-resources: true
+engine: knitr
+execute:
+  echo: true
+  eval: true
+  error: false
+references:
+- URL: https://api.parliament.uk/historic-hansard/lords/1986/jan/20/motor-vehicles-wearing-of-seat-belts
+  accessed:
+    date-parts:
+    - - 2026
+      - 8
+      - 4
+  author:
+  - literal: UK Parliament
+  id: ukparliament1986seatbeltdebate
+  issued:
+    date-parts:
+    - - 1986
+  publisher: House of Lords Hansard, 20 January 1986, volume 470
+  title: Motor vehicles (wearing of seat belts) regulations 1982
+  type: ''
+---
+
+## How To Use This Page
+
+This is the second interrupted time-series lab. Its guided core takes about 45–60 minutes; the placebo-date exercise is optional.
+
+
+
+- Treat alternative outcomes and controls as design choices, not extra regressors to add automatically.
+- Compare a short, prespecified set of defensible specifications.
+- Use sensitivity results to identify what drives the answer.
+- Finish with an attribution judgment, not a preferred p-value.
+
+## Training Goal
+
+By the end of the core lab, you should be able to:
+
+1. distinguish directly targeted outcomes from candidate negative controls;
+2. assess pre-intervention comparability before fitting a controlled ITS;
+3. explain when exposure and contextual variables belong in a model;
+4. compare a compact sensitivity set; and
+5. state what the design can and cannot attribute to the law.
+
+## Step 1: Recreate The Seatbelts Analysis Data
+
+The columns do not all measure the same event:
+
+| Variable | Meaning |
+|---|---|
+| `front` | Front-seat passengers killed or seriously injured |
+| `drivers` | Car drivers killed or seriously injured |
+| `DriversKilled` | Car drivers killed |
+| `rear` | Rear-seat passengers killed or seriously injured |
+| `VanKilled` | Van drivers killed |
+| `kms` | Distance driven |
+| `PetrolPrice` | Petrol price |
+
+```{r}
+data_helpers <- c("data/load-data.R", "../data/load-data.R", "docs/labs/data/load-data.R")
+data_helpers <- data_helpers[file.exists(data_helpers)]
+if (!length(data_helpers)) stop("Extract the complete lab ZIP, including its data folder, before running.")
+source(data_helpers[[1]])
+```
+
+```{r}
+required_packages <- c("ggplot2", "nlme")
+missing_packages <- required_packages[!vapply(
+  required_packages,
+  requireNamespace,
+  logical(1),
+  quietly = TRUE
+)]
+if (length(missing_packages) > 0) {
+  stop("Install the documented R environment first; missing: ", paste(missing_packages, collapse=", "), call.=FALSE)
+}
+invisible(lapply(required_packages, library, character.only = TRUE))
+
+Seatbelts <- qed_data("Seatbelts")
+
+seatbelts <- as.data.frame(Seatbelts)
+seatbelts$time <- seq_len(nrow(seatbelts))
+seatbelts$date <- seq(as.Date("1969-01-01"), by = "month", length.out = nrow(seatbelts))
+seatbelts$post_time <- ifelse(
+  seatbelts$law == 1,
+  seatbelts$time - min(seatbelts$time[seatbelts$law == 1]),
+  0
+)
+seatbelts$season_sin <- sin(2 * pi * seatbelts$time / 12)
+seatbelts$season_cos <- cos(2 * pi * seatbelts$time / 12)
+intervention_date <- min(seatbelts$date[seatbelts$law == 1])
+
+stopifnot(
+  intervention_date == as.Date("1983-02-01"),
+  all(seatbelts[c("front", "drivers", "DriversKilled", "rear", "VanKilled")] > 0),
+  all(is.finite(seatbelts$kms)),
+  all(is.finite(seatbelts$PetrolPrice))
+)
+```
+
+The primary outcome remains `front` because compulsory wearing directly covered front-seat occupants. Rear-seat wearing did not become compulsory for adults until 1991, outside this dataset [@ukparliament2012seatbelts].
+
+## Step 2: Compare The Outcome Family
+
+Plotting every outcome on its own scale avoids implying that a driver death and a passenger killed-or-seriously-injured observation are interchangeable.
+
+```{r, fig.height=7.2, fig.width=10}
+outcome_names <- c("front", "drivers", "DriversKilled", "rear", "VanKilled")
+outcome_labels <- c(
+  front = "Front-seat passengers: killed or seriously injured",
+  drivers = "Car drivers: killed or seriously injured",
+  DriversKilled = "Car drivers: killed",
+  rear = "Rear-seat passengers: killed or seriously injured",
+  VanKilled = "Van drivers: killed"
+)
+
+outcome_long <- do.call(rbind, lapply(outcome_names, function(name) {
+  data.frame(
+    date = seatbelts$date,
+    outcome = unname(outcome_labels[[name]]),
+    value = seatbelts[[name]]
+  )
+}))
+
+ggplot(outcome_long, aes(date, value)) +
+  geom_line(linewidth = 0.5, colour = "#24527a") +
+  geom_vline(xintercept = intervention_date, linetype = "dashed", colour = "#a23b3b") +
+  facet_wrap(~ outcome, ncol = 1, scales = "free_y") +
+  labs(x = NULL, y = "Monthly count") +
+  theme_minimal(base_size = 11)
+```
+
+Checkpoint:
+
+- Which directly targeted series move in a similar direction?
+- Does the rear-seat series look unchanged enough to be a convincing negative control?
+- Why is a fall in `VanKilled` a warning against treating it as an automatically unaffected control?
+
+## Step 3: Estimate The Break For Each Outcome
+
+Use the same seasonal segmented model for every outcome so differences do not arise from outcome-specific specification searching.
+
+```{r}
+fit_outcome <- function(outcome_name) {
+  formula <- as.formula(paste0(
+    "log(", outcome_name, ") ~ time + law + post_time + season_sin + season_cos"
+  ))
+  gls(
+    formula,
+    data = seatbelts,
+    correlation = corAR1(form = ~ time),
+    method = "ML"
+  )
+}
+
+outcome_fits <- setNames(lapply(outcome_names, fit_outcome), outcome_names)
+
+summarise_outcome <- function(outcome_name) {
+  model <- outcome_fits[[outcome_name]]
+  coefficients <- coef(model)
+  immediate <- coefficients[["law"]]
+  month_12 <- immediate + 12 * coefficients[["post_time"]]
+  data.frame(
+    outcome = unname(outcome_labels[[outcome_name]]),
+    immediate_percent = 100 * (exp(immediate) - 1),
+    month_12_percent = 100 * (exp(month_12) - 1)
+  )
+}
+
+outcome_results <- do.call(rbind, lapply(outcome_names, summarise_outcome))
+outcome_results$immediate_percent <- round(outcome_results$immediate_percent, 1)
+outcome_results$month_12_percent <- round(outcome_results$month_12_percent, 1)
+outcome_results
+
+stopifnot(
+  nrow(outcome_results) == length(outcome_names),
+  all(is.finite(outcome_results$immediate_percent)),
+  all(is.finite(outcome_results$month_12_percent))
+)
+```
+
+Agreement among directly targeted outcomes strengthens the descriptive story. Movement in nominally untargeted outcomes complicates attribution because it may indicate shared road-safety changes, changes in who sat where, or an unsuitable comparison.
+
+## Step 4: Audit Candidate Comparisons Before Controlling
+
+A comparison outcome should have a credible causal role and a stable pre-law relationship with the treated outcome. Correlation is only a diagnostic; it does not establish either condition.
+
+```{r}
+pre_law <- subset(seatbelts, law == 0)
+
+comparison_audit <- data.frame(
+  candidate = c("Rear-seat casualties", "Van-driver deaths"),
+  pre_law_log_correlation = c(
+    cor(log(pre_law$front), log(pre_law$rear)),
+    cor(log(pre_law$front), log(pre_law$VanKilled))
+  ),
+  causal_concern = c(
+    "Passenger redistribution and different exposure",
+    "Weak pre-law relationship and its own intervention-period fall"
+  )
+)
+
+comparison_audit
+```
+
+Rear-seat casualties are the more informative candidate, but they remain imperfect. The controlled model below is therefore a diagnostic contrast, not an automatic upgrade over the uncontrolled ITS.
+
+```{r}
+controlled_data <- rbind(
+  transform(seatbelts, series = "Rear-seat comparison", log_outcome = log(rear)),
+  transform(seatbelts, series = "Front-seat targeted", log_outcome = log(front))
+)
+controlled_data$series <- relevel(factor(controlled_data$series), ref = "Rear-seat comparison")
+controlled_data <- controlled_data[order(controlled_data$series, controlled_data$time), ]
+
+controlled_fit <- gls(
+  log_outcome ~ series * (time + law + post_time) + season_sin + season_cos,
+  data = controlled_data,
+  correlation = corAR1(form = ~ time | series),
+  method = "ML"
+)
+
+controlled_terms <- summary(controlled_fit)$tTable[c(
+  "seriesFront-seat targeted:law",
+  "seriesFront-seat targeted:post_time"
+), ]
+
+controlled_terms
+
+controlled_immediate_percent <- 100 * (
+  exp(coef(controlled_fit)[["seriesFront-seat targeted:law"]]) - 1
+)
+controlled_immediate_percent
+
+stopifnot(
+  all(is.finite(controlled_terms)),
+  comparison_audit$pre_law_log_correlation[[1]] >
+    comparison_audit$pre_law_log_correlation[[2]]
+)
+```
+
+The interaction asks whether the front-seat series changed differently from the rear-seat series. It does not prove that rear-seat casualties represent the untreated path front-seat casualties would have followed.
+
+## Step 5: Run A Compact Prespecified Sensitivity Set
+
+Distance driven is a plausible exposure measure and petrol price may affect travel. Both are observed contextual variables, but neither should be inserted mechanically: distance could itself respond to policy or other contemporaneous conditions, and petrol price is not the intervention.
+
+```{r}
+model_formulas <- list(
+  "Level only" = log(front) ~ time + law + season_sin + season_cos,
+  "Level and trend" = log(front) ~ time + law + post_time + season_sin + season_cos,
+  "With distance and petrol price" = log(front) ~
+    time + law + post_time + log(kms) + PetrolPrice + season_sin + season_cos
+)
+
+sensitivity_fits <- lapply(model_formulas, function(formula) {
+  gls(
+    formula,
+    data = seatbelts,
+    correlation = corAR1(form = ~ time),
+    method = "ML"
+  )
+})
+
+sensitivity_results <- do.call(rbind, lapply(names(sensitivity_fits), function(name) {
+  model <- sensitivity_fits[[name]]
+  data.frame(
+    specification = name,
+    immediate_percent = 100 * (exp(coef(model)[["law"]]) - 1),
+    AIC = AIC(model)
+  )
+}))
+
+row.names(sensitivity_results) <- NULL
+sensitivity_results$immediate_percent <- round(sensitivity_results$immediate_percent, 1)
+sensitivity_results$AIC <- round(sensitivity_results$AIC, 1)
+sensitivity_results
+
+stopifnot(
+  nrow(sensitivity_results) == 3L,
+  all(is.finite(sensitivity_results$immediate_percent)),
+  all(is.finite(sensitivity_results$AIC))
+)
+```
+
+Do not select the row with the largest change or smallest p-value. Explain what assumption changes between rows and whether the substantive direction survives.
+
+## Optional Extension: Test Prespecified False Dates
+
+False dates ask whether similarly large breaks appear when no seatbelt-law change occurred. Restrict false-date models to the pre-law period so the real intervention cannot contaminate them.
+
+```{r}
+fit_interruption_date <- function(data, interruption_date) {
+  false_data <- data
+  false_time <- min(false_data$time[false_data$date >= interruption_date])
+  false_data$interrupted <- as.integer(false_data$time >= false_time)
+  false_data$time_after_interruption <- pmax(0, false_data$time - false_time)
+
+  model <- gls(
+    log(front) ~
+      time + interrupted + time_after_interruption + season_sin + season_cos,
+    data = false_data,
+    correlation = corAR1(form = ~ time),
+    method = "ML"
+  )
+
+  data.frame(
+    date = interruption_date,
+    immediate_percent = 100 * (exp(coef(model)[["interrupted"]]) - 1)
+  )
+}
+
+false_dates <- as.Date(c("1978-02-01", "1980-02-01", "1981-02-01"))
+placebo_results <- do.call(
+  rbind,
+  lapply(false_dates, function(date) fit_interruption_date(pre_law, date))
+)
+
+actual_result <- data.frame(
+  date = intervention_date,
+  immediate_percent = sensitivity_results$immediate_percent[
+    sensitivity_results$specification == "Level and trend"
+  ]
+)
+
+rbind(placebo_results, actual_result)
+
+stopifnot(
+  nrow(placebo_results) == length(false_dates),
+  all(placebo_results$date < intervention_date),
+  all(is.finite(placebo_results$immediate_percent))
+)
+```
+
+Placebo dates are diagnostics, not randomization-inference p-values. A quiet placebo set cannot rule out a concurrent event at the true date.
+
+## Final Design Memo
+
+Complete five short statements:
+
+1. **Primary outcome:** why front-seat killed-or-seriously-injured casualties match the intervention.
+2. **Comparison outcome:** what rear-seat casualties add and why they are imperfect.
+3. **Sensitivity:** whether the direction changes across the three prespecified specifications.
+4. **Concurrent change:** stricter drink-driving enforcement and evidential breath testing were discussed as alternative 1983 explanations and are not measured in `Seatbelts` [@ukparliament1986seatbeltdebate].
+5. **Defensible claim:** the series show a reduction associated with the law, but this dataset alone does not isolate compulsory belt wearing from every simultaneous road-safety change.
+
+## Next Step
+
+Continue to [Interrupted Time Series Counterfactual Validation](https://defenceeconomist.github.io/qedlabs/labs/interrupted-time-series-counterfactual-validation-lab.html) to choose an untreated forecasting model without using post-intervention outcomes.

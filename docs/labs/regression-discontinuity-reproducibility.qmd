@@ -1,0 +1,90 @@
+---
+title: "RDD Lab Setup and Reproduction Record"
+---
+
+## Current R-only workflow
+
+The three RDD labs provide a Quarto document, an R Jupyter notebook, and a
+complete ZIP containing all required local data. Start from the
+[Labs overview](index.qmd#regression-discontinuity-labs) or [data catalogue](data.qmd).
+No notebook downloads data or installs packages during execution.
+
+## Prepare R and Jupyter
+
+Use R 4.5.1 and the [tested R lockfile](reproducibility/rdd-renv.lock).
+Restore dependencies into an isolated library before working offline:
+
+```r
+install.packages("renv", repos="https://cloud.r-project.org")
+dir.create("r-library", showWarnings=FALSE)
+renv::restore(lockfile="rdd-renv.lock", library="r-library", prompt=FALSE)
+```
+
+Install JupyterLab or Jupyter Notebook separately. Set `R_LIBS_USER` to the
+absolute path of that library, register the R kernel with
+`IRkernel::installspec()`, and launch Jupyter from that environment. Software
+installation can require internet access; subsequent lab execution does not.
+
+Extract a complete lab ZIP and keep its `data/` directory beside the document
+and notebook. Select the R kernel and run every cell, or run
+`quarto render NAME.qmd`. The data loader verifies the local SHA-256 hashes and
+fails if a file is missing or changed. There is no remote fallback or cache to populate.
+
+## Run the repository checks
+
+```bash
+python docs/scripts/generate_lab_notebooks.py --check
+python docs/scripts/test_generate_lab_notebooks.py
+python docs/scripts/validate_rdd_labs.py
+python docs/scripts/validate_offline_labs.py --execute --render
+```
+
+Each notebook runs in a fresh R kernel from an extracted bundle. The method
+validator compares estimates, support and uncertainty against the retained
+[historically verified R tables](reproducibility/baselines/README.md), using
+absolute tolerance 1e-7 plus relative tolerance 1e-6. The DiD sensitivity extension
+is included. The RDD checks also exercise corrupt/missing data, insufficient
+cutoff support and an unusable first stage. Successful rendering alone is not a
+substitute for these execution checks.
+
+## Reading the historical record
+
+The results below describe the original R/Python verification conducted before
+the Python teaching notebooks were retired. They remain provenance, not a claim
+that Python notebooks are still distributed. Current regression tests use the
+same R results and bundled source datasets; no online downloads are needed.
+
+## Historical paired-language verification — 18 September 2026
+
+All six notebooks executed successfully from fresh kernels, including independent cold-cache downloads, plots and failure checks. **362 paired numerical values** agree within the specified tolerance. The largest absolute R/Python difference is **6.8e-10**, in the density statistic; all matched estimation and inference settings are described above. Different package version numbers across languages do not imply identical release numbering: these exact pinned versions were compared directly. No remaining numerical discrepancy exceeds the acceptance tolerance.
+
+| Sharp RD result | Verified value |
+|---|---:|
+| Manual right-minus-left jump, `h=0.01` | −0.033481754 |
+| Conventional programme effect | +0.033481754 |
+| Bias-corrected programme effect | −0.041604922 |
+| Robust bias-corrected programme interval | [−0.187963996, 0.104754151] |
+| Fixed-window sample, below / above | 537 / 400 |
+| Automatic MSE `h` / `b` | 0.005420072 / 0.010634554 |
+| Conventional programme effect, automatic bandwidth | −0.023492132 |
+| Density analysis records | 20,463 |
+| Density jackknife statistic / p-value | −0.923780049 / 0.355600845 |
+
+The observed-age bias-corrected jump is 6.5123 years (robust interval [0.2769, 12.7477]). Education has 51 missing values and uses 521 / 388 observations in the fixed bandwidth. These are observed-covariate checks, with unverified measurement timing.
+
+| Fuzzy window | First stage | Reduced form | Conventional ratio = IV | Bias-corrected effect | Robust bias-corrected 95% interval | Below / above |
+|---:|---:|---:|---:|---:|---|---:|
+| 6 quarters | -0.057736111 | -0.025699611 | 0.445121959 | 0.703659722 | [0.033623635, 1.373695808] | 14240 / 14070 |
+| 9 quarters | -0.093156578 | -0.022677633 | 0.243435664 | 0.474856091 | [0.163168340, 0.786543842] | 21461 / 21185 |
+| 12 quarters | -0.121322680 | -0.022603652 | 0.186310193 | 0.309322544 | [0.105684869, 0.512960219] | 28776 / 28125 |
+
+At 12 quarters, the first-stage robust SE is 0.009093182 and the conventional local IV SE is 0.069965343. There are exactly 6, 9 or 12 distinct quarters per side, respectively. The six-quarter bias-corrected interval extends above one; linear estimation is not constrained to the feasible range of a binary-outcome effect. Do not clip it or treat that result as reassurance about the model.
+
+Download the [machine-readable verification record and full tables](reproducibility/rdd-verified-results.json). It includes package versions, source-notebook hashes and comparisons for all bandwidths, polynomial orders, placebos, donuts, covariates and first stages. Matching implementations verifies the calculation, not identification or inferential coverage.
+
+
+## Interpretation limits
+
+The transfer results are sensitive to window and polynomial choices. Observed covariate discontinuities need substantive investigation; passing a density test does not establish continuity of potential outcomes. Donut fits extrapolate over deliberately missing support.
+
+For mortgages, many individual records share only 6, 9 or 12 score values per side. Reported inference is conditional on the score-function approximation and other stated assumptions; mass-point adjustment does not solve coarse support. A local effect of veteran status requires relevance, exclusion and monotonicity. It is not automatically an isolated mortgage-subsidy effect, because veteran status can affect other benefits and experiences [@fetter2013mortgages; @huntingtonklein2025rdd].

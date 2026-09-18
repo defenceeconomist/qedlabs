@@ -156,4 +156,4 @@ For the labs, set zero anticipation, universal pre-treatment baselines, and the 
 
 **Worked answer:** no. The earlier cohort contributes four times as many cells. Cohort aggregation first averages within each cohort and can then weight cohort averages by cohort size. Event-time aggregation changes the contributing cohorts as exposure length increases.
 
-The [paired modern labs](../../labs/difference-in-differences-modern-estimators-python-lab.qmd) check identical unconditional group-time effects across languages and distinguish that test from comparisons of different confidence-band procedures.
+The [modern R lab](../../labs/difference-in-differences-modern-estimators-lab.qmd) checks unconditional group-time effects against verified reference results and distinguishes pointwise intervals from simultaneous bands.

@@ -2,6 +2,8 @@
 title: "Difference-in-Differences Sources"
 ---
 
+[Step-by-step R guide](how-to-do-difference-in-differences.qmd)
+
 # Scope
 
 This page is a reading map for difference-in-differences. It connects four accessible teaching sources to four papers on staggered adoption and five detailed readings on inference, doubly robust estimation, pre-testing, sensitivity, and imputation.
@@ -19,7 +21,7 @@ That route moves from the core counterfactual to modern estimator choice without
 
 # Apply The Reading
 
-Use the source notes alongside three paired R/Python labs:
+Use the source notes alongside three R labs:
 
 1. [Foundations](../../labs/difference-in-differences-foundations-lab.qmd) applies Gertler, Huntington-Klein, and Heiss to a canonical 2×2 design.
 2. [Staggered diagnostics](../../labs/difference-in-differences-staggered-diagnostics-lab.qmd) applies Cunningham, Goodman-Bacon, and Sun–Abraham.

@@ -1,0 +1,45 @@
+---
+title: "Huntington-Klein: Regression Discontinuity"
+subtitle: "The Effect, Chapter 20, Research Library snapshot"
+date: 2026-09-18
+---
+
+## Source and reading locations
+
+The library snapshot is catalogued as 2025 and contains Chapter 20, §§20.1–20.3 [@huntingtonklein2025rdd]. Read [how it works](https://portal.heley.uk/researchlibrary/books/the-effect/read/the-effect:regression-discontinuity-20-1-how-does-it-work), [implementation](https://portal.heley.uk/researchlibrary/books/the-effect/read/the-effect:regression-discontinuity-20-2-how-is-it-performed), and [extensions](https://portal.heley.uk/researchlibrary/books/the-effect/read/the-effect:regression-discontinuity-20-3-how-the-pros-do-it). Positions 123–126 are HTML section positions, not printed pages. These notes concern the retrieved snapshot, not an assertion that the live website is identical.
+
+## Separate the smooth relationship from the jump
+
+The chapter introduces the running variable, cutoff and bandwidth with accessible examples. RD compares predicted outcomes at the boundary while allowing outcomes to vary with the score.
+
+A geographic border makes the intuition vivid but illustrates a limit: many institutions change at a national boundary. The discontinuity may concern a bundle of treatments rather than one policy. Similarly, a retirement eligibility age may change retirement probabilities without making everybody retire, motivating a fuzzy rather than sharp analysis of retirement itself.
+
+## Make analytical choices visible
+
+The implementation discussion separates the fitted function, estimation window and observation weights. Different choices can materially change estimates. A packaged command does not remove responsibility for understanding them.
+
+The fuzzy example uses birth-cohort eligibility and veteran status to study home ownership. It is valuable because the treatment pathway has several institutional steps. Distinguish the effect of veteran status at that margin from the effect of one benefit unless the required exclusion argument is supported.
+
+The examples are not reproduced estimates in these notes. They motivate inspecting the first-stage and outcome jumps, aligning their specifications, and explaining why the bandwidth is credible.
+
+## Smoothing bias and uncertainty
+
+Using more observations improves precision but increases reliance on approximating the conditional mean. A bandwidth useful for point estimation need not justify an interval that ignores approximation bias.
+
+Bias correction must address both estimated bias and its uncertainty, separately from heteroskedasticity. Consult maintained software documentation for current options; do not assume defaults described in the stored snapshot remain current. The [overview](../other-methods/regression-discontinuity.qmd) links official documentation.
+
+## Difficult running variables
+
+Three problems deserve separate treatment:
+
+- **Coarse support:** broad score categories leave a gap between nearest treated and untreated values. More observations at those same values do not close it.
+- **Heaping:** rounded values may contain a different mix of observations and pull the fit away from the relevant relationship.
+- **Sorting:** participants or administrators may influence scores, or set a cutoff after seeing who qualifies.
+
+The chapter warns against treating clustering by score values as a general solution to discreteness. It also explains why deleting a narrow band around the cutoff may not address heaping elsewhere. A donut exclusion changes the extrapolation problem and needs justification.
+
+## Extensions and limits
+
+Regression kink designs use a slope change rather than a level jump. Multiple cutoffs and multiple assignment variables require clarity about the boundary and population defining the effect. They are not ordinary single-cutoff RD with additional controls.
+
+Use this chapter to develop an analysis plan: inspect the score, separate plotting from estimation, show sensitivity, and explain precisely which effect the comparison supports.

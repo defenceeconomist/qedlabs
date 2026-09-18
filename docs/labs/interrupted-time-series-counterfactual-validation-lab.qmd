@@ -11,7 +11,14 @@ execute:
 
 This is the third interrupted time-series lab. The guided core takes about 45–60 minutes; the predictor-support audit is an optional extension.
 
-[Download the R Jupyter notebook](notebooks/interrupted-time-series-counterfactual-validation-lab.ipynb){.cta-button download="interrupted-time-series-counterfactual-validation-lab.ipynb"}
+<!-- lab-downloads:start -->
+::: {.resource-links}
+[Quarto document](downloads/interrupted-time-series-counterfactual-validation-lab.qmd){download="interrupted-time-series-counterfactual-validation-lab.qmd"}
+[R Jupyter notebook](notebooks/interrupted-time-series-counterfactual-validation-lab.ipynb){download="interrupted-time-series-counterfactual-validation-lab.ipynb"}
+[Complete lab ZIP](downloads/interrupted-time-series-counterfactual-validation-lab.zip){download="interrupted-time-series-counterfactual-validation-lab.zip"}
+[Data and setup](data.qmd#interrupted-time-series-counterfactual-validation-lab)
+:::
+<!-- lab-downloads:end -->
 
 - Assume no credible untreated comparison series is available.
 - Compare every candidate model on identical pre-rollout forecast origins.
@@ -37,6 +44,13 @@ By the end of the core lab, you should be able to:
 The programme starts in January 2021. `untreated_outcome` is retained only so the lab can check the final forecasts; it must not enter model selection.
 
 ```{r}
+data_helpers <- c("data/load-data.R", "../data/load-data.R", "docs/labs/data/load-data.R")
+data_helpers <- data_helpers[file.exists(data_helpers)]
+if (!length(data_helpers)) stop("Extract the complete lab ZIP, including its data folder, before running.")
+source(data_helpers[[1]])
+```
+
+```{r}
 required_packages <- c("ggplot2")
 missing_packages <- required_packages[!vapply(
   required_packages,
@@ -45,7 +59,7 @@ missing_packages <- required_packages[!vapply(
   quietly = TRUE
 )]
 if (length(missing_packages) > 0) {
-  install.packages(missing_packages, repos = "https://cloud.r-project.org")
+  stop("Install the documented R environment first; missing: ", paste(missing_packages, collapse=", "), call.=FALSE)
 }
 invisible(lapply(required_packages, library, character.only = TRUE))
 
@@ -93,6 +107,7 @@ simulate_service <- function(seed = 48127L) {
 }
 
 service <- simulate_service()
+stopifnot(isTRUE(all.equal(service, qed_data("service"))))
 implementation_time <- min(service$time[service$implemented == 1L])
 implementation_date <- min(service$date[service$implemented == 1L])
 training_data <- subset(service, time < implementation_time)

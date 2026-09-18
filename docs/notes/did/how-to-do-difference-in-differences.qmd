@@ -1,0 +1,267 @@
+---
+title: "How to Do Difference-in-Differences"
+subtitle: "A four-cell comparison, followed by a modern staggered-adoption workflow in R"
+format: html
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+Difference-in-differences (DiD) asks whether an exposed group's outcome changed
+more than an unexposed group's outcome over the same period. Its identifying
+claim concerns the **untreated change** for the exposed group, which we cannot
+observe after treatment. Regression makes the contrast convenient; it does not
+make that missing counterfactual credible.
+
+This guide starts with a two-group, two-period design and then extends to units
+treated in different years. It assumes basic regression and R. The executable
+examples use [bundled local data](../../labs/data.qmd), not runtime downloads.
+Use the [foundations lab](../../labs/difference-in-differences-foundations-lab.qmd)
+for a downloadable Quarto document, R notebook, and complete offline bundle.
+
+## 1. Start with assignment and the target effect
+
+Write down who becomes exposed, when exposure starts, what comparison units remain
+unexposed, and the outcome scale. Specify whether the target is an effect on the
+treated population, on a particular adoption cohort, or at a particular duration
+since treatment. These are not interchangeable questions.
+
+Our first example uses Kentucky workers' compensation claims around a 1980 increase
+in the benefit cap. High earners were exposed to the change in the cap; low earners
+were not exposed in the same way. The outcome is log weeks receiving benefits.
+The data are repeated cross-sections of claims, not a panel that follows the same
+injured people in both periods [@meyer1995workerscomp; @gertler2016ch7did].
+
+For an ATT interpretation, the key assumptions are parallel untreated trends,
+no anticipation, no relevant spillovers, and stable enough composition and
+measurement to compare the groups over time. Parallel trends does **not** mean
+equal baseline levels. It means the exposed group's average outcome would have
+changed like the comparison group's average outcome without the reform.
+
+Different selection into claims after the reform can break this interpretation.
+Before estimating anything, consider whether eligibility, reporting incentives,
+industry composition, or injury severity changed differently for high earners.
+A data dictionary cannot answer all those institutional questions.
+
+## 2. Load and audit the analysis sample
+
+```{r}
+source("../../labs/data/load-data.R")
+library(ggplot2)
+library(fixest)
+injury <- qed_data("injury")
+ky <- subset(injury, ky == 1)
+stopifnot(nrow(ky) == 5626, all(ky$durat > 0),
+          all(is.finite(ky$ldurat)), !anyNA(ky[c("highearn", "afchnge")]))
+with(ky, table(high_earner=highearn, after=afchnge))
+means <- with(ky, tapply(ldurat, list(high=highearn, after=afchnge), mean))
+knitr::kable(means, digits=4)
+```
+
+Confirm that every group-period cell exists, that treatment coding matches the
+policy mechanism, and that sample restrictions were not selected by their effect
+on the estimate. Report the number of observations excluded for missing outcomes
+or covariates. In an unbalanced panel, attrition requires a separate audit; in
+these repeated cross-sections, pay particular attention to who enters each cell.
+
+The snapshot comes from `wooldridge::injury`, but loading it does not require
+installing that package. The repository records its source revision and checksum,
+so the same analysis uses the same bytes across machines.
+
+## 3. Calculate the four-cell contrast
+
+Let $\bar Y_{g,t}$ be the mean in group $g$ and period $t$, with group one exposed
+and time one after the reform. Then
+
+$$
+\widehat{ATT}_{DiD}=(\bar Y_{1,1}-\bar Y_{1,0})
+                   -(\bar Y_{0,1}-\bar Y_{0,0}).
+$$
+
+The counterfactual for exposed claims after the reform is their own baseline
+plus the change observed among low earners. That is the design claim to defend,
+not a mathematical identity that can be established by fitting a model.
+
+```{r}
+comparison_change <- means["0", "1"] - means["0", "0"]
+counterfactual <- means["1", "0"] + comparison_change
+did_manual <- means["1", "1"] - counterfactual
+data.frame(comparison_change, exposed_counterfactual=counterfactual,
+           did_log_points=did_manual, geometric_percent=100*expm1(did_manual))
+```
+
+```{r}
+plot_data <- aggregate(ldurat ~ afchnge + highearn, data=ky, FUN=mean)
+plot_data$group <- ifelse(plot_data$highearn == 1, "High earners", "Low earners")
+cf <- data.frame(afchnge=c(0,1), ldurat=c(means["1","0"], counterfactual))
+ggplot(plot_data, aes(afchnge, ldurat, color=group)) +
+  geom_line(linewidth=0.8) + geom_point(size=2) +
+  geom_line(data=cf, aes(afchnge, ldurat), inherit.aes=FALSE,
+            linetype=2, color="#177b72", linewidth=0.8) +
+  scale_x_continuous(breaks=c(0,1), labels=c("Before", "After")) +
+  scale_color_manual(values=c("High earners"="#245ca4", "Low earners"="#545454")) +
+  labs(x=NULL, y="Mean log benefit duration", color=NULL) +
+  theme_minimal(base_size=12) + theme(legend.position="bottom")
+```
+
+The dashed line represents the exposed group's assumed untreated change. With
+only one observed pre-period in this design, it is not an estimated pre-treatment
+trend. There is no pre-trend test hiding in this four-cell graph.
+
+## 4. Recover the contrast with regression
+
+```{r}
+fit <- feols(ldurat ~ highearn * afchnge, data=ky, vcov="hetero")
+coeftable(fit)
+interaction <- unname(coef(fit)["highearn:afchnge"])
+stopifnot(abs(interaction - did_manual) < 1e-10,
+          abs(did_manual - 0.1906012007) < 1e-8)
+confint(fit, "highearn:afchnge")
+```
+
+The interaction is about 0.191 log points. Exponentiating gives a contrast of
+roughly 21% on the geometric scale. This is not automatically a 21% effect on
+arithmetic mean weeks, nor a 0.191-week change. Outcome transformations affect
+both interpretation and the scale on which parallel trends is assumed. Parallel
+trends in levels does not generally imply parallel trends in logs.
+
+The heteroskedasticity-robust covariance used here describes sampling uncertainty
+under an observation-level working model. It does not create many independent
+policy assignments. Clustering on the two earnings groups is not a reliable
+repair: two clusters do not support conventional large-cluster inference.
+In a real multi-jurisdiction evaluation, start with the level of assignment and
+plausible within-group dependence, not whichever standard errors are smallest
+[@bertrand2004trustdid].
+
+## 5. Treat covariates as a design choice
+
+Covariates can make conditional parallel trends more plausible or improve
+precision. They cannot repair arbitrary unobserved differential trends. In
+repeated cross-sections, they may also reveal important composition changes.
+Avoid controlling for variables affected by treatment when targeting the total
+policy effect. Hospitalization, for example, should not automatically enter a
+regression simply because it predicts duration.
+
+Before fitting an adjusted model, draw a causal timeline for each proposed
+covariate, inspect its distribution by group and period, and state the conditional
+trend assumption. Use a common complete-case sample to distinguish a changed
+estimand or changed sample from an estimator difference. Standard regression
+adjustment and doubly robust DiD are not the same procedure; the latter combines
+outcome and propensity-score components under specific conditions
+[@santannazhao2020drdid]. The [foundations lab](../../labs/difference-in-differences-foundations-lab.qmd)
+offers an adjusted-model comparison without treating adjustment as an automatic
+upgrade.
+
+## 6. Recognize when treatment timing changes the problem
+
+When units adopt in different years, a conventional two-way fixed-effects (TWFE)
+coefficient can mix comparisons with different interpretations. Already-treated
+units may become controls for newly treated units. With heterogeneous or dynamic
+effects, the resulting average need not equal the policy effect you intended to
+estimate [@goodmanbacon2021timing; @sunabraham2021dynamic].
+
+Map adoption cohorts before choosing an estimator. Verify that treatment is
+absorbing if the method assumes it, distinguish never-treated from not-yet-treated
+units, and determine which cohorts have a defensible comparison at each date.
+An observation with no eligible comparator cannot be rescued by a longer formula.
+
+For a compact extension, use `did::mpdta`: 500 counties observed in five years,
+with log teen employment as the outcome and first treatment year as the cohort
+variable. Zero means never treated, not treatment in year zero. This is a teaching
+panel, not a full policy replication.
+
+```{r}
+library(did)
+mpdta <- qed_data("mpdta")
+stopifnot(nrow(mpdta) == 2500, length(unique(mpdta$countyreal)) == 500,
+          !anyDuplicated(mpdta[c("countyreal", "year")]))
+with(mpdta, table(cohort=first.treat, year=year))
+```
+
+## 7. Estimate group-time effects and name the comparison
+
+```{r}
+set.seed(20260809)
+att <- att_gt(yname="lemp", tname="year", idname="countyreal",
+              gname="first.treat", data=mpdta, xformla=~1,
+              control_group="nevertreated", anticipation=0,
+              base_period="universal", est_method="dr",
+              bstrap=TRUE, biters=499, cband=TRUE, clustervars="countyreal")
+summary(att)
+```
+
+This estimates $ATT(g,t)$ for cohort $g$ at calendar time $t$, using never-treated
+counties as the comparison group. `xformla=~1` deliberately makes the example
+unconditional; a doubly robust method name does not by itself justify conditional
+parallel trends. The universal base period normalizes relative to the last
+pre-treatment period, given zero anticipation, rather than silently changing the
+baseline for every pre-period contrast [@callaway2021multipletime].
+
+The fixed seed and 499 multiplier-bootstrap draws support a reproducible classroom
+example. More demanding analysis should investigate simulation stability and
+use enough draws for its inferential purpose. County clustering in this teaching
+sample is not a defense of county-level inference for a state-level policy;
+appropriate assignment identifiers and a defensible dependence model are needed
+for a substantive evaluation.
+
+## 8. Aggregate effects without hiding their support
+
+```{r}
+overall <- aggte(att, type="simple")
+dynamic <- aggte(att, type="dynamic")
+data.frame(att_log_points=overall$overall.att, standard_error=overall$overall.se)
+stopifnot(abs(overall$overall.att - (-0.0399512752)) < 1e-8)
+ggdid(dynamic) + labs(x="Years relative to treatment", y="ATT on log employment")
+```
+
+The simple aggregation is about -0.040 log points. Its weights reflect the
+available post-treatment group-time cells; it is not necessarily an equal-weight
+average over cohorts, calendar years, or treatment durations. A dynamic event
+study organizes effects by time since adoption, but later horizons may be supported
+only by early adopters. Compare the number and identity of contributing cohorts
+before interpreting a changing curve as individual effects growing over time.
+
+The plotted simultaneous bands address a family of event-time effects under the
+specified estimation procedure. They are not the same as separate 95% intervals
+around every coefficient. Normalized reference cells are fixed at zero by
+construction, not exceptionally precise estimates of no effect.
+
+## 9. Diagnose assumptions without declaring them proven
+
+Plot raw group outcomes as well as adjusted effect estimates. Audit missingness,
+cohort composition, anticipation windows, spillovers, and policy co-adoption.
+Compare never-treated and not-yet-treated controls when each comparison has a
+substantive defense. Differences across those estimates may reflect changed
+support and identifying assumptions, not a contest in which one package wins.
+
+Pre-treatment estimates can detect some violations, but failure to reject a
+pre-trend test does not establish parallel trends. Low power can conceal meaningful
+violations, and selecting a specification because it passes a pre-test changes
+the inferential problem [@roth2022pretest]. A post-period departure consistent with
+the policy may still reflect a concurrent shock affecting treated units differently.
+
+The [staggered diagnostics lab](../../labs/difference-in-differences-staggered-diagnostics-lab.qmd)
+adds the Bacon decomposition and Sun-Abraham event study. The
+[modern estimators lab](../../labs/difference-in-differences-modern-estimators-lab.qmd)
+adds conditional comparisons and an `HonestDiD` extension that asks how much
+departure from parallel trends the conclusion can tolerate. Sensitivity bounds
+depend on the restrictions supplied; they do not remove the need to defend those
+restrictions [@rambachanroth2023parallel].
+
+## 10. Report the design, not just the interaction
+
+State the policy contrast, outcome scale, target population, assignment level,
+sample exclusions, comparison group, and anticipation window. For staggered
+adoption, report the group-time estimator, aggregation weights, event-time support,
+and confidence-band method. Show the effect size and interval, then discuss the
+strongest plausible alternative explanation.
+
+For the Kentucky example, explicitly acknowledge that the four-cell sample
+contains no multi-period pre-trend evidence. For the minimum-wage example,
+acknowledge the teaching panel's inference limitations. Neither a small p-value
+nor agreement between two estimators is a substitute for a credible untreated
+counterfactual. Use the [DiD reading map](difference-in-differences-sources.qmd)
+to match the next methodological step to the actual design problem.
+
+## References

@@ -1,0 +1,57 @@
+Economic indicators for US states from 1990-2016
+
+Description:
+
+     Economic indicators for US states from 1990-2016
+
+Usage:
+
+     kansas
+     
+Format:
+
+     A dataframe with 5250 rows and 32 variables:
+
+     fips FIPS code for each state
+
+     year Year of measurement
+
+     qtr Quarter (1-4) of measurement
+
+     state Name of State
+
+     gdp Gross State Product (millions of $) Values before 2005 are
+          linearly interpolated between years
+
+     revenuepop State and local revenue per capita
+
+     rev_state_total State total general revenue (millions of $)
+
+     rev_local_total Local total general revenue (millions of $)
+
+     popestimate Population estimate
+
+     qtrly_estabs_count Count of establishments for a given quarter
+
+     month1_emplvl, month2_emplvl, month3_emplvl Employment level for
+          first, second, and third months of a given quarter
+
+     total_qtrly_wages Total wages for a givne quarter
+
+     taxable_qtrly_wage Taxable wages for a given quarter
+
+     avg_wkly_wage Average weekly wage for a given quarter
+
+     year_qtr Year and quarter combined into one continuous variable
+
+     treated Whether the state passed tax cuts before the given year
+          and quareter
+
+     lngdpcapita Natural log of GDP per capita
+
+     emplvlcapita Average employment level per capita
+
+     Xcapita Per capita value of X
+
+     abb State abbreviation
+

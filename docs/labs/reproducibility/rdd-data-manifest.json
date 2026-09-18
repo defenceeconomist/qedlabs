@@ -1,0 +1,48 @@
+{
+  "upstream_repository": "https://github.com/cran/causaldata",
+  "commit": "6d25e70297812a2e89a1a20e3bc24b32f6d3fbaf",
+  "datasets": {
+    "gov_transfers": {
+      "url": "https://raw.githubusercontent.com/cran/causaldata/6d25e70297812a2e89a1a20e3bc24b32f6d3fbaf/data/gov_transfers.rda",
+      "sha256": "9606f45afced94c73bbefe107523bfea559671e18cf9110877650d4245692592",
+      "object": "gov_transfers",
+      "rows": 1948,
+      "variables": {
+        "Income_Centered": "Assignment score centered at zero; negative is eligible",
+        "Participation": "Transfer participation, binary",
+        "Support": "Government-support score: 0, 0.5 or 1",
+        "Age": "Household average age; measurement timing not established here",
+        "Education": "Household average years of education among people aged 16+; 51 missing"
+      },
+      "sample": "All 1,948 teaching observations, already restricted to approximately +/-0.02 around zero. Covariate checks use variable-specific complete cases.",
+      "citation": "Manacorda, Miguel and Vigorito (2011), Government Transfers and Political Support"
+    },
+    "gov_transfers_density": {
+      "url": "https://raw.githubusercontent.com/cran/causaldata/6d25e70297812a2e89a1a20e3bc24b32f6d3fbaf/data/gov_transfers_density.rda",
+      "sha256": "fcbe11a89cab9d5d9faa81cecc7a0116badb4a022e39163fb2ea7253a3eb65dd",
+      "object": "gov_transfers_density",
+      "rows": 52549,
+      "variables": {
+        "Income_Centered": "Assignment score; dedicated larger sample for density diagnostics"
+      },
+      "sample": "52,549 records before restricting to abs(Income_Centered) < 0.02 for the density exercise; not interchangeable with the outcome survey.",
+      "citation": "Manacorda, Miguel and Vigorito (2011)"
+    },
+    "mortgages": {
+      "url": "https://raw.githubusercontent.com/cran/causaldata/6d25e70297812a2e89a1a20e3bc24b32f6d3fbaf/data/mortgages.rda",
+      "sha256": "dd903337190958d94b059eb37fb2061f24d04cffa3a2689b108394283b56e6f0",
+      "object": "mortgages",
+      "rows": 214144,
+      "variables": {
+        "qob_minus_kw": "Birth quarter centered at the Korean War cutoff; half-integer support, no zero; veteran status falls across zero",
+        "vet_wwko": "Veteran of World War II or the Korean War, binary",
+        "home_ownership": "Home ownership indicator",
+        "bpl": "Birth state",
+        "qob": "Quarter of birth",
+        "nonwhite": "Race indicator"
+      },
+      "sample": "All 214,144 records are loaded; primary analysis keeps abs(qob_minus_kw) < 12 and complete score, veteran-status and ownership values. Sensitivity windows: 6 and 9 quarters. Unadjusted local models use identical samples, controls and weights for both stages.",
+      "citation": "Fetter (2013), How Do Mortgage Subsidies Affect Home Ownership? Evidence from the Mid-Century GI Bills"
+    }
+  }
+}

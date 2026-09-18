@@ -1,0 +1,42 @@
+---
+title: "Regression Discontinuity: Sources and Reading Map"
+date: 2026-09-18
+---
+
+[Step-by-step R guide](how-to-do-regression-discontinuity.qmd)
+
+## Reading sequence
+
+Start with the [method overview](../other-methods/regression-discontinuity.qmd). Then use Gertler for programme rules and policy interpretation, Cunningham for continuity and estimation, Angrist–Pischke for fuzzy RD, and Huntington-Klein for implementation problems. Rossi and Henry place the design within evaluation planning.
+
+| Source in the Research Library | Reading location | Main contribution | Study notes |
+|---|---|---|---|
+| Gertler et al., *Impact Evaluation in Practice*, 2016, second edition | Chapter 6; PDF pp. 143–157, printed pp. 113–127 | Eligibility rules, HISP, compliance, local policy effects | [Gertler](gertler-regression-discontinuity-notes.qmd) |
+| Cunningham, *Causal Inference: The Mixtape*, 2021 first edition | Chapter 6, especially §§6.2–6.3 | Potential outcomes, misspecification, density and placebo checks | [Mixtape](mixtape-regression-discontinuity-notes.qmd) |
+| Huntington-Klein, *The Effect*, library snapshot catalogued 2025 | Chapter 20, §§20.1–20.3 | Estimation choices, bandwidths, heaping, discreteness and extensions | [The Effect](effectbook-regression-discontinuity-notes.qmd) |
+| Angrist and Pischke, *Mostly Harmless Econometrics*, library PDF catalogued 2008 | Chapter 6, §§6.1–6.2; PDF pp. 205–218 | Sharp RD, fuzzy RD as IV, class-size application | [Angrist–Pischke](mostly-harmless-regression-discontinuity-notes.qmd) |
+| Rossi, Lipsey and Freeman, *Evaluation: A Systematic Approach*, 2004 | Chapter 9; PDF pp. 247–249 and 256 | Known selection rules and cutting-point designs | [Rossi et al.](rossi-regression-discontinuity-notes.qmd) |
+| Henry, “Comparison Group Designs,” in *Handbook of Practical Program Evaluation*, 2015 | Chapter 6; PDF pp. 184 and 195–196 | Design appraisal, pre-K example, competing treatments | [Henry](henry-regression-discontinuity-notes.qmd) |
+
+## Provenance and edition handling
+
+The chapters were retrieved on **18 September 2026** from the local Research Library's Evaluation collection. The connected MCP endpoint was unavailable; retrieval used the library's read-only catalogue, contents and section APIs on the local service. The linked reader pages point to those library records. The notes are paraphrased synthesis, not a reproduction of the chapters.
+
+Each study page links its source sections. The [source record](sources.json) records book and section identifiers, reading locations, block identifiers, and hashes of the retrieved evidence for audit. It does not redistribute the full chapter text.
+
+Important distinctions:
+
+- PDF page numbers are file locations unless explicitly labelled as printed pages.
+- HTML section positions in *The Mixtape* and *The Effect* are not printed pagination.
+- The first-edition *Mixtape* is separate from the library's work-in-progress *Remix*. These notes use the first edition.
+- The *Mostly Harmless Econometrics* file is catalogued as 2008 and includes draft artifacts; it is not presented as the published 2009 edition.
+- The *Effect* year follows the retrieved catalogue record. Its existing 2021 DiD citation elsewhere in this site has not been repurposed for this snapshot.
+- The library marks these extracts as needing review. Text can contain interleaved columns, incomplete equations, or imprecise boundaries. These notes avoid unchecked numerical table results; source-specific limitations are flagged on the relevant pages.
+
+## Connecting the sources
+
+The evaluation texts make the administrative rule central. The econometrics texts clarify that an explicit rule still needs a continuity argument and an appropriate estimator. Both perspectives are necessary: an elegant regression cannot repair a poor allocation story, and a credible allocation rule can still be analysed badly.
+
+The overview distinguishes the sharp effect at the cutoff from the fuzzy effect for local compliers. Some introductory texts use “local average treatment effect” for both. The distinction matters when explaining whose response an evaluation has estimated [@gertler2016ch6rdd; @angristpischke2008rdd].
+
+The older discussions of polynomial specification are presented historically and compared with later local-estimation guidance. The implementation links to [`rdrobust`](https://github.com/rdpackages/rdrobust) and [`rddensity`](https://github.com/rdpackages/rddensity) were checked against the official repositories on the retrieval date; software details are supplemental to the library reading.

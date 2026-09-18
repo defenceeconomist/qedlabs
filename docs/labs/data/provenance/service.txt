@@ -1,0 +1,6 @@
+Seeded service simulation: 48127L
+120 monthly observations, January 2014 to December 2023.
+Implementation begins January 2021. untreated_outcome is known simulation truth,
+not an observed real-world counterfactual. programme_effect is added to it to
+form observed_outcome. context changes support in the last year.
+See simulate_service() in the counterfactual-validation lab for all equations.

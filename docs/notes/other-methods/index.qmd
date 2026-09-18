@@ -10,7 +10,7 @@ This page groups the remaining core quasi-experimental methods in the notes sect
 
 ## [Regression Discontinuity](regression-discontinuity.qmd)
 
-Use this when treatment assignment is governed by a rule or threshold and units close to the cutoff can support a local comparison.
+Use this when treatment assignment is governed by a rule or threshold and units close to the cutoff can support a local comparison. The expanded overview links to [six source-specific study notes and a reading map](../rdd/regression-discontinuity-sources.qmd).
 
 ## [Interrupted Time Series](interrupted-time-series.qmd)
 

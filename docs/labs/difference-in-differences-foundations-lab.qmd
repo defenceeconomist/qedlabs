@@ -1,5 +1,7 @@
 ---
 title: "Lab: Difference-in-Differences Foundations With Kentucky Workers' Compensation"
+aliases:
+  - /labs/difference-in-differences-foundations-python-lab.html
 format:
   html: default
 execute:
@@ -11,7 +13,14 @@ execute:
 
 This is the first difference-in-differences lab. The guided core takes about 45–60 minutes and starts with the four means that define the canonical two-group, two-period estimator.
 
-[Download the R Jupyter notebook](notebooks/difference-in-differences-foundations-lab.ipynb){.cta-button download="difference-in-differences-foundations-lab.ipynb"}
+<!-- lab-downloads:start -->
+::: {.resource-links}
+[Quarto document](downloads/difference-in-differences-foundations-lab.qmd){download="difference-in-differences-foundations-lab.qmd"}
+[R Jupyter notebook](notebooks/difference-in-differences-foundations-lab.ipynb){download="difference-in-differences-foundations-lab.ipynb"}
+[Complete lab ZIP](downloads/difference-in-differences-foundations-lab.zip){download="difference-in-differences-foundations-lab.zip"}
+[Data and setup](data.qmd#difference-in-differences-foundations-lab)
+:::
+<!-- lab-downloads:end -->
 
 - Declare the treated group, comparison group, policy date, outcome, and estimand before fitting a model.
 - Calculate the contrast by hand before using an interaction regression.
@@ -20,7 +29,7 @@ This is the first difference-in-differences lab. The guided core takes about 45�
 
 The workflow draws on Gertler et al.'s counterfactual framing, Huntington-Klein's design-first treatment, and Andrew Heiss's worked example [@gertler2016ch7did; @huntingtonklein2021did; @heiss2026didexample]. See the [DiD overview](../notes/did/difference-in-differences.qmd) and [Heiss source notes](../notes/did/andrew-heiss-difference-in-differences-notes.qmd) for the underlying reading.
 
-[Python companion](difference-in-differences-foundations-python-lab.qmd) · [Tested environment and reproduction record](difference-in-differences-reproducibility.qmd)
+[Tested environment and reproduction record](difference-in-differences-reproducibility.qmd)
 
 ## Training Goal
 
@@ -48,11 +57,18 @@ The records are repeated cross-sections of claims, not a panel following the sam
 
 ## Step 2: Load And Audit The Data
 
-The `injury` data are distributed with the [`wooldridge` R package](https://search.r-project.org/CRAN/refmans/wooldridge/html/injury.html). We use the package copy rather than downloading a separate CSV.
+The `injury` data are distributed with the [`wooldridge` R package](https://search.r-project.org/CRAN/refmans/wooldridge/html/injury.html). We use a pinned snapshot bundled in this repository, not a runtime download.
+
+```{r}
+data_helpers <- c("data/load-data.R", "../data/load-data.R", "docs/labs/data/load-data.R")
+data_helpers <- data_helpers[file.exists(data_helpers)]
+if (!length(data_helpers)) stop("Extract the complete lab ZIP, including its data folder, before running.")
+source(data_helpers[[1]])
+```
 
 ```{r}
 required_packages <- c(
-  "digest","wooldridge", "dplyr", "ggplot2", "fixest")
+  "digest", "dplyr", "ggplot2", "fixest")
 missing_packages <- required_packages[!vapply(
   required_packages,
   requireNamespace,
@@ -60,16 +76,11 @@ missing_packages <- required_packages[!vapply(
   quietly = TRUE
 )]
 if (length(missing_packages) > 0) {
-  install.packages(missing_packages, repos = "https://cloud.r-project.org")
+  stop("Install the documented R environment first; missing: ", paste(missing_packages, collapse=", "), call.=FALSE)
 }
 invisible(lapply(required_packages, library, character.only = TRUE))
 
-# Match the Python lab's immutable upstream data and verify its checksum.
-data_file <- tempfile(fileext = ".rda")
-download.file("https://raw.githubusercontent.com/cran/wooldridge/5c16676c8c8e6685985d98661c55088c878902be/data/injury.RData", data_file, mode = "wb", quiet = TRUE)
-stopifnot(digest::digest(file = data_file, algo = "sha256") == "ec9d7cb7f50140fc64756856b0ad5a76151d13d6ec65ca2c66118df1eea3748f")
-load(data_file)
-unlink(data_file)
+injury <- qed_data("injury")
 
 
 injury_ky <- injury |>

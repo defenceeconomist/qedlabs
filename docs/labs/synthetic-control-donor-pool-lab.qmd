@@ -11,7 +11,14 @@ execute:
 
 Use this page as a skeleton worksheet focused specifically on donor-pool design for synthetic control.
 
-[Download the R Jupyter notebook](notebooks/synthetic-control-donor-pool-lab.ipynb){.cta-button download="synthetic-control-donor-pool-lab.ipynb"}
+<!-- lab-downloads:start -->
+::: {.resource-links}
+[Quarto document](downloads/synthetic-control-donor-pool-lab.qmd){download="synthetic-control-donor-pool-lab.qmd"}
+[R Jupyter notebook](notebooks/synthetic-control-donor-pool-lab.ipynb){download="synthetic-control-donor-pool-lab.ipynb"}
+[Complete lab ZIP](downloads/synthetic-control-donor-pool-lab.zip){download="synthetic-control-donor-pool-lab.zip"}
+[Data and setup](data.qmd#synthetic-control-donor-pool-lab)
+:::
+<!-- lab-downloads:end -->
 
 ## Draft Goal
 

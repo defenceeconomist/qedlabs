@@ -1,0 +1,37 @@
+---
+title: "Henry: RD Within Comparison-Group Designs"
+subtitle: "Handbook of Practical Program Evaluation, Chapter 6"
+date: 2026-09-18
+---
+
+## Source and locator
+
+Gary T. Henry wrote Chapter 6, “Comparison Group Designs,” in the 2015 *Handbook of Practical Program Evaluation*, edited by Newcomer, Hatry and Wholey [@henry2015comparison]. Open the [library chapter](https://portal.heley.uk/researchlibrary/books/handbook-practical-program-evaluation/read/handbook-practical-program-evaluation:ch06-chapter-6-comparison-group-designs). RDD appears on **PDF pages 195–196**, with a wider comparison on page 184. The chapter author is distinct from the book's editors.
+
+## Position in the evaluator's toolkit
+
+Henry moves from naive comparisons toward designs that address selection more convincingly. RDD is a particularly strong case because a quantitative assignment rule can account for why units enter a programme.
+
+The chapter qualifies any hierarchy: accuracy depends on circumstances, data and implementation. Neither a method's name nor its complexity guarantees a credible estimate. When commissioning an evaluation, request evidence about allocation rather than a preferred method label alone.
+
+## An index need not measure need perfectly
+
+Distinguish the policy quality of an index from its role in identification. A score need not perfectly measure need for its cutoff to support RD. In the sharp design described here, what matters is that the score actually determines allocation and the relevant outcome relationship is correctly represented.
+
+This does not make measurement error harmless. Analysts need the score used by administrators. A noisy proxy reconstructed later may misclassify which side of the operative threshold a person occupied.
+
+## The pre-kindergarten example
+
+The Tulsa pre-K discussion uses age-related eligibility to separate children who could attend in the previous year from slightly younger children. Outcomes are assessed after older children attended and before younger children begin.
+
+Timing and implementation therefore belong in the causal argument. An age cutoff alone is insufficient: investigate cohorts, attendance, assessment timing, and other experiences that change with eligibility. These notes summarize the design discussion rather than independently reassessing the underlying study.
+
+## Limits after addressing selection
+
+Henry emphasizes that effects at the cutoff may differ from average effects across the programme population. Another intervention beginning at the same threshold can also confound attribution.
+
+The chapter mentions fuzzy designs and assignment to clusters such as school districts. These require attention to take-up, the IV interpretation, and the level of assignment and dependence. Calling allocation exceptions “fuzzy” does not itself supply the necessary conditions.
+
+## Reading alongside estimation guidance
+
+Use Henry with [Rossi](rossi-regression-discontinuity-notes.qmd) for planning and appraisal. Polynomial score controls explain the role of modelling but are not a reason to fit increasingly high-order global polynomials. Read the [overview](../other-methods/regression-discontinuity.qmd) and [The Effect](effectbook-regression-discontinuity-notes.qmd) for local estimation and inference.

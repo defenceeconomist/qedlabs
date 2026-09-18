@@ -1,62 +1,60 @@
 ---
-title: "DiD lab setup and reproduction record"
+title: "DiD Lab Setup and Reproduction Record"
 ---
 
-## What is reproduced
+## Current R-only workflow
 
-Three paired R/Python labs use identical, checksum-verified upstream data. The R extension runs `HonestDiD`; Bacon decomposition is included in the R staggered lab. The Python pages explain how to interpret those extension results.
+The three DiD labs provide a Quarto document, an R Jupyter notebook, and a
+complete ZIP containing all required local data. Start from the
+[Labs overview](index.qmd#difference-in-differences-labs) or [data catalogue](data.qmd).
+No notebook downloads data or installs packages during execution.
 
-These notebooks reproduce teaching contrasts, not every result in the underlying papers. Source pages deliberately display code without executing it during website rendering. Notebook execution is a separate validation step.
+## Prepare R and Jupyter
 
-## Python environment
-
-Tested with Python 3.11.16. Use Python 3.11 in an isolated environment; the system Python is not changed. From the repository root:
-
-```bash
-python3.11 -m venv .venv-did
-source .venv-did/bin/activate
-python -m pip install -r docs/labs/reproducibility/did-python-requirements.txt
-python -m ipykernel install --sys-prefix --name python3
-```
-
-The [Python lock list](reproducibility/did-python-requirements.txt) pins the tested dependency set, including `differences` 0.3.0, `pyfixest` 0.60.0, and `statsmodels` 0.15.0. Open downloaded notebooks with an editor supporting Jupyter, or install JupyterLab separately in this environment. Select its Python kernel.
-
-## R environment
-
-Tested with R 4.5.1. The [R lockfile](reproducibility/did-renv.lock) records the tested dependency closure. Restore it into an isolated library, leaving your ordinary library untouched:
+Use R 4.5.1 and the [tested R lockfile](reproducibility/did-renv.lock).
+Restore dependencies into an isolated library before working offline:
 
 ```r
-install.packages("renv", repos = "https://cloud.r-project.org")
-dir.create(".venv-did/r-library", recursive = TRUE, showWarnings = FALSE)
-renv::restore(lockfile = "docs/labs/reproducibility/did-renv.lock",
-              library = ".venv-did/r-library", prompt = FALSE)
+install.packages("renv", repos="https://cloud.r-project.org")
+dir.create("r-library", showWarnings=FALSE)
+renv::restore(lockfile="did-renv.lock", library="r-library", prompt=FALSE)
 ```
 
-Then, with the Python environment activated:
+Install JupyterLab or Jupyter Notebook separately. Set `R_LIBS_USER` to the
+absolute path of that library, register the R kernel with
+`IRkernel::installspec()`, and launch Jupyter from that environment. Software
+installation can require internet access; subsequent lab execution does not.
+
+Extract a complete lab ZIP and keep its `data/` directory beside the document
+and notebook. Select the R kernel and run every cell, or run
+`quarto render NAME.qmd`. The data loader verifies the local SHA-256 hashes and
+fails if a file is missing or changed. There is no remote fallback or cache to populate.
+
+## Run the repository checks
 
 ```bash
-export R_LIBS_USER="$PWD/.venv-did/r-library"
-# On macOS, a temporary directory containing spaces can prevent R startup.
-export TMPDIR=/tmp
-Rscript -e 'IRkernel::installspec(prefix=Sys.getenv("VIRTUAL_ENV"))'
-```
-
-Existing R notebook installation checks are a convenience, not a substitute for the lockfile when reproducing the tested environment. Restore dependencies before running the validation. First-time downloads and some package installations require internet access; source builds can also require platform compilers.
-
-## Running the checks
-
-```bash
-python docs/scripts/generate_lab_notebooks.py
 python docs/scripts/generate_lab_notebooks.py --check
 python docs/scripts/test_generate_lab_notebooks.py
-python docs/scripts/validate_did_labs.py --extensions
-Rscript docs/scripts/generate_did_slide_assets.R
-quarto render docs
+python docs/scripts/validate_did_labs.py
+python docs/scripts/validate_offline_labs.py --execute --render
 ```
 
-The validator launches a fresh kernel for each of the six core notebooks and a separate fresh R kernel for the sensitivity extension with its prerequisites. Executed notebooks and comparison CSVs go to the ignored `.qedlabs-validation/` directory. Any cell error, mismatched support, or failed numerical comparison fails the command.
+Each notebook runs in a fresh R kernel from an extracted bundle. The method
+validator compares estimates, support and uncertainty against the retained
+[historically verified R tables](reproducibility/baselines/README.md), using
+absolute tolerance 1e-7 plus relative tolerance 1e-6. The DiD sensitivity extension
+is included. The RDD checks also exercise corrupt/missing data, insufficient
+cutoff support and an unusable first stage. Successful rendering alone is not a
+substitute for these execution checks.
 
-## Verified outputs — 18 September 2026
+## Reading the historical record
+
+The results below describe the original R/Python verification conducted before
+the Python teaching notebooks were retired. They remain provenance, not a claim
+that Python notebooks are still distributed. Current regression tests use the
+same R results and bundled source datasets; no online downloads are needed.
+
+## Historical paired-language verification — 18 September 2026
 
 | Check | Result |
 |---|---:|

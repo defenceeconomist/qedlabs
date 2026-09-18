@@ -11,7 +11,14 @@ execute:
 
 This is the second interrupted time-series lab. Its guided core takes about 45–60 minutes; the placebo-date exercise is optional.
 
-[Download the R Jupyter notebook](notebooks/interrupted-time-series-design-diagnostics-lab.ipynb){.cta-button download="interrupted-time-series-design-diagnostics-lab.ipynb"}
+<!-- lab-downloads:start -->
+::: {.resource-links}
+[Quarto document](downloads/interrupted-time-series-design-diagnostics-lab.qmd){download="interrupted-time-series-design-diagnostics-lab.qmd"}
+[R Jupyter notebook](notebooks/interrupted-time-series-design-diagnostics-lab.ipynb){download="interrupted-time-series-design-diagnostics-lab.ipynb"}
+[Complete lab ZIP](downloads/interrupted-time-series-design-diagnostics-lab.zip){download="interrupted-time-series-design-diagnostics-lab.zip"}
+[Data and setup](data.qmd#interrupted-time-series-design-diagnostics-lab)
+:::
+<!-- lab-downloads:end -->
 
 - Treat alternative outcomes and controls as design choices, not extra regressors to add automatically.
 - Compare a short, prespecified set of defensible specifications.
@@ -43,6 +50,13 @@ The columns do not all measure the same event:
 | `PetrolPrice` | Petrol price |
 
 ```{r}
+data_helpers <- c("data/load-data.R", "../data/load-data.R", "docs/labs/data/load-data.R")
+data_helpers <- data_helpers[file.exists(data_helpers)]
+if (!length(data_helpers)) stop("Extract the complete lab ZIP, including its data folder, before running.")
+source(data_helpers[[1]])
+```
+
+```{r}
 required_packages <- c("ggplot2", "nlme")
 missing_packages <- required_packages[!vapply(
   required_packages,
@@ -51,11 +65,11 @@ missing_packages <- required_packages[!vapply(
   quietly = TRUE
 )]
 if (length(missing_packages) > 0) {
-  install.packages(missing_packages, repos = "https://cloud.r-project.org")
+  stop("Install the documented R environment first; missing: ", paste(missing_packages, collapse=", "), call.=FALSE)
 }
 invisible(lapply(required_packages, library, character.only = TRUE))
 
-data("Seatbelts", package = "datasets")
+Seatbelts <- qed_data("Seatbelts")
 
 seatbelts <- as.data.frame(Seatbelts)
 seatbelts$time <- seq_len(nrow(seatbelts))

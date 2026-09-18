@@ -4,13 +4,13 @@ title: "DiD applications and teaching data"
 
 ## Choosing a lab
 
-These applications progress from one transparent policy contrast to staggered treatment. Each has an R page, a Python page, and downloadable notebooks. The [reproduction record](../../labs/difference-in-differences-reproducibility.qmd) documents the tested environment, numerical checks, and inference differences.
+These applications progress from one transparent policy contrast to staggered treatment. Each has an R page, a Quarto document, an R notebook, and bundled local data. The [reproduction record](../../labs/difference-in-differences-reproducibility.qmd) documents the tested environment, numerical checks, and inference differences.
 
 | Application | Data and provenance | Teaching question | Implemented workflow |
 |---|---|---|---|
-| Kentucky workers' compensation | `wooldridge::injury`, Kentucky claims; Meyer, Viscusi, and Durbin (1995) [@meyer1995workerscomp] | Did high earners' log benefit duration change more after the cap increase? | [R](../../labs/difference-in-differences-foundations-lab.qmd) / [Python](../../labs/difference-in-differences-foundations-python-lab.qmd): four cells, counterfactual, interaction, covariates |
-| Castle-doctrine laws | `causaldata::castle`, state-year panel; Cheng and Hoekstra (2013) [@cheng2013castle] | How do adoption timing and comparison choice affect log-homicide estimates? | [R](../../labs/difference-in-differences-staggered-diagnostics-lab.qmd) / [Python](../../labs/difference-in-differences-staggered-diagnostics-python-lab.qmd): TWFE, support, cohort-aware event studies; R decomposition |
-| Minimum wages and teen employment | `did::mpdta`, package teaching panel with 500 counties and five years | How do group-time effects change with controls and aggregation? | [R](../../labs/difference-in-differences-modern-estimators-lab.qmd) / [Python](../../labs/difference-in-differences-modern-estimators-python-lab.qmd): group-time ATT, aggregation, conditional trends; R sensitivity |
+| Kentucky workers' compensation | `wooldridge::injury`, Kentucky claims; Meyer, Viscusi, and Durbin (1995) [@meyer1995workerscomp] | Did high earners' log benefit duration change more after the cap increase? | [R](../../labs/difference-in-differences-foundations-lab.qmd): four cells, counterfactual, interaction, covariates |
+| Castle-doctrine laws | `causaldata::castle`, state-year panel; Cheng and Hoekstra (2013) [@cheng2013castle] | How do adoption timing and comparison choice affect log-homicide estimates? | [R](../../labs/difference-in-differences-staggered-diagnostics-lab.qmd): TWFE, support, cohort-aware event studies; R decomposition |
+| Minimum wages and teen employment | `did::mpdta`, package teaching panel with 500 counties and five years | How do group-time effects change with controls and aggregation? | [R](../../labs/difference-in-differences-modern-estimators-lab.qmd): group-time ATT, aggregation, conditional trends; R sensitivity |
 
 **Status:** all six core notebooks and the R sensitivity extension were executed on 18 September 2026. These are teaching reproductions of specified contrasts, not complete replications of each paper's samples, preferred specifications, or policy conclusions.
 
@@ -49,7 +49,7 @@ Source resources: [dataset documentation](https://bcallaway11.github.io/did/refe
 
 The notebooks download upstream package data directly from immutable CRAN-mirror commits and verify SHA-256 checksums. The [manifest](../../labs/reproducibility/did-data-manifest.json) records each URL and digest. No dataset is redistributed in this repository. A successful checksum verifies file identity, not validity of the original measurement or permission for every downstream use. Consult the original package and study notices before redistributing extracts.
 
-The Python notebooks cache downloaded files locally; the R notebooks use temporary files. Initial execution requires internet access. The Python cache is rechecked on every run, and checksum mismatches stop execution. Shared filtering and explicit variable coding prevent accidental cross-language sample differences.
+All data are bundled in the repository and [linked in the data catalogue](../../labs/data.qmd). The R notebooks load local snapshots and verify their checksums on every run. No data downloads or populated caches are required. Explicit filtering and variable coding preserve the verified analysis samples.
 
 ## Further reproducible applications to develop
 

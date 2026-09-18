@@ -45,7 +45,7 @@ This arithmetic is a teaching scenario, not a power calculation: power requires 
 
 ## Lab interpretation and reporting
 
-Use the [staggered diagnostics lab](../../labs/difference-in-differences-staggered-diagnostics-python-lab.qmd) to distinguish raw trends, conventional event-study leads, and cohort-aware leads. Their coefficient definitions must be understood before applying a visual pre-trend heuristic.
+Use the [staggered diagnostics lab](../../labs/difference-in-differences-staggered-diagnostics-lab.qmd) to distinguish raw trends, conventional event-study leads, and cohort-aware leads. Their coefficient definitions must be understood before applying a visual pre-trend heuristic.
 
 Report the full diagnostic path, the substantive deviations you consider plausible, and whether the specification was chosen after inspecting pre-tests. Pair the discussion with the [sensitivity notes](rambachan-roth-sensitivity-notes.qmd). Sensitivity analysis still needs a justified class of violations; it is not a universal repair.
 

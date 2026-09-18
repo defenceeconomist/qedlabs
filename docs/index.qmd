@@ -1,22 +1,35 @@
 ---
 title: "Quasi-Experimental Design Labs"
 page-layout: full
+body-classes: resource-index
 toc: false
 ---
 
-<div class="landing-stack">
+<div class="resource-directory">
 
-::: {.hero-panel}
-<span class="hero-eyebrow">Evaluation design knowledge base</span>
+::: {.directory-intro #build-the-design-before-you-estimate}
+Method notes, applied labs, and teaching decks for quasi-experimental evaluation. Start with the assignment process, then build and test a defensible comparison.
+:::
 
-# Build the design before you estimate
+## Study and Practice
 
-Quasi-Experimental Design Labs organizes working material for quasi-experimental evaluation into three practical routes. Use slides for the shortest overview, notes for the detailed method explanation, and labs for code and workflows you can run yourself.
+::: {.resource-list}
+::: {.resource-row}
+::: {.resource-summary}
+### [Notes](notes/index.qmd)
+:::
+::: {.resource-body}
+Method overviews, identification assumptions, diagnostics, and source-specific reading notes.
+:::
+:::
 
-::: {.cta-row}
-[Start with Slides](slides/index.qmd){.cta-button}
-[Start with Notes](notes/index.qmd){.cta-button}
-[Open Labs](labs/index.qmd){.cta-button .secondary}
+::: {.resource-row}
+::: {.resource-summary}
+### [Labs](labs/index.qmd)
+:::
+::: {.resource-body}
+Teaching decks, presenter notes, worked cases, and design exercises, with downloadable R notebooks and paired Python labs for difference-in-differences and regression discontinuity.
+:::
 :::
 :::
 
