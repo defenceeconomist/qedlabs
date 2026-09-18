@@ -1,0 +1,95 @@
+---
+title: "DiD lab setup and reproduction record"
+---
+
+## What is reproduced
+
+Three paired R/Python labs use identical, checksum-verified upstream data. The R extension runs `HonestDiD`; Bacon decomposition is included in the R staggered lab. The Python pages explain how to interpret those extension results.
+
+These notebooks reproduce teaching contrasts, not every result in the underlying papers. Source pages deliberately display code without executing it during website rendering. Notebook execution is a separate validation step.
+
+## Python environment
+
+Tested with Python 3.11.16. Use Python 3.11 in an isolated environment; the system Python is not changed. From the repository root:
+
+```bash
+python3.11 -m venv .venv-did
+source .venv-did/bin/activate
+python -m pip install -r docs/labs/reproducibility/did-python-requirements.txt
+python -m ipykernel install --sys-prefix --name python3
+```
+
+The [Python lock list](reproducibility/did-python-requirements.txt) pins the tested dependency set, including `differences` 0.3.0, `pyfixest` 0.60.0, and `statsmodels` 0.15.0. Open downloaded notebooks with an editor supporting Jupyter, or install JupyterLab separately in this environment. Select its Python kernel.
+
+## R environment
+
+Tested with R 4.5.1. The [R lockfile](reproducibility/did-renv.lock) records the tested dependency closure. Restore it into an isolated library, leaving your ordinary library untouched:
+
+```r
+install.packages("renv", repos = "https://cloud.r-project.org")
+dir.create(".venv-did/r-library", recursive = TRUE, showWarnings = FALSE)
+renv::restore(lockfile = "docs/labs/reproducibility/did-renv.lock",
+              library = ".venv-did/r-library", prompt = FALSE)
+```
+
+Then, with the Python environment activated:
+
+```bash
+export R_LIBS_USER="$PWD/.venv-did/r-library"
+# On macOS, a temporary directory containing spaces can prevent R startup.
+export TMPDIR=/tmp
+Rscript -e 'IRkernel::installspec(prefix=Sys.getenv("VIRTUAL_ENV"))'
+```
+
+Existing R notebook installation checks are a convenience, not a substitute for the lockfile when reproducing the tested environment. Restore dependencies before running the validation. First-time downloads and some package installations require internet access; source builds can also require platform compilers.
+
+## Running the checks
+
+```bash
+python docs/scripts/generate_lab_notebooks.py
+python docs/scripts/generate_lab_notebooks.py --check
+python docs/scripts/test_generate_lab_notebooks.py
+python docs/scripts/validate_did_labs.py --extensions
+Rscript docs/scripts/generate_did_slide_assets.R
+quarto render docs
+```
+
+The validator launches a fresh kernel for each of the six core notebooks and a separate fresh R kernel for the sensitivity extension with its prerequisites. Executed notebooks and comparison CSVs go to the ignored `.qedlabs-validation/` directory. Any cell error, mismatched support, or failed numerical comparison fails the command.
+
+## Verified outputs — 18 September 2026
+
+| Check | Result |
+|---|---:|
+| Kentucky manual and interaction DiD | 0.1906012007 log points |
+| Castle unweighted static TWFE | 0.0693984293 log points |
+| Minimum-wage simple ATT aggregation | −0.0399512752 log points |
+| Largest difference across matched R/Python point estimates | Less than $2\times10^{-15}$ |
+| Matched cohort-aware castle event coefficients | 14 |
+| Matched minimum-wage group-time coefficients, including normalized zeros | 15 |
+
+Numerical tolerance is $10^{-7}$ absolute plus $10^{-6}$ relative. Matching numbers verifies implementation of the same contrast, not the causal assumptions.
+
+### R extension outputs
+
+The Bacon weights sum to one and reconstruct static TWFE. Treated-versus-untreated comparisons receive approximately 89.88% of the weight, earlier-versus-later 7.71%, and later-versus-earlier 2.41%. These shares are not estimates of the amount of bias.
+
+For the 2006 cohort's first post-treatment effect, `HonestDiD` relative-magnitude intervals are:
+
+| $\bar M$ | Lower | Upper |
+|---:|---:|---:|
+| 0.5 | −0.03960 | 0.03240 |
+| 1.0 | −0.05400 | 0.04680 |
+| 1.5 | −0.07561 | 0.06841 |
+| 2.0 | −0.09721 | 0.09001 |
+
+Zero is included at every tested grid point. The first tested value is not an exact breakdown threshold. The target is not the full staggered aggregate.
+
+## Inference differences and limitations
+
+- R's modern lab uses multiplier-bootstrap simultaneous bands with a fixed seed and 499 draws for classroom speed.
+- `differences` 0.3.0 produced nonfinite bootstrap bands when universal-base reference cells had zero variance. The Python lab therefore uses analytic standard errors with conservative Bonferroni simultaneous bands, excluding normalized reference coefficients from the family. This is explicit in the code and plots.
+- Pointwise event-study intervals in the staggered labs are not simultaneous bands. Finite-sample covariance adjustments can also differ between packages.
+- PyFixest labels its saturated event-study implementation experimental. Its 14 aggregated point estimates were checked against R's `fixest::sunab()` on this dataset.
+- County clustering in the minimum-wage teaching sample does not establish appropriate state-policy inference. Use assignment-level identifiers and a defensible dependence model in an actual evaluation.
+
+See the [application catalogue](../notes/did/difference-in-differences-applications.qmd) for sample definitions, data provenance, and original replication resources.

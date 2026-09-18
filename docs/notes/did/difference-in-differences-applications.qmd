@@ -1,0 +1,62 @@
+---
+title: "DiD applications and teaching data"
+---
+
+## Choosing a lab
+
+These applications progress from one transparent policy contrast to staggered treatment. Each has an R page, a Python page, and downloadable notebooks. The [reproduction record](../../labs/difference-in-differences-reproducibility.qmd) documents the tested environment, numerical checks, and inference differences.
+
+| Application | Data and provenance | Teaching question | Implemented workflow |
+|---|---|---|---|
+| Kentucky workers' compensation | `wooldridge::injury`, Kentucky claims; Meyer, Viscusi, and Durbin (1995) [@meyer1995workerscomp] | Did high earners' log benefit duration change more after the cap increase? | [R](../../labs/difference-in-differences-foundations-lab.qmd) / [Python](../../labs/difference-in-differences-foundations-python-lab.qmd): four cells, counterfactual, interaction, covariates |
+| Castle-doctrine laws | `causaldata::castle`, state-year panel; Cheng and Hoekstra (2013) [@cheng2013castle] | How do adoption timing and comparison choice affect log-homicide estimates? | [R](../../labs/difference-in-differences-staggered-diagnostics-lab.qmd) / [Python](../../labs/difference-in-differences-staggered-diagnostics-python-lab.qmd): TWFE, support, cohort-aware event studies; R decomposition |
+| Minimum wages and teen employment | `did::mpdta`, package teaching panel with 500 counties and five years | How do group-time effects change with controls and aggregation? | [R](../../labs/difference-in-differences-modern-estimators-lab.qmd) / [Python](../../labs/difference-in-differences-modern-estimators-python-lab.qmd): group-time ATT, aggregation, conditional trends; R sensitivity |
+
+**Status:** all six core notebooks and the R sensitivity extension were executed on 18 September 2026. These are teaching reproductions of specified contrasts, not complete replications of each paper's samples, preferred specifications, or policy conclusions.
+
+## Dataset dictionary and design cautions
+
+### Kentucky
+
+- `ky`: Kentucky indicator; retain `ky == 1` (5,626 claims).
+- `afchnge`: observation after the policy change; `highearn`: high-earner group.
+- `ldurat`: log duration; `durat`: duration in weeks.
+- The four cells contain different claimants. Stable sample composition and comparable untreated changes require justification.
+- Exact exponentiation of the log contrast concerns a ratio of geometric-mean changes, not automatically arithmetic mean weeks.
+
+Source resources: [wooldridge package and documentation](https://cran.r-project.org/package=wooldridge), [Heiss's worked R example](https://evalsp26.classes.andrewheiss.com/example/diff-in-diff.html). The article reference identifies the original study; the package file is a teaching extract.
+
+### Castle doctrine
+
+- `sid`: state identifier; `year`: calendar year; `post`: active policy exposure.
+- `l_homicide`: log homicide outcome supplied in the source file.
+- Derive `first_treat` as the first year with `post == 1`, assigning zero to never-treated states. Use the same coding in both languages.
+- The labs use 550 state-year rows, 50 states, and 2000–2010. Their unweighted specification omits the original paper's broader robustness analysis.
+- Verify that substantive law timing agrees with the binary teaching indicator before undertaking a policy replication.
+
+Source resources: [causaldata documentation](https://nickch-k.github.io/causaldata/), [Cunningham's code repository](https://github.com/scunning1975/mixtape), [original article](https://doi.org/10.3368/jhr.48.3.821).
+
+### Minimum wages
+
+- `countyreal`: county; `year`: 2003–2007; `lemp`: log teen employment; `lpop`: log population.
+- `first.treat`: first treatment year, zero for never-treated counties.
+- `treat` marks membership in an ever-treated group. Construct current exposure using both cohort and year; do not treat `treat` as a current-policy indicator.
+- `mpdta` contains 2,500 rows and is intended for software demonstration. County clustering reproduces that teaching convention. State-level assignment can require a different dependence model; the compact file does not supply every identifier needed for a full policy analysis.
+
+Source resources: [dataset documentation](https://bcallaway11.github.io/did/reference/mpdta.html), [author-maintained R tutorial](https://bcallaway11.github.io/did/articles/did-basics.html), [Python ATTgt documentation](https://bernardodionisi.github.io/differences/latest/).
+
+## Acquisition and permitted use
+
+The notebooks download upstream package data directly from immutable CRAN-mirror commits and verify SHA-256 checksums. The [manifest](../../labs/reproducibility/did-data-manifest.json) records each URL and digest. No dataset is redistributed in this repository. A successful checksum verifies file identity, not validity of the original measurement or permission for every downstream use. Consult the original package and study notices before redistributing extracts.
+
+The Python notebooks cache downloaded files locally; the R notebooks use temporary files. Initial execution requires internet access. The Python cache is rechecked on every run, and checksum mismatches stop execution. Shared filtering and explicit variable coding prevent accidental cross-language sample differences.
+
+## Further reproducible applications to develop
+
+| Application or exercise | Primary starting point | Proposed lab use | Current status |
+|---|---|---|---|
+| New Jersey–Pennsylvania minimum wage | Card–Krueger (1994) [@cardkrueger1994minimum]; [Princeton data archive](https://davidcard.berkeley.edu/data_sets.html) | Contrast employment measurement choices and the original two-period design | Catalogued; data and results not executed here |
+| Serial-correlation placebo laws | [Bertrand–Duflo–Mullainathan working paper](https://www.nber.org/papers/w8841) | Repeated placebo assignment to compare rejection rates under alternative inference | Proposed simulation extension; not executed |
+| Imputation event study | [Borusyak–Jaravel–Spiess replication package](https://zenodo.org/records/10037585) | Reuse the castle sample to teach untreated-model fitting; then inspect the original replication workflow | Catalogued; not a fourth implemented lab |
+
+The existing [source map](difference-in-differences-sources.qmd) explains which readings support each task. Choose an application for its comparison design and accessible data before choosing a preferred software package.

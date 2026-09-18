@@ -123,3 +123,19 @@ The worked example is deliberately canonical. It does not teach staggered adopti
 ## Bottom Line
 
 Heiss's materials are most valuable as an implementation bridge. They show how to keep the four-cell counterfactual visible through data cleaning, plotting, manual calculation, regression, and interpretation. The main extension needed for QED Labs is to make the identifying role of controls and inference more explicit.
+
+## Reading locators and teaching application
+
+Spring 2026 worked example: Kentucky injury data, group means, interaction regressions, and controls. Worked-example HTML rechecked 18 September 2026; the class-session pages remain contextual reading links.
+
+The following exercise is QED Labs teaching commentary.
+
+### Reproducing a teaching result in two languages
+
+The [R foundations lab](../../labs/difference-in-differences-foundations-lab.qmd) and [Python companion](../../labs/difference-in-differences-foundations-python-lab.qmd) use identical upstream data and the same Kentucky filter. They test equality of the manual contrast and unadjusted regression interaction.
+
+**Exercise:** a Python coefficient differs from the R result. What do you inspect first?
+
+**Worked answer:** compare row counts, the four cell means, group coding, outcome transformation, and missing-value exclusions. Robust standard errors alone should not change an OLS coefficient. Adding controls or switching weights can change it. Compare the same statistical object before treating disagreement as a language problem.
+
+Hospitalization and injury coding in the adjusted example require substantive timing checks. A convenient variable in the file is not automatically an admissible pre-treatment control.

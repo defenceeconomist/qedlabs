@@ -78,6 +78,8 @@ Use this when you want a more open-ended practice page.
 
 ## Difference-in-Differences Labs {#difference-in-differences-labs .section-heading}
 
+[Environment setup and verified outputs](difference-in-differences-reproducibility.qmd) · [Applications and data](../notes/did/difference-in-differences-applications.qmd)
+
 <p class="section-intro">Move from a transparent 2×2 contrast to staggered-adoption diagnostics, explicit group-time effects, and sensitivity analysis.</p>
 
 ::: {.section-grid}
@@ -89,6 +91,8 @@ Use this when you want a more open-ended practice page.
 Calculate the four-cell contrast by hand, recover it with an interaction regression, interpret a log outcome, and audit the assumptions hidden by a two-period design.
 
 [Download R notebook](notebooks/difference-in-differences-foundations-lab.ipynb){download="difference-in-differences-foundations-lab.ipynb"}
+
+[Python companion](difference-in-differences-foundations-python-lab.qmd) · [Download Python notebook](notebooks/difference-in-differences-foundations-python-lab.ipynb){download="difference-in-differences-foundations-python-lab.ipynb"}
 :::
 
 ::: {.section-card}
@@ -99,6 +103,8 @@ Calculate the four-cell contrast by hand, recover it with an interaction regress
 Map castle-law adoption cohorts, reconstruct TWFE with the Goodman-Bacon decomposition, and compare conventional and Sun–Abraham event studies.
 
 [Download R notebook](notebooks/difference-in-differences-staggered-diagnostics-lab.ipynb){download="difference-in-differences-staggered-diagnostics-lab.ipynb"}
+
+[Python companion](difference-in-differences-staggered-diagnostics-python-lab.qmd) · [Download Python notebook](notebooks/difference-in-differences-staggered-diagnostics-python-lab.ipynb){download="difference-in-differences-staggered-diagnostics-python-lab.ipynb"}
 :::
 
 ::: {.section-card}
@@ -109,6 +115,8 @@ Map castle-law adoption cohorts, reconstruct TWFE with the Goodman-Bacon decompo
 Estimate and aggregate group-time effects with `did`, compare control groups and Sun–Abraham, then optionally probe parallel-trends sensitivity with `HonestDiD`.
 
 [Download R notebook](notebooks/difference-in-differences-modern-estimators-lab.ipynb){download="difference-in-differences-modern-estimators-lab.ipynb"}
+
+[Python companion](difference-in-differences-modern-estimators-python-lab.qmd) · [Download Python notebook](notebooks/difference-in-differences-modern-estimators-python-lab.ipynb){download="difference-in-differences-modern-estimators-python-lab.ipynb"}
 :::
 :::
 

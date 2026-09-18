@@ -18,7 +18,7 @@ The aim is to preserve the chapter's applied logic while separating durable desi
 
 ## Source Baseline
 
-- Source: [Chapter 9, Difference-in-Differences](https://mixtape.scunning.com/09-difference_in_differences)
+- Source: [Chapter 9, Difference-in-Differences](https://mixtape-1ed.netlify.app/09-difference_in_differences)
 - Author: Scott Cunningham
 - Accessed: 9 August 2026
 - Main sections:
@@ -125,3 +125,19 @@ The chapter maps several modern approaches but does not make estimator choice au
 ## Bottom Line
 
 Cunningham's chapter is the most useful single bridge from DiD intuition to modern staggered-adoption concerns. Its lasting message is that transparency must extend from the four-cell estimate to every comparison and weight inside a multi-period estimator.
+
+## Reading locators and teaching application
+
+First edition, Chapter 9, §§9.2–9.6; verified against the archived first edition on 18 September 2026. The main Mixtape site now serves *The Remix*, which has a different chapter structure.
+
+The following exercise is QED Labs teaching commentary.
+
+### A comparison audit
+
+The three-lab sequence deliberately separates the transparent four-cell contrast from treatment-timing diagnostics. For every regression, write down the actual treated and comparison observations before reading a coefficient.
+
+**Exercise:** an early cohort gains 2 units after adoption, then its effect grows to 5 while a late cohort adopts with an effect of 2. Ignoring common untreated trends, what does the later-versus-earlier comparison recover?
+
+**Worked answer:** $2-(5-2)=-1$. Both cohorts have positive treatment effects, but the comparison subtracts the early cohort's additional treatment response. This is a constructed illustration, not an empirical result from the chapter. Positive weights on such a contrast do not make its causal interpretation valid.
+
+Use [staggered diagnostics](../../labs/difference-in-differences-staggered-diagnostics-lab.qmd) to inspect the empirical weights and contrasts separately.

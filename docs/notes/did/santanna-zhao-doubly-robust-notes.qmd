@@ -1,0 +1,57 @@
+---
+title: "Sant’Anna and Zhao: doubly robust DiD"
+subtitle: "Source notes and teaching applications"
+date: 2026-09-18
+format:
+  html:
+    toc: true
+---
+
+## Source and reading route
+
+@santannazhao2020drdid. [Open text](https://psantanna.com/files/SantAnna_Zhao_DRDID.pdf). Reading baseline: authors’ open manuscript corresponding to the 2020 article. Accessed 18 September 2026. Section locators below refer to this linked version; pagination can differ from the published article.
+
+The source summary is a selective paraphrase. Sections labelled **Teaching application** contain QED Labs' own examples and exercises, not claims that the authors ran these particular analyses.
+
+
+## Source summary
+
+**Section 2.1:** identification requires conditional parallel trends and overlap. Panel and repeated-cross-section sampling are distinct; the repeated-cross-section setup constrains composition over time.
+
+**Section 2.2:** combine a propensity model with an outcome-change model. Under identification, the panel moment remains correct if either nuisance model is correct. With $D$ indicating the treated group, $\pi(X)$ a propensity model, and $m(X)$ the untreated outcome-change model:
+
+$$\tau^{DR}=E[(w_1-w_0)(\Delta Y-m(X))],$$
+
+where $w_1=D/E[D]$ and $w_0$ normalizes $(1-D)\pi(X)/(1-\pi(X))$ to have expectation one.
+
+**Sections 2.3 and 3:** efficiency and inference need additional care. Consistency that survives one misspecified nuisance model does not automatically make a conventional variance formula valid. The proposed improved estimation procedures address nuisance-estimation effects. Both correctly specified nuisance models support efficiency results under the paper's conditions.
+
+**Boundary:** “doubly robust” concerns statistical nuisance models, not robustness to failed parallel trends or absent overlap.
+
+## Teaching application: why the augmentation helps
+
+Think of $\Delta Y-m(X)$ as an unexpected outcome change. The treated average and reweighted control average compare those residual changes. This construction has two routes to removing systematic differences, but neither route supplies observations where no comparable controls exist.
+
+Use a two-column audit:
+
+| Identification question | Estimation question |
+|---|---|
+| Would comparable units share untreated changes? | Does the regression represent those changes? |
+| Are controls present for relevant treated covariates? | Are propensity estimates near one? |
+| Were covariates measured before exposure? | Were nuisance fits computed on the intended sample? |
+
+Keeping these columns separate prevents a software option from becoming an unsupported causal claim.
+
+## Teaching application: exercises and answers
+
+1. **Only the propensity model is correct.** Does that imply parallel trends? **No.** Identification is imposed before the robustness result applies.
+2. **A treated subgroup has no controls.** Can regression extrapolation restore the stated overlap assumption? **No.** Reconsider the target population or comparison design and report any trimming.
+3. **Both nuisance models are wrong.** Does their combination guarantee consistency? **No.** The two opportunities for correctness are not a third guarantee.
+4. **Two packages give different covariate-adjusted estimates.** Check samples, baseline covariates, propensity fitting, outcome fitting, and weights before claiming an implementation error.
+
+## Connection to the labs
+
+The [modern R lab](../../labs/difference-in-differences-modern-estimators-lab.qmd) uses doubly robust group-time estimation; the [Python companion](../../labs/difference-in-differences-modern-estimators-python-lab.qmd) makes the nuisance option explicit. The paper's two-period contribution is a building block; Callaway–Sant'Anna specifies the staggered group-time comparisons and their aggregation.
+
+
+[Reading map](difference-in-differences-sources.qmd) · [Method overview](difference-in-differences.qmd) · [Applications and datasets](difference-in-differences-applications.qmd)

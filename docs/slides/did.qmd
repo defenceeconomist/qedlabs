@@ -1,8 +1,8 @@
 ---
 title: "Difference-in-Differences"
-subtitle: "From four means to credible staggered estimates"
+subtitle: "An introduction for applied researchers"
 author: "Luke Heley"
-date: 9 August 2026
+date: 18 September 2026
 bibliography:
   - ../../evaluation-bibliography.bib
 format:
@@ -28,305 +28,269 @@ execute:
   eval: false
 ---
 
-## The subtraction is simple; the comparison is the design
+## The question DiD answers
 
-::: {.kicker}
-Difference-in-differences estimates how the treated group's change differs from a credible untreated change.
-:::
+How much did the treated group's outcome change **beyond the change a credible comparison group experienced**?
 
-- four means make the canonical contrast transparent
-- parallel trends gives that contrast causal meaning
-- staggered adoption changes which groups are compared
-- modern estimators make timing, controls, and aggregation explicit
+By the end, you should be able to calculate a DiD, explain its assumptions, and choose comparisons for staggered adoption.
 
 ::: {.notes}
-[Sources] Canonical and modern DiD principles: @gertler2016ch7did; @huntingtonklein2021did; @roth2023trending.
+Allow 2 minutes. Ask for a policy whose before/after change might reflect another economic shock. The comparison supplies the missing untreated change. Basic regression knowledge is enough for this session. The conceptual session lasts 45–60 minutes with discussion; code belongs in the paired labs. Sources: @gertler2016ch7did; @roth2023trending.
 :::
 
-## Kentucky's policy creates a transparent 2×2 question
+## Kentucky workers’ compensation
 
-| Design element | Kentucky workers' compensation |
+| Design element | Teaching application |
 |---|---|
-| Policy | Higher cap on covered weekly earnings in 1980 |
-| Exposed group | High-earning claimants |
-| Comparison group | Low-earning claimants |
-| Outcome | Log duration of benefit receipt |
-| Target | High-earner change minus low-earner change |
+| Reform | Higher covered-earnings cap in 1980 |
+| Treated group | High-earning claimants |
+| Comparison | Low-earning claimants |
+| Outcome | Log benefit duration |
 
-Low earners construct the missing change for high earners—not because they have the same outcome level, but because their untreated change is assumed to be informative [@meyer1995workerscomp].
-
-::: {.notes}
-[Sources] Kentucky policy and data: @meyer1995workerscomp. Teaching workflow: @heiss2026didexample.
-:::
-
-## Four means produce one DiD estimate
-
-![Mean log benefit duration for high- and low-earning Kentucky claimants before and after the 1980 policy change, with 95 percent intervals.](assets/did-kentucky-four-cells.png){fig-alt="Four-cell means plot: high earners rise from roughly 1.38 to 1.58 log weeks, while low earners rise only slightly from roughly 1.13 to 1.14; the resulting difference-in-differences estimate is 0.191 log points." width="91%"}
-
-The high-earner outcome rises more than the low-earner outcome: the DiD estimate is `0.191` log points, or about `21.0%` after exact exponentiation.
+Different claims are observed before and after: this is a repeated-cross-section design.
 
 ::: {.notes}
-[Sources] Asset generated from `wooldridge::injury`, documented in @meyer1995workerscomp and used in @heiss2026didexample.
+Allow 2 minutes. The reform changes incentives differently for high and low earners. Ask why low earners could be useful even if their durations start lower. Clarify that group membership is not random assignment, and treatment can change claiming behavior. Sources: @meyer1995workerscomp; @heiss2026didexample.
 :::
 
-## The interaction regression recovers the same contrast
+## Four observed means
 
-$$
-Y_{it} = \alpha + \gamma Treated_i + \lambda Post_t
-+ \tau(Treated_i \times Post_t) + \varepsilon_{it}
-$$
+![Mean log benefit duration by earnings group before and after the Kentucky reform.](assets/did-kentucky-four-cells.png){height="430px" fig-alt="Mean log benefit duration by earnings group before and after the Kentucky reform."}
 
-| Calculation | Estimate |
+Baseline differences are allowed. The comparison concerns changes.
+
+::: {.notes}
+Allow 2 minutes. Have learners identify the four cells and the two group-specific changes. Error bars describe uncertainty in means; they do not display uncertainty in the final DiD or establish policy-level replication. The asset is generated from the same Kentucky sample as the foundations labs. Sources: @meyer1995workerscomp; @heiss2026didexample.
+:::
+
+## The difference of changes
+
+| Calculation | Log points |
 |---|---:|
-| Change for high earners | `0.199` |
-| Change for low earners | `0.008` |
-| Difference of changes | `0.191` |
-| Regression interaction $\widehat{\tau}$ | `0.191` |
+| High-earner change | 0.199 |
+| Low-earner change | 0.008 |
+| Difference-in-differences | **0.191** |
 
-Regression has not changed the identifying comparison. It has represented it in a form that supports inference and extensions.
-
-::: {.notes}
-[Sources] Regression representation and four-cell equivalence: @gertler2016ch7did; @huntingtonklein2021did; @heiss2026didexample.
-:::
-
-## Parallel trends supplies the missing untreated change
-
-![Observed high- and low-earner means with a dashed high-earner counterfactual that applies the low-earner change to the high-earner baseline.](assets/did-kentucky-counterfactual.png){fig-alt="Two-period trends plot: the dashed untreated counterfactual for high earners follows the small change observed among low earners, leaving a 0.191 log-point gap from the observed post-policy high-earner mean." width="91%"}
-
-The causal claim is that the dashed point approximates what high earners would have experienced without the higher cap.
+$$\widehat\tau=(\bar Y_{T,after}-\bar Y_{T,before})-(\bar Y_{C,after}-\bar Y_{C,before})$$
 
 ::: {.notes}
-[Sources] Parallel-trends counterfactual logic: @gertler2016ch7did; @huntingtonklein2021did. Asset generated from `wooldridge::injury`.
+Allow 3 minutes, including a hand calculation. The displayed values are rounded; the executed estimate is 0.1906012007. Ask what the treated group's change alone would claim. The control change adjusts for an assumed shared untreated trend, not every concurrent event. Sources: @gertler2016ch7did; @heiss2026didexample.
 :::
 
-## Two periods cannot diagnose that assumption
+## The missing counterfactual
 
-One pre-policy mean per group reveals a baseline gap, but not a pre-policy trend.
+![The dashed high-earner path applies the low-earner change to the high-earner baseline.](assets/did-kentucky-counterfactual.png){height="430px" fig-alt="The dashed high-earner path applies the low-earner change to the high-earner baseline."}
 
-What can strengthen the design:
-
-- institutional evidence for why groups should share shocks
-- additional pre-treatment periods and raw outcome plots
-- alternative credible controls and placebo dates or outcomes
-- transparent sensitivity to departures from parallel trends
-
-::: {.signal}
-Observed pre-trends can challenge parallel trends; they cannot prove it.
-:::
+The dashed endpoint is what high earners are assumed to experience without the reform.
 
 ::: {.notes}
-[Sources] Parallel-trends diagnostics and limits: @gertler2016ch7did; @roth2022pretest; @rambachanroth2023parallel.
+Allow 2 minutes. Distinguish observed points from the unobserved counterfactual. It is not a fitted fact whose accuracy can be checked in the treated after-period. Ask what a high-earner-specific economic shock would do to the comparison. Sources: @gertler2016ch7did; @huntingtonklein2021did.
 :::
 
-## Anticipation, spillovers, and composition can break the design
+## The effect on the treated
 
-| Threat | Failure mode |
+$$ATT=E[Y_{after}(1)-Y_{after}(0)\mid Treated=1]$$
+
+- $Y(1)$: outcome under treatment.
+- $Y(0)$: outcome without treatment.
+- The target is the treated population represented by this design.
+
+An ATT for high earners is not an effect for every worker.
+
+::: {.notes}
+Allow 2 minutes. Read the expression in words before explaining symbols. DiD supplies the otherwise missing average untreated outcome for the treated group under assumptions. The policy target and represented claim population need care if the reform affects who enters the sample. Sources: @cunningham2021did; @roth2023trending.
+:::
+
+## The interaction regression
+
+$$Y=\alpha+\gamma Treated+\lambda Post+\tau(Treated\times Post)+\varepsilon$$
+
+The interaction coefficient equals the four-cell contrast in this unadjusted model.
+
+Regression expresses the comparison. It does not supply the identifying assumption.
+
+::: {.notes}
+Allow 2 minutes. Explain the baseline group gap, common time change, and extra treated-group change. Both languages check equality with the manual estimate. This equality assumes the same rows, weights, and unadjusted saturated model; it need not hold after changing the specification. Sources: @huntingtonklein2021did; @heiss2026didexample.
+:::
+
+## Parallel untreated trends
+
+$$E[\Delta Y(0)\mid Treated=1]=E[\Delta Y(0)\mid Treated=0]$$
+
+The groups can start at different levels. Their **untreated changes** must be comparable.
+
+One before-period reveals a baseline gap, not a pre-treatment trend.
+
+::: {.notes}
+Allow 3 minutes. Ask learners to explain why observed treated outcomes need not remain parallel after treatment. The assumption concerns untreated potential outcomes, including an unobserved treated-group counterfactual. Additional pre-periods can challenge an argument but cannot prove it. Sources: @gertler2016ch7did; @roth2023trending.
+:::
+
+## Outcome scale changes the assumption
+
+A doubling from 10 to 20 and from 20 to 40 gives:
+
+| Scale | First group | Second group |
+|---|---:|---:|
+| Level change | 10 | 20 |
+| Log change | $\log(2)$ | $\log(2)$ |
+
+Kentucky's 0.191 log contrast implies about 21% for a **ratio of geometric-mean changes**.
+
+::: {.notes}
+Allow 3 minutes. This doubling example is constructed for teaching. Parallel trends in levels does not imply parallel trends in logs. For Kentucky, exponentiation does not automatically yield the effect on arithmetic mean duration or an average individual percentage effect. Ask which scale fits a proposed policy question. Sources: @huntingtonklein2021did; the foundations-lab calculation.
+:::
+
+## Threats to the comparison
+
+| Threat | What can go wrong? |
 |---|---|
-| Anticipation | Outcomes change before the recorded treatment date |
-| Spillovers | Treatment changes the outcomes of comparison units |
-| Composition | Different people or measurements enter the groups over time |
+| Anticipation | Response starts before the coded reform |
+| Spillovers | Comparison units are affected |
+| Composition | Different people enter the sample |
+| Differential shocks | Another event changes only one group |
 
-Stable group labels are not enough. The treatment, sample, outcome, and comparison relationship must remain well defined.
-
-::: {.notes}
-[Sources] DiD design threats: @cunningham2021did; @callaway2021multipletime; @roth2023trending.
-:::
-
-## Inference follows policy assignment, not the number of rows
-
-The Kentucky sample contains `5,626` claims but only:
-
-- two policy groups
-- one policy change
-- one before/after contrast
-
-Heteroskedasticity-robust errors allow claim-level variance to differ. They do not create thousands of independent policy assignments. In panels, clustering should usually respect the unit where treatment and serial dependence vary [@bertrand2004trustdid].
+A modern estimator still needs a credible comparison design.
 
 ::: {.notes}
-[Sources] Serial correlation and DiD inference: @bertrand2004trustdid. Kentucky sample structure: @meyer1995workerscomp.
+Allow 3 minutes. Ask for one Kentucky-specific threat, such as changes in claim composition. For each answer, distinguish a coding fix from a substantive identification problem. No estimator option automatically removes these threats. Sources: @cunningham2021did; @callaway2021multipletime; @roth2023trending.
 :::
 
-## Staggered adoption changes what TWFE estimates
+## Inference and policy assignment
 
-![Tile plot showing castle-doctrine treatment adoption by state from 2000 to 2010, with multiple first-treatment cohorts and never-treated states.](assets/did-castle-adoption.png){fig-alt="State-by-year tile plot: castle-doctrine laws begin in different years across states, treated states remain treated, and a group of states is never treated during 2000 to 2010." width="92%"}
+**5,626 claims do not represent 5,626 independent reforms.**
 
-With multiple adoption dates, there is no longer one treated group, one control group, and one post period [@cheng2013castle].
+Serial correlation and shared policy shocks affect uncertainty.
+
+Report the assignment level, dependence structure, and number of independent clusters.
 
 ::: {.notes}
-[Sources] Asset generated from `causaldata::castle`, based on @cheng2013castle and used in @cunningham2021did.
+Allow 2 minutes. Kentucky has one before/after policy contrast. Claim-level HC1 errors illustrate sampling uncertainty, not a large set of independent policy assignments. State clustering in the castle lab permits within-state dependence. Minimum-wage county clustering reproduces the compact package example but may be inadequate for state-policy inference. Sources: @bertrand2004trustdid; @roth2023trending.
 :::
 
-## Untreated comparison support shrinks over calendar time
+## What pre-trend diagnostics can show
 
-![Lines showing the number of never-treated, not-yet-treated, and already-treated states by year in the castle-doctrine panel.](assets/did-castle-support.png){fig-alt="Line chart: the number of not-yet-treated states declines as adoption accumulates, already-treated states increase, and never-treated states remain constant, showing shrinking untreated support over time." width="90%"}
+A nonsignificant pre-trend test can still allow a substantively large violation.
 
-Not-yet-treated states expand early support, but they leave the untreated pool when they adopt. Never-treated states remain available throughout.
+Selecting a specification because it passes a pre-test can distort later estimates and intervals.
+
+Raw trends, institutional evidence, and sensitivity analysis each contribute different information.
 
 ::: {.notes}
-[Sources] Comparison-group support under staggered adoption: @callaway2021multipletime; @roth2023trending. Asset generated from `causaldata::castle`.
+Allow 3 minutes. Ask whether a wide interval containing zero is reassuring. Explain low power and selection as separate problems. Use cohort-aware event-study estimates where timing is staggered; conventional leads can be contaminated by treatment-effect heterogeneity. Sources: @roth2022pretest; @sunabraham2021dynamic.
 :::
 
-## TWFE mixes untreated and already-treated comparisons
+## Staggered adoption
 
-| 2×2 comparison | Control status | Main concern |
-|---|---|---|
-| Treated vs never treated | Untreated throughout | Substantive comparability |
-| Earlier vs later treated | Not yet treated | Anticipation and cohort differences |
-| Later vs earlier treated | Already treated | Dynamic effects contaminate the control |
+![States adopt castle-doctrine laws in different years; other states remain untreated.](assets/did-castle-adoption.png){height="430px" fig-alt="States adopt castle-doctrine laws in different years; other states remain untreated."}
 
-If effects vary by cohort or exposure length, a static TWFE coefficient need not represent the policy estimand the analyst intended [@goodmanbacon2021timing].
+Control eligibility changes as states adopt.
 
 ::: {.notes}
-[Sources] TWFE decomposition and treatment-effect heterogeneity: @goodmanbacon2021timing.
+Allow 2 minutes. Identify calendar time and adoption cohort in the graphic. Never-treated states stay untreated throughout the window; not-yet-treated states stop being eligible after exposure. The picture audits coding, not the substantive credibility of the laws' timing. Sources: @cheng2013castle; @goodmanbacon2021timing.
 :::
 
-## The Bacon decomposition reconstructs—and exposes—the coefficient
+## Already-treated comparisons
 
-![Scatter plot of castle-doctrine 2 by 2 DiD estimates against their TWFE weights, coloured by comparison type.](assets/did-bacon-decomposition.png){fig-alt="Bacon decomposition scatter plot: component two-by-two estimates vary in sign and size across treated-versus-untreated, earlier-versus-later, and later-versus-earlier comparisons; their weighted sum equals the TWFE estimate of 0.069." width="92%"}
+Constructed example:
 
-The weighted comparisons reproduce the static TWFE estimate exactly. Reconstruction verifies the calculation; it does not validate every comparison.
+- Early cohort: effect grows from 2 to 5.
+- Late cohort: effect rises from 0 to 2.
+
+The later-versus-earlier contrast is $2-(5-2)=-1$.
+
+Both effects are positive, but the contrast subtracts the early cohort's growing effect.
 
 ::: {.notes}
-[Sources] Decomposition method: @goodmanbacon2021timing. Asset generated with `bacondecomp::bacon()` from `causaldata::castle`.
+Allow 3 minutes. This is a constructed example after cancelling common untreated trends. Ask why a positive decomposition weight on this contrast does not fix the problem. The Bacon decomposition uses nonnegative weights on comparisons, distinct from implicit weights on underlying treatment effects. The R lab verifies the reconstruction. Sources: @goodmanbacon2021timing; @cunningham2021did.
 :::
 
-## Conventional event studies can mix effects across relative times
+## Event studies and cohort comparisons
 
-$$
-Y_{it}=\alpha_i+\lambda_t+\sum_{e\neq-1}\beta_e\,1\{t-G_i=e\}+\varepsilon_{it}
-$$
+![Conventional TWFE and Sun–Abraham event-study estimates differ on the same castle-doctrine sample.](assets/did-castle-event-study.png){height="430px" fig-alt="Conventional TWFE and Sun–Abraham event-study estimates differ on the same castle-doctrine sample."}
 
-Under staggered adoption, a conventional $\beta_e$ may use already-treated cohorts as controls and absorb treatment effects belonging to other relative times.
-
-- apparent leads can be created by post-treatment heterogeneity
-- lags need not be clean exposure-length effects
-- adding more fixed effects does not remove the contamination
+Event time is years since adoption; −1 is the reference period.
 
 ::: {.notes}
-[Sources] Event-study contamination under heterogeneous effects: @sunabraham2021dynamic; @roth2023trending.
+Allow 3 minutes. The plotted window is -5 through +4, while the regressions include all supported periods. Intervals shown here are pointwise, not simultaneous. Cohort-aware estimation avoids the conventional contamination but still requires identification assumptions. The R and Python cohort-aware point estimates agree to numerical precision. Sources: @sunabraham2021dynamic.
 :::
 
-## Sun-Abraham restores cohort-relative comparisons
+## Group-time effects
 
-![Conventional TWFE and Sun-Abraham castle-doctrine event-study estimates with 95 percent intervals across relative time.](assets/did-castle-event-study.png){fig-alt="Event-study comparison: conventional TWFE and Sun-Abraham estimates differ across relative time, especially after adoption, because Sun-Abraham uses cohort-relative comparisons that avoid already-treated controls." width="92%"}
+$$ATT(g,t)=E[Y_t(g)-Y_t(\infty)\mid G=g]$$
 
-Sun–Abraham estimates cohort-by-relative-time effects and aggregates them with explicit cohort shares. The profile changes because the comparison logic changes [@sunabraham2021dynamic].
+$g$ identifies the first-treatment cohort; $t$ identifies calendar time.
+
+Estimate supported cohort-time effects before deciding how to average them.
 
 ::: {.notes}
-[Sources] Interaction-weighted event study: @sunabraham2021dynamic. Asset generated with `fixest::sunab()` from `causaldata::castle`.
+Allow 2 minutes. Explain that Y_t(infinity) represents remaining untreated. Use a 2006 county cohort in 2007 as the example: a particular group at a particular exposure horizon. Not all cohort-time cells are supported. The modern labs use the did package's compact minimum-wage teaching data, not a complete original-paper replication. Sources: @callaway2021multipletime.
 :::
 
-## Group-time ATT names the estimand before aggregation
+## Choosing the comparison group
 
-![Heatmap of Callaway-Sant'Anna group-time treatment effects for minimum-wage cohorts and calendar years.](assets/did-mpdta-group-time.png){fig-alt="Heatmap of group-time average treatment effects: rows are minimum-wage treatment cohorts, columns are calendar years, and cell colours show heterogeneous effects with different support across cohort and time combinations." width="87%"}
-
-$$
-ATT(g,t)=E[Y_t(1)-Y_t(0)\mid G=g]
-$$
-
-Each cell names the cohort, calendar period, and control rule before results are averaged [@callaway2021multipletime].
-
-::: {.notes}
-[Sources] Group-time ATT: @callaway2021multipletime. Asset generated with `did::att_gt()` from `did::mpdta`.
-:::
-
-## Control groups require different assumptions
-
-| Control rule | What it uses | What must be credible |
-|---|---|---|
-| Never treated | Units untreated for the full panel | Their trends represent adopting cohorts |
-| Not yet treated | Never-treated plus future adopters before adoption | Future adopters are valid controls before treatment |
-
-The larger control pool can improve support. It is not automatically the better design.
-
-::: {.notes}
-[Sources] Never-treated and not-yet-treated comparison groups: @callaway2021multipletime; @roth2023trending.
-:::
-
-## Aggregation answers different policy questions
-
-| Aggregation | Question |
+| Controls | Required comparison |
 |---|---|
-| Simple | What is the average available post-treatment effect? |
-| Cohort | How do effects differ by first treatment year? |
-| Event time | How do effects evolve with exposure length? |
-| Calendar time | How do effects differ across common shocks and years? |
+| Never treated | Units untreated throughout the sample |
+| Not yet treated | Also allows future adopters while untreated |
 
-Weights should follow the policy question, not whichever summary looks strongest.
+Future adopters can add support. Their untreated trends and lack of anticipation still need justification.
 
 ::: {.notes}
-[Sources] Group-time aggregation and weighting: @callaway2021multipletime; @roth2023trending.
+Allow 2 minutes. Ask when future adopters might be suspicious controls before formal adoption: anticipation, policy preparation, or differential shocks driving adoption. A larger comparison sample is not automatically a better design. The code specifies the control rule and baseline instead of inheriting defaults. Sources: @callaway2021multipletime; @roth2023trending.
 :::
 
-## Modern estimates differ when their targets differ
+## Aggregation defines the question
 
-![Callaway-Sant'Anna and Sun-Abraham dynamic estimates for the mpdta minimum-wage panel, with 95 percent intervals.](assets/did-modern-event-comparison.png){fig-alt="Dynamic-estimate comparison: Callaway-Sant'Anna and Sun-Abraham paths and confidence intervals are similar in broad direction but not numerically identical across event time because their targets and weights differ." width="92%"}
-
-Cohort weights, nuisance estimation, comparison rules, and event-time support can all move the aggregated path. Numerical equality is not the validity criterion.
-
-::: {.notes}
-[Sources] Estimator comparison: @callaway2021multipletime; @sunabraham2021dynamic; @roth2023trending. Asset generated from `did::mpdta`.
-:::
-
-## Pre-trend tests are diagnostics, not certification
-
-A non-significant lead can mean:
-
-- untreated trends are genuinely similar
-- the test has little power
-- confidence intervals allow important violations
-- the reported specification was selected after testing
-
-Use raw trends, simultaneous bands, institutional evidence, and prespecified diagnostics together. Do not convert “failed to reject” into “parallel trends holds” [@roth2022pretest].
-
-::: {.notes}
-[Sources] Risks of pre-testing and low-power lead tests: @roth2022pretest; @roth2023trending.
-:::
-
-## Sensitivity asks how much violation changes the conclusion
-
-![Original and robust confidence intervals for the 2006 mpdta cohort under increasing allowed post-treatment violations relative to pre-treatment deviations.](assets/did-honest-sensitivity.png){fig-alt="Sensitivity interval plot for the 2006 cohort: robust confidence intervals widen as the allowed post-treatment trend violation grows relative to observed pre-treatment deviations, eventually crossing zero." width="88%"}
-
-`HonestDiD` replaces an all-or-nothing assumption with stated restrictions on how post-treatment trend violations may differ from observed pre-treatment deviations [@rambachanroth2023parallel].
-
-::: {.notes}
-[Sources] Sensitivity framework: @rambachanroth2023parallel. Asset generated from the 2006 `did::mpdta` cohort and never-treated counties with `HonestDiD`.
-:::
-
-## Estimator choice should follow the design
-
-| Design | First estimator | Required discipline |
-|---|---|---|
-| Two groups, two periods | Four-cell DiD or interaction | Defend the single comparison trend |
-| Common treatment date, multiple periods | Event study or panel DiD | Diagnose pre-period and effect dynamics |
-| Staggered adoption, heterogeneous effects | Group-time ATT or interaction-weighted event study | State controls and aggregation |
-| Credible untreated outcome model | Imputation estimator | Validate untreated predictions and support |
-
-No estimator repairs anticipation, spillovers, unstable measurement, or an indefensible control group.
-
-::: {.notes}
-[Sources] Modern estimator decision framework: @roth2023trending; @callaway2021multipletime; @sunabraham2021dynamic; @borusyak2024eventstudy.
-:::
-
-## The three labs turn the reporting chain into practice
-
-| Lab | Core question |
+| Average | What does it summarize? |
 |---|---|
-| [Foundations](../labs/difference-in-differences-foundations-lab.qmd) | How do four means, regression, and assumptions connect? |
-| [Staggered diagnostics](../labs/difference-in-differences-staggered-diagnostics-lab.qmd) | Which comparisons and event-time effects enter TWFE? |
-| [Modern estimators](../labs/difference-in-differences-modern-estimators-lab.qmd) | How do controls, aggregation, and sensitivity change the result? |
+| Simple | Available treated cohort-time cells |
+| Cohort | Effects within first-treatment groups |
+| Event time | Effects at each exposure horizon |
+| Calendar time | Effects in each calendar period |
 
-::: {.signal}
-The estimator calculates the contrast; the design determines which comparisons deserve causal meaning.
-:::
-
-Start with the foundations lab, then carry the same reporting chain into the staggered cases.
+Long-horizon estimates may represent only early adopters.
 
 ::: {.notes}
-[Sources] Lab sequence synthesizes @gertler2016ch7did; @goodmanbacon2021timing; @callaway2021multipletime; @rambachanroth2023parallel.
+Allow 3 minutes. Ask learners to compare equal-size cohorts with four and one observed post-periods. The simple supported-cell average gives more total weight to the first. A cohort average and an event average are different targets. Changing sample support can also change who an apparent dynamic path represents. Sources: @callaway2021multipletime; @roth2023trending.
 :::
 
-## Appendix: Covariates make parallel trends conditional {.section-slide}
+## Sensitivity to nonparallel trends
+
+![Sensitivity intervals for the first post-treatment effect of the 2006 cohort include zero at every tested bound.](assets/did-honest-sensitivity.png){height="430px" fig-alt="Sensitivity intervals for the first post-treatment effect of the 2006 cohort include zero at every tested bound."}
+
+State the target and the permitted trend violation together.
+
+::: {.notes}
+Allow 3 minutes. The example restricts to the 2006 cohort and never-treated counties. Relative magnitude bounds post-treatment changes in the untreated gap relative to the largest pre-treatment change, accounting for uncertainty. It does not bound levels by the largest observed lead. Zero is already included at the first tested Mbar=0.5; no exact breakdown point is established. This is not sensitivity for the full staggered aggregate. Sources: @rambachanroth2023parallel.
+:::
+
+## A DiD reporting checklist
+
+- Policy, population, outcome scale, and target effect.
+- Treatment dates, comparison units, and supported periods.
+- Parallel-trends argument and main design threats.
+- Estimator, aggregation weights, and uncertainty method.
+- Diagnostics, sensitivity, and remaining limitations.
+
+::: {.notes}
+Allow 2 minutes. Ask participants to describe a prospective analysis in five sentences using these prompts. A package name alone does not describe the estimator's actual comparison or target. The detailed knowledge base supplies source-specific explanations and worked exercises. Sources: @roth2023trending.
+:::
+
+## Three paired R and Python labs
+
+| Lab | What you will do |
+|---|---|
+| Foundations | Calculate and interpret Kentucky's four-cell contrast |
+| Staggered diagnostics | Audit comparisons and event studies using castle laws |
+| Modern estimators | Estimate group-time effects and choose aggregation |
+
+[Lab setup and verified outputs](../labs/difference-in-differences-reproducibility.qmd) · [Reading map](../notes/did/difference-in-differences-sources.qmd)
+
+::: {.notes}
+Allow 1 minute. Each lab takes 45–60 minutes beyond this introduction. Both languages share the same datasets; R includes Bacon and HonestDiD extensions. The Python modern lab documents its analytic/Bonferroni bands rather than presenting them as identical to R bootstrap bands. Close with a concrete next step: run foundations and write a six-sentence design assessment.
+:::
+
+## Appendix: Covariates make parallel trends conditional
 
 Covariate adjustment can support a design when untreated trends are credible **conditional on pre-treatment characteristics**.
 
@@ -367,17 +331,17 @@ The workflow is transparent about where untreated information enters, but still 
 [Sources] Imputation event-study estimator: @borusyak2024eventstudy.
 :::
 
-## Appendix: R packages implement different objects
+## Appendix: R and Python implementations
 
-| Package | Main object |
-|---|---|
-| `lm`, `fixest::feols()` | Canonical interaction or TWFE model |
-| `bacondecomp::bacon()` | TWFE 2×2 estimates and weights |
-| `fixest::sunab()` | Cohort-relative interaction-weighted effects |
-| `did::att_gt()` and `aggte()` | Group-time effects and explicit aggregation |
-| `HonestDiD` | Sensitivity intervals for event-study estimands |
+| Method | R | Python |
+|---|---|---|
+| Four-cell regression | `lm` | `statsmodels` |
+| Fixed effects | `fixest` | `pyfixest` |
+| Cohort-aware event study | `sunab` | `event_study` saturated |
+| Group-time effects | `did` | `differences` |
+| Decomposition / sensitivity | `bacondecomp` / `HonestDiD` | R extensions |
 
-Software choice follows the estimand and assumptions—not the other way around.
+See the lab setup page for pinned versions and inference differences.
 
 ::: {.notes}
 [Sources] Method objects correspond to @goodmanbacon2021timing; @sunabraham2021dynamic; @callaway2021multipletime; @rambachanroth2023parallel.
@@ -385,18 +349,7 @@ Software choice follows the estimand and assumptions—not the other way around.
 
 ## Sources {.smaller .scrollable}
 
-- @abadie2005semiparametricdid
-- @bertrand2004trustdid
-- @borusyak2024eventstudy
-- @callaway2021multipletime
-- @cheng2013castle
-- @gertler2016ch7did
-- @goodmanbacon2021timing
-- @heiss2026didexample
-- @huntingtonklein2021did
-- @meyer1995workerscomp
-- @rambachanroth2023parallel
-- @roth2022pretest
-- @roth2023trending
-- @santannazhao2020drdid
-- @sunabraham2021dynamic
+[Reading map and detailed source notes](../notes/did/difference-in-differences-sources.qmd)
+
+::: {#refs}
+:::

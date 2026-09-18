@@ -1,0 +1,20 @@
+{
+  "injury": {
+    "url": "https://raw.githubusercontent.com/cran/wooldridge/5c16676c8c8e6685985d98661c55088c878902be/data/injury.RData",
+    "sha256": "ec9d7cb7f50140fc64756856b0ad5a76151d13d6ec65ca2c66118df1eea3748f",
+    "object": "injury",
+    "package": "wooldridge"
+  },
+  "castle": {
+    "url": "https://raw.githubusercontent.com/cran/causaldata/6d25e70297812a2e89a1a20e3bc24b32f6d3fbaf/data/castle.rda",
+    "sha256": "d7e50add4a642a1320f254e96cab436a19d0f2d9f0434632c511a8f05de8a355",
+    "object": "castle",
+    "package": "causaldata"
+  },
+  "mpdta": {
+    "url": "https://raw.githubusercontent.com/cran/did/453a1be859411edc1c8933891940cb3a570d7095/data/mpdta.rda",
+    "sha256": "0be3bc5eaaedaa50e047deaf45ad0e193e7210df1644103c63a6c1baa75965d4",
+    "object": "mpdta",
+    "package": "did"
+  }
+}

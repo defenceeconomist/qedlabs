@@ -1,0 +1,53 @@
+---
+title: "Roth: pre-test with caution"
+subtitle: "Source notes and teaching applications"
+date: 2026-09-18
+format:
+  html:
+    toc: true
+---
+
+## Source and reading route
+
+@roth2022pretest. [Open text](https://www.jonathandroth.com/assets/files/roth_pretrends_testing.pdf). Reading baseline: published AER: Insights article (2022), author-hosted copy. Accessed 18 September 2026. Section locators below refer to this linked version; pagination can differ from the published article.
+
+The source summary is a selective paraphrase. Sections labelled **Teaching application** contain QED Labs' own examples and exercises, not claims that the authors ran these particular analyses.
+
+
+## Source summary
+
+**Section I:** conventional pre-trend tests can have low power against economically relevant trend violations. A failure to reject is compatible with meaningful post-treatment bias.
+
+**Section II:** pre- and post-treatment estimates can be correlated. Selecting analyses because pre-treatment estimates pass a significance test changes the conditional distribution of the reported post-treatment estimate. This can worsen bias and confidence-interval coverage under violations.
+
+**Section III:** examine power against substantively meaningful alternatives and consider sensitivity methods that address possible violations directly. Power analysis improves interpretation but does not itself undo selection from pre-testing.
+
+The concern is both information and selection: an uninformative test may be presented as reassurance, while conditioning on its result can distort the estimate subsequently reported.
+
+## Teaching application: the acceptance trap
+
+Imagine a hiring-policy study with four pre-policy estimates whose intervals each include zero. An analyst tries several control groups and reports only the one with the largest pre-trend p-value. There are two questions:
+
+- Were the intervals narrow enough to exclude a trend that matters for the policy conclusion?
+- Was the reported design selected using noisy estimates that also share sampling error with post-policy estimates?
+
+Neither question is answered by “all leads are insignificant.”
+
+A joint test addresses a vector of restrictions; inspecting several individual p-values does not perform that joint test. Neither procedure makes the identifying assumption observable after treatment.
+
+## Teaching application: a worked diagnostic
+
+**Exercise:** choose a hypothetical annual untreated gap increase $d$. With an omitted reference year at event time $-1$, a linear violation would contribute $d(e+1)$ to a normalized event coefficient at event time $e$. Calculate its contribution at $e=0,1,2$.
+
+**Answer:** the contributions are $d,2d,3d$. A small annual deviation can cumulate at long horizons. Compare these magnitudes with the substantive effect you care about, not solely with zero.
+
+This arithmetic is a teaching scenario, not a power calculation: power requires the joint sampling distribution and covariance of the estimated leads. It also does not establish that linear drift is the relevant alternative.
+
+## Lab interpretation and reporting
+
+Use the [staggered diagnostics lab](../../labs/difference-in-differences-staggered-diagnostics-python-lab.qmd) to distinguish raw trends, conventional event-study leads, and cohort-aware leads. Their coefficient definitions must be understood before applying a visual pre-trend heuristic.
+
+Report the full diagnostic path, the substantive deviations you consider plausible, and whether the specification was chosen after inspecting pre-tests. Pair the discussion with the [sensitivity notes](rambachan-roth-sensitivity-notes.qmd). Sensitivity analysis still needs a justified class of violations; it is not a universal repair.
+
+
+[Reading map](difference-in-differences-sources.qmd) · [Method overview](difference-in-differences.qmd) · [Applications and datasets](difference-in-differences-applications.qmd)

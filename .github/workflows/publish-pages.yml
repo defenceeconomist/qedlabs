@@ -82,6 +82,11 @@ jobs:
             any::boot
             any::nlme
 
+      - name: Check generated notebooks
+        run: |
+          python docs/scripts/generate_lab_notebooks.py --check
+          python docs/scripts/test_generate_lab_notebooks.py
+
       - name: Render Quarto site
         run: quarto render docs --cache-refresh
 

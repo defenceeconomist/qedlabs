@@ -54,7 +54,7 @@ Concept-first sequence from the canonical four-cell contrast to staggered adopti
 :::
 
 ::: {.card-meta}
-Use the deck for the 25–30 minute core sequence, the appendix for technical follow-up, and the three focused labs for applied practice.
+Use the 22-slide introduction for a 45–60 minute session, the appendix for technical follow-up, and the three paired R/Python labs for applied practice.
 :::
 :::
 

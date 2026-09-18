@@ -67,7 +67,12 @@ save_asset <- function(plot, filename, width = 11, height = 6) {
 
 # Canonical 2x2 DiD: Kentucky workers' compensation -------------------------
 
-data("injury", package = "wooldridge")
+# Match the Python lab's immutable upstream data and verify its checksum.
+data_file <- tempfile(fileext = ".rda")
+download.file("https://raw.githubusercontent.com/cran/wooldridge/5c16676c8c8e6685985d98661c55088c878902be/data/injury.RData", data_file, mode = "wb", quiet = TRUE)
+stopifnot(digest::digest(file = data_file, algo = "sha256") == "ec9d7cb7f50140fc64756856b0ad5a76151d13d6ec65ca2c66118df1eea3748f")
+load(data_file)
+unlink(data_file)
 
 injury_ky <- wooldridge::injury |>
   filter(ky == 1) |>
@@ -239,7 +244,14 @@ save_asset(counterfactual_plot, "did-kentucky-counterfactual.png")
 
 # Staggered adoption: castle-doctrine panel -------------------------------
 
-castle_panel <- causaldata::castle |>
+# Match the Python lab's immutable upstream data and verify its checksum.
+data_file <- tempfile(fileext = ".rda")
+download.file("https://raw.githubusercontent.com/cran/causaldata/6d25e70297812a2e89a1a20e3bc24b32f6d3fbaf/data/castle.rda", data_file, mode = "wb", quiet = TRUE)
+stopifnot(digest::digest(file = data_file, algo = "sha256") == "d7e50add4a642a1320f254e96cab436a19d0f2d9f0434632c511a8f05de8a355")
+load(data_file)
+unlink(data_file)
+
+castle_panel <- castle |>
   select(sid, year, post, l_homicide) |>
   arrange(sid, year) |>
   group_by(sid) |>
@@ -466,7 +478,12 @@ save_asset(castle_event_plot, "did-castle-event-study.png", width = 11.5, height
 
 # Modern multi-period DiD: mpdta ------------------------------------------
 
-data("mpdta", package = "did")
+# Match the Python lab's immutable upstream data and verify its checksum.
+data_file <- tempfile(fileext = ".rda")
+download.file("https://raw.githubusercontent.com/cran/did/453a1be859411edc1c8933891940cb3a570d7095/data/mpdta.rda", data_file, mode = "wb", quiet = TRUE)
+stopifnot(digest::digest(file = data_file, algo = "sha256") == "0be3bc5eaaedaa50e047deaf45ad0e193e7210df1644103c63a6c1baa75965d4")
+load(data_file)
+unlink(data_file)
 set.seed(20260809)
 
 att_never <- att_gt(

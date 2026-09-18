@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate deterministic R Jupyter notebooks from the public lab pages."""
+"""Generate deterministic R and Python Jupyter notebooks from the public lab pages."""
 
 from __future__ import annotations
 
@@ -18,6 +18,9 @@ NOTEBOOKS_DIR = LABS_DIR / "notebooks"
 SITE_BASE_URL = "https://defenceeconomist.github.io/qedlabs"
 
 LAB_STEMS = (
+    "difference-in-differences-foundations-python-lab",
+    "difference-in-differences-staggered-diagnostics-python-lab",
+    "difference-in-differences-modern-estimators-python-lab",
     "black-politicians-lab",
     "difference-in-differences-foundations-lab",
     "difference-in-differences-modern-estimators-lab",
@@ -35,13 +38,13 @@ LAB_STEMS = (
     "synthetic-control-proposition-99-lab",
 )
 
-CHUNK_START_RE = re.compile(r"^```\{r(?:[\s,][^}]*)?\}\s*$")
+CHUNK_START_RE = re.compile(r"^```\{(r|python)(?:[\s,][^}]*)?\}\s*$")
 QMD_LINK_RE = re.compile(r"(\]\()([^\s)#]+\.qmd)(#[^)]*)?(\))")
 QUARTO_LINK_ATTR_RE = re.compile(
     r"(?<=\))\{[^{}\n]*(?:download\s*=|\.cta-button)[^{}\n]*\}"
 )
 NOTEBOOK_DOWNLOAD_RE = re.compile(
-    r"^\[Download (?:the )?R Jupyter notebook\]\(notebooks/[^)]+\.ipynb\)"
+    r"^\[Download (?:the )?(?:R|Python) Jupyter notebook\]\(notebooks/[^)]+\.ipynb\)"
     r"(?:\{[^{}\n]*\})?\s*\n?",
     re.MULTILINE,
 )
@@ -61,7 +64,7 @@ def split_front_matter(source: str, source_path: Path) -> tuple[dict[str, str], 
 
     metadata: dict[str, str] = {}
     for line in lines[1:end]:
-        match = re.match(r"^(title|subtitle|author|date):\s*(.*?)\s*$", line)
+        match = re.match(r"^(title|subtitle|author|date|notebook-language):\s*(.*?)\s*$", line)
         if not match:
             continue
         key, value = match.groups()
@@ -127,7 +130,7 @@ def make_cell(stem: str, index: int, cell_type: str, source: str) -> dict[str, A
 def split_cells(body: str, source_path: Path) -> list[tuple[str, str]]:
     cells: list[tuple[str, str]] = []
     buffer: list[str] = []
-    in_r_chunk = False
+    in_code_chunk = False
 
     def flush(cell_type: str) -> None:
         source = "".join(buffer).strip("\n")
@@ -140,18 +143,18 @@ def split_cells(body: str, source_path: Path) -> list[tuple[str, str]]:
 
     for line in body.splitlines(keepends=True):
         stripped = line.rstrip("\r\n")
-        if not in_r_chunk and CHUNK_START_RE.match(stripped):
+        if not in_code_chunk and CHUNK_START_RE.match(stripped):
             flush("markdown")
-            in_r_chunk = True
+            in_code_chunk = True
             continue
-        if in_r_chunk and stripped.strip() == "```":
+        if in_code_chunk and stripped.strip() == "```":
             flush("code")
-            in_r_chunk = False
+            in_code_chunk = False
             continue
         buffer.append(line)
 
-    if in_r_chunk:
-        raise ValueError(f"{source_path}: unclosed R code chunk")
+    if in_code_chunk:
+        raise ValueError(f"{source_path}: unclosed code chunk")
     flush("markdown")
     return cells
 
@@ -159,6 +162,12 @@ def split_cells(body: str, source_path: Path) -> list[tuple[str, str]]:
 def build_notebook(source_path: Path) -> dict[str, Any]:
     metadata, body = split_front_matter(source_path.read_text(encoding="utf-8"), source_path)
     stem = source_path.stem
+    language = metadata.get("notebook-language", "r")
+    if language not in {"r", "python"}:
+        raise ValueError(f"{source_path}: unsupported notebook language {language}")
+    chunks = [match.group(1) for line in body.splitlines() if (match := CHUNK_START_RE.match(line))]
+    if any(chunk != language for chunk in chunks):
+        raise ValueError(f"{source_path}: code chunk language disagrees with notebook-language")
     page_link = public_page_url(source_path)
     heading = f"# {metadata['title']}\n\n[View this lab on the QED Labs website]({page_link})"
 
@@ -172,16 +181,16 @@ def build_notebook(source_path: Path) -> dict[str, Any]:
         "cells": cells,
         "metadata": {
             "kernelspec": {
-                "display_name": "R",
-                "language": "R",
-                "name": "ir",
+                "display_name": "R" if language == "r" else "Python 3",
+                "language": "R" if language == "r" else "python",
+                "name": "ir" if language == "r" else "python3",
             },
             "language_info": {
-                "codemirror_mode": "r",
-                "file_extension": ".r",
-                "mimetype": "text/x-r-source",
-                "name": "R",
-                "pygments_lexer": "r",
+                "codemirror_mode": "r" if language == "r" else "python",
+                "file_extension": ".r" if language == "r" else ".py",
+                "mimetype": "text/x-r-source" if language == "r" else "text/x-python",
+                "name": "R" if language == "r" else "python",
+                "pygments_lexer": "r" if language == "r" else "ipython3",
             },
             "qedlabs": {
                 "generated_from": f"labs/{source_path.name}",
@@ -198,8 +207,10 @@ def serialize_notebook(notebook: dict[str, Any]) -> str:
 
 
 def validate_notebook(notebook: dict[str, Any], source_path: Path) -> None:
-    if notebook["metadata"]["kernelspec"]["name"] != "ir":
-        raise ValueError(f"{source_path}: notebook must use the ir kernelspec")
+    metadata, _ = split_front_matter(source_path.read_text(encoding="utf-8"), source_path)
+    expected_kernel = "python3" if metadata.get("notebook-language", "r") == "python" else "ir"
+    if notebook["metadata"]["kernelspec"]["name"] != expected_kernel:
+        raise ValueError(f"{source_path}: notebook must use the {expected_kernel} kernelspec")
     source_code_cells = sum(1 for cell_type, _ in split_cells(
         split_front_matter(source_path.read_text(encoding="utf-8"), source_path)[1],
         source_path,

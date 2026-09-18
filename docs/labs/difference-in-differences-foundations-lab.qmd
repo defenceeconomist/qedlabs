@@ -20,6 +20,8 @@ This is the first difference-in-differences lab. The guided core takes about 45�
 
 The workflow draws on Gertler et al.'s counterfactual framing, Huntington-Klein's design-first treatment, and Andrew Heiss's worked example [@gertler2016ch7did; @huntingtonklein2021did; @heiss2026didexample]. See the [DiD overview](../notes/did/difference-in-differences.qmd) and [Heiss source notes](../notes/did/andrew-heiss-difference-in-differences-notes.qmd) for the underlying reading.
 
+[Python companion](difference-in-differences-foundations-python-lab.qmd) · [Tested environment and reproduction record](difference-in-differences-reproducibility.qmd)
+
 ## Training Goal
 
 By the end of the lab, you should be able to:
@@ -49,7 +51,8 @@ The records are repeated cross-sections of claims, not a panel following the sam
 The `injury` data are distributed with the [`wooldridge` R package](https://search.r-project.org/CRAN/refmans/wooldridge/html/injury.html). We use the package copy rather than downloading a separate CSV.
 
 ```{r}
-required_packages <- c("wooldridge", "dplyr", "ggplot2", "fixest")
+required_packages <- c(
+  "digest","wooldridge", "dplyr", "ggplot2", "fixest")
 missing_packages <- required_packages[!vapply(
   required_packages,
   requireNamespace,
@@ -61,7 +64,13 @@ if (length(missing_packages) > 0) {
 }
 invisible(lapply(required_packages, library, character.only = TRUE))
 
-data("injury", package = "wooldridge")
+# Match the Python lab's immutable upstream data and verify its checksum.
+data_file <- tempfile(fileext = ".rda")
+download.file("https://raw.githubusercontent.com/cran/wooldridge/5c16676c8c8e6685985d98661c55088c878902be/data/injury.RData", data_file, mode = "wb", quiet = TRUE)
+stopifnot(digest::digest(file = data_file, algo = "sha256") == "ec9d7cb7f50140fc64756856b0ad5a76151d13d6ec65ca2c66118df1eea3748f")
+load(data_file)
+unlink(data_file)
+
 
 injury_ky <- injury |>
   filter(ky == 1) |>
@@ -222,7 +231,7 @@ The interaction coefficient is algebraically identical to the manual DiD contras
 
 ## Step 6: Interpret The Log Outcome
 
-For a log outcome, $100\widehat{\delta}$ is a convenient small-effect approximation. The exact conversion is $100[\exp(\widehat{\delta})-1]$.
+For a contrast in mean log outcomes, $100\widehat{\delta}$ approximates the percentage difference in the ratio of geometric-mean changes. The exact transformation of that ratio is $100[\exp(\widehat{\delta})-1]$.
 
 ```{r}
 percentage_approximation <- 100 * did_regression
@@ -239,7 +248,7 @@ stopifnot(
 )
 ```
 
-State the result as an estimated percentage change in benefit duration for high earners relative to the low-earner counterfactual—not as a change in “logged weeks.”
+State the 0.191 log-point result and its approximately 21% geometric-mean ratio interpretation. It is not automatically a 21% causal change in arithmetic mean weeks or the average individual percentage effect; those interpretations need additional assumptions.
 
 ## Step 7: Compare A Prespecified Adjusted Model
 
@@ -332,3 +341,10 @@ The robust standard error allows unequal residual variance across claims. It doe
 - A defensible conclusion reports the estimate, the comparison group, and the unsupported assumptions together.
 
 Next, use the [staggered-adoption diagnostics lab](difference-in-differences-staggered-diagnostics-lab.qmd) to see why the meaning of TWFE changes when treatment begins at different times.
+
+## Worked answers
+
+- The regression interaction equals the manual DiD because the unadjusted model is saturated in the four group-period cells.
+- A flat-looking two-point graph contains no evidence about pre-treatment trends.
+- Compare adjusted and unadjusted estimates on a common sample to separate covariate adjustment from missing-data selection.
+- Exponentiating the log contrast describes a ratio of geometric-mean changes, not automatically the effect on arithmetic mean weeks.

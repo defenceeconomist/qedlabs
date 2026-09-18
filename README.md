@@ -15,7 +15,8 @@ Current content includes:
 - matching and weighting notes plus migrated matching labs
 - synthetic-control notes plus lab and slide skeletons
 - interrupted-time-series notes, Seatbelts-based slides and presenter script, and three focused runnable labs
-- additional notes on difference-in-differences and regression discontinuity
+- difference-in-differences knowledge base, paired R/Python labs, and introductory slides
+- additional notes on regression discontinuity
 
 Render it with:
 
@@ -25,10 +26,10 @@ quarto render docs
 
 ## Run The Labs In JupyterLab With R
 
-Every page titled “Lab” has a downloadable notebook linked from the
-[Labs overview](https://defenceeconomist.github.io/qedlabs/labs/). The
-notebooks use the Jupyter `ir` kernel and install missing lab-specific R
-packages when they are first run.
+Runnable lab pages have downloadable notebooks linked from the
+[Labs overview](https://defenceeconomist.github.io/qedlabs/labs/). Most notebooks use the Jupyter `ir` kernel and install missing lab-specific R
+packages when they are first run. The DiD sequence also includes Python notebooks;
+use its pinned environments for reproducible execution.
 
 Install JupyterLab and register the R kernel once:
 
@@ -67,3 +68,22 @@ Local rendering stays unchanged:
 ```bash
 quarto render docs
 ```
+
+## Difference-in-Differences collection
+
+Start with [the reading map](docs/notes/did/difference-in-differences-sources.qmd),
+[application catalogue](docs/notes/did/difference-in-differences-applications.qmd),
+and [introductory deck](docs/slides/did.qmd).
+
+The [DiD setup and reproduction record](docs/labs/difference-in-differences-reproducibility.qmd)
+contains isolated Python 3.11 and R 4.5.1 setup instructions, dependency locks,
+verified estimates, and documented software limitations. Generate notebooks from
+Quarto sources, then run:
+
+```bash
+python docs/scripts/test_generate_lab_notebooks.py
+python docs/scripts/validate_did_labs.py --extensions
+```
+
+Validation launches fresh kernels and compares equivalent R/Python estimates;
+a successful website render alone does not execute these labs.

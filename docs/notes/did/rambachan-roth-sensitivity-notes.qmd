@@ -1,0 +1,58 @@
+---
+title: "Rambachan and Roth: sensitivity to nonparallel trends"
+subtitle: "Source notes and teaching applications"
+date: 2026-09-18
+format:
+  html:
+    toc: true
+---
+
+## Source and reading route
+
+@rambachanroth2023parallel. [Open text](https://www.jonathandroth.com/assets/files/HonestParallelTrends_Main.pdf). Reading baseline: published Review of Economic Studies article (2023), author-hosted copy. Accessed 18 September 2026. Section locators below refer to this linked version; pagination can differ from the published article.
+
+The source summary is a selective paraphrase. Sections labelled **Teaching application** contain QED Labs' own examples and exercises, not claims that the authors ran these particular analyses.
+
+
+## Source summary
+
+**Sections 2.1–2.3:** separate event-study coefficients into treatment effects and untreated differences, $\beta=\tau+\delta$. Pre-treatment effects are zero under no anticipation. A target such as a first-period effect or weighted post-period average is specified before inference.
+
+**Section 2.4:** restrict possible violations rather than require exact parallel trends. Relative magnitude bounds consecutive post-period changes in $\delta$ relative to the largest consecutive pre-period change. Smoothness bounds changes in the slope of $\delta$; these are different assumptions.
+
+**Sections 3–4:** construct confidence sets that account for sampling error and the allowed violations. The method does not treat noisy pre-treatment estimates as known population deviations.
+
+**Interpretation:** conclusions are conditional on the restriction class and its magnitude. A sensitivity curve is not a probability that parallel trends is true.
+
+## Teaching application: defining the restriction
+
+With event time $-1$ normalized to zero, a relative-magnitude restriction can be written
+
+$$|\delta_{e+1}-\delta_e|\leq\bar M\max_{s<-1}|\delta_{s+1}-\delta_s|,\qquad e\geq-1.$$
+
+The indices in software may differ; the substance is a bound on changes between adjacent periods, not a bound on each post-period level relative to the largest lead coefficient.
+
+**Example:** a hypothesized largest pre-period change of 0.02 and $\bar M=1.5$ allows post-period changes up to 0.03 on the same outcome scale. This is arithmetic illustrating a restriction, not a plug-in confidence interval.
+
+## Teaching application: software input audit
+
+Before running `HonestDiD`, list:
+
+1. The exact cohort and comparison population.
+2. The ordered pre- and post-period coefficients and omitted reference.
+3. The full covariance matrix in the same order.
+4. The linear combination of post-period effects of interest.
+5. The restriction class, magnitude grid, and inference method.
+
+Diagonal standard errors alone discard covariance needed for the calculation. Mixing adjacent-period pre-effects with cumulative post-effects can change what the restriction means.
+
+## Worked lab interpretation
+
+The [R extension](../../labs/difference-in-differences-modern-estimators-lab.qmd#optional-extension-sensitivity-to-parallel-trends-violations) uses the 2006 cohort versus never-treated counties, two estimated leads, the omitted 2005 reference, and two post-period coefficients. Its default target is the first post-period effect. It is not a sensitivity interval for the preceding full-sample staggered aggregate.
+
+**Exercise:** the first tested $\bar M$ already admits zero. What can you report?
+
+**Answer:** zero is included at the first grid point. Do not claim to have located the exact threshold, and do not describe the largest tested magnitude as a data-selected “safe” bound. Explain why each bound is substantively plausible and show the original interval alongside it.
+
+
+[Reading map](difference-in-differences-sources.qmd) · [Method overview](difference-in-differences.qmd) · [Applications and datasets](difference-in-differences-applications.qmd)

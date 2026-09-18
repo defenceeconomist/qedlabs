@@ -1,0 +1,57 @@
+---
+title: "Bertrand, Duflo, and Mullainathan: DiD inference"
+subtitle: "Source notes and teaching applications"
+date: 2026-09-18
+format:
+  html:
+    toc: true
+---
+
+## Source and reading route
+
+@bertrand2004trustdid. [Open text](https://www.nber.org/system/files/working_papers/w8841/w8841.pdf). Reading baseline: NBER Working Paper 8841 (2002); cite the published 2004 article for publication details. Accessed 18 September 2026. Section locators below refer to this linked version; pagination can differ from the published article.
+
+The source summary is a selective paraphrase. Sections labelled **Teaching application** contain QED Labs' own examples and exercises, not claims that the authors ran these particular analyses.
+
+
+## Source summary
+
+**Sections 2–3: the problem.** Persistent outcomes and policy indicators make repeated observations less informative than an independence calculation suggests. The paper assigns placebo laws in state-level settings and studies rejection of a null known to be true. Conventional errors can yield substantial over-rejection. Adding individual records does not supply new independent policy assignments.
+
+**Section 4: remedies.** The authors compare parametric corrections, empirical covariance approaches, allowing unrestricted within-state dependence, collapsing time into pre/post averages, and randomization inference. Performance depends on the number of independent groups and assumptions. Collapsing loses temporal information; clustering requires enough independent clusters. A randomization argument needs a defensible reassignment mechanism.
+
+**Interpretation.** This is an inference critique, not a repair for selection into treatment. Valid standard errors around a biased DiD contrast do not identify an ATT. Conversely, a plausible parallel-trends argument does not justify independence standard errors.
+
+## Teaching application: counting assignments
+
+For the castle lab, complete this table before estimating a model:
+
+| Object | Question |
+|---|---|
+| Row | Is the observation a person, county, or state-year? |
+| Assignment | At what level does law adoption vary? |
+| Dependence | Which observations can share policy and economic shocks? |
+| Replication | How many treated and untreated assignment units exist? |
+
+State-year rows are repeated measurements of states. With state assignment, the number of rows is not the number of independent assignments. In Kentucky, two eligibility groups around one reform leave very limited policy-level replication even though the file contains thousands of claims.
+
+A useful schematic is
+
+$$\mathrm{Var}(\bar u)=\frac{1}{n^2}\left[\sum_i\mathrm{Var}(u_i)+2\sum_{i<j}\mathrm{Cov}(u_i,u_j)\right].$$
+
+Positive within-cluster covariances can make an independence calculation too small. The equation explains why increasing observations inside an existing cluster need not mimic adding independent clusters.
+
+## Teaching application: exercise and answer
+
+**Exercise:** hold the castle coefficient and sample fixed; compare ordinary, heteroskedasticity-robust, and state-clustered standard errors. Do not choose the smallest interval. Explain which dependence structure each calculation allows.
+
+**Answer:** the point estimate stays fixed because only the covariance estimator changes. The direction of the standard-error change is empirical, not guaranteed. State clustering permits correlation across years within states; it does not automatically allow spatial dependence between states.
+
+## Reporting and boundaries
+
+Report the assignment level, cluster definition, treated and total cluster counts, and small-sample adjustments. If there are few clusters, explicitly motivate any alternative inference procedure. Do not describe a bootstrap as universally valid merely because it is a bootstrap.
+
+Use alongside the [staggered lab](../../labs/difference-in-differences-staggered-diagnostics-lab.qmd) and the [synthesis notes](roth-et-al-did-synthesis-notes.qmd).
+
+
+[Reading map](difference-in-differences-sources.qmd) · [Method overview](difference-in-differences.qmd) · [Applications and datasets](difference-in-differences-applications.qmd)

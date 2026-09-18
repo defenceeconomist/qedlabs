@@ -151,3 +151,24 @@ The choice should follow fit between design assumptions and the application, not
 ## Bottom Line
 
 Roth et al. provide the best map of modern DiD because they resist a one-estimator answer. Credible practice means aligning the comparison group, parallel-trends assumption, estimator, aggregation, and inference with the treatment process and policy question.
+
+## Reading locators and teaching application
+
+Published synthesis: §2 (canonical benchmark), §3 (timing), §4 (parallel trends), §5 (inference), and the practitioner recommendations. Open author manuscript rechecked 18 September 2026.
+
+The following exercise is QED Labs teaching commentary.
+
+### A design-to-estimator worksheet
+
+Write one paragraph for each question before choosing software:
+
+1. **Target:** whose effect, at what horizon, averaged with which weights?
+2. **Counterfactual:** which untreated units and periods identify it?
+3. **Threats:** what can violate trends, no anticipation, or stable composition?
+4. **Uncertainty:** what assignment or sampling units generate independent information?
+
+**Exercise:** Callaway–Sant'Anna and Sun–Abraham produce different event paths. Must one be wrong?
+
+**Worked answer:** no. First align support, comparison cohorts, covariates, baselines, and aggregation weights. Only an equivalent-object comparison can isolate an implementation discrepancy. Even matching numbers leave the design assumptions unverified.
+
+Follow the new source notes on [inference](bertrand-duflo-mullainathan-inference-notes.qmd), [pre-testing](roth-pretesting-notes.qmd), [sensitivity](rambachan-roth-sensitivity-notes.qmd), and [imputation](borusyak-jaravel-spiess-imputation-notes.qmd) for these distinct parts of the reporting argument.

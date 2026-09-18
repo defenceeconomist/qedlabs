@@ -4,7 +4,7 @@ title: "Difference-in-Differences Sources"
 
 # Scope
 
-This page is a reading map for difference-in-differences. It connects four accessible teaching sources to four papers that explain why staggered adoption requires more care, then identifies the next readings most useful for applications, inference, and sensitivity analysis.
+This page is a reading map for difference-in-differences. It connects four accessible teaching sources to four papers on staggered adoption and five detailed readings on inference, doubly robust estimation, pre-testing, sensitivity, and imputation.
 
 # Start Here
 
@@ -19,13 +19,15 @@ That route moves from the core counterfactual to modern estimator choice without
 
 # Apply The Reading
 
-Use the source notes alongside three runnable R labs:
+Use the source notes alongside three paired R/Python labs:
 
 1. [Foundations](../../labs/difference-in-differences-foundations-lab.qmd) applies Gertler, Huntington-Klein, and Heiss to a canonical 2×2 design.
 2. [Staggered diagnostics](../../labs/difference-in-differences-staggered-diagnostics-lab.qmd) applies Cunningham, Goodman-Bacon, and Sun–Abraham.
 3. [Modern estimators](../../labs/difference-in-differences-modern-estimators-lab.qmd) applies `did`, `fixest`, and an optional `HonestDiD` sensitivity analysis.
 
-# Requested Teaching Sources
+See the [application catalogue](difference-in-differences-applications.qmd) for both language versions, dataset provenance, and replication status.
+
+# Teaching Sources
 
 ## Gertler et al., *Impact Evaluation in Practice*, Chapter 7
 
@@ -137,6 +139,8 @@ The New Jersey-Pennsylvania minimum-wage study is the canonical modern two-by-tw
 
 ### Bertrand, Duflo, and Mullainathan (2004)
 
+[Detailed source notes and worked exercises](bertrand-duflo-mullainathan-inference-notes.qmd).
+
 This is the essential warning about serial correlation and understated conventional standard errors in DiD [@bertrand2004trustdid]. It should be read before treating a statistically significant interaction coefficient as sufficient evidence.
 
 ### Abadie (2005)
@@ -145,19 +149,27 @@ Abadie develops a semiparametric DiD approach for repeated cross-sections under 
 
 ### Sant'Anna and Zhao (2020)
 
+[Detailed source notes and worked exercises](santanna-zhao-doubly-robust-notes.qmd).
+
 This paper combines outcome regression and propensity-score weighting so the DiD estimator remains consistent when either nuisance model is correctly specified [@santannazhao2020drdid]. It is a practical next step after Abadie and underpins modern software workflows.
 
 ## Event Studies and Sensitivity
 
 ### Borusyak, Jaravel, and Spiess (2024)
 
+[Detailed source notes and worked exercises](borusyak-jaravel-spiess-imputation-notes.qmd).
+
 The imputation estimator learns untreated outcomes from untreated observations and then constructs treated-cell effects [@borusyak2024eventstudy]. Read it as an alternative to both conventional TWFE and group-time matching/weighting formulations.
 
 ### Roth (2022)
 
+[Detailed source notes and worked exercises](roth-pretesting-notes.qmd).
+
 Roth shows why screening a design on a conventional pre-trend test can distort the treatment-effect estimate that is later reported [@roth2022pretest]. This is essential for interpreting “we found no significant pre-trend.”
 
 ### Rambachan and Roth (2023)
+
+[Detailed source notes and worked exercises](rambachan-roth-sensitivity-notes.qmd).
 
 This paper replaces an all-or-nothing parallel-trends claim with sensitivity analysis under bounded post-treatment departures [@rambachanroth2023parallel]. Use it when the real question is how robust the conclusion is to plausible trend violations.
 
@@ -193,6 +205,6 @@ For design diagnostics and sensitivity:
 3. Roth on pre-testing.
 4. Rambachan-Roth on sensitivity.
 
-# Bottom Line
+# Connecting the readings
 
 The four teaching sources explain why DiD can work. The four modern papers explain why a familiar regression can stop representing that design when treatment timing and effects vary. The further readings add the two pieces most likely to be neglected in practice: defensible inference and explicit sensitivity to departures from parallel trends.

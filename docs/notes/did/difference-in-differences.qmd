@@ -49,7 +49,7 @@ Y_{it}=\alpha+\gamma Treated_i+\lambda Post_t
 +\tau(Treated_i\times Post_t)+\varepsilon_{it}.
 $$
 
-Here, (gamma) absorbs the baseline group difference, (lambda) absorbs the common time change, and (	au) is the DiD estimate. With more groups and periods, unit and time fixed effects are often used, but the simple interaction's transparent interpretation does not automatically carry over to staggered treatment [@goodmanbacon2021timing].
+Here, $\gamma$ absorbs the baseline group difference, $\lambda$ absorbs the common time change, and $\tau$ is the DiD estimate. With more groups and periods, unit and time fixed effects are often used, but the simple interaction's transparent interpretation does not automatically carry over to staggered treatment [@goodmanbacon2021timing].
 
 # Identification Assumptions
 
@@ -166,3 +166,32 @@ The imputation approach fits the untreated outcome model using untreated observa
 # Bottom Line
 
 DiD is credible when the comparison trend is credible. In the canonical design, the estimator is transparent and the central challenge is defending parallel trends. In staggered designs, the challenge expands: the analyst must also control which treated cohorts are compared with which controls and how heterogeneous effects are aggregated. Modern estimators improve those comparisons, but none can rescue a weak treatment story, contaminated control group, or implausible counterfactual trend [@roth2023trending].
+
+
+# Working glossary
+
+| Term | Meaning in these materials |
+|---|---|
+| ATT | Average effect for the treated population represented by the design |
+| Cohort $g$ | Units sharing first treatment time $g$ |
+| $ATT(g,t)$ | Effect for cohort $g$ in calendar period $t$ |
+| Event time | Calendar time minus first-treatment time |
+| Parallel trends | Equality of relevant untreated outcome changes, possibly conditional on baseline covariates |
+| No anticipation | No treatment response before the specified exposure window |
+| Support | Observations and valid comparisons available to identify a target |
+| Universal base | Cohort's last untreated period used as the reference |
+| TWFE | Unit and time fixed effects; a model whose treatment coefficient needs a design-specific interpretation |
+| Simultaneous band | Uncertainty statement covering a specified family of coefficients together |
+
+# Estimator comparison
+
+| Approach | Timing and comparisons | Additional choices | Main caution |
+|---|---|---|---|
+| Four-cell DiD | One treated group and one comparison, before/after | Outcome scale, sample, inference | Cannot inspect pre-trends with one pre-period |
+| Conventional TWFE | May combine untreated and already-treated comparisons | Weights and homogeneity restrictions | Heterogeneity can undermine the intended ATT |
+| Callaway–Sant'Anna | Cohort-time effects; never/not-yet-treated controls | Conditional trends, base period, aggregation | Changing support and target weights |
+| Sun–Abraham | Cohort-by-event-time effects with suitable untreated comparisons | Reference cohort, reference period, event aggregation | Cohort composition at long horizons |
+| Imputation | Untreated model fitted using untreated observations | Outcome model, supported targets, aggregation | Extrapolation and model identification |
+| HonestDiD | Sensitivity applied to an appropriate coefficient vector | Target, covariance, violation class and magnitude | Not an estimator that repairs arbitrary design failures |
+
+Use the [application catalogue](difference-in-differences-applications.qmd) to choose paired R/Python exercises and the [reproduction record](../../labs/difference-in-differences-reproducibility.qmd) to distinguish validated results from proposed extensions.

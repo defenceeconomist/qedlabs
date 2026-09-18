@@ -125,3 +125,19 @@ The chapter is strongest on the canonical evaluator-facing design. It does not r
 ## Bottom Line
 
 Gertler et al. give the clearest operational account of what DiD removes, what it leaves behind, and how an evaluator can try to falsify equal trends. It is the right first source, provided the teaching sequence later distinguishes the canonical design from staggered adoption.
+
+## Reading locators and teaching application
+
+Second edition, Chapter 7, printed pp. 129–142: method pp. 130–134, equal trends pp. 135–140, limitations/checklist pp. 141–142. Use the World Bank full-text link below.
+
+The following exercise is QED Labs teaching commentary.
+
+### A counterfactual reconstruction exercise
+
+**Exercise:** the treated mean rises from 40 to 55 and the comparison mean rises from 30 to 35. Calculate the treated counterfactual after mean under equal untreated trends, then the DiD.
+
+**Worked answer:** the comparison change is 5, giving a treated counterfactual of 45 and a contrast of 10. This is a QED Labs illustration, not the book's road-repair data. A differential untreated shock of 4 affecting only the treated group would reduce the attributable policy component to 6; DiD does not automatically remove that shock.
+
+Turn the chapter's checklist into a fieldwork request: obtain the policy timeline, at least one credible comparison rationale, definitions of outcome and eligibility, and earlier observations if available. A dataset with four populated cells is computationally sufficient but does not itself supply these design facts.
+
+[Verified World Bank full text](https://openknowledge.worldbank.org/server/api/core/bitstreams/4659ef23-61ff-5df7-9b4e-89fda12b074d/content).

@@ -14,3 +14,8 @@ docs/data/
 # Python caches
 __pycache__/
 *.pyc
+
+# Local DiD execution environments and checks
+.qedlabs-validation/
+.qedlabs-cache/
+.venv-did/

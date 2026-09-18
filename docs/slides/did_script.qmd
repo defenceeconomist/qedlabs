@@ -1,171 +1,115 @@
 ---
 title: "Difference-in-Differences Presenter Script"
-subtitle: "From four means to credible staggered estimates"
+subtitle: "An introduction for applied researchers"
 author: "Luke Heley"
-date: 9 August 2026
-bibliography:
-  - ../../evaluation-bibliography.bib
+date: 2026-09-18
 format:
   html:
     toc: true
-    toc-depth: 2
-    code-links:
-      - text: Difference-in-Differences deck
-        href: did.html
-      - text: Difference-in-Differences notes
-        href: ../notes/did/difference-in-differences.html
-execute:
-  echo: false
-  eval: false
 ---
 
-## How To Use This Script
+## Delivery guide
 
-This script supports the core [Difference-in-Differences deck](did.qmd). The main sequence is designed for roughly 25–30 minutes before moving into the labs. The four appendix slides are optional.
+This script accompanies the [introductory deck](did.qmd): 22 main slides including the cover, followed by a technical appendix and references. Allow 45–60 minutes including audience discussion. Learners should know basic regression but need no prior DiD knowledge. The three paired labs are separate 45–60 minute sessions.
 
-Use the same sentence throughout the session: **the estimator calculates the contrast; the design determines which comparisons deserve causal meaning**.
+The main sequence devotes roughly half the session to the canonical design and half to diagnostics and staggered adoption. Equations express a comparison already explained in words. Keep software syntax in the labs.
 
-- Pause for the audience prompts when time permits.
-- Keep the canonical section brisk enough to leave at least half the session for staggered adoption and modern estimators.
-- Treat the displayed estimates as teaching evidence, not as findings to defend independently of their source studies.
-- Direct participants to the runnable labs for software syntax and extended interpretation.
+### 1. Title
 
-## Core Sequence
+Introduce the policy-evaluation question: how can we learn about a reform without random assignment? Preview the Kentucky example, then the complications from staggered laws. Allow 1 minute.
 
-### Title Slide
+### 2. The question DiD answers
 
-Open by saying that DiD has one of the simplest calculations in causal inference and one of the easiest designs to overstate. The session will start with four means, then show why staggered adoption changes the meaning of familiar fixed-effects estimates, and finish with a practical estimator-choice rule.
+Allow 2 minutes. Ask for a policy whose before/after change might reflect another economic shock. The comparison supplies the missing untreated change. Basic regression knowledge is enough for this session. The conceptual session lasts 45–60 minutes with discussion; code belongs in the paired labs. Sources: @gertler2016ch7did; @roth2023trending.
 
-### 1. The subtraction is simple; the comparison is the design
+### 3. Kentucky workers’ compensation
 
-Introduce the recurring sentence. DiD does not earn credibility because it subtracts twice. It earns credibility when the comparison group's untreated change represents the treated group's missing untreated change. Preview the learning progression without turning it into an agenda: transparent contrast, identifying assumptions, staggered timing, and explicit modern estimands [@gertler2016ch7did; @roth2023trending].
+Allow 2 minutes. The reform changes incentives differently for high and low earners. Ask why low earners could be useful even if their durations start lower. Clarify that group membership is not random assignment, and treatment can change claiming behavior. Sources: @meyer1995workerscomp; @heiss2026didexample.
 
-**Prompt:** Ask participants to name one setting where a before/after change would clearly confound treatment with time.
+### 4. Four observed means
 
-### 2. Kentucky's policy creates a transparent 2×2 question
+Allow 2 minutes. Have learners identify the four cells and the two group-specific changes. Error bars describe uncertainty in means; they do not display uncertainty in the final DiD or establish policy-level replication. The asset is generated from the same Kentucky sample as the foundations labs. Sources: @meyer1995workerscomp; @heiss2026didexample.
 
-Explain the workers' compensation setting. Kentucky raised the earnings cap in 1980. High earners were exposed; low earners were not. The outcome is the log duration of benefit receipt. The comparison is attractive because the groups face the same state and policy period, but the causal claim still requires their untreated changes to be comparable [@meyer1995workerscomp; @heiss2026didexample].
+### 5. The difference of changes
 
-Transition by asking what can be calculated directly from the four observed group-period cells.
+Allow 3 minutes, including a hand calculation. The displayed values are rounded; the executed estimate is 0.1906012007. Ask what the treated group's change alone would claim. The control change adjusts for an assumed shared untreated trend, not every concurrent event. Sources: @gertler2016ch7did; @heiss2026didexample.
 
-### 3. Four means produce one DiD estimate
+### 6. The missing counterfactual
 
-Read the plot from left to right. High earners start above low earners, which is not itself a problem. The important feature is that their post-policy increase is larger. The difference of changes is about `0.191` log points. Convert it exactly with $100\{\exp(0.191)-1\}$ to obtain about `21%`. Do not call the outcome “logged weeks”; call the result a proportional change in duration.
+Allow 2 minutes. Distinguish observed points from the unobserved counterfactual. It is not a fitted fact whose accuracy can be checked in the treated after-period. Ask what a high-earner-specific economic shock would do to the comparison. Sources: @gertler2016ch7did; @huntingtonklein2021did.
 
-**Prompt:** Ask the room to identify the two first differences before revealing the final contrast.
+### 7. The effect on the treated
 
-### 4. The interaction regression recovers the same contrast
+Allow 2 minutes. Read the expression in words before explaining symbols. DiD supplies the otherwise missing average untreated outcome for the treated group under assumptions. The policy target and represented claim population need care if the reform affects who enters the sample. Sources: @cunningham2021did; @roth2023trending.
 
-Walk through the equation in plain language. The treated indicator absorbs the baseline group gap. The post indicator absorbs the common time change. The interaction is the DiD contrast. The manual and regression estimates match to numerical precision. This is a useful discipline: regression should preserve the design's transparent comparison rather than hide it behind notation [@huntingtonklein2021did; @heiss2026didexample].
+### 8. The interaction regression
 
-Transition from calculation to identification: the estimate is observed, but one required outcome is not.
+Allow 2 minutes. Explain the baseline group gap, common time change, and extra treated-group change. Both languages check equality with the manual estimate. This equality assumes the same rows, weights, and unadjusted saturated model; it need not hold after changing the specification. Sources: @huntingtonklein2021did; @heiss2026didexample.
 
-### 5. Parallel trends supplies the missing untreated change
+### 9. Parallel untreated trends
 
-Point to the dashed counterfactual. It takes the low-earner change and adds it to the high-earner baseline. The vertical distance between that point and the observed high-earner outcome is the DiD estimate. State the assumption precisely: without the policy, the treated group's outcome would have changed like the comparison group's outcome. Equal levels are not required [@gertler2016ch7did].
+Allow 3 minutes. Ask learners to explain why observed treated outcomes need not remain parallel after treatment. The assumption concerns untreated potential outcomes, including an unobserved treated-group counterfactual. Additional pre-periods can challenge an argument but cannot prove it. Sources: @gertler2016ch7did; @roth2023trending.
 
-### 6. Two periods cannot diagnose that assumption
+### 10. Outcome scale changes the assumption
 
-The Kentucky design has only one pre-policy category, so it cannot show a pre-policy trend. Explain the difference between evidence and proof. More pre-periods, raw trends, placebo dates, unaffected outcomes, and alternative controls can challenge the assumption. None can observe the treated group's post-treatment untreated potential outcome [@roth2022pretest; @rambachanroth2023parallel].
+Allow 3 minutes. This doubling example is constructed for teaching. Parallel trends in levels does not imply parallel trends in logs. For Kentucky, exponentiation does not automatically yield the effect on arithmetic mean duration or an average individual percentage effect. Ask which scale fits a proposed policy question. Sources: @huntingtonklein2021did; the foundations-lab calculation.
 
-**Prompt:** Ask what external evidence would make low earners more or less credible as a comparison group.
+### 11. Threats to the comparison
 
-### 7. Anticipation, spillovers, and composition can break the design
+Allow 3 minutes. Ask for one Kentucky-specific threat, such as changes in claim composition. For each answer, distinguish a coding fix from a substantive identification problem. No estimator option automatically removes these threats. Sources: @cunningham2021did; @callaway2021multipletime; @roth2023trending.
 
-Use the three-row table as a compact threat audit. Anticipation mislabels already-affected outcomes as untreated. Spillovers contaminate controls. Composition changes can create an apparent effect even when individual potential outcomes do not change. This is especially important for repeated cross-sections, where the same people are not observed before and after [@cunningham2021did; @callaway2021multipletime].
+### 12. Inference and policy assignment
 
-Transition by noting that a large individual sample does not solve these design problems or guarantee appropriate inference.
+Allow 2 minutes. Kentucky has one before/after policy contrast. Claim-level HC1 errors illustrate sampling uncertainty, not a large set of independent policy assignments. State clustering in the castle lab permits within-state dependence. Minimum-wage county clustering reproduces the compact package example but may be inadequate for state-policy inference. Sources: @bertrand2004trustdid; @roth2023trending.
 
-### 8. Inference follows policy assignment, not the number of rows
+### 13. What pre-trend diagnostics can show
 
-Contrast the `5,626` claims with the much smaller number of policy-level comparisons. Heteroskedasticity-robust errors address unequal claim-level variance, but they do not create independent policy assignments. In longer panels, serial correlation typically requires clustering at the treatment-assignment unit. With very few clusters, ordinary cluster approximations can also be unreliable [@bertrand2004trustdid].
+Allow 3 minutes. Ask whether a wide interval containing zero is reassuring. Explain low power and selection as separate problems. Use cohort-aware event-study estimates where timing is staggered; conventional leads can be contaminated by treatment-effect heterogeneity. Sources: @roth2022pretest; @sunabraham2021dynamic.
 
-### 9. Staggered adoption changes what TWFE estimates
+### 14. Staggered adoption
 
-Move to the castle-doctrine panel. Each row is a state; red cells begin at adoption and remain treated. The multiple diagonal starts show why the canonical design no longer has a single treated group or post period. There are several cohorts, different exposure lengths, and a never-treated group [@cheng2013castle; @cunningham2021did].
+Allow 2 minutes. Identify calendar time and adoption cohort in the graphic. Never-treated states stay untreated throughout the window; not-yet-treated states stop being eligible after exposure. The picture audits coding, not the substantive credibility of the laws' timing. Sources: @cheng2013castle; @goodmanbacon2021timing.
 
-**Prompt:** Ask which states could act as controls for the 2006 cohort in 2005, then again in 2010.
+### 15. Already-treated comparisons
 
-### 10. Untreated comparison support shrinks over calendar time
+Allow 3 minutes. This is a constructed example after cancelling common untreated trends. Ask why a positive decomposition weight on this contrast does not fix the problem. The Bacon decomposition uses nonnegative weights on comparisons, distinct from implicit weights on underlying treatment effects. The R lab verifies the reconstruction. Sources: @goodmanbacon2021timing; @cunningham2021did.
 
-Read the three lines. Never-treated support remains stable. Not-yet-treated support is large early but disappears as states adopt. Already-treated observations grow over time. Emphasize that “more controls” is not automatically better: future adopters need to be credible before treatment, and already-treated units are not untreated controls [@callaway2021multipletime].
+### 16. Event studies and cohort comparisons
 
-### 11. TWFE mixes untreated and already-treated comparisons
+Allow 3 minutes. The plotted window is -5 through +4, while the regressions include all supported periods. Intervals shown here are pointwise, not simultaneous. Cohort-aware estimation avoids the conventional contamination but still requires identification assumptions. The R and Python cohort-aware point estimates agree to numerical precision. Sources: @sunabraham2021dynamic.
 
-Explain the three comparison types. Treated-versus-never-treated comparisons keep controls untreated, though substantive comparability remains. Earlier-versus-later comparisons use not-yet-treated controls. Later-versus-earlier comparisons use already-treated outcomes as controls. If effects evolve after treatment, the last type can subtract one treatment effect from another [@goodmanbacon2021timing].
+### 17. Group-time effects
 
-Transition from the conceptual table to an empirical audit of the actual coefficient.
+Allow 2 minutes. Explain that Y_t(infinity) represents remaining untreated. Use a 2006 county cohort in 2007 as the example: a particular group at a particular exposure horizon. Not all cohort-time cells are supported. The modern labs use the did package's compact minimum-wage teaching data, not a complete original-paper replication. Sources: @callaway2021multipletime.
 
-### 12. The Bacon decomposition reconstructs—and exposes—the coefficient
+### 18. Choosing the comparison group
 
-The horizontal axis shows individual 2×2 estimates; the vertical axis shows their TWFE weights. The dashed line is the static coefficient. The weighted average exactly reconstructs it. Use this to make a sharp distinction: decomposition verifies what the coefficient contains, not whether each ingredient is causally defensible [@goodmanbacon2021timing].
+Allow 2 minutes. Ask when future adopters might be suspicious controls before formal adoption: anticipation, policy preparation, or differential shocks driving adoption. A larger comparison sample is not automatically a better design. The code specifies the control rule and baseline instead of inheriting defaults. Sources: @callaway2021multipletime; @roth2023trending.
 
-**Prompt:** Ask participants which colour they would most want to inspect if treatment effects are dynamic.
+### 19. Aggregation defines the question
 
-### 13. Conventional event studies can mix effects across relative times
+Allow 3 minutes. Ask learners to compare equal-size cohorts with four and one observed post-periods. The simple supported-cell average gives more total weight to the first. A cohort average and an event average are different targets. Changing sample support can also change who an apparent dynamic path represents. Sources: @callaway2021multipletime; @roth2023trending.
 
-Present the equation as a familiar extension of TWFE. Under staggered adoption and heterogeneous effects, a coefficient for one relative time can absorb effects from other relative times because the implicit controls include already-treated cohorts. This can create apparent pre-trends or distort lags even when the underlying cohort effects are well behaved [@sunabraham2021dynamic].
+### 20. Sensitivity to nonparallel trends
 
-### 14. Sun-Abraham restores cohort-relative comparisons
+Allow 3 minutes. The example restricts to the 2006 cohort and never-treated counties. Relative magnitude bounds post-treatment changes in the untreated gap relative to the largest pre-treatment change, accounting for uncertainty. It does not bound levels by the largest observed lead. Zero is already included at the first tested Mbar=0.5; no exact breakdown point is established. This is not sensitivity for the full staggered aggregate. Sources: @rambachanroth2023parallel.
 
-Compare the red and blue profiles. They use the same omitted period but different comparison logic. Sun–Abraham estimates cohort-by-relative-time effects and then aggregates them. Do not announce one line as “correct” merely because it is modern; state that it is interpretable under parallel trends, no anticipation, and the chosen cohort weighting [@sunabraham2021dynamic].
+### 21. A DiD reporting checklist
 
-Transition by asking whether an even more explicit object could keep cohort and calendar time visible before aggregation.
+Allow 2 minutes. Ask participants to describe a prospective analysis in five sentences using these prompts. A package name alone does not describe the estimator's actual comparison or target. The detailed knowledge base supplies source-specific explanations and worked exercises. Sources: @roth2023trending.
 
-### 15. Group-time ATT names the estimand before aggregation
+### 22. Three paired R and Python labs
 
-Introduce $ATT(g,t)$ one cell at a time. The row names the first-treatment cohort, the column names calendar time, and the cell is the average effect for that cohort in that period. The heatmap prevents the analyst from jumping immediately to a single average. It makes support and heterogeneity visible [@callaway2021multipletime].
+Allow 1 minute. Each lab takes 45–60 minutes beyond this introduction. Both languages share the same datasets; R includes Bacon and HonestDiD extensions. The Python modern lab documents its analytic/Bonferroni bands rather than presenting them as identical to R bootstrap bands. Close with a concrete next step: run foundations and write a six-sentence design assessment.
 
-### 16. Control groups require different assumptions
+## Optional appendix
 
-Compare the two control rules. Never-treated units provide a stable untreated set. Not-yet-treated controls add future adopters before their own treatment, which can improve support but adds an assumption about their pre-treatment suitability. The choice should follow institutional credibility and overlap rather than which estimate is preferred [@callaway2021multipletime; @roth2023trending].
+Use conditional-trends material to separate a pre-treatment covariate argument from automatic regression adjustment. For repeated cross-sections, emphasize composition and measurement. For imputation, describe fitting untreated observations, predicting counterfactuals, and aggregating supported residual effects; refer to the [imputation notes](../notes/did/borusyak-jaravel-spiess-imputation-notes.qmd) for assumptions and inference. The software table is a navigation aid, not a claim of identical default behavior.
 
-**Prompt:** Ask participants for a policy setting where future adopters would be suspicious controls even before adoption.
+## Discussion answers
 
-### 17. Aggregation answers different policy questions
-
-Move down the table rather than across it. A simple average summarizes available treated cells. Cohort aggregation asks how adoption groups differ. Event-time aggregation asks how effects evolve with exposure. Calendar aggregation asks how effects differ across common years. There is no neutral aggregate when treatment effects and support vary [@callaway2021multipletime].
-
-### 18. Modern estimates differ when their targets differ
-
-Use the close but non-identical lines to normalize disagreement. Callaway–Sant'Anna and Sun–Abraham can use different weights, comparison rules, nuisance models, and support. Agreement is useful evidence, but numerical equality is not the criterion for validity. The analyst should be able to describe what each point averages [@roth2023trending].
-
-### 19. Pre-trend tests are diagnostics, not certification
-
-Explain four reasons a non-significant lead is insufficient. The design may be sound, the test may lack power, the interval may allow important violations, or the specification may have been selected after testing. Encourage raw trend plots, simultaneous inference, institutional evidence, and prespecified diagnostics rather than a binary pass/fail rule [@roth2022pretest].
-
-Transition from testing whether violations equal zero to asking how large a violation would change the conclusion.
-
-### 20. Sensitivity asks how much violation changes the conclusion
-
-The blue interval is the original parallel-trends interval. The red intervals allow post-treatment deviations to be progressively larger relative to observed pre-treatment deviations. Wider intervals are the price of weaker assumptions. In this cohort-specific example, uncertainty already includes zero; the method does not manufacture a decisive result [@rambachanroth2023parallel].
-
-Stress that the sensitivity estimand is the 2006 cohort versus never-treated counties, not the full staggered aggregate.
-
-### 21. Estimator choice should follow the design
-
-Read this as a decision map. Use the transparent four-cell or common-date design when treatment timing is simple. Use group-time or interaction-weighted approaches when adoption is staggered and effects may vary. Use imputation when the untreated outcome model is the credible organizing object. In every row, design threats remain outside the estimator [@roth2023trending; @borusyak2024eventstudy].
-
-### 22. The three labs turn the reporting chain into practice
-
-Close by mapping one job to each lab. Foundations connects the four-cell calculation to assumptions. Staggered diagnostics audits TWFE and event studies. Modern estimators controls the comparison group, aggregation, and sensitivity. Return to the opening sentence exactly: **the estimator calculates the contrast; the design determines which comparisons deserve causal meaning**.
-
-Direct participants to the [foundations lab](../labs/difference-in-differences-foundations-lab.qmd) as the first exercise.
-
-## Optional Technical Appendix
-
-### Covariates make parallel trends conditional
-
-Covariates can support conditional parallel trends when they are pre-treatment or otherwise unaffected by treatment and when overlap is adequate. They do not repair unobserved differential trends. If missing covariates change the estimation sample, compare adjusted and unadjusted models on the same complete-case sample before attributing coefficient movement to adjustment [@abadie2005semiparametricdid; @santannazhao2020drdid].
-
-### Repeated cross-sections change who is compared
-
-Panel DiD follows the same units. Repeated cross-sectional DiD compares samples drawn from populations at each time. The extra identification concern is stable population composition, eligibility, measurement, and sampling across group-period cells [@abadie2005semiparametricdid].
-
-### Imputation makes the untreated model explicit
-
-Describe the four steps: estimate the untreated model on untreated observations, predict untreated outcomes for treated observations, calculate treated-cell residual effects, and aggregate them. The transparency is valuable, but unsupported extrapolation and a misspecified untreated model remain threats [@borusyak2024eventstudy].
-
-### R packages implement different objects
-
-Use this slide only if participants ask where the methods appear in R. `lm` and `fixest::feols()` represent canonical or TWFE models. `bacondecomp` audits the static coefficient. `fixest::sunab()` estimates interaction-weighted event studies. `did` estimates and aggregates group-time effects. `HonestDiD` constructs sensitivity intervals. Point participants back to the labs rather than demonstrating syntax in the concept deck.
+- A baseline outcome gap can coexist with parallel untreated changes.
+- A passing pre-test is not proof, particularly when power is low or specifications were selected after testing.
+- A negative later-versus-earlier contrast can occur despite positive effects when the early cohort's effect grows.
+- Matching point estimates across languages validates the chosen calculation, not the identifying assumptions.
+- The sensitivity example concerns one cohort's first post-period; it cannot be relabelled as a full-population result.

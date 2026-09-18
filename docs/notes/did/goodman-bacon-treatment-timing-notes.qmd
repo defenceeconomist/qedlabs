@@ -121,3 +121,17 @@ Goodman-Bacon diagnoses the aggregation problem. Callaway-Sant'Anna replaces it 
 ## Bottom Line
 
 The paper's lasting contribution is interpretive: a staggered-TWFE coefficient is not one DiD comparison but a weighted collection of them. Once treatment effects can change, the analyst must decide which comparisons and weights belong in the estimand instead of allowing ordinary least squares to decide implicitly.
+
+## Reading locators and teaching application
+
+Open working-paper version: Section I and Theorem 1 (decomposition), followed by the discussion of bias from changing treatment effects. Read alongside the published 2021 citation; versions differ in numbering.
+
+The following exercise is QED Labs teaching commentary.
+
+### Two meanings of weights
+
+The static, unadjusted balanced-panel Bacon decomposition uses nonnegative weights on constituent 2×2 contrasts. Those contrasts can themselves subtract treatment effects from already-treated controls. Consequently, weights on the underlying cohort-time treatment effects need not be nonnegative.
+
+**Exercise:** verify both $\sum_k w_k=1$ and $\sum_k w_k\widehat\tau_k=\widehat\beta_{TWFE}$ in the castle lab. Which equality proves the comparisons are credible?
+
+**Worked answer:** neither. They are reconstruction checks. A later-versus-earlier component remains substantively suspect when the earlier cohort's effect changes over that comparison window. Do not describe the share of such components as an exact measure of bias; their effect depends on the unknown dynamics.

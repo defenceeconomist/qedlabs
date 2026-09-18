@@ -141,3 +141,19 @@ Without those items, an `att_gt()` result is not reproducible as a design.
 ## Bottom Line
 
 Callaway and Sant'Anna replace an opaque staggered-TWFE average with explicit cohort-time effects. The method's strength is not just robustness to heterogeneity; it is the requirement to name the control group, parallel-trends condition, and aggregation target that together define the causal estimate.
+
+## Reading locators and teaching application
+
+Open manuscript: §2 (identification and group-time ATT), §3 (aggregation), §4 (estimation and inference). Software behavior is documented separately in the did package vignette.
+
+The following exercise is QED Labs teaching commentary.
+
+### Baselines, weights, and software defaults
+
+For the labs, set zero anticipation, universal pre-treatment baselines, and the comparison rule explicitly. A universal baseline normalizes each cohort to its last untreated period; adjacent-period pre-effects from a varying baseline answer a different descriptive question.
+
+**Exercise:** one cohort has four observed post-periods and another has one. With equal cohort sizes, does a simple supported-cell average give each cohort equal total weight?
+
+**Worked answer:** no. The earlier cohort contributes four times as many cells. Cohort aggregation first averages within each cohort and can then weight cohort averages by cohort size. Event-time aggregation changes the contributing cohorts as exposure length increases.
+
+The [paired modern labs](../../labs/difference-in-differences-modern-estimators-python-lab.qmd) check identical unconditional group-time effects across languages and distinguish that test from comparisons of different confidence-band procedures.

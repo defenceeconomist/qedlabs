@@ -129,3 +129,19 @@ Sun-Abraham focuses on dynamic event-time aggregation. Callaway-Sant'Anna starts
 ## Bottom Line
 
 The paper changes how an event-study plot should be read. Under staggered treatment, the label “two years after treatment” does not guarantee that a conventional TWFE coefficient summarizes effects two years after treatment. Cohort-specific estimation followed by transparent within-event-time averaging restores that interpretation.
+
+## Reading locators and teaching application
+
+Open manuscript: §2 (cohort-specific effects and assumptions), §3 (conventional event-study contamination), and the interaction-weighted estimator discussion. Baseline source is arXiv:1804.05785.
+
+The following exercise is QED Labs teaching commentary.
+
+### A plot is an aggregation
+
+An event-time point averages cohorts that contribute at that horizon. At long exposure lengths, the set can be much smaller than at treatment onset. A changing graph can therefore combine dynamics with changing cohort composition.
+
+**Exercise:** only the earliest cohort is observed five years after adoption. Can that coefficient be described as the fifth-year effect for all treated cohorts?
+
+**Worked answer:** not without an extrapolation assumption. Report which cohort contributes, or restrict to a balanced event window and state the narrower target.
+
+In the castle labs, both regressions use all available event periods and omit $-1$; plotting only $-5$ through $+4$ is a display decision. Dropping observations outside the plotted window would change the estimation sample and potentially the coefficients.

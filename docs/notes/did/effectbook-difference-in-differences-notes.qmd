@@ -122,3 +122,17 @@ The chapter also links matching to comparison-group construction and points towa
 ## Bottom Line
 
 Huntington-Klein provides the cleanest conceptual route from causal diagrams to modern DiD. The chapter's distinctive contributions are its emphasis on outcome scale and its insistence that rollout designs require different estimators, not merely more fixed effects.
+
+## Reading locators and teaching application
+
+Chapter 18, §§18.1 (across/within variation), 18.2 (implementation), and 18.3 (extensions); online text checked 18 September 2026.
+
+The following exercise is QED Labs teaching commentary.
+
+### Outcome scale is a design choice
+
+**Exercise:** suppose untreated outcomes would rise from 10 to 20 in one group and from 20 to 40 in another. Are the untreated trends parallel in levels or logs?
+
+**Worked answer:** changes of 10 and 20 are not parallel in levels. Both log changes equal $\log(2)$, so they are parallel on the log scale in this constructed example. Outcome transformation changes the identifying assumption, not just presentation.
+
+For the Kentucky lab, distinguish a difference in mean log duration from an effect on mean duration. $100(\exp(\widehat\tau)-1)$ transforms the ratio of geometric-mean changes; a causal interpretation for arithmetic mean weeks requires more structure. Always identify the scale on the plot and in the conclusion.

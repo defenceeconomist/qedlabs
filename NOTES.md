@@ -39,3 +39,12 @@ quarto render docs
 ```
 
 The Quarto pre-render hook refreshes the Notes link graph payload.
+
+
+## DiD teaching expansion — 18 September 2026
+
+- Thirteen source-specific notes connect foundational texts to staggered estimation, inference, pre-testing, sensitivity, and imputation.
+- Three paired R/Python labs share checksum-verified upstream data. Python notebook generation is explicit through `notebook-language: python`; existing R sources default to R.
+- The introductory deck contains 22 main slides including the cover, with a 45–60 minute script and optional appendix.
+- Reproduction runs are separate from Quarto's display-only lab rendering. See the public reproduction record for tested dependencies, estimates, and the Python universal-base bootstrap limitation.
+- The first-edition Mixtape URL moved to `mixtape-1ed.netlify.app`; its 2021 chapter notes must not be silently re-labelled as notes on The Remix.

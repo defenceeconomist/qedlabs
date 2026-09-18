@@ -1,0 +1,58 @@
+---
+title: "Borusyak, Jaravel, and Spiess: imputation DiD"
+subtitle: "Source notes and teaching applications"
+date: 2026-09-18
+format:
+  html:
+    toc: true
+---
+
+## Source and reading route
+
+@borusyak2024eventstudy. [Open text](https://www.restud.com/wp-content/uploads/2024/01/main.pdf). Reading baseline: January 2024 manuscript accompanying the published article. Accessed 18 September 2026. Section locators below refer to this linked version; pagination can differ from the published article.
+
+The source summary is a selective paraphrase. Sections labelled **Teaching application** contain QED Labs' own examples and exercises, not claims that the authors ran these particular analyses.
+
+
+## Source summary
+
+**Section 2:** define the untreated outcome model, no anticipation, treatment-effect restrictions, and the weighted target. The benchmark additive model is $E[Y_{it}(0)]=\alpha_i+\lambda_t$.
+
+**Section 3:** conventional dynamic regressions can impose unintended restrictions, mix effects through negative weights, or appear to identify unsupported long-run effects.
+
+**Section 4.1, Theorem 2:** with unrestricted treatment-effect heterogeneity, estimate the untreated model on untreated observations, impute treated counterfactuals, and average treated residuals using target weights. Efficiency is established under a spherical-error benchmark; unbiasedness does not require that benchmark.
+
+**Sections 4.3–4.4:** inference must account for counterfactual estimation, and testing of identifying assumptions is treated separately from effect estimation.
+
+**Boundary:** this is not unconstrained outcome prediction. Identification and support for the untreated model remain essential, especially when no untreated observations identify a calendar effect.
+
+## Teaching application: the three calculations
+
+For an additive untreated model, write
+
+$$\widehat Y_{it}(0)=\widehat\alpha_i+\widehat\lambda_t,\quad
+\widehat\tau_{it}=Y_{it}-\widehat Y_{it}(0),\quad
+\widehat\tau_w=\sum_{(i,t):D_{it}=1}w_{it}\widehat\tau_{it}.$$
+
+Require the reported target weights to sum to one when describing a weighted average. A policy-year target and an exposure-year target generally assign different weights. Fitting the untreated model once does not imply that every aggregation answers the same question.
+
+For a future optional lab, reuse the audited castle panel, fit unit and year effects using untreated observations, and show one treated state's observed and imputed path. Compare its selected target with a modern group-time estimate only after aligning sample support and weights.
+
+This proposed exercise is catalogued, not delivered as a validated fourth lab. A hand-coded residual plot should not be passed off as the paper's complete inference procedure.
+
+## Worked support exercise
+
+**Question:** every state is treated by the final calendar year. Can an unrestricted year fixed effect for that year be learned from untreated observations?
+
+**Answer:** no. The untreated fitting sample contains no observations for that year. An extrapolation restriction, additional controls, or a narrower target would be necessary. Software returning a number does not remove that identification issue.
+
+**Question:** why not fit the counterfactual regression to every observation?
+
+**Answer:** exposed outcomes include treatment effects. With unrestricted heterogeneous effects, letting them determine the untreated path can contaminate the counterfactual.
+
+## Reading connections
+
+Compare with [Callaway–Sant'Anna](callaway-santanna-multiple-periods-notes.qmd): group-time comparisons and an untreated-outcome model organize estimation differently. Use [Roth et al.](roth-et-al-did-synthesis-notes.qmd) to compare assumptions and targets rather than declaring one estimator universally preferable.
+
+
+[Reading map](difference-in-differences-sources.qmd) · [Method overview](difference-in-differences.qmd) · [Applications and datasets](difference-in-differences-applications.qmd)
