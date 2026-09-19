@@ -191,6 +191,8 @@ website:
               text: Difference-in-Differences Slides
             - href: slides/did_script.qmd
               text: DiD Presenter Notes
+            - href: labs/difference-in-differences-methods-report.qmd
+              text: DiD Methods Report
             - href: labs/difference-in-differences-foundations-lab.qmd
               text: DiD Foundations With Kentucky Workers' Compensation
             - href: labs/difference-in-differences-staggered-diagnostics-lab.qmd
@@ -201,6 +203,12 @@ website:
               text: DiD Setup and Reproduction Record
         - section: Regression Discontinuity
           contents:
+            - href: slides/rdd.qmd
+              text: Regression Discontinuity Slides
+            - href: slides/rdd_script.qmd
+              text: RDD Presenter Notes
+            - href: labs/regression-discontinuity-methods-report.qmd
+              text: RDD Methods Report
             - href: labs/regression-discontinuity-foundations-lab.qmd
               text: Sharp RD Foundations (R)
             - href: labs/regression-discontinuity-diagnostics-lab.qmd
@@ -233,6 +241,8 @@ website:
               text: Interrupted Time Series Slides
             - href: slides/its_script.qmd
               text: ITS Presenter Notes
+            - href: labs/interrupted-time-series-methods-report.qmd
+              text: ITS Methods Report
             - href: labs/interrupted-time-series-mechanics-lab.qmd
               text: ITS Foundations With Seatbelts
             - href: labs/interrupted-time-series-design-diagnostics-lab.qmd

@@ -17,6 +17,8 @@ Teaching decks, presenter notes, and applied exercises grouped by method. Work f
 
 ## Matching {#matching-labs .directory-heading}
 
+<p class="section-intro">Start with the design and core report, then compare overlap, balance, and treatment effects across practical cases.</p>
+
 ::: {.resource-list}
 ::: {.resource-row}
 ::: {.resource-summary}
@@ -47,6 +49,8 @@ Confounding, comparability, and design: the introductory teaching sequence for m
 ::: {.resource-body}
 
 Long-form reference report on exact matching, `CEM`, and entropy balancing before you move into the shorter worksheet labs.
+
+[Read report](matching-methods-report.qmd) · [PDF](matching-methods-report.pdf)
 :::
 :::
 
@@ -110,11 +114,12 @@ Use this when you want a more open-ended practice page.
 :::
 :::
 
+::: {.resource-links}
+[Method notes](../notes/matching/matching-and-weighting.qmd)
+[Data and offline setup](data.qmd)
+:::
+
 ## Difference-in-Differences {#difference-in-differences-labs .directory-heading}
-
-[Practical R guide](../notes/did/how-to-do-difference-in-differences.qmd)
-
-[Environment setup and verified outputs](difference-in-differences-reproducibility.qmd) · [Applications and data](../notes/did/difference-in-differences-applications.qmd)
 
 <p class="section-intro">Move from a transparent 2×2 contrast to staggered-adoption diagnostics, explicit group-time effects, and sensitivity analysis.</p>
 
@@ -135,6 +140,20 @@ A 22-slide introduction from the canonical four-cell contrast to staggered adopt
 [Accessible slides page](../slides/did.qmd)
 [Presenter notes](../slides/did_script.qmd)
 :::
+:::
+:::
+
+::: {.resource-row}
+::: {.resource-summary}
+<span class="resource-meta">Core report</span>
+
+### [Difference-in-Differences Methods Report](difference-in-differences-methods-report.qmd)
+:::
+
+::: {.resource-body}
+Parallel trends, a worked Kentucky comparison, group-time effects, aggregation, and inference with bundled R examples.
+
+[Read report](difference-in-differences-methods-report.qmd) · [PDF](difference-in-differences-methods-report.pdf)
 :::
 :::
 
@@ -187,15 +206,50 @@ Estimate and aggregate group-time effects with `did`, compare control groups and
 :::
 :::
 
+::: {.resource-links}
+[Practical R guide](../notes/did/how-to-do-difference-in-differences.qmd)
+[Environment setup and verified outputs](difference-in-differences-reproducibility.qmd)
+[Applications and data](../notes/did/difference-in-differences-applications.qmd)
+:::
+
 ## Regression Discontinuity {#regression-discontinuity-labs .directory-heading}
-
-[Practical R guide](../notes/rdd/how-to-do-regression-discontinuity.qmd)
-
-[Environment setup and verified outputs](regression-discontinuity-reproducibility.qmd) · [RDD notes](../notes/other-methods/regression-discontinuity.qmd)
 
 <p class="section-intro">Work through government transfers and veteran status to connect cutoff designs, diagnostic evidence and local causal claims.</p>
 
 ::: {.resource-list}
+::: {.resource-row}
+::: {.resource-summary}
+<span class="resource-meta">Teaching deck · 45–60 minutes</span>
+
+### Regression Discontinuity
+:::
+
+::: {.resource-body}
+Assignment rules, sharp local comparisons, bias-aware inference, diagnostics, and fuzzy RD, with a technical appendix.
+
+[Open RevealJS deck](../slides/rdd-revealjs.html){.resource-primary}
+
+::: {.resource-links}
+[Accessible slides page](../slides/rdd.qmd)
+[Presenter notes](../slides/rdd_script.qmd)
+:::
+:::
+:::
+
+::: {.resource-row}
+::: {.resource-summary}
+<span class="resource-meta">Core report</span>
+
+### [Regression Discontinuity Methods Report](regression-discontinuity-methods-report.qmd)
+:::
+
+::: {.resource-body}
+Continuity, local estimation, robust inference, sensitivity, and a fuzzy extension using the PANES and veteran-status cases.
+
+[Read report](regression-discontinuity-methods-report.qmd) · [PDF](regression-discontinuity-methods-report.pdf)
+:::
+:::
+
 ::: {.resource-row}
 ::: {.resource-summary}
 <span class="resource-meta">Introductory · 45–60 minutes</span>
@@ -206,8 +260,6 @@ Estimate and aggregate group-time effects with `did`, compare control groups and
 ::: {.resource-body}
 
 Audit transfer assignment, fit separate local lines, and interpret the correctly signed effect on government support.
-
-[R lab](regression-discontinuity-foundations-lab.qmd)
 
 [Quarto](downloads/regression-discontinuity-foundations-lab.qmd){download="regression-discontinuity-foundations-lab.qmd"} · [R notebook](notebooks/regression-discontinuity-foundations-lab.ipynb){download="regression-discontinuity-foundations-lab.ipynb"} · [Complete ZIP](downloads/regression-discontinuity-foundations-lab.zip){download="regression-discontinuity-foundations-lab.zip"} · [Data](data.qmd#regression-discontinuity-foundations-lab)
 :::
@@ -224,8 +276,6 @@ Audit transfer assignment, fit separate local lines, and interpret the correctly
 
 Examine score density, observed covariates, placebo cutoffs, bandwidths, polynomial orders and donut exclusions.
 
-[R lab](regression-discontinuity-diagnostics-lab.qmd)
-
 [Quarto](downloads/regression-discontinuity-diagnostics-lab.qmd){download="regression-discontinuity-diagnostics-lab.qmd"} · [R notebook](notebooks/regression-discontinuity-diagnostics-lab.ipynb){download="regression-discontinuity-diagnostics-lab.ipynb"} · [Complete ZIP](downloads/regression-discontinuity-diagnostics-lab.zip){download="regression-discontinuity-diagnostics-lab.zip"} · [Data](data.qmd#regression-discontinuity-diagnostics-lab)
 :::
 :::
@@ -241,12 +291,16 @@ Examine score density, observed covariates, placebo cutoffs, bandwidths, polynom
 
 Connect veteran-status and home-ownership jumps to a matched local IV estimate, then assess exclusion and coarse quarterly support.
 
-[R lab](regression-discontinuity-fuzzy-lab.qmd)
-
 [Quarto](downloads/regression-discontinuity-fuzzy-lab.qmd){download="regression-discontinuity-fuzzy-lab.qmd"} · [R notebook](notebooks/regression-discontinuity-fuzzy-lab.ipynb){download="regression-discontinuity-fuzzy-lab.ipynb"} · [Complete ZIP](downloads/regression-discontinuity-fuzzy-lab.zip){download="regression-discontinuity-fuzzy-lab.zip"} · [Data](data.qmd#regression-discontinuity-fuzzy-lab)
 :::
 :::
 
+:::
+
+::: {.resource-links}
+[Practical R guide](../notes/rdd/how-to-do-regression-discontinuity.qmd)
+[Environment setup and verified outputs](regression-discontinuity-reproducibility.qmd)
+[Method notes](../notes/other-methods/regression-discontinuity.qmd)
 :::
 
 ## Synthetic Control {#scm-labs .directory-heading}
@@ -283,6 +337,8 @@ Design-first causal comparison for aggregate interventions, from donor selection
 ::: {.resource-body}
 
 Long-form reference report on donor-pool design, pre-treatment fit, placebo logic, and when to move beyond classical SCM.
+
+[Read report](synthetic-control-methods-report.qmd) · [PDF](synthetic-control-methods-report.pdf)
 :::
 :::
 
@@ -361,9 +417,12 @@ Use this when the main bottleneck is screening and defending the donor pool.
 :::
 :::
 
-## Interrupted Time Series {#interrupted-time-series-labs .directory-heading}
+::: {.resource-links}
+[Method notes](../notes/scm/synthetic-control.qmd)
+[Data and offline setup](data.qmd)
+:::
 
-[Practical R guide](../notes/other-methods/how-to-do-interrupted-time-series.qmd)
+## Interrupted Time Series {#interrupted-time-series-labs .directory-heading}
 
 <p class="section-intro">Use a real seatbelt-law case for the foundations and design choices, then validate untreated forecasts in a compact known-truth exercise.</p>
 
@@ -384,6 +443,20 @@ The Great Britain seatbelt law connects segmented regression, outcome comparison
 [Accessible slides page](../slides/its.qmd)
 [Presenter notes](../slides/its_script.qmd)
 :::
+:::
+:::
+
+::: {.resource-row}
+::: {.resource-summary}
+<span class="resource-meta">Core report</span>
+
+### [Interrupted Time Series Methods Report](interrupted-time-series-methods-report.qmd)
+:::
+
+::: {.resource-body}
+Intervention timing, segmented regression, serial dependence, horizon effects, and the limits of a model-based counterfactual, worked through with Seatbelts.
+
+[Read report](interrupted-time-series-methods-report.qmd) · [PDF](interrupted-time-series-methods-report.pdf)
 :::
 :::
 
@@ -431,6 +504,12 @@ Compare three untreated forecasting models on identical held-out origins, preser
 [Quarto](downloads/interrupted-time-series-counterfactual-validation-lab.qmd){download="interrupted-time-series-counterfactual-validation-lab.qmd"} · [R notebook](notebooks/interrupted-time-series-counterfactual-validation-lab.ipynb){download="interrupted-time-series-counterfactual-validation-lab.ipynb"} · [Complete ZIP](downloads/interrupted-time-series-counterfactual-validation-lab.zip){download="interrupted-time-series-counterfactual-validation-lab.zip"} · [Data](data.qmd#interrupted-time-series-counterfactual-validation-lab)
 :::
 :::
+:::
+
+::: {.resource-links}
+[Practical R guide](../notes/other-methods/how-to-do-interrupted-time-series.qmd)
+[Method notes](../notes/other-methods/interrupted-time-series.qmd)
+[Data and offline setup](data.qmd)
 :::
 
 <div class="working-rule">

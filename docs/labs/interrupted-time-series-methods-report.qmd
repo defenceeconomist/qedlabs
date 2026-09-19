@@ -1,0 +1,259 @@
+---
+title: "Interrupted Time Series for Causal Inference"
+subtitle: "Intervention timing, counterfactual trends, and serial dependence"
+author: "Luke Heley"
+date: 19 September 2026
+format:
+  html:
+    toc: true
+    number-sections: true
+  pdf:
+    toc: true
+    number-sections: true
+    keep-tex: false
+execute:
+  echo: true
+  warning: false
+  message: false
+  fig-width: 7
+  fig-height: 4
+---
+
+## Executive summary
+
+Interrupted time series (ITS) evaluates a change in an outcome's trajectory at a
+known intervention date. Its counterfactual comes from a model of how the outcome
+would have evolved without intervention. Repeated observations make trend and
+seasonality visible, but they do not create an untreated population. A concurrent
+shock can produce precisely the same break as the policy being evaluated.
+
+This report develops the design before the regression. It uses monthly British
+road-casualty data to connect intervention coding, a segmented log model, serial
+dependence, and effects at decision-relevant horizons. The worked example is
+reproducible with repository data and is deliberately cautious about attributing
+the observed change solely to seatbelt legislation [@lopezbernal2017tutorial;
+@harvey1986seatbelts].
+
+## Design and estimand
+
+### Define the intervention and outcome
+
+Write down the announcement, implementation, enforcement, and expected behavioral
+response dates. Distinguish an abrupt policy from a rollout. Specify the population,
+measurement interval, outcome scale, and the horizon over which an effect matters.
+A change in counts, a change in rates, and a change in log counts are different
+estimands. The denominator must be chosen on substantive grounds.
+
+The front-seat belt requirement took effect on 31 January 1983. With monthly data,
+February is the first treated observation. The outcome here is front-seat
+passengers killed or seriously injured, not deaths alone and not a rate per mile.
+There are 169 pre-policy and 23 post-policy months. The long baseline helps study
+seasonality, while the short post-period limits information about a new trend
+[@rseatbeltsdata; @ukparliament1986seatbeltdebate].
+
+### State the missing comparison
+
+For time $t$ after intervention, the causal contrast is
+$E[Y_t(1)-Y_t(0)]$. Only $Y_t(1)$ is observed. Identification requires that the
+model for the untreated path remains appropriate after implementation. Relevant
+threats include concurrent interventions, changing exposure, altered recording,
+anticipation, and an unstable pre-policy process.
+
+Unlike DiD, a single-series ITS does not borrow a contemporaneous untreated trend.
+Unlike SCM, it does not construct a weighted donor comparison. This makes ITS
+useful when no credible untreated population exists, but also places more weight
+on the time-series counterfactual. More frequent observations improve temporal
+resolution; they do not remove confounding at the intervention date.
+
+## A reproducible Seatbelts analysis
+
+The [data catalogue](data.qmd#seatbelts) records the bundled snapshot. Packages must
+already be installed; this report performs no installation or data download.
+
+```{r}
+source("data/load-data.R")
+library(ggplot2)
+library(nlme)
+d <- as.data.frame(qed_data("Seatbelts"))
+d$date <- seq(as.Date("1969-01-01"), by="month", length.out=nrow(d))
+d$index <- seq_len(nrow(d))
+first <- which(d$law == 1)[1]
+d$time <- d$index - first
+d$post_time <- pmax(0, d$time)
+d$season_sin <- sin(2*pi*d$index/12)
+d$season_cos <- cos(2*pi*d$index/12)
+d$log_front <- log(d$front)
+stopifnot(nrow(d) == 192, all(d$front > 0),
+          d$date[first] == as.Date("1983-02-01"),
+          sum(d$law == 0) == 169, sum(d$law == 1) == 23)
+knitr::kable(d[(first-2):(first+2),
+               c("date", "time", "law", "post_time")])
+```
+
+```{r}
+#| fig-cap: "Monthly front-seat casualties, with the first treated month marked."
+#| fig-alt: "Monthly casualty counts from 1969 to 1984, with February 1983 marked by a vertical line."
+ggplot(d, aes(date, front)) +
+  geom_line(color="#245ca4", linewidth=0.5) +
+  geom_vline(xintercept=as.Date("1983-02-01"), linetype=2) +
+  labs(x=NULL, y="Front-seat passengers killed or seriously injured") +
+  theme_minimal(base_size=11)
+```
+
+Inspect missing periods, outliers, seasonality, and recording breaks before fitting
+the intervention model. Changes in driving exposure can change casualties without
+changing risk. Contemporaneous kilometres might be a confounder, a mediator, or
+part of the effect of interest; including them is not automatically an improvement.
+
+### Encode the intervention
+
+Let $t=0$ identify the first treated month, $D_t$ indicate treatment, and
+$P_t=\max(0,t)$. A segmented model is
+
+$$
+\log Y_t=\beta_0+\beta_1t+\beta_2D_t+\beta_3P_t
+ +\gamma_1\sin(2\pi m_t/12)+\gamma_2\cos(2\pi m_t/12)+\epsilon_t.
+$$
+
+The immediate log-level contrast is $\beta_2$; the change in monthly log slope is
+$\beta_3$; the post-policy slope is $\beta_1+\beta_3$. Starting post-time at one
+instead of zero changes the interpretation of the level coefficient. Check the
+actual rows around implementation [@wagner2002segmented; @xiao2021parameterization].
+
+```{r}
+spec <- log_front ~ time + law + post_time + season_sin + season_cos
+ols <- lm(spec, data=d)
+fit <- gls(spec, data=d, correlation=corAR1(form=~index), method="REML")
+knitr::kable(summary(fit)$tTable, digits=4)
+```
+
+The annual harmonic models a smooth seasonal cycle. AR(1) models residual
+dependence that decays geometrically with elapsed months. They solve different
+problems. GLS changes estimation and uncertainty, not the causal identification
+assumption. A misspecified trend can also appear as autocorrelated noise.
+
+```{r}
+#| fig-cap: "Residual dependence before and after the working AR(1) model."
+#| fig-alt: "Two residual autocorrelation plots compare OLS with normalized GLS residuals."
+par(mfrow=c(1, 2))
+acf(residuals(ols), main="OLS residuals")
+acf(residuals(fit, type="normalized"), main="Normalized GLS residuals")
+par(mfrow=c(1, 1))
+```
+
+### Report contrasts at named horizons
+
+At horizon $h$, the contrast is $\delta_h=\beta_2+h\beta_3$. Its variance is
+$V_{22}+2hV_{23}+h^2V_{33}$. Omitting the covariance term can materially misstate
+uncertainty. The horizons below are within the observed post-policy period.
+
+```{r}
+contrast <- function(model, h) {
+  b <- coef(model)
+  L <- setNames(rep(0, length(b)), names(b))
+  L["law"] <- 1
+  if ("post_time" %in% names(b)) L["post_time"] <- h
+  delta <- sum(L*b)
+  se <- sqrt(drop(t(L) %*% vcov(model) %*% L))
+  data.frame(month=h, log_effect=delta, percent=100*expm1(delta),
+             lower=100*expm1(delta-1.96*se),
+             upper=100*expm1(delta+1.96*se))
+}
+effects <- do.call(rbind, lapply(c(0, 6, 12), function(h) contrast(fit, h)))
+knitr::kable(effects, digits=3)
+```
+
+These are approximate model-based 95% intervals. The transformation describes a
+percentage contrast on the exponentiated expected-log scale, not automatically
+a percentage effect on arithmetic mean casualties. An injuries-prevented total
+requires an explicit retransformation and aggregation argument.
+
+### Show the counterfactual
+
+```{r}
+#| fig-cap: "The jointly fitted intervention path and the same fit with intervention terms switched off."
+#| fig-alt: "Observed log casualties and fitted paths with and without the intervention terms."
+untreated <- d
+untreated$law <- 0
+untreated$post_time <- 0
+d$fitted <- as.numeric(predict(fit))
+d$counterfactual <- as.numeric(predict(fit, newdata=untreated))
+ggplot(d, aes(date, log_front)) +
+  geom_line(color="grey65", linewidth=0.4) +
+  geom_line(aes(y=fitted, color="Segmented fit"), linewidth=0.7) +
+  geom_line(aes(y=counterfactual, color="No intervention terms"),
+            linewidth=0.7, linetype=2) +
+  scale_color_manual(values=c("No intervention terms"="#177b72",
+                             "Segmented fit"="#245ca4")) +
+  labs(x=NULL, y="Log front-seat casualties", color=NULL) +
+  theme_minimal(base_size=11) + theme(legend.position="bottom")
+```
+
+This is a model fitted to the whole series, with intervention terms removed for
+prediction. It is not a forecast estimated only before the policy. For forecasting,
+reserve untreated validation windows, compare models at common rolling origins,
+and avoid using treated outcomes to select the untreated model. Good historical
+forecast accuracy still cannot rule out a new concurrent cause after implementation.
+
+## Sensitivity and extensions
+
+Compare effect shapes and seasonal specifications because they express competing
+scientific assumptions. Use ML, not REML likelihoods, when comparing different
+fixed-effect formulas. Keep the outcome, sample, and horizon fixed where possible.
+
+```{r}
+d$month <- factor(format(d$date, "%m"))
+models <- list(
+  "Level only"=gls(log_front ~ time + law + season_sin + season_cos,
+    data=d, correlation=corAR1(form=~index), method="ML"),
+  "Level and slope"=update(fit, method="ML"),
+  "Month indicators"=gls(log_front ~ time + law + post_time + month,
+    data=d, correlation=corAR1(form=~index), method="ML"))
+sensitivity <- do.call(rbind, lapply(names(models), function(name) {
+  cbind(model=name, contrast(models[[name]], 12))
+}))
+knitr::kable(sensitivity[c("model", "percent", "lower", "upper")], digits=2)
+```
+
+Also examine defensible pre-period lengths, implementation lags, exposure-adjusted
+outcomes, and influential months. Report changes in the estimate rather than
+selecting only the most reassuring specification. A placebo interruption tests
+whether similar apparent breaks arise without the policy; searching many dates
+and reporting only favorable results defeats that purpose.
+
+A controlled ITS adds a contemporaneous series to help account for common shocks.
+The comparison needs a credible untreated relationship with the target outcome
+and must not itself be affected by the intervention. Rear-seat passengers and van
+drivers are not automatically valid controls for a seatbelt policy. Spillovers,
+different exposure trends, and concurrent road-safety measures require substantive
+assessment [@lopezbernal2018controls]. Count models, offsets, richer seasonal
+structure, and dynamic intervention models can be useful when their estimands
+and assumptions fit the question; extra flexibility does not replace a control.
+
+## Interpretation and reporting
+
+The analysis estimates a trajectory change conditional on the specified time
+process. Concurrent drink-driving enforcement and other road-safety changes limit
+attribution to the belt requirement alone. Do not convert a significant model
+contrast into a uniquely identified policy effect, or an imprecise slope change
+into proof of no effect.
+
+Report the intervention timeline, outcome and exposure, 169/23 observation split,
+effect shape, seasonal and error specifications, horizon contrasts and intervals,
+residual checks, sensitivity, and strongest remaining alternative explanation.
+Separate sampling/model uncertainty from uncertainty about the counterfactual.
+When the latter is decisive, recommend a more credible comparison or a bounded
+descriptive conclusion rather than another estimator.
+
+## Teaching route
+
+- [Teaching deck](../slides/its.qmd) and [presenter notes](../slides/its_script.qmd).
+- [Practical R guide](../notes/other-methods/how-to-do-interrupted-time-series.qmd) for a shorter procedural walkthrough.
+- [Foundations lab](interrupted-time-series-mechanics-lab.qmd) for coding and contrasts.
+- [Design and robustness lab](interrupted-time-series-design-diagnostics-lab.qmd) for outcomes, controls, and attribution.
+- [Counterfactual validation lab](interrupted-time-series-counterfactual-validation-lab.qmd) for untreated rolling-origin forecasts.
+
+Each lab supplies Quarto, an R Jupyter notebook, and an offline bundle through the
+[Labs directory](index.qmd#interrupted-time-series-labs).
+
+## References

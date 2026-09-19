@@ -3,7 +3,7 @@
 A Quarto academic reference with two main sections:
 
 - **Notes:** method overviews, practical R guides, and source-based reading.
-- **Labs:** 18 R labs and worksheets, with teaching decks and presenter notes grouped by method.
+- **Labs:** 18 R labs and worksheets, with five core reports, teaching decks, and presenter notes grouped by method.
 
 The practical guides cover interrupted time series, difference-in-differences,
 and sharp/fuzzy regression discontinuity. Existing slide URLs remain under
@@ -50,7 +50,9 @@ python3 docs/scripts/test_validate_bibliography.py
 python3 docs/scripts/validate_offline_labs.py --execute --render
 python3 docs/scripts/validate_did_labs.py
 python3 docs/scripts/validate_rdd_labs.py
+Rscript docs/scripts/validate_method_reports.R
 quarto render docs
+python3 docs/scripts/validate_site.py
 ```
 
 Pandoc is required for structured citation conversion. The scripts use Quarto's
@@ -59,6 +61,14 @@ executes extracted bundles in fresh R kernels and retains logs under the ignored
 `.qedlabs-validation/` directory. The CI execution step uses a network namespace
 with only loopback available. Numerical baselines preserve the original verified
 results; tests do not refresh them automatically.
+
+The ITS, DiD, and RDD core reports render to HTML and PDF. Their executable
+examples are checked against the existing practical guides by
+`validate_method_reports.R`, which also runs in CI's network-disabled step.
+They are reference reports, not additional notebook labs. RDD slide figures are
+generated from bundled data with `Rscript docs/scripts/generate_rdd_slide_assets.R`.
+Regenerate and inspect those four assets when changing the associated examples;
+site rendering does not regenerate slide assets automatically.
 
 Data snapshots are not regenerated during builds. To deliberately update them,
 prepare the pinned source files and package versions, run

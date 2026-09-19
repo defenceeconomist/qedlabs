@@ -107,6 +107,7 @@ jobs:
             python docs/scripts/validate_offline_labs.py --execute --render
             python docs/scripts/validate_did_labs.py
             python docs/scripts/validate_rdd_labs.py
+            Rscript docs/scripts/validate_method_reports.R
           '
 
       - name: Check bibliography and citations

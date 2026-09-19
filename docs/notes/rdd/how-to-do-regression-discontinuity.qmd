@@ -20,6 +20,8 @@ extension. It assumes basic regression and R. Every example uses
 execution. The [sharp RD lab](../../labs/regression-discontinuity-foundations-lab.qmd)
 provides the companion Quarto document, R notebook and offline ZIP.
 
+For the longer design reference, see the [RDD methods report](../../labs/regression-discontinuity-methods-report.qmd), also available as PDF.
+
 ## 1. Establish the assignment mechanism
 
 Identify the running variable, cutoff, eligibility rule, actual treatment receipt,

@@ -20,6 +20,8 @@ examples use [bundled local data](../../labs/data.qmd), not runtime downloads.
 Use the [foundations lab](../../labs/difference-in-differences-foundations-lab.qmd)
 for a downloadable Quarto document, R notebook, and complete offline bundle.
 
+For the longer design reference, see the [DiD methods report](../../labs/difference-in-differences-methods-report.qmd), also available as PDF.
+
 ## 1. Start with assignment and the target effect
 
 Write down who becomes exposed, when exposure starts, what comparison units remain

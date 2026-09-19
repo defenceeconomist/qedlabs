@@ -1,0 +1,170 @@
+---
+title: "Regression Discontinuity Presenter Script"
+subtitle: "Delivery notes, discussion prompts, and transitions"
+author: "Luke Heley"
+date: 19 September 2026
+format:
+  html:
+    toc: true
+---
+
+## Delivery guide
+
+This script accompanies the [RDD deck](rdd.qmd) and its
+[RevealJS version](rdd-revealjs.html). Allow 45-60 minutes for the cover and 21
+main content slides, with two optional appendix slides and references. Learners
+should know basic regression. The three R labs are separate practical sessions.
+The [core report](../labs/regression-discontinuity-methods-report.qmd) supplies
+the executable calculations and a longer account of assumptions.
+
+## Main sequence
+
+### Cover: Regression Discontinuity
+
+Introduce the question: when can an administrative threshold provide a causal
+comparison? Ask learners to keep one eligibility rule in mind throughout.
+
+### 1. The rule creates the comparison
+
+Allow 2 minutes. Elicit an actual rule and identify its score. Explain that RD
+starts with institutional knowledge rather than an outcome plot. The end goal is
+a local causal claim with a defensible interpretation [@gertler2016ch6rdd].
+
+### 2. Write down the assignment mechanism
+
+Allow 2 minutes. Separate score measurement, eligibility, receipt, and outcome.
+Ask whether a revised score could differ from the one used to assign treatment.
+Ask what other benefits use the same threshold.
+
+### 3. Sharp and fuzzy designs answer different questions
+
+Allow 2 minutes. A sharp design determines receipt; a fuzzy design changes receipt
+probability. The latter requires an IV argument, not just a rescaled sharp label.
+Defer the ratio until participants understand the sharp comparison.
+
+### 4. PANES provides a sharp teaching case
+
+Allow 2 minutes. Explain the 1,948-observation outcome sample and the three-valued
+support measure. Clarify that this is a programme package and a teaching snapshot,
+not an isolated cash-payment effect or a full replication [@manacorda2011transfers].
+
+### 5. Treatment is on the left
+
+Allow 2 minutes. Have learners predict the sign of a right-minus-left coefficient
+if treatment raises support. Resolve the sign convention before introducing any
+estimated effects. Ask how the interval must transform too.
+
+### 6. Continuity supplies the missing outcome
+
+Allow 3 minutes. Discuss a coincident policy, precise sorting, and outcome selection
+as different threats. Continuity permits slopes and levels to vary away from the
+cutoff. Neither sample size nor significance proves it [@cunningham2021rdd].
+
+### 7. The effect is local
+
+Allow 2 minutes. Read the two limits, then reverse their order for left-side
+treatment. Ask whether an effect near eligibility can represent all programme
+participants. Distinguish identification from external validity.
+
+### 8. Plot the score before choosing a model
+
+Allow 2 minutes. Identify bins, the true cutoff, and the shorter fitted window.
+Explain why bin width is not regression bandwidth and why bins must not span the
+threshold. A high-order curve is not evidence of a better design.
+
+### 9. A local line makes the jump inspectable
+
+Allow 3 minutes. Set score to zero in the formula to recover the intercept jump.
+Explain triangular weights and separate slopes. The h=0.01 calculation uses 537
+left and 400 right observations and agrees with the foundations lab.
+
+### 10. Bandwidth trades approximation against information
+
+Allow 2 minutes. Ask what is lost by narrowing and widening the window. Automatic
+selection optimizes a statistical criterion, not assignment validity. Distinct
+nearby scores are important even when the number of people is large.
+
+### 11. Bias-aware inference changes what is reported
+
+Allow 3 minutes. Explain the difference between the +0.0335 conventional estimate
+and -0.0416 corrected estimate. The robust interval is for the bias-aware procedure.
+Do not choose a sign or report percentage points for the nonbinary support score.
+
+### 12. Sensitivity belongs beside the estimate
+
+Allow 2 minutes. Compare rows as different local approximations, not competing
+significance tests. Both h and b change together in this figure. The responsible
+conclusion is local and imprecise under these specifications.
+
+### 13. Density evidence needs the right sample
+
+Allow 2 minutes. Explain the separate 52,549-score file and the 20,463 near-cutoff
+observations. Ask how outcome-survey selection could distort a density test.
+Non-rejection is not proof of no sorting.
+
+### 14. Covariate checks require a timeline
+
+Allow 2 minutes. The timing of Age and Education is not established as pre-treatment.
+Education has 51 missing values. Use variable-specific samples and avoid describing
+post-treatment or uncertain-timing variables as baseline balance.
+
+### 15. Placebos and donuts test specific concerns
+
+Allow 2 minutes. Give a placebo at 0.01 with h=b=0.004 as a same-regime example.
+A donut removes the closest comparisons and increases reliance on extrapolation.
+Require a substantive reason for each check rather than a checklist of p-values.
+
+### 16. Fuzzy RD uses two discontinuities
+
+Allow 2 minutes. Introduce the separate veteran-status application and its binary
+homeownership outcome. The first stage falls from left to right. Point out the
+discrete quarter support in the plot [@fetter2013mortgages].
+
+### 17. The local Wald ratio connects outcome and receipt
+
+Allow 3 minutes. Divide both right-minus-left jumps using identical weights and
+samples. The conventional estimate is approximately 18.63 percentage points.
+Explain that reversing only one jump gives the wrong sign; ordinary regression
+on fitted treatment does not supply valid IV standard errors.
+
+### 18. Fuzzy identification adds assumptions
+
+Allow 3 minutes. Ask for a non-mortgage pathway from veteran status to homeownership
+to motivate exclusion. Define local compliers and direction-consistent monotonicity.
+The code's minimum first-stage magnitude is a numerical guard, not an inferential
+weak-instrument test [@huntingtonklein2025rdd].
+
+### 19. Many people do not create continuous support
+
+Allow 2 minutes. Contrast 56,901 records with only 12 distinct quarters on each
+side. More records at a score do not create values nearer zero. Do not apply a
+continuous density test or assume quarter clustering repairs extrapolation bias.
+
+### 20. Report the design and its limits
+
+Allow 2 minutes. Ask learners for a short conclusion that states the local
+population, effect and uncertainty, and one unresolved threat. A bounded claim
+is more informative than a programme-wide interpretation the data cannot support.
+
+### 21. Three R labs continue the sequence
+
+Allow 1 minute. Direct learners to sharp foundations first, diagnostics second,
+and fuzzy RD last. Each has Quarto, an R Jupyter notebook, local data, and a ZIP.
+Ask for a written design assessment before interpreting the regression output.
+
+## Optional appendix
+
+The first appendix distinguishes estimation and bias bandwidths and explains why
+both appear in the report. The second distinguishes the conventional fuzzy ratio
+from the corrected effect and robust interval. Keep the coarse-support limitation
+visible even when the interval excludes zero.
+
+## Discussion answers
+
+- A threshold can identify the effect of a package when several services change together; it cannot isolate each component without more information.
+- An insignificant density or covariate test is compatible with limited power and does not establish continuity.
+- A donut can address a specific data concern but changes the information used to extrapolate to the cutoff.
+- A fuzzy estimate concerns local compliers under additional IV assumptions, not every participant.
+- An apparently precise result can still have an implausible assignment argument or insufficiently dense score support.
+
+## References

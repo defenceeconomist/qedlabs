@@ -21,6 +21,8 @@ regression and R data frames are assumed. All data come from the repository's
 below are computed from that snapshot. For downloadable exercises, start with
 the [mechanics lab](../../labs/interrupted-time-series-mechanics-lab.qmd).
 
+For the longer design reference, see the [ITS methods report](../../labs/interrupted-time-series-methods-report.qmd), also available as PDF.
+
 ## 1. Decide whether the design fits the question
 
 Write a short design statement before choosing a model. Specify the population,

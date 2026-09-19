@@ -1,0 +1,261 @@
+---
+title: "Difference-in-Differences for Causal Inference"
+subtitle: "Parallel trends, comparison groups, and heterogeneous treatment timing"
+author: "Luke Heley"
+date: 19 September 2026
+format:
+  html:
+    toc: true
+    number-sections: true
+  pdf:
+    toc: true
+    number-sections: true
+execute:
+  echo: true
+  warning: false
+  message: false
+  fig-width: 7
+  fig-height: 4
+---
+
+## Executive summary
+
+Difference-in-differences (DiD) compares an exposed group's change with a credible
+unexposed group's change. It allows baseline differences in outcome levels, but
+requires an argument about the exposed group's unobserved untreated trend. A
+regression interaction implements the contrast; it cannot establish that argument.
+
+This report starts with Kentucky workers' compensation, where the four cell means
+make the comparison transparent. It then uses a bundled minimum-wage teaching
+panel to show why staggered adoption requires explicit cohort-time effects and
+aggregation. The goal is a defensible comparison, not agreement among package
+outputs [@gertler2016ch7did; @roth2023trending].
+
+## Design and target effect
+
+### Specify who changes treatment and when
+
+Define the policy, eligibility, exposure date, outcome scale, target population,
+and comparison group before looking at estimates. Distinguish policy adoption
+from announcement, implementation, and behavioral response. Audit anticipation,
+spillovers, repeated treatment, reversals, and policy co-adoption.
+
+In the Kentucky example, a 1980 increase in the benefit cap affected high earners
+differently from low earners. The outcome is log weeks receiving benefits. The
+observations are claims before and after the reform, not a panel of the same
+claimants. Changes in who claims, injury severity, or industry composition can
+therefore alter the comparison [@meyer1995workerscomp].
+
+### Identify the counterfactual change
+
+Let $G=1$ denote the exposed group and $t=1$ the post-period. The target is
+$ATT=E[Y_1(1)-Y_1(0)\mid G=1]$. With no anticipation, parallel untreated trends
+requires
+
+$$
+E[Y_1(0)-Y_0(0)\mid G=1]
+=E[Y_1(0)-Y_0(0)\mid G=0].
+$$
+
+Consistency, no relevant interference, and comparable population measurement are
+also needed. The assumption is about untreated potential outcomes, not equality
+of observed post-policy trends. Baseline levels may differ. Parallel trends in
+levels need not imply parallel trends in logs, so the outcome scale is part of
+the identifying claim.
+
+Relative to matching, DiD can accommodate time-invariant differences associated
+with outcome levels, but not arbitrary group-specific shocks. Relative to ITS,
+it borrows a contemporaneous comparison trend rather than projecting only the
+treated series. A poor comparison group is not repaired by adding fixed effects.
+
+## Kentucky: a transparent four-cell analysis
+
+The [data catalogue](data.qmd#injury) documents the local snapshot. Execution assumes
+the R packages are installed and never downloads data or installs software.
+
+```{r}
+source("data/load-data.R")
+library(ggplot2)
+library(did)
+ky <- subset(qed_data("injury"), ky == 1)
+stopifnot(nrow(ky) == 5626, all(ky$durat > 0),
+          !anyNA(ky[c("ldurat", "highearn", "afchnge")]))
+means <- with(ky, tapply(ldurat, list(high=highearn, after=afchnge), mean))
+counts <- with(ky, table(high=highearn, after=afchnge))
+knitr::kable(means, digits=4, caption="Mean log benefit duration")
+knitr::kable(counts, caption="Claims in each group-period cell")
+```
+
+Every cell must represent a substantively comparable population. Record exclusions
+and changes in composition rather than letting complete-case regression define
+the sample silently. Repeated cross-sections require stable population definitions;
+panel data instead introduce concerns about attrition and individual histories.
+
+### Calculate and recover the contrast
+
+$$
+\widehat{ATT}=(\bar Y_{1,1}-\bar Y_{1,0})
+             -(\bar Y_{0,1}-\bar Y_{0,0}).
+$$
+
+```{r}
+comparison_change <- means["0", "1"] - means["0", "0"]
+counterfactual <- means["1", "0"] + comparison_change
+manual <- means["1", "1"] - counterfactual
+model <- lm(ldurat ~ highearn * afchnge, data=ky)
+interaction <- unname(coef(model)["highearn:afchnge"])
+stopifnot(abs(manual-interaction) < 1e-10,
+          abs(manual-0.1906012007) < 1e-8)
+knitr::kable(data.frame(manual, interaction,
+                        geometric_percent=100*expm1(manual)), digits=4)
+```
+
+The interaction in $Y=\alpha+\gamma G+\lambda Post+\tau(G\times Post)+u$
+reproduces the four-cell contrast. Algebraic equality checks coding; it does not
+validate parallel trends. The estimate is about 0.191 log points. Its exponential
+transformation is a contrast of geometric means, not automatically the percentage
+effect on arithmetic mean benefit duration.
+
+```{r}
+#| fig-cap: "The exposed group's counterfactual adds the low-earner change to its own baseline."
+#| fig-alt: "High- and low-earner mean log durations before and after reform, with the high-earner counterfactual shown by a dashed line."
+p <- aggregate(ldurat ~ afchnge + highearn, data=ky, FUN=mean)
+cf <- data.frame(afchnge=c(0,1), ldurat=c(means["1","0"], counterfactual))
+ggplot(p, aes(afchnge, ldurat, color=factor(highearn))) +
+  geom_line(linewidth=0.8) + geom_point(size=2) +
+  geom_line(data=cf, aes(afchnge, ldurat), inherit.aes=FALSE,
+            linetype=2, color="#177b72") +
+  scale_color_manual(values=c("#245ca4", "#177b72"),
+                     labels=c("Low earners", "High earners")) +
+  scale_x_continuous(breaks=c(0,1), labels=c("Before", "After")) +
+  labs(x=NULL, y="Mean log benefit duration", color=NULL) +
+  theme_minimal(base_size=11) + theme(legend.position="bottom")
+```
+
+### Separate estimation from inference
+
+Thousands of claims do not imply thousands of independently assigned policy
+changes. An individual-level regression standard error cannot manufacture policy
+replication. In richer applications, cluster at a level consistent with assignment
+and dependence, examine the number of independent clusters, and use a defensible
+small-sample strategy when clusters are few [@bertrand2004trustdid].
+
+This four-cell sample contains no multi-period pre-trend evidence. An honest
+interpretation is a conditional contrast accompanied by institutional arguments
+and composition checks, not a fully diagnosed causal conclusion. Baseline
+covariates may support conditional parallel trends if they are unaffected by
+treatment and have adequate overlap. Post-treatment adjustment can remove a
+mechanism or introduce selection bias [@santannazhao2020drdid].
+
+## Staggered adoption changes the comparison
+
+When cohorts adopt in different periods, a conventional two-way fixed-effects
+coefficient can compare newly treated units with already-treated units. If effects
+change with exposure duration or differ across cohorts, those comparisons can
+contaminate the intended policy average. Conventional event-study leads and lags
+can also mix heterogeneous effects [@goodmanbacon2021timing; @sunabraham2021dynamic].
+
+Define $ATT(g,t)=E[Y_t(g)-Y_t(0)\mid G=g]$ for cohort $g$ and calendar time $t$.
+Specify never-treated or not-yet-treated controls, an anticipation window, and the
+periods with actual comparison support. Treatment reversals or repeated doses need
+a method appropriate to those histories; an absorbing-treatment estimator is not
+automatically applicable.
+
+### Estimate group-time effects
+
+```{r}
+mpdta <- qed_data("mpdta")
+stopifnot(nrow(mpdta) == 2500,
+          length(unique(mpdta$countyreal)) == 500,
+          !anyDuplicated(mpdta[c("countyreal", "year")]))
+knitr::kable(with(mpdta, table(cohort=first.treat, year=year)))
+set.seed(20260809)
+att <- att_gt(yname="lemp", tname="year", idname="countyreal",
+  gname="first.treat", data=mpdta, xformla=~1,
+  control_group="nevertreated", anticipation=0,
+  base_period="universal", est_method="dr",
+  bstrap=TRUE, biters=499, cband=TRUE, clustervars="countyreal")
+overall <- aggte(att, type="simple")
+dynamic <- aggte(att, type="dynamic")
+stopifnot(abs(overall$overall.att-(-0.0399512752)) < 1e-8)
+knitr::kable(data.frame(ATT=overall$overall.att,
+                        SE=overall$overall.se), digits=4)
+```
+
+The panel contains 500 counties over five years. Zero in `first.treat` means
+never treated. The example uses log teen employment, never-treated controls,
+zero anticipation, and an unconditional specification. The universal base period
+normalizes contrasts to the final pre-treatment period. A doubly robust estimator
+name does not make the identifying assumptions true [@callaway2021multipletime].
+
+The seed and 499 bootstrap draws make this a reproducible classroom exercise.
+Investigate simulation stability for a substantive analysis. County clustering
+here is a teaching implementation, not a defense of county-level inference for
+a state-level policy without the appropriate assignment identifiers.
+
+### Aggregation is part of the estimand
+
+```{r}
+#| fig-cap: "Dynamic aggregation with simultaneous bands from the stated teaching specification."
+#| fig-alt: "Event-time treatment effects on log employment with simultaneous confidence bands."
+ggdid(dynamic) + labs(x="Years relative to treatment", y="ATT on log employment")
+```
+
+The simple aggregate is approximately -0.040 log points. Earlier cohorts can
+contribute more post-treatment cells, so it is not automatically an equally
+weighted average across cohorts or exposure durations. Dynamic aggregation groups
+effects by $e=t-g$. At longer horizons, fewer cohorts may contribute. A changing
+event-time profile can therefore reflect both dynamics and changing composition.
+State the weights, supported horizons, and any balanced-exposure restriction.
+
+## Diagnostics, sensitivity, and extensions
+
+Plot raw outcome paths and cohort sizes before adjusted event studies. Audit
+missingness, differential composition, anticipation, spillovers, and co-occurring
+policies. Compare eligible control definitions only when both are substantively
+defensible; a changed estimate can reflect a changed target or changed support.
+
+Pre-treatment coefficients can reveal some violations. Failure to reject does
+not establish parallel trends, especially with few pre-periods or low power.
+Choosing a model because it passes a pre-test also changes the inferential
+problem [@roth2022pretest]. Simultaneous bands address a collection of estimates;
+pointwise intervals answer a different coverage question.
+
+The diagnostics lab implements the Goodman-Bacon decomposition and a Sun-Abraham
+event study. The modern-estimators lab adds comparison-group choices and
+`HonestDiD` sensitivity to departures from parallel trends. Sensitivity restrictions
+must be explained in substantive units; they do not certify the design
+[@rambachanroth2023parallel]. Imputation estimators make the untreated outcome
+model explicit and offer another approach when their assumptions and treatment
+histories fit [@borusyak2024eventstudy].
+
+Do not rank methods by the smallest p-value. Explain which comparisons each uses,
+which population it represents, and which heterogeneity it accommodates. Agreement
+is useful as a coding check but does not rule out a shared identifying failure.
+
+## Reporting and limits
+
+Report the exposure rule, dates, outcome scale, population, comparison group,
+sample exclusions, anticipation assumptions, estimator, aggregation weights, and
+dependence model. Include raw paths, effect estimates and intervals, support at
+each horizon, diagnostic evidence, and sensitivity. Name the strongest plausible
+differential shock that the design cannot exclude.
+
+For Kentucky, foreground repeated cross-sections and absent multi-period pre-trend
+evidence. For the minimum-wage panel, foreground the teaching sample and inference
+limitations. Neither example should be described as a new full replication of
+the original policy study.
+
+## Teaching route
+
+- [Teaching deck](../slides/did.qmd) and [presenter notes](../slides/did_script.qmd).
+- [Practical R guide](../notes/did/how-to-do-difference-in-differences.qmd) for the shorter walkthrough.
+- [Foundations lab](difference-in-differences-foundations-lab.qmd) for the four-cell calculation and regression.
+- [Staggered diagnostics lab](difference-in-differences-staggered-diagnostics-lab.qmd) for comparison weights and event studies.
+- [Modern estimators lab](difference-in-differences-modern-estimators-lab.qmd) for group-time effects, aggregation, and sensitivity.
+- [Reproduction record](difference-in-differences-reproducibility.qmd) for the environment and verified outputs.
+
+All three exercises have Quarto, R Jupyter, and offline ZIP downloads in the
+[Labs directory](index.qmd#difference-in-differences-labs).
+
+## References

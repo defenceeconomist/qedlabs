@@ -33,7 +33,7 @@ How much did the treated group's outcome change **beyond the change a credible c
 By the end, you should be able to calculate a DiD, explain its assumptions, and choose comparisons for staggered adoption.
 
 ::: {.notes}
-Allow 2 minutes. Ask for a policy whose before/after change might reflect another economic shock. The comparison supplies the missing untreated change. Basic regression knowledge is enough for this session. The conceptual session lasts 45–60 minutes with discussion; code belongs in the paired labs. Sources: @gertler2016ch7did; @roth2023trending.
+Allow 2 minutes. Ask for a policy whose before/after change might reflect another economic shock. The comparison supplies the missing untreated change. Basic regression knowledge is enough for this session. The conceptual session lasts 45–60 minutes with discussion; code belongs in the R labs. Sources: @gertler2016ch7did; @roth2023trending.
 :::
 
 ## Kentucky workers’ compensation
@@ -209,7 +209,7 @@ Allow 3 minutes. This is a constructed example after cancelling common untreated
 Event time is years since adoption; −1 is the reference period.
 
 ::: {.notes}
-Allow 3 minutes. The plotted window is -5 through +4, while the regressions include all supported periods. Intervals shown here are pointwise, not simultaneous. Cohort-aware estimation avoids the conventional contamination but still requires identification assumptions. The R and Python cohort-aware point estimates agree to numerical precision. Sources: @sunabraham2021dynamic.
+Allow 3 minutes. The plotted window is -5 through +4, while the regressions include all supported periods. Intervals shown here are pointwise, not simultaneous. Cohort-aware estimation avoids the conventional contamination but still requires identification assumptions. The R cohort-aware estimates are checked against the recorded numerical baseline. Sources: @sunabraham2021dynamic.
 :::
 
 ## Group-time effects
@@ -274,7 +274,7 @@ Allow 3 minutes. The example restricts to the 2006 cohort and never-treated coun
 Allow 2 minutes. Ask participants to describe a prospective analysis in five sentences using these prompts. A package name alone does not describe the estimator's actual comparison or target. The detailed knowledge base supplies source-specific explanations and worked exercises. Sources: @roth2023trending.
 :::
 
-## Three paired R and Python labs
+## Three R labs
 
 | Lab | What you will do |
 |---|---|
@@ -282,10 +282,10 @@ Allow 2 minutes. Ask participants to describe a prospective analysis in five sen
 | Staggered diagnostics | Audit comparisons and event studies using castle laws |
 | Modern estimators | Estimate group-time effects and choose aggregation |
 
-[Lab setup and verified outputs](../labs/difference-in-differences-reproducibility.qmd) · [Reading map](../notes/did/difference-in-differences-sources.qmd)
+[Core report](../labs/difference-in-differences-methods-report.qmd) · [Lab setup and verified outputs](../labs/difference-in-differences-reproducibility.qmd) · [Reading map](../notes/did/difference-in-differences-sources.qmd)
 
 ::: {.notes}
-Allow 1 minute. Each lab takes 45–60 minutes beyond this introduction. Both languages share the same datasets; R includes Bacon and HonestDiD extensions. The Python modern lab documents its analytic/Bonferroni bands rather than presenting them as identical to R bootstrap bands. Close with a concrete next step: run foundations and write a six-sentence design assessment.
+Allow 1 minute. Each lab takes 45–60 minutes beyond this introduction. All use R, with Quarto, R Jupyter notebooks, and complete offline bundles. The diagnostics and modern labs include Bacon and HonestDiD extensions. Close with a concrete next step: run foundations and write a six-sentence design assessment.
 :::
 
 ## Appendix: Covariates make parallel trends conditional
@@ -329,17 +329,17 @@ The workflow is transparent about where untreated information enters, but still 
 [Sources] Imputation event-study estimator: @borusyak2024eventstudy.
 :::
 
-## Appendix: R and Python implementations
+## Appendix: R implementations
 
-| Method | R | Python |
-|---|---|---|
-| Four-cell regression | `lm` | `statsmodels` |
-| Fixed effects | `fixest` | `pyfixest` |
-| Cohort-aware event study | `sunab` | `event_study` saturated |
-| Group-time effects | `did` | `differences` |
-| Decomposition / sensitivity | `bacondecomp` / `HonestDiD` | R extensions |
+| Method | R implementation |
+|---|---|
+| Four-cell regression | `lm` |
+| Fixed effects | `fixest` |
+| Cohort-aware event study | `fixest::sunab` |
+| Group-time effects | `did` |
+| Decomposition / sensitivity | `bacondecomp` / `HonestDiD` |
 
-See the lab setup page for pinned versions and inference differences.
+See the lab setup page for the tested environment and verified outputs.
 
 ::: {.notes}
 [Sources] Method objects correspond to @goodmanbacon2021timing; @sunabraham2021dynamic; @callaway2021multipletime; @rambachanroth2023parallel.
