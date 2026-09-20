@@ -94,7 +94,7 @@ Why it is worth notes:
 
 ## Arkhangelsky et al. (2021)
 
-This is the synthetic DiD paper [@arkhangelsky2021synthetic].
+This is the synthetic DiD paper. The [Synthetic Difference-in-Differences note](synthetic-difference-in-differences-notes.qmd) explains unit and time weights, the weighted-gap calculation, identifying assumptions, and inference with few treated units [@arkhangelsky2021synthetic].
 
 Why it is worth notes:
 

@@ -75,6 +75,12 @@ Penalized SCM addresses settings with more disaggregated data and many potential
 
 These developments matter in UK local evaluation because many treated units are small, unusual, or highly concentrated. Classical SCM is still the starting point, but it is no longer the only defensible option when fit is imperfect.
 
+## Combining Synthetic Control With Difference-in-Differences
+
+Synthetic difference-in-differences (SDID) learns both donor weights and pre-treatment time weights, then subtracts a weighted baseline gap from the post-treatment gap. Its intercept and unit fixed effects accommodate persistent differences in outcome levels, while the weighting seeks more comparable trajectories. The baseline design uses a balanced panel with a common treatment date; it still requires credible untreated donors and assumptions about the missing untreated path [@arkhangelsky2021synthetic].
+
+Use the [Synthetic Difference-in-Differences note](synthetic-difference-in-differences-notes.qmd) for a worked calculation, comparisons with classical and augmented SCM, and the inference limitations when only one unit is treated.
+
 ## Extensions For Spillovers
 
 Another important line of development deals directly with interference. Inclusive SCM allows the analyst to keep potentially affected units in the wider system and estimate direct and spillover effects jointly rather than pretending contamination does not exist [@DiStefano_Mellace_2024_InclusiveSCM_arxiv]. The most useful companion source note here is [The Inclusive Synthetic Control Method](inclusive-synthetic-control-method-notes.qmd), because it shows that this is not only a spillover correction idea but also a donor-support and fit idea. Iterative SCM pushes further in the same direction by repeatedly adjusting for spillover exposure instead of relying only on simple exclusion rules [@Melnychuk_2024_IterativeSCM].

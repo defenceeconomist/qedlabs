@@ -118,6 +118,8 @@ website:
               text: Abadie Synthetic Controls (2021)
             - href: notes/scm/augmented-synthetic-control-method-notes.qmd
               text: The Augmented Synthetic Control Method
+            - href: notes/scm/synthetic-difference-in-differences-notes.qmd
+              text: Synthetic Difference-in-Differences
             - href: notes/scm/inclusive-synthetic-control-method-notes.qmd
               text: The Inclusive Synthetic Control Method
             - href: notes/scm/mixtape-synthetic-control-notes.qmd

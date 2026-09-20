@@ -1,0 +1,143 @@
+---
+title: "Synthetic Difference-in-Differences"
+subtitle: "Notes on Arkhangelsky, Athey, Hirshberg, Imbens, and Wager (2021)"
+date: 2026-09-20
+format:
+  html:
+    toc: true
+    toc-depth: 3
+---
+
+## What SDID adds
+
+Synthetic difference-in-differences (SDID) combines a weighted comparison group with a weighted before–after comparison. **Unit weights** make untreated units resemble the treated group's pre-treatment trajectory; **time weights** make selected pre-treatment periods more informative about the post-treatment comparison. A DiD calculation then removes the remaining weighted baseline gap [@arkhangelsky2021synthetic].
+
+This gives SDID a useful place alongside [classical synthetic control](synthetic-control.qmd) and [difference-in-differences](../did/difference-in-differences.qmd). A treated place can have a persistently higher outcome level than its donors and still have a useful comparison trajectory. SDID accommodates that level difference explicitly. It still needs credible untreated comparisons and a defensible account of how outcomes would have evolved without treatment.
+
+## Source and reading route
+
+These notes use evidence packs retrieved through the **Research Library MCP**, Evaluation collection, on 20 September 2026. The published reference is @arkhangelsky2021synthetic, *American Economic Review* 111(12), 4088–4118, [DOI](https://doi.org/10.1257/aer.20190159).
+
+| Library source | Reading locations | Use here |
+|---|---|---|
+| `causal-inference-3-reading-arkhangelsky-et-al-2021`, August 2021 draft | PDF pp. 2–7; introduction and implementation | Motivation, block treatment, unit and time weights |
+| `causal-inference-3-reading-synthetic-did-2021-arxiv`, [July 2021 version](https://arxiv.org/abs/1812.09970v4) | Section 2, pp. 5–9; Section 4, pp. 18–25; Section 5, pp. 26–30 | Estimation, identification, and inference |
+| `causal-inference-3-synthetic-control`, Cunningham's teaching presentation | Slides 214, 217, and 230 | Weight concentration and the intercept intuition |
+
+The library marks the two paper extractions as needing review, and some extracted equations are fragmented. The formulas below use a consistent teaching notation rather than reproducing those fragments; the original paper is the authority for the full optimisation problems and theorem conditions. Page numbers refer to the library's PDF pages, not the AER pagination. The numerical exercise below is an invented teaching example, not an estimate reported in the paper. For software, use the authors' [synthdid documentation](https://synth-inference.github.io/synthdid/) [@synthdid-package].
+
+## Design and target
+
+Start with a balanced panel: the same units are observed in every period. There are $N_0$ untreated donor units, $N_1$ treated units, $T_0$ pre-treatment periods, and $T_1$ post-treatment periods. Every treated unit begins treatment at the same boundary and remains treated. Donors remain untreated throughout.
+
+The target is the average treatment effect across the treated unit–period observations:
+
+$$
+\tau_{ATT}=\frac{1}{N_1T_1}
+\sum_{i\in\mathcal T}\sum_{t>T_0}
+\{Y_{it}(1)-Y_{it}(0)\}.
+$$
+
+This is an average over the stated treatment window. It does not by itself describe the effect in each year, and changing the window changes the target. A single treated unit is permitted for point estimation, but creates special inference difficulties.
+
+The baseline estimator and the standard `synthdid` interface use this **common-adoption block design**. Do not pass a staggered-adoption panel through the same setup and interpret the result as a general staggered DiD estimator. Cohort-specific designs and their aggregation require additional decisions about controls, exposure windows, and target weights. The paper discusses an extension; the [modern DiD notes](../did/callaway-santanna-multiple-periods-notes.qmd) provide a separate route for group-time effects.
+
+## How the weights work
+
+### Unit weights: match the trajectory up to a level shift
+
+Choose non-negative donor weights $\widehat\omega_i$ that sum to one. They make the weighted donor outcomes track the treated group's average outcomes before treatment. The fitting problem includes an intercept and a regularisation penalty on the donor weights.
+
+The intercept allows a persistent vertical difference between the two paths. The penalty discourages an excessively concentrated fit to noisy observations. Consequently, these are generally different weights from classical SCM, which seeks a match in levels without this intercept. SDID's ability to accommodate a level difference does not imply that it can repair arbitrary differences in trend.
+
+### Time weights: learn a useful baseline from untreated units
+
+Choose non-negative pre-treatment weights $\widehat\lambda_t$ that sum to one. Across the donor units, the weighted pre-treatment outcomes should predict average post-treatment outcomes up to an intercept. Each post-treatment period receives weight $1/T_1$ in the target average.
+
+**Time weights use donors' post-treatment outcomes.** Those outcomes are untreated under the design. Treated post-treatment outcomes are reserved for measuring the effect, rather than selecting weights that produce a desired answer. This distinction is why the blanket instruction “learn every weight using only pre-treatment data” is inaccurate for SDID.
+
+The paper regularises unit weights and adds only a very small regularisation term to make time weights unique in implementation. The two weighting problems are related, but their tuning is not interchangeable [@arkhangelsky2021synthetic, Section 2 of the July draft].
+
+### Difference the weighted gaps
+
+For each period, define the treated-minus-donor gap
+
+$$
+g_t=\frac{1}{N_1}\sum_{i\in\mathcal T}Y_{it}
+-\sum_{i\in\mathcal C}\widehat\omega_iY_{it}.
+$$
+
+In the block design, the SDID estimate can be written as
+
+$$
+\widehat\tau_{SDID}
+=\underbrace{\frac{1}{T_1}\sum_{t>T_0}g_t}_{\text{average post-treatment gap}}
+-\underbrace{\sum_{t\leq T_0}\widehat\lambda_tg_t}_{\text{weighted pre-treatment gap}}.
+$$
+
+Equivalently, it is the treatment coefficient in a weighted least-squares regression with unit and time fixed effects, using the product of the unit and time weights. Treated units receive equal weight within the treated group. The weighted-gap expression makes clear what the fixed effects accomplish: a persistent baseline difference is subtracted before interpreting the remaining change as an effect.
+
+## Worked example: why the baseline gap matters
+
+Suppose the donor weights have already been estimated. The following invented outcomes illustrate the final calculation; the time weights are supplied for the exercise rather than fitted from these four rows.
+
+| Period | Treated outcome | Weighted donor outcome | Gap $g_t$ | Weight within period group |
+|---|---:|---:|---:|---:|
+| Pre 1 | 100 | 90 | 10 | 0.25 |
+| Pre 2 | 108 | 94 | 14 | 0.75 |
+| Post 1 | 111 | 103 | 8 | 0.50 |
+| Post 2 | 113 | 107 | 6 | 0.50 |
+
+The weighted baseline gap is $0.25(10)+0.75(14)=13$. The average post-treatment gap is $0.5(8)+0.5(6)=7$. Therefore,
+
+$$\widehat\tau_{SDID}=7-13=-6.$$
+
+The estimate is a reduction of six outcome units relative to the counterfactual, even though treated outcomes remain above donor outcomes. Using the raw post-treatment gap would instead report $+7$ and miss the baseline adjustment. Holding the donor weights fixed but using equal pre-period weights gives $7-12=-5$; this isolates the contribution of time weighting, rather than reproducing an unweighted DiD analysis.
+
+**Check:** add 20 to the treated outcome in every period. Both gaps in the final subtraction rise by 20, so the estimated effect remains $-6$. This invariance to a constant level shift is central to the DiD part of SDID.
+
+## Comparison with neighbouring methods
+
+| Method | Main construction | Practical distinction |
+|---|---|---|
+| Ordinary DiD, common-adoption benchmark | Compare average changes between treated and untreated groups | Requires a credible parallel untreated trend for that comparison |
+| Classical SCM | Match pre-treatment levels using a convex donor combination | Strong level fit is central; the usual post-treatment gap is not automatically baseline-adjusted |
+| SDID | Learn donor and time weights, then difference weighted gaps | Allows a persistent level gap while seeking a more comparable change |
+| Augmented SCM | Correct residual SCM imbalance using an outcome model | Ridge augmentation can imply negative donor weights; it is a different adjustment from SDID's time weighting and differencing |
+
+These distinctions help choose a design; they do not establish a universal ranking. Compare [augmented SCM](augmented-synthetic-control-method-notes.qmd) for its bias-correction argument. Weighting can also cost precision when the unweighted groups are already suitable comparisons [@benmichael2021augmented; @arkhangelsky2021synthetic].
+
+## What identification still requires
+
+The paper analyses untreated outcomes with latent unit factors interacting with latent time factors. This allows richer patterns than a purely additive unit-and-time model. Its consistency results require conditions on balance, weight dispersion, panel size, and the noise process; they do not say that optimisation removes every source of confounding [@arkhangelsky2021synthetic, Section 4 of the July draft].
+
+For an applied evaluation, investigate:
+
+- **Anticipation and contamination:** treatment should not already affect the designated baseline, and donors must provide untreated outcomes throughout the comparison window.
+- **Comparability over time:** pre-treatment similarity must be informative about the missing untreated path after treatment. A new treated-unit shock at the intervention date remains a rival explanation.
+- **Support and concentration:** inspect which donors and baseline periods carry the estimate. A large nominal panel can still depend on one donor or one year.
+- **Residual dynamics:** a constant level gap is accommodated; a persistent slope difference or unstable gap deserves investigation. Good fitted pre-treatment balance alone cannot prove identification.
+
+The paper describes a form of robustness from balancing both the unit and time dimensions. Read this within its factor-model conditions, rather than as the claim that either a good-looking SCM plot or an ordinary parallel-trends test guarantees validity. For donor spillovers, consult [inclusive SCM](inclusive-synthetic-control-method-notes.qmd); baseline SDID does not itself estimate spillover effects.
+
+## Inference: count treated units, not just observations
+
+The paper develops three procedures [@arkhangelsky2021synthetic, Section 5 of the July draft]:
+
+| Procedure | What it does | Important boundary |
+|---|---|---|
+| Unit bootstrap | Resamples whole unit histories and re-estimates SDID | Intended for settings with enough treated and control units; individual unit–period resampling loses within-unit dependence |
+| Fixed-weight jackknife | Leaves out units while holding the estimated weights fixed | Not defined with one treated unit; its justification differs from simply re-fitting every component |
+| Placebo variance | Assigns placebo treatment among controls and uses the dispersion of estimates | Can address a single treated unit, but requires comparability of the treated and donor noise processes, including the homoskedasticity condition used in the paper |
+
+More years for one treated place do not create more independently treated places. A conventional regression standard error after fitting weights is not a substitute for an inference procedure justified for SDID and the actual design. Likewise, a placebo distribution is not automatically an exact randomisation test when policy assignment was not random.
+
+## Applying the note
+
+For a policy evaluation, first specify the treated units, common adoption date, outcome scale, donor exclusions, and post-treatment averaging window. Plot raw and weighted paths, report both sets of weights, and distinguish a tolerable level difference from a problematic changing gap. Re-estimate after defensible changes to donors or the baseline window, and report how the target or comparison changes.
+
+The authors' R workflow uses `panel.matrices()` to construct the panel, `synthdid_estimate()` to estimate the effect, and `vcov()` with a supported method for inference. Their [worked software example](https://synth-inference.github.io/synthdid/) uses California Proposition 99 and placebo variance. This is an implementation reference; no new executed lab or numerical replication is supplied by this note [@synthdid-package].
+
+For teaching, pair the weighted-gap exercise with the [California SCM source note](california-tobacco-synthetic-control-notes.qmd) and the [Proposition 99 lab](../../labs/synthetic-control-proposition-99-lab.qmd). Ask learners to identify which comparison changes when moving from SCM to SDID, rather than attributing every difference in estimates to a “better” method.
+
+[SCM overview](synthetic-control.qmd) · [SCM reading map](synthetic-control-sources.qmd) · [DiD overview](../did/difference-in-differences.qmd)

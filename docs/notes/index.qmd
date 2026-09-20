@@ -49,7 +49,7 @@ Use this route for canonical and staggered-adoption DiD, design checks, modern e
 
 ::: {.resource-body}
 
-Use this route for synthetic-control concepts, teaching data, and source mapping.
+Use this route for synthetic-control concepts, teaching data, and source mapping, including [Synthetic Difference-in-Differences](scm/synthetic-difference-in-differences-notes.qmd).
 :::
 :::
 
