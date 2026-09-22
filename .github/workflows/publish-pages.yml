@@ -35,6 +35,22 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Install Python dependencies
+        run: |
+          python -m pip install \
+            'PyYAML==6.0.3' \
+            'nbformat==5.10.4' \
+            'nbclient==0.10.2' \
+            'jupyter-client==8.6.3' \
+            'jupyter-core==5.7.2'
+          python -m pip check
+
+      - name: Check generated notebooks
+        run: |
+          python docs/scripts/generate_lab_notebooks.py --check
+          python docs/scripts/test_generate_lab_notebooks.py
+          python docs/scripts/validate_offline_labs.py
+
       - name: Set up R
         uses: r-lib/actions/setup-r@v2
         with:
@@ -87,15 +103,8 @@ jobs:
             any::tidysynth
             ebenmichael/augsynth@7a90ea48877fae7925a72cb50bc03a315bc7c042
 
-      - name: Install Python dependencies and register R kernel
+      - name: Register R kernel
         run: |
-          python -m pip install \
-            'PyYAML==6.0.3' \
-            'nbformat==5.10.4' \
-            'nbclient==0.10.2' \
-            'jupyter-client==8.6.3' \
-            'jupyter-core==5.7.2'
-          python -m pip check
           jupyter kernelspec --version
           kernel_dir="$(mktemp -d)"
           python - "$kernel_dir/kernel.json" "$(command -v R)" <<'PY'
@@ -118,12 +127,6 @@ jobs:
               json.dump(kernel_spec, kernel_file)
           PY
           jupyter kernelspec install --user --replace --name ir "$kernel_dir"
-
-      - name: Check generated notebooks
-        run: |
-          python docs/scripts/generate_lab_notebooks.py --check
-          python docs/scripts/test_generate_lab_notebooks.py
-          python docs/scripts/validate_offline_labs.py
 
       - name: Execute offline lab bundles
         shell: bash
