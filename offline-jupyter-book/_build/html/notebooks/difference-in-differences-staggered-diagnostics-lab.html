@@ -1,0 +1,1116 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Lab: Staggered Adoption and TWFE Diagnostics &#8212; Quasi-Experimental Design Labs</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../_static/scripts/fontawesome.js?digest=55c26ed414f5f8a31ebb"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=b8b12719"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="../_static/mathjax/tex-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/difference-in-differences-staggered-diagnostics-lab';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Lab: Modern Multi-Period Difference-in-Differences" href="difference-in-differences-modern-estimators-lab.html" />
+    <link rel="prev" title="Lab: Difference-in-Differences Foundations With Kentucky Workers’ Compensation" href="difference-in-differences-foundations-lab.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">Quasi-Experimental Design Labs</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../index.html">
+                    Quasi-Experimental Design Labs
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Start here</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../offline-setup.html">Offline setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data.html">Bundled data and provenance</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Matching and Weighting</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="lalonde-matching-lab.html">Lab: LaLonde Matching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="black-politicians-lab.html">Lab: Black Politicians</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nsw-cps-benchmark-lab.html">Lab: NSW and CPS Benchmark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hisp-ie-practice-lab.html">Lab: HISP IE in Practice</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Difference-in-Differences</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="difference-in-differences-foundations-lab.html">Lab: Difference-in-Differences Foundations With Kentucky Workers’ Compensation</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Lab: Staggered Adoption and TWFE Diagnostics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="difference-in-differences-modern-estimators-lab.html">Lab: Modern Multi-Period Difference-in-Differences</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Regression Discontinuity</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="regression-discontinuity-foundations-lab.html">Lab: Sharp RD foundations with government transfers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="regression-discontinuity-diagnostics-lab.html">Lab: RDD design diagnostics and sensitivity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="regression-discontinuity-fuzzy-lab.html">Lab: Fuzzy RD and local IV with veteran home ownership</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Synthetic Control</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-mechanics-lab.html">Lab: Synthetic Control Mechanics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-proposition-99-lab.html">Lab: Proposition 99 With tidysynth</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-augmentation-lab.html">Lab: Augmented SCM With Kansas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-design-lab.html">Lab: Synthetic Control Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-donor-pool-lab.html">Lab: Synthetic Control Donor Pool Design</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Interrupted Time Series</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="interrupted-time-series-mechanics-lab.html">Lab: Interrupted Time Series Foundations With Seatbelts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interrupted-time-series-design-diagnostics-lab.html">Lab: Seatbelt Law Design and Robustness</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interrupted-time-series-counterfactual-validation-lab.html">Lab: Interrupted Time Series Counterfactual Validation</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/notebooks/difference-in-differences-staggered-diagnostics-lab.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm pst-navbar-icon" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Lab: Staggered Adoption and TWFE Diagnostics</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-to-use-this-page">How To Use This Page</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#training-goal">Training Goal</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-1-load-the-state-year-panel">Step 1: Load The State-Year Panel</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-2-map-cohorts-and-untreated-support">Step 2: Map Cohorts And Untreated Support</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-3-plot-outcome-paths-by-adoption-cohort">Step 3: Plot Outcome Paths By Adoption Cohort</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-4-estimate-static-twfe">Step 4: Estimate Static TWFE</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-5-decompose-the-twfe-coefficient">Step 5: Decompose The TWFE Coefficient</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-6-inspect-the-decomposition">Step 6: Inspect The Decomposition</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-7-compare-event-study-estimators">Step 7: Compare Event-Study Estimators</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-8-write-a-design-assessment">Step 8: Write A Design Assessment</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#practical-implications">Practical Implications</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#worked-answers">Worked answers</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="lab-staggered-adoption-and-twfe-diagnostics">
+<h1>Lab: Staggered Adoption and TWFE Diagnostics<a class="headerlink" href="#lab-staggered-adoption-and-twfe-diagnostics" title="Link to this heading">#</a></h1>
+<p><a class="reference internal" href="../index.html"><span class="std std-doc">Book home</span></a></p>
+<p>Use the R kernel. Keep the supplied <code class="docutils literal notranslate"><span class="pre">data/</span></code> folder beside this notebook. Run cells in order after installing the documented R environment. Data loading is entirely local.</p>
+<section id="how-to-use-this-page">
+<h2>How To Use This Page<a class="headerlink" href="#how-to-use-this-page" title="Link to this heading">#</a></h2>
+<p>This is the second difference-in-differences lab. The guided core takes about 45–60 minutes and examines what a two-way fixed-effects estimate compares when treatment begins in different years.</p>
+<ul class="simple">
+<li><p>Audit adoption timing and untreated support before estimating an effect.</p></li>
+<li><p>Treat the TWFE coefficient as a weighted collection of 2×2 comparisons.</p></li>
+<li><p>Identify when already-treated units become controls for later-treated units.</p></li>
+<li><p>Compare a conventional event study with an interaction-weighted alternative.</p></li>
+</ul>
+<p>The case comes from Cunningham’s castle-doctrine example (Cunningham 2021; Cheng and Hoekstra 2013). The interpretation follows Goodman-Bacon and Sun–Abraham (Goodman-Bacon 2021; Sun and Abraham 2021). See the <a class="reference external" href="https://defenceeconomist.github.io/qedlabs/notes/did/mixtape-difference-in-differences-notes.html">Mixtape notes</a>, <a class="reference external" href="https://defenceeconomist.github.io/qedlabs/notes/did/goodman-bacon-treatment-timing-notes.html">Goodman-Bacon notes</a>, and <a class="reference external" href="https://defenceeconomist.github.io/qedlabs/notes/did/sun-abraham-event-studies-notes.html">Sun–Abraham notes</a>.</p>
+<p><a class="reference external" href="https://defenceeconomist.github.io/qedlabs/labs/difference-in-differences-reproducibility.html">Tested environment and reproduction record</a></p>
+</section>
+<section id="training-goal">
+<h2>Training Goal<a class="headerlink" href="#training-goal" title="Link to this heading">#</a></h2>
+<p>By the end of the lab, you should be able to:</p>
+<ol class="arabic simple">
+<li><p>construct and validate first-treatment cohorts;</p></li>
+<li><p>assess which untreated comparisons exist in each year;</p></li>
+<li><p>decompose a static TWFE coefficient into 2×2 comparisons;</p></li>
+<li><p>explain why later-versus-earlier comparisons can be problematic; and</p></li>
+<li><p>compare conventional and interaction-weighted event-study profiles.</p></li>
+</ol>
+</section>
+<section id="step-1-load-the-state-year-panel">
+<h2>Step 1: Load The State-Year Panel<a class="headerlink" href="#step-1-load-the-state-year-panel" title="Link to this heading">#</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">causaldata::castle</span></code> panel combines castle-doctrine adoption with state violent-crime outcomes. The lab uses log homicide as the outcome and <code class="docutils literal notranslate"><span class="pre">post</span></code> as the absorbing treatment indicator. The package documentation links the data to Cheng and Hoekstra’s application.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">data_helpers</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">"data/load-data.R"</span><span class="p">,</span><span class="w"> </span><span class="s">"../data/load-data.R"</span><span class="p">,</span><span class="w"> </span><span class="s">"docs/labs/data/load-data.R"</span><span class="p">)</span>
+<span class="n">data_helpers</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">data_helpers</span><span class="p">[</span><span class="nf">file.exists</span><span class="p">(</span><span class="n">data_helpers</span><span class="p">)]</span>
+<span class="kr">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nf">length</span><span class="p">(</span><span class="n">data_helpers</span><span class="p">))</span><span class="w"> </span><span class="nf">stop</span><span class="p">(</span><span class="s">"Extract the complete lab ZIP, including its data folder, before running."</span><span class="p">)</span>
+<span class="nf">source</span><span class="p">(</span><span class="n">data_helpers</span><span class="p">[[</span><span class="m">1</span><span class="p">]])</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">required_packages</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span>
+<span class="w">  </span><span class="s">"digest"</span><span class="p">,</span>
+<span class="w">  </span><span class="s">"dplyr"</span><span class="p">,</span>
+<span class="w">  </span><span class="s">"ggplot2"</span><span class="p">,</span>
+<span class="w">  </span><span class="s">"fixest"</span><span class="p">,</span>
+<span class="w">  </span><span class="s">"bacondecomp"</span>
+<span class="p">)</span>
+<span class="n">missing_packages</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">required_packages</span><span class="p">[</span><span class="o">!</span><span class="nf">vapply</span><span class="p">(</span>
+<span class="w">  </span><span class="n">required_packages</span><span class="p">,</span>
+<span class="w">  </span><span class="n">requireNamespace</span><span class="p">,</span>
+<span class="w">  </span><span class="nf">logical</span><span class="p">(</span><span class="m">1</span><span class="p">),</span>
+<span class="w">  </span><span class="n">quietly</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span>
+<span class="p">)]</span>
+<span class="kr">if</span><span class="w"> </span><span class="p">(</span><span class="nf">length</span><span class="p">(</span><span class="n">missing_packages</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nf">stop</span><span class="p">(</span><span class="s">"Install the documented R environment first; missing: "</span><span class="p">,</span><span class="w"> </span><span class="nf">paste</span><span class="p">(</span><span class="n">missing_packages</span><span class="p">,</span><span class="w"> </span><span class="n">collapse</span><span class="o">=</span><span class="s">", "</span><span class="p">),</span><span class="w"> </span><span class="n">call.</span><span class="o">=</span><span class="kc">FALSE</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="nf">invisible</span><span class="p">(</span><span class="nf">lapply</span><span class="p">(</span><span class="n">required_packages</span><span class="p">,</span><span class="w"> </span><span class="n">library</span><span class="p">,</span><span class="w"> </span><span class="n">character.only</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">))</span>
+
+<span class="n">castle</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">qed_data</span><span class="p">(</span><span class="s">"castle"</span><span class="p">)</span>
+
+<span class="n">castle_panel</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">castle</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">select</span><span class="p">(</span><span class="n">sid</span><span class="p">,</span><span class="w"> </span><span class="n">year</span><span class="p">,</span><span class="w"> </span><span class="n">post</span><span class="p">,</span><span class="w"> </span><span class="n">l_homicide</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">arrange</span><span class="p">(</span><span class="n">sid</span><span class="p">,</span><span class="w"> </span><span class="n">year</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">group_by</span><span class="p">(</span><span class="n">sid</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">mutate</span><span class="p">(</span>
+<span class="w">    </span><span class="n">first_treat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kr">if</span><span class="w"> </span><span class="p">(</span><span class="nf">any</span><span class="p">(</span><span class="n">post</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1</span><span class="p">))</span><span class="w"> </span><span class="nf">min</span><span class="p">(</span><span class="n">year</span><span class="p">[</span><span class="n">post</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1</span><span class="p">])</span><span class="w"> </span><span class="kr">else</span><span class="w"> </span><span class="m">0L</span><span class="p">,</span>
+<span class="w">    </span><span class="n">event_time</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">if_else</span><span class="p">(</span><span class="n">first_treat</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">0L</span><span class="p">,</span><span class="w"> </span><span class="m">-1000L</span><span class="p">,</span><span class="w"> </span><span class="n">year</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">first_treat</span><span class="p">)</span>
+<span class="w">  </span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">ungroup</span><span class="p">()</span>
+
+<span class="n">panel_audit</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">castle_panel</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">group_by</span><span class="p">(</span><span class="n">sid</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">summarise</span><span class="p">(</span>
+<span class="w">    </span><span class="n">observations</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">n</span><span class="p">(),</span>
+<span class="w">    </span><span class="n">first_year</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">min</span><span class="p">(</span><span class="n">year</span><span class="p">),</span>
+<span class="w">    </span><span class="n">last_year</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">max</span><span class="p">(</span><span class="n">year</span><span class="p">),</span>
+<span class="w">    </span><span class="n">treatment_reversal</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">any</span><span class="p">(</span><span class="nf">diff</span><span class="p">(</span><span class="n">post</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="m">0</span><span class="p">),</span>
+<span class="w">    </span><span class="n">cohort_values</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">n_distinct</span><span class="p">(</span><span class="n">first_treat</span><span class="p">),</span>
+<span class="w">    </span><span class="n">.groups</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"drop"</span>
+<span class="w">  </span><span class="p">)</span>
+
+<span class="nf">data.frame</span><span class="p">(</span>
+<span class="w">  </span><span class="n">states</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">n_distinct</span><span class="p">(</span><span class="n">castle_panel</span><span class="o">$</span><span class="n">sid</span><span class="p">),</span>
+<span class="w">  </span><span class="n">years</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">n_distinct</span><span class="p">(</span><span class="n">castle_panel</span><span class="o">$</span><span class="n">year</span><span class="p">),</span>
+<span class="w">  </span><span class="n">observations</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">nrow</span><span class="p">(</span><span class="n">castle_panel</span><span class="p">),</span>
+<span class="w">  </span><span class="n">treated_states</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">n_distinct</span><span class="p">(</span><span class="n">castle_panel</span><span class="o">$</span><span class="n">sid</span><span class="p">[</span><span class="n">castle_panel</span><span class="o">$</span><span class="n">first_treat</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">0</span><span class="p">]),</span>
+<span class="w">  </span><span class="n">never_treated_states</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">n_distinct</span><span class="p">(</span><span class="n">castle_panel</span><span class="o">$</span><span class="n">sid</span><span class="p">[</span><span class="n">castle_panel</span><span class="o">$</span><span class="n">first_treat</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">0</span><span class="p">])</span>
+<span class="p">)</span>
+
+<span class="nf">stopifnot</span><span class="p">(</span>
+<span class="w">  </span><span class="o">!</span><span class="nf">anyDuplicated</span><span class="p">(</span><span class="n">castle_panel</span><span class="p">[</span><span class="nf">c</span><span class="p">(</span><span class="s">"sid"</span><span class="p">,</span><span class="w"> </span><span class="s">"year"</span><span class="p">)]),</span>
+<span class="w">  </span><span class="nf">length</span><span class="p">(</span><span class="nf">unique</span><span class="p">(</span><span class="n">panel_audit</span><span class="o">$</span><span class="n">observations</span><span class="p">))</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1L</span><span class="p">,</span>
+<span class="w">  </span><span class="o">!</span><span class="nf">any</span><span class="p">(</span><span class="n">panel_audit</span><span class="o">$</span><span class="n">treatment_reversal</span><span class="p">),</span>
+<span class="w">  </span><span class="nf">all</span><span class="p">(</span><span class="n">panel_audit</span><span class="o">$</span><span class="n">cohort_values</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1L</span><span class="p">),</span>
+<span class="w">  </span><span class="nf">any</span><span class="p">(</span><span class="n">castle_panel</span><span class="o">$</span><span class="n">first_treat</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">0L</span><span class="p">),</span>
+<span class="w">  </span><span class="nf">n_distinct</span><span class="p">(</span><span class="n">castle_panel</span><span class="o">$</span><span class="n">first_treat</span><span class="p">[</span><span class="n">castle_panel</span><span class="o">$</span><span class="n">first_treat</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">0</span><span class="p">])</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">1L</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Attaching package: ‘dplyr’
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>The following objects are masked from ‘package:stats’:
+
+    filter, lag
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+</pre></div>
+</div>
+<div class="output text_html"><table class="dataframe">
+<caption>A data.frame: 1 × 5</caption>
+<thead>
+	<tr><th scope=col>states</th><th scope=col>years</th><th scope=col>observations</th><th scope=col>treated_states</th><th scope=col>never_treated_states</th></tr>
+	<tr><th scope=col>&lt;int&gt;</th><th scope=col>&lt;int&gt;</th><th scope=col>&lt;int&gt;</th><th scope=col>&lt;int&gt;</th><th scope=col>&lt;int&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>50</td><td>11</td><td>550</td><td>21</td><td>29</td></tr>
+</tbody>
+</table>
+</div></div>
+</div>
+<p>The absorbing-treatment check matters: modern staggered DiD methods generally assume units do not leave treatment after adoption.</p>
+</section>
+<section id="step-2-map-cohorts-and-untreated-support">
+<h2>Step 2: Map Cohorts And Untreated Support<a class="headerlink" href="#step-2-map-cohorts-and-untreated-support" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">cohort_table</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">castle_panel</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">distinct</span><span class="p">(</span><span class="n">sid</span><span class="p">,</span><span class="w"> </span><span class="n">first_treat</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">count</span><span class="p">(</span><span class="n">first_treat</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"states"</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">mutate</span><span class="p">(</span>
+<span class="w">    </span><span class="n">cohort</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">if_else</span><span class="p">(</span>
+<span class="w">      </span><span class="n">first_treat</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">0L</span><span class="p">,</span>
+<span class="w">      </span><span class="s">"Never treated"</span><span class="p">,</span>
+<span class="w">      </span><span class="nf">as.character</span><span class="p">(</span><span class="n">first_treat</span><span class="p">)</span>
+<span class="w">    </span><span class="p">)</span>
+<span class="w">  </span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">select</span><span class="p">(</span><span class="n">cohort</span><span class="p">,</span><span class="w"> </span><span class="n">first_treat</span><span class="p">,</span><span class="w"> </span><span class="n">states</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">arrange</span><span class="p">(</span><span class="n">first_treat</span><span class="p">)</span>
+
+<span class="n">support_table</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">castle_panel</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">distinct</span><span class="p">(</span><span class="n">sid</span><span class="p">,</span><span class="w"> </span><span class="n">year</span><span class="p">,</span><span class="w"> </span><span class="n">first_treat</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">group_by</span><span class="p">(</span><span class="n">year</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">summarise</span><span class="p">(</span>
+<span class="w">    </span><span class="n">never_treated</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">first_treat</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">0L</span><span class="p">),</span>
+<span class="w">    </span><span class="n">not_yet_treated</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">first_treat</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">year</span><span class="p">),</span>
+<span class="w">    </span><span class="n">eligible_controls</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">first_treat</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">0L</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">first_treat</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">year</span><span class="p">),</span>
+<span class="w">    </span><span class="n">already_treated</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">first_treat</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">0L</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">first_treat</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">year</span><span class="p">),</span>
+<span class="w">    </span><span class="n">.groups</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"drop"</span>
+<span class="w">  </span><span class="p">)</span>
+
+<span class="n">cohort_table</span>
+<span class="n">support_table</span>
+
+<span class="nf">stopifnot</span><span class="p">(</span>
+<span class="w">  </span><span class="nf">sum</span><span class="p">(</span><span class="n">cohort_table</span><span class="o">$</span><span class="n">states</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nf">n_distinct</span><span class="p">(</span><span class="n">castle_panel</span><span class="o">$</span><span class="n">sid</span><span class="p">),</span>
+<span class="w">  </span><span class="nf">all</span><span class="p">(</span><span class="n">support_table</span><span class="o">$</span><span class="n">eligible_controls</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">support_table</span><span class="o">$</span><span class="n">never_treated</span><span class="p">),</span>
+<span class="w">  </span><span class="nf">all</span><span class="p">(</span><span class="n">support_table</span><span class="o">$</span><span class="n">eligible_controls</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">support_table</span><span class="o">$</span><span class="n">already_treated</span><span class="w"> </span><span class="o">==</span>
+<span class="w">    </span><span class="nf">n_distinct</span><span class="p">(</span><span class="n">castle_panel</span><span class="o">$</span><span class="n">sid</span><span class="p">))</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><table class="dataframe">
+<caption>A tibble: 6 × 3</caption>
+<thead>
+	<tr><th scope=col>cohort</th><th scope=col>first_treat</th><th scope=col>states</th></tr>
+	<tr><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;int&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>Never treated</td><td>   0</td><td>29</td></tr>
+	<tr><td>2006         </td><td>2006</td><td> 1</td></tr>
+	<tr><td>2007         </td><td>2007</td><td>13</td></tr>
+	<tr><td>2008         </td><td>2008</td><td> 4</td></tr>
+	<tr><td>2009         </td><td>2009</td><td> 2</td></tr>
+	<tr><td>2010         </td><td>2010</td><td> 1</td></tr>
+</tbody>
+</table>
+</div><div class="output text_html"><table class="dataframe">
+<caption>A tibble: 11 × 5</caption>
+<thead>
+	<tr><th scope=col>year</th><th scope=col>never_treated</th><th scope=col>not_yet_treated</th><th scope=col>eligible_controls</th><th scope=col>already_treated</th></tr>
+	<tr><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;int&gt;</th><th scope=col>&lt;int&gt;</th><th scope=col>&lt;int&gt;</th><th scope=col>&lt;int&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>2000</td><td>29</td><td>21</td><td>50</td><td> 0</td></tr>
+	<tr><td>2001</td><td>29</td><td>21</td><td>50</td><td> 0</td></tr>
+	<tr><td>2002</td><td>29</td><td>21</td><td>50</td><td> 0</td></tr>
+	<tr><td>2003</td><td>29</td><td>21</td><td>50</td><td> 0</td></tr>
+	<tr><td>2004</td><td>29</td><td>21</td><td>50</td><td> 0</td></tr>
+	<tr><td>2005</td><td>29</td><td>21</td><td>50</td><td> 0</td></tr>
+	<tr><td>2006</td><td>29</td><td>20</td><td>49</td><td> 1</td></tr>
+	<tr><td>2007</td><td>29</td><td> 7</td><td>36</td><td>14</td></tr>
+	<tr><td>2008</td><td>29</td><td> 3</td><td>32</td><td>18</td></tr>
+	<tr><td>2009</td><td>29</td><td> 1</td><td>30</td><td>20</td></tr>
+	<tr><td>2010</td><td>29</td><td> 0</td><td>29</td><td>21</td></tr>
+</tbody>
+</table>
+</div></div>
+</div>
+<p>Checkpoint: in the final sample year, which states can still provide an untreated comparison without using already-treated observations?</p>
+</section>
+<section id="step-3-plot-outcome-paths-by-adoption-cohort">
+<h2>Step 3: Plot Outcome Paths By Adoption Cohort<a class="headerlink" href="#step-3-plot-outcome-paths-by-adoption-cohort" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">10</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">5.4</span><span class="p">)</span>
+<span class="n">cohort_trends</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">castle_panel</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">mutate</span><span class="p">(</span>
+<span class="w">    </span><span class="n">cohort</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">if_else</span><span class="p">(</span>
+<span class="w">      </span><span class="n">first_treat</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">0L</span><span class="p">,</span>
+<span class="w">      </span><span class="s">"Never treated"</span><span class="p">,</span>
+<span class="w">      </span><span class="nf">paste</span><span class="p">(</span><span class="s">"First treated"</span><span class="p">,</span><span class="w"> </span><span class="n">first_treat</span><span class="p">)</span>
+<span class="w">    </span><span class="p">)</span>
+<span class="w">  </span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">group_by</span><span class="p">(</span><span class="n">cohort</span><span class="p">,</span><span class="w"> </span><span class="n">first_treat</span><span class="p">,</span><span class="w"> </span><span class="n">year</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">summarise</span><span class="p">(</span><span class="n">mean_log_homicide</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">l_homicide</span><span class="p">),</span><span class="w"> </span><span class="n">.groups</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"drop"</span><span class="p">)</span>
+
+<span class="nf">ggplot</span><span class="p">(</span>
+<span class="w">  </span><span class="n">cohort_trends</span><span class="p">,</span>
+<span class="w">  </span><span class="nf">aes</span><span class="p">(</span><span class="n">year</span><span class="p">,</span><span class="w"> </span><span class="n">mean_log_homicide</span><span class="p">,</span><span class="w"> </span><span class="n">colour</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cohort</span><span class="p">,</span><span class="w"> </span><span class="n">group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cohort</span><span class="p">)</span>
+<span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_line</span><span class="p">(</span><span class="n">linewidth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.75</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_point</span><span class="p">(</span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1.5</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">labs</span><span class="p">(</span>
+<span class="w">    </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Mean log homicide rate"</span><span class="p">,</span>
+<span class="w">    </span><span class="n">colour</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Adoption cohort"</span><span class="p">,</span>
+<span class="w">    </span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Castle-doctrine adoption is staggered across state cohorts"</span>
+<span class="w">  </span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">theme_minimal</span><span class="p">(</span><span class="n">base_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">12</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">theme</span><span class="p">(</span><span class="n">legend.position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"bottom"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<a class="reference internal image-reference" href="../_images/3b28c76808bd6a6c06a70da66c2084e7f5c208739c8fb970216d22d8de012b30.png"><img alt="../_images/3b28c76808bd6a6c06a70da66c2084e7f5c208739c8fb970216d22d8de012b30.png" src="../_images/3b28c76808bd6a6c06a70da66c2084e7f5c208739c8fb970216d22d8de012b30.png" style="width: 600px; height: 324px;" />
+</a>
+</div>
+</div>
+<p>The graph is an outcome audit, not an estimator. Look for different pre-adoption movement, sparse late-event support, and cohort-specific changes that make a single weighted average hard to interpret.</p>
+</section>
+<section id="step-4-estimate-static-twfe">
+<h2>Step 4: Estimate Static TWFE<a class="headerlink" href="#step-4-estimate-static-twfe" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">twfe_fit</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">feols</span><span class="p">(</span>
+<span class="w">  </span><span class="n">l_homicide</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">post</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">sid</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">year</span><span class="p">,</span>
+<span class="w">  </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">castle_panel</span><span class="p">,</span>
+<span class="w">  </span><span class="n">vcov</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">sid</span>
+<span class="p">)</span>
+
+<span class="n">twfe_result</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">data.frame</span><span class="p">(</span>
+<span class="w">  </span><span class="n">estimate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">coef</span><span class="p">(</span><span class="n">twfe_fit</span><span class="p">)[[</span><span class="s">"post"</span><span class="p">]],</span>
+<span class="w">  </span><span class="n">state_clustered_se</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">se</span><span class="p">(</span><span class="n">twfe_fit</span><span class="p">)[[</span><span class="s">"post"</span><span class="p">]],</span>
+<span class="w">  </span><span class="n">lower_95</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">confint</span><span class="p">(</span><span class="n">twfe_fit</span><span class="p">)[</span><span class="s">"post"</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">],</span>
+<span class="w">  </span><span class="n">upper_95</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">confint</span><span class="p">(</span><span class="n">twfe_fit</span><span class="p">)[</span><span class="s">"post"</span><span class="p">,</span><span class="w"> </span><span class="m">2</span><span class="p">]</span>
+<span class="p">)</span>
+
+<span class="n">twfe_result</span>
+
+<span class="nf">stopifnot</span><span class="p">(</span>
+<span class="w">  </span><span class="nf">nobs</span><span class="p">(</span><span class="n">twfe_fit</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nf">nrow</span><span class="p">(</span><span class="n">castle_panel</span><span class="p">),</span>
+<span class="w">  </span><span class="nf">is.finite</span><span class="p">(</span><span class="n">twfe_result</span><span class="o">$</span><span class="n">estimate</span><span class="p">),</span>
+<span class="w">  </span><span class="n">twfe_result</span><span class="o">$</span><span class="n">state_clustered_se</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">0</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><table class="dataframe">
+<caption>A data.frame: 1 × 4</caption>
+<thead>
+	<tr><th scope=col>estimate</th><th scope=col>state_clustered_se</th><th scope=col>lower_95</th><th scope=col>upper_95</th></tr>
+	<tr><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>0.06939843</td><td>0.05585964</td><td>-0.04285571</td><td>0.1816526</td></tr>
+</tbody>
+</table>
+</div></div>
+</div>
+<p>State clustering allows arbitrary within-state error dependence. It does not determine whether the comparisons embedded in the coefficient identify a meaningful ATT.</p>
+</section>
+<section id="step-5-decompose-the-twfe-coefficient">
+<h2>Step 5: Decompose The TWFE Coefficient<a class="headerlink" href="#step-5-decompose-the-twfe-coefficient" title="Link to this heading">#</a></h2>
+<p><a class="reference external" href="https://cran.r-project.org/web/packages/bacondecomp/bacondecomp.pdf"><code class="docutils literal notranslate"><span class="pre">bacondecomp::bacon()</span></code></a> expresses the static TWFE coefficient as a weighted average of 2×2 DiD estimates (Goodman-Bacon 2021).</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">bacon_parts</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">bacondecomp</span><span class="o">::</span><span class="nf">bacon</span><span class="p">(</span>
+<span class="w">  </span><span class="n">l_homicide</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">post</span><span class="p">,</span>
+<span class="w">  </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">as.data.frame</span><span class="p">(</span><span class="n">castle_panel</span><span class="p">),</span>
+<span class="w">  </span><span class="n">id_var</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"sid"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">time_var</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"year"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">quietly</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span>
+<span class="p">)</span>
+
+<span class="n">bacon_summary</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">bacon_parts</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">mutate</span><span class="p">(</span><span class="n">weighted_estimate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">estimate</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">weight</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">group_by</span><span class="p">(</span><span class="n">type</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">summarise</span><span class="p">(</span>
+<span class="w">    </span><span class="n">comparisons</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">n</span><span class="p">(),</span>
+<span class="w">    </span><span class="n">total_weight</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">weight</span><span class="p">),</span>
+<span class="w">    </span><span class="n">contribution_to_twfe</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">weighted_estimate</span><span class="p">),</span>
+<span class="w">    </span><span class="n">.groups</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"drop"</span>
+<span class="w">  </span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">arrange</span><span class="p">(</span><span class="nf">desc</span><span class="p">(</span><span class="n">total_weight</span><span class="p">))</span>
+
+<span class="n">bacon_reconstruction</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">bacon_parts</span><span class="o">$</span><span class="n">estimate</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">bacon_parts</span><span class="o">$</span><span class="n">weight</span><span class="p">)</span>
+
+<span class="n">bacon_summary</span>
+<span class="nf">data.frame</span><span class="p">(</span>
+<span class="w">  </span><span class="n">twfe_coefficient</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">coef</span><span class="p">(</span><span class="n">twfe_fit</span><span class="p">)[[</span><span class="s">"post"</span><span class="p">]],</span>
+<span class="w">  </span><span class="n">bacon_weighted_average</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bacon_reconstruction</span><span class="p">,</span>
+<span class="w">  </span><span class="n">difference</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">coef</span><span class="p">(</span><span class="n">twfe_fit</span><span class="p">)[[</span><span class="s">"post"</span><span class="p">]]</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">bacon_reconstruction</span>
+<span class="p">)</span>
+
+<span class="nf">stopifnot</span><span class="p">(</span>
+<span class="w">  </span><span class="nf">abs</span><span class="p">(</span><span class="nf">sum</span><span class="p">(</span><span class="n">bacon_parts</span><span class="o">$</span><span class="n">weight</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="m">1</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="m">1e-8</span><span class="p">,</span>
+<span class="w">  </span><span class="nf">abs</span><span class="p">(</span><span class="nf">coef</span><span class="p">(</span><span class="n">twfe_fit</span><span class="p">)[[</span><span class="s">"post"</span><span class="p">]]</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">bacon_reconstruction</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="m">1e-8</span><span class="p">,</span>
+<span class="w">  </span><span class="nf">all</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span>
+<span class="w">    </span><span class="s">"Earlier vs Later Treated"</span><span class="p">,</span>
+<span class="w">    </span><span class="s">"Later vs Earlier Treated"</span><span class="p">,</span>
+<span class="w">    </span><span class="s">"Treated vs Untreated"</span>
+<span class="w">  </span><span class="p">)</span><span class="w"> </span><span class="o">%in%</span><span class="w"> </span><span class="n">bacon_parts</span><span class="o">$</span><span class="n">type</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><table class="dataframe">
+<caption>A tibble: 3 × 4</caption>
+<thead>
+	<tr><th scope=col>type</th><th scope=col>comparisons</th><th scope=col>total_weight</th><th scope=col>contribution_to_twfe</th></tr>
+	<tr><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;int&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>Treated vs Untreated    </td><td> 5</td><td>0.89880884</td><td> 0.070500759</td></tr>
+	<tr><td>Earlier vs Later Treated</td><td>10</td><td>0.07707876</td><td>-0.002202692</td></tr>
+	<tr><td>Later vs Earlier Treated</td><td>10</td><td>0.02411241</td><td> 0.001100362</td></tr>
+</tbody>
+</table>
+</div><div class="output text_html"><table class="dataframe">
+<caption>A data.frame: 1 × 3</caption>
+<thead>
+	<tr><th scope=col>twfe_coefficient</th><th scope=col>bacon_weighted_average</th><th scope=col>difference</th></tr>
+	<tr><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>0.06939843</td><td>0.06939843</td><td>1.387779e-17</td></tr>
+</tbody>
+</table>
+</div></div>
+</div>
+<p>“Later vs Earlier Treated” means the earlier cohort is already treated while it serves as the comparison. If effects evolve after adoption, that comparison can subtract one treatment effect from another rather than recover a clean untreated counterfactual.</p>
+</section>
+<section id="step-6-inspect-the-decomposition">
+<h2>Step 6: Inspect The Decomposition<a class="headerlink" href="#step-6-inspect-the-decomposition" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">10</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">5.2</span><span class="p">)</span>
+<span class="nf">ggplot</span><span class="p">(</span>
+<span class="w">  </span><span class="n">bacon_parts</span><span class="p">,</span>
+<span class="w">  </span><span class="nf">aes</span><span class="p">(</span><span class="n">estimate</span><span class="p">,</span><span class="w"> </span><span class="n">weight</span><span class="p">,</span><span class="w"> </span><span class="n">colour</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">type</span><span class="p">)</span>
+<span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_point</span><span class="p">(</span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.8</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2.5</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_vline</span><span class="p">(</span>
+<span class="w">    </span><span class="n">xintercept</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">coef</span><span class="p">(</span><span class="n">twfe_fit</span><span class="p">)[[</span><span class="s">"post"</span><span class="p">]],</span>
+<span class="w">    </span><span class="n">linetype</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"dashed"</span><span class="p">,</span>
+<span class="w">    </span><span class="n">colour</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"grey35"</span>
+<span class="w">  </span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">labs</span><span class="p">(</span>
+<span class="w">    </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"2×2 DiD estimate"</span><span class="p">,</span>
+<span class="w">    </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"TWFE weight"</span><span class="p">,</span>
+<span class="w">    </span><span class="n">colour</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Comparison type"</span><span class="p">,</span>
+<span class="w">    </span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"The static TWFE estimate combines substantively different comparisons"</span>
+<span class="w">  </span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">theme_minimal</span><span class="p">(</span><span class="n">base_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">12</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">theme</span><span class="p">(</span><span class="n">legend.position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"bottom"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<a class="reference internal image-reference" href="../_images/cd781c6da21048316c17d7755983522644b2f69498ef86d6a0794cfb5dcdd22e.png"><img alt="../_images/cd781c6da21048316c17d7755983522644b2f69498ef86d6a0794cfb5dcdd22e.png" src="../_images/cd781c6da21048316c17d7755983522644b2f69498ef86d6a0794cfb5dcdd22e.png" style="width: 600px; height: 312px;" />
+</a>
+</div>
+</div>
+<p>Checkpoint: identify the comparison type whose validity depends most directly on treatment effects not changing with exposure length.</p>
+</section>
+<section id="step-7-compare-event-study-estimators">
+<h2>Step 7: Compare Event-Study Estimators<a class="headerlink" href="#step-7-compare-event-study-estimators" title="Link to this heading">#</a></h2>
+<p>The conventional event study interacts relative-time indicators with treatment status inside a TWFE model. The Sun–Abraham specification instead estimates cohort-by-relative-time effects and aggregates them, avoiding already-treated cohorts as controls for the interaction-weighted effect (Sun and Abraham 2021).</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">conventional_event_fit</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">feols</span><span class="p">(</span>
+<span class="w">  </span><span class="n">l_homicide</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="nf">i</span><span class="p">(</span><span class="n">event_time</span><span class="p">,</span><span class="w"> </span><span class="n">ref</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">-1000</span><span class="p">,</span><span class="w"> </span><span class="m">-1</span><span class="p">))</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">sid</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">year</span><span class="p">,</span>
+<span class="w">  </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">castle_panel</span><span class="p">,</span>
+<span class="w">  </span><span class="n">vcov</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">sid</span>
+<span class="p">)</span>
+
+<span class="n">sun_abraham_fit</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">feols</span><span class="p">(</span>
+<span class="w">  </span><span class="n">l_homicide</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="nf">sunab</span><span class="p">(</span><span class="n">first_treat</span><span class="p">,</span><span class="w"> </span><span class="n">year</span><span class="p">,</span><span class="w"> </span><span class="n">ref.p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">-1</span><span class="p">)</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">sid</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">year</span><span class="p">,</span>
+<span class="w">  </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">castle_panel</span><span class="p">,</span>
+<span class="w">  </span><span class="n">vcov</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">sid</span>
+<span class="p">)</span>
+
+<span class="n">extract_event_terms</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="n">model</span><span class="p">,</span><span class="w"> </span><span class="n">estimator</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">estimates</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">coef</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+<span class="w">  </span><span class="n">standard_errors</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">se</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+<span class="w">  </span><span class="n">event_time</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">as.integer</span><span class="p">(</span><span class="nf">sub</span><span class="p">(</span><span class="s">".*::"</span><span class="p">,</span><span class="w"> </span><span class="s">""</span><span class="p">,</span><span class="w"> </span><span class="nf">names</span><span class="p">(</span><span class="n">estimates</span><span class="p">)))</span>
+
+<span class="w">  </span><span class="nf">data.frame</span><span class="p">(</span>
+<span class="w">    </span><span class="n">estimator</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">estimator</span><span class="p">,</span>
+<span class="w">    </span><span class="n">event_time</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">event_time</span><span class="p">,</span>
+<span class="w">    </span><span class="n">estimate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">unname</span><span class="p">(</span><span class="n">estimates</span><span class="p">),</span>
+<span class="w">    </span><span class="n">standard_error</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">unname</span><span class="p">(</span><span class="n">standard_errors</span><span class="p">),</span>
+<span class="w">    </span><span class="n">lower_95</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">unname</span><span class="p">(</span><span class="n">estimates</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="m">1.96</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">standard_errors</span><span class="p">),</span>
+<span class="w">    </span><span class="n">upper_95</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">unname</span><span class="p">(</span><span class="n">estimates</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="m">1.96</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">standard_errors</span><span class="p">)</span>
+<span class="w">  </span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">    </span><span class="nf">filter</span><span class="p">(</span><span class="n">event_time</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="m">-5</span><span class="p">,</span><span class="w"> </span><span class="n">event_time</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="m">4</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="n">event_comparison</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">bind_rows</span><span class="p">(</span>
+<span class="w">  </span><span class="nf">extract_event_terms</span><span class="p">(</span><span class="n">conventional_event_fit</span><span class="p">,</span><span class="w"> </span><span class="s">"Conventional TWFE"</span><span class="p">),</span>
+<span class="w">  </span><span class="nf">extract_event_terms</span><span class="p">(</span><span class="n">sun_abraham_fit</span><span class="p">,</span><span class="w"> </span><span class="s">"Sun–Abraham"</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">event_comparison</span>
+
+<span class="nf">stopifnot</span><span class="p">(</span>
+<span class="w">  </span><span class="nf">all</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s">"Conventional TWFE"</span><span class="p">,</span><span class="w"> </span><span class="s">"Sun–Abraham"</span><span class="p">)</span><span class="w"> </span><span class="o">%in%</span><span class="w"> </span><span class="n">event_comparison</span><span class="o">$</span><span class="n">estimator</span><span class="p">),</span>
+<span class="w">  </span><span class="nf">all</span><span class="p">(</span><span class="n">event_comparison</span><span class="o">$</span><span class="n">event_time</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="m">-5</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">event_comparison</span><span class="o">$</span><span class="n">event_time</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="m">4</span><span class="p">),</span>
+<span class="w">  </span><span class="nf">any</span><span class="p">(</span><span class="n">event_comparison</span><span class="o">$</span><span class="n">event_time</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="m">0</span><span class="p">),</span>
+<span class="w">  </span><span class="nf">any</span><span class="p">(</span><span class="n">event_comparison</span><span class="o">$</span><span class="n">event_time</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="m">0</span><span class="p">),</span>
+<span class="w">  </span><span class="nf">all</span><span class="p">(</span><span class="nf">is.finite</span><span class="p">(</span><span class="n">event_comparison</span><span class="o">$</span><span class="n">estimate</span><span class="p">))</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><table class="dataframe">
+<caption>A data.frame: 18 × 6</caption>
+<thead>
+	<tr><th scope=col>estimator</th><th scope=col>event_time</th><th scope=col>estimate</th><th scope=col>standard_error</th><th scope=col>lower_95</th><th scope=col>upper_95</th></tr>
+	<tr><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;int&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>Conventional TWFE</td><td>-5</td><td>-0.0934003059</td><td>0.06773270</td><td>-0.22615639</td><td> 0.039355782</td></tr>
+	<tr><td>Conventional TWFE</td><td>-4</td><td>-0.0377306264</td><td>0.06416579</td><td>-0.16349557</td><td> 0.088034314</td></tr>
+	<tr><td>Conventional TWFE</td><td>-3</td><td>-0.0332848577</td><td>0.04884621</td><td>-0.12902342</td><td> 0.062453704</td></tr>
+	<tr><td>Conventional TWFE</td><td>-2</td><td>-0.0918613567</td><td>0.04317594</td><td>-0.17648621</td><td>-0.007236506</td></tr>
+	<tr><td>Conventional TWFE</td><td> 0</td><td> 0.0138096576</td><td>0.06698183</td><td>-0.11747473</td><td> 0.145094042</td></tr>
+	<tr><td>Conventional TWFE</td><td> 1</td><td> 0.0227613588</td><td>0.04398801</td><td>-0.06345515</td><td> 0.108977867</td></tr>
+	<tr><td>Conventional TWFE</td><td> 2</td><td> 0.0176587955</td><td>0.05436918</td><td>-0.08890480</td><td> 0.124222392</td></tr>
+	<tr><td>Conventional TWFE</td><td> 3</td><td>-0.0082770602</td><td>0.05576524</td><td>-0.11757692</td><td> 0.101022802</td></tr>
+	<tr><td>Conventional TWFE</td><td> 4</td><td> 0.0353830650</td><td>0.05274646</td><td>-0.06800000</td><td> 0.138766129</td></tr>
+	<tr><td>Sun–Abraham      </td><td>-5</td><td>-0.1049006157</td><td>0.06344759</td><td>-0.22925789</td><td> 0.019456658</td></tr>
+	<tr><td>Sun–Abraham      </td><td>-4</td><td>-0.0404017338</td><td>0.06506119</td><td>-0.16792167</td><td> 0.087118206</td></tr>
+	<tr><td>Sun–Abraham      </td><td>-3</td><td>-0.0392993520</td><td>0.04484084</td><td>-0.12718740</td><td> 0.048588698</td></tr>
+	<tr><td>Sun–Abraham      </td><td>-2</td><td>-0.0972153655</td><td>0.04037879</td><td>-0.17635780</td><td>-0.018072935</td></tr>
+	<tr><td>Sun–Abraham      </td><td> 0</td><td> 0.0143337506</td><td>0.05630292</td><td>-0.09601997</td><td> 0.124687471</td></tr>
+	<tr><td>Sun–Abraham      </td><td> 1</td><td> 0.0146215663</td><td>0.04143909</td><td>-0.06659905</td><td> 0.095842182</td></tr>
+	<tr><td>Sun–Abraham      </td><td> 2</td><td> 0.0331991000</td><td>0.05347684</td><td>-0.07161552</td><td> 0.138013716</td></tr>
+	<tr><td>Sun–Abraham      </td><td> 3</td><td> 0.0008974969</td><td>0.04853593</td><td>-0.09423293</td><td> 0.096027920</td></tr>
+	<tr><td>Sun–Abraham      </td><td> 4</td><td> 0.2322189458</td><td>0.04499939</td><td> 0.14402014</td><td> 0.320417755</td></tr>
+</tbody>
+</table>
+</div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">10</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">5.4</span><span class="p">)</span>
+<span class="nf">ggplot</span><span class="p">(</span>
+<span class="w">  </span><span class="n">event_comparison</span><span class="p">,</span>
+<span class="w">  </span><span class="nf">aes</span><span class="p">(</span><span class="n">event_time</span><span class="p">,</span><span class="w"> </span><span class="n">estimate</span><span class="p">,</span><span class="w"> </span><span class="n">colour</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">estimator</span><span class="p">)</span>
+<span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_hline</span><span class="p">(</span><span class="n">yintercept</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="n">colour</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"grey55"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_vline</span><span class="p">(</span><span class="n">xintercept</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">-1</span><span class="p">,</span><span class="w"> </span><span class="n">linetype</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"dashed"</span><span class="p">,</span><span class="w"> </span><span class="n">colour</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"grey55"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_ribbon</span><span class="p">(</span>
+<span class="w">    </span><span class="nf">aes</span><span class="p">(</span><span class="n">ymin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lower_95</span><span class="p">,</span><span class="w"> </span><span class="n">ymax</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">upper_95</span><span class="p">,</span><span class="w"> </span><span class="n">fill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">estimator</span><span class="p">),</span>
+<span class="w">    </span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.12</span><span class="p">,</span>
+<span class="w">    </span><span class="n">colour</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NA</span>
+<span class="w">  </span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_line</span><span class="p">(</span><span class="n">linewidth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.75</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_point</span><span class="p">(</span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">scale_x_continuous</span><span class="p">(</span><span class="n">breaks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">-5</span><span class="o">:</span><span class="m">4</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">labs</span><span class="p">(</span>
+<span class="w">    </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Years relative to adoption (-1 omitted)"</span><span class="p">,</span>
+<span class="w">    </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Estimated log-homicide effect"</span><span class="p">,</span>
+<span class="w">    </span><span class="n">colour</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">fill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Estimator choice changes the staggered event-study profile"</span>
+<span class="w">  </span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">theme_minimal</span><span class="p">(</span><span class="n">base_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">12</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">theme</span><span class="p">(</span><span class="n">legend.position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"bottom"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<a class="reference internal image-reference" href="../_images/be764d267a99f2bf0737d374e56c96234fe9276164511d4bf4bc110f125403ec.png"><img alt="../_images/be764d267a99f2bf0737d374e56c96234fe9276164511d4bf4bc110f125403ec.png" src="../_images/be764d267a99f2bf0737d374e56c96234fe9276164511d4bf4bc110f125403ec.png" style="width: 600px; height: 324px;" />
+</a>
+</div>
+</div>
+<p>The estimators use the same displayed event window and omitted period, but their implicit comparisons differ. A lead confidence interval covering zero is not proof that parallel trends holds: lead tests can have low power, and conditioning analysis on a passed pre-test can distort inference (Roth 2022).</p>
+</section>
+<section id="step-8-write-a-design-assessment">
+<h2>Step 8: Write A Design Assessment<a class="headerlink" href="#step-8-write-a-design-assessment" title="Link to this heading">#</a></h2>
+<p>Answer each question before choosing a preferred estimate:</p>
+<ol class="arabic simple">
+<li><p>Are never-treated states substantively credible controls for adopting states?</p></li>
+<li><p>Could states change behaviour before a law becomes effective?</p></li>
+<li><p>Could castle-doctrine laws or firearm behaviour spill across state borders?</p></li>
+<li><p>Do late post-treatment event times rely on only one or two early cohorts?</p></li>
+<li><p>How much of static TWFE comes from already-treated comparisons?</p></li>
+<li><p>Do the conventional and Sun–Abraham profiles tell the same substantive story?</p></li>
+</ol>
+</section>
+<section id="practical-implications">
+<h2>Practical Implications<a class="headerlink" href="#practical-implications" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Treatment timing is part of the design, not a nuisance variable.</p></li>
+<li><p>Static TWFE can be reconstructed exactly while still combining questionable comparisons.</p></li>
+<li><p>Clustered standard errors address within-state dependence, not treatment-effect contamination.</p></li>
+<li><p>Event-study leads are diagnostics, not an assumption test that can certify the design.</p></li>
+<li><p>Modern estimators improve comparison discipline but cannot make a substantively poor control group credible.</p></li>
+</ul>
+<p>Next, use the <a class="reference internal" href="difference-in-differences-modern-estimators-lab.html"><span class="std std-doc">modern multi-period lab</span></a> to estimate explicit group-time effects and control their aggregation.</p>
+</section>
+<section id="worked-answers">
+<h2>Worked answers<a class="headerlink" href="#worked-answers" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Future adopters cease to be untreated controls after adoption.</p></li>
+<li><p>Nonnegative Bacon weights on 2×2 estimates do not rule out negative implicit weights on underlying treatment effects.</p></li>
+<li><p>Agreement between estimators does not establish parallel trends; disagreement prompts an audit of comparisons, support, and target weights.</p></li>
+<li><p>State clustering handles within-state dependence, not confounding.</p></li>
+</ul>
+<p>Cheng, Cheng, and Mark Hoekstra. 2013. “Does Strengthening Self-Defense Law Deter Crime or Escalate Violence? Evidence from Expansions to Castle Doctrine.” <em>Journal of Human Resources</em> 48 (3): 821–54. <a class="reference external" href="https://doi.org/10.3368/jhr.48.3.821">https://doi.org/10.3368/jhr.48.3.821</a>.</p>
+<p>Cunningham, Scott. 2021. “Difference-in-Differences.” In <em>Causal Inference: The Mixtape</em>. Yale University Press. <a class="reference external" href="https://mixtape-1ed.netlify.app/09-difference_in_differences">https://mixtape-1ed.netlify.app/09-difference_in_differences</a>.</p>
+<p>Goodman-Bacon, Andrew. 2021. “Difference-in-Differences with Variation in Treatment Timing.” <em>Journal of Econometrics</em> 225 (2): 254–77. <a class="reference external" href="https://doi.org/10.1016/j.jeconom.2021.03.014">https://doi.org/10.1016/j.jeconom.2021.03.014</a>.</p>
+<p>Roth, Jonathan. 2022. “Pretest with Caution: Event-Study Estimates After Testing for Parallel Trends.” <em>American Economic Review: Insights</em> 4 (3): 305–22. <a class="reference external" href="https://doi.org/10.1257/aeri.20210236">https://doi.org/10.1257/aeri.20210236</a>.</p>
+<p>Sun, Liyang, and Sarah Abraham. 2021. “Estimating Dynamic Treatment Effects in Event Studies with Heterogeneous Treatment Effects.” <em>Journal of Econometrics</em> 225 (2): 175–99. <a class="reference external" href="https://doi.org/10.1016/j.jeconom.2020.09.006">https://doi.org/10.1016/j.jeconom.2020.09.006</a>.</p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "r"
+        },
+        kernelOptions: {
+            name: "ir",
+            path: "./notebooks"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'ir'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="difference-in-differences-foundations-lab.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Lab: Difference-in-Differences Foundations With Kentucky Workers’ Compensation</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="difference-in-differences-modern-estimators-lab.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Lab: Modern Multi-Period Difference-in-Differences</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item"><div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-to-use-this-page">How To Use This Page</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#training-goal">Training Goal</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-1-load-the-state-year-panel">Step 1: Load The State-Year Panel</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-2-map-cohorts-and-untreated-support">Step 2: Map Cohorts And Untreated Support</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-3-plot-outcome-paths-by-adoption-cohort">Step 3: Plot Outcome Paths By Adoption Cohort</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-4-estimate-static-twfe">Step 4: Estimate Static TWFE</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-5-decompose-the-twfe-coefficient">Step 5: Decompose The TWFE Coefficient</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-6-inspect-the-decomposition">Step 6: Inspect The Decomposition</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-7-compare-event-study-estimators">Step 7: Compare Event-Study Estimators</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-8-write-a-design-assessment">Step 8: Write A Design Assessment</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#practical-implications">Practical Implications</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#worked-answers">Worked answers</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By QED Labs
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2026.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+<div class="extra_footer">
+  Built for offline use. External reading links are optional.
+</div>
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

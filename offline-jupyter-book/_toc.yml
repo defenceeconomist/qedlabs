@@ -1,0 +1,36 @@
+format: jb-book
+root: index
+parts:
+  - caption: Start here
+    chapters:
+      - file: offline-setup
+      - file: data
+  - caption: Matching and Weighting
+    chapters:
+      - file: notebooks/lalonde-matching-lab
+      - file: notebooks/black-politicians-lab
+      - file: notebooks/nsw-cps-benchmark-lab
+      - file: notebooks/hisp-ie-practice-lab
+  - caption: Difference-in-Differences
+    chapters:
+      - file: notebooks/difference-in-differences-foundations-lab
+      - file: notebooks/difference-in-differences-staggered-diagnostics-lab
+      - file: notebooks/difference-in-differences-modern-estimators-lab
+  - caption: Regression Discontinuity
+    chapters:
+      - file: notebooks/regression-discontinuity-foundations-lab
+      - file: notebooks/regression-discontinuity-diagnostics-lab
+      - file: notebooks/regression-discontinuity-fuzzy-lab
+  - caption: Synthetic Control
+    chapters:
+      - file: notebooks/synthetic-control-mechanics-lab
+      - file: notebooks/synthetic-control-proposition-99-lab
+      - file: notebooks/synthetic-control-augmentation-lab
+      - file: notebooks/synthetic-control-design-lab
+      - file: notebooks/synthetic-control-donor-pool-lab
+  - caption: Interrupted Time Series
+    chapters:
+      - file: notebooks/interrupted-time-series-mechanics-lab
+      - file: notebooks/interrupted-time-series-design-diagnostics-lab
+      - file: notebooks/interrupted-time-series-counterfactual-validation-lab
+

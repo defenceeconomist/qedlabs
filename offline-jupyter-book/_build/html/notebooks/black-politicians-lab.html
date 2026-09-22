@@ -1,0 +1,1402 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Lab: Black Politicians &#8212; Quasi-Experimental Design Labs</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../_static/scripts/fontawesome.js?digest=55c26ed414f5f8a31ebb"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=b8b12719"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="../_static/mathjax/tex-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/black-politicians-lab';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Lab: NSW and CPS Benchmark" href="nsw-cps-benchmark-lab.html" />
+    <link rel="prev" title="Lab: LaLonde Matching" href="lalonde-matching-lab.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">Quasi-Experimental Design Labs</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../index.html">
+                    Quasi-Experimental Design Labs
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Start here</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../offline-setup.html">Offline setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data.html">Bundled data and provenance</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Matching and Weighting</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="lalonde-matching-lab.html">Lab: LaLonde Matching</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Lab: Black Politicians</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nsw-cps-benchmark-lab.html">Lab: NSW and CPS Benchmark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hisp-ie-practice-lab.html">Lab: HISP IE in Practice</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Difference-in-Differences</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="difference-in-differences-foundations-lab.html">Lab: Difference-in-Differences Foundations With Kentucky Workers’ Compensation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="difference-in-differences-staggered-diagnostics-lab.html">Lab: Staggered Adoption and TWFE Diagnostics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="difference-in-differences-modern-estimators-lab.html">Lab: Modern Multi-Period Difference-in-Differences</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Regression Discontinuity</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="regression-discontinuity-foundations-lab.html">Lab: Sharp RD foundations with government transfers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="regression-discontinuity-diagnostics-lab.html">Lab: RDD design diagnostics and sensitivity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="regression-discontinuity-fuzzy-lab.html">Lab: Fuzzy RD and local IV with veteran home ownership</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Synthetic Control</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-mechanics-lab.html">Lab: Synthetic Control Mechanics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-proposition-99-lab.html">Lab: Proposition 99 With tidysynth</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-augmentation-lab.html">Lab: Augmented SCM With Kansas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-design-lab.html">Lab: Synthetic Control Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-donor-pool-lab.html">Lab: Synthetic Control Donor Pool Design</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Interrupted Time Series</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="interrupted-time-series-mechanics-lab.html">Lab: Interrupted Time Series Foundations With Seatbelts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interrupted-time-series-design-diagnostics-lab.html">Lab: Seatbelt Law Design and Robustness</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interrupted-time-series-counterfactual-validation-lab.html">Lab: Interrupted Time Series Counterfactual Validation</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/notebooks/black-politicians-lab.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm pst-navbar-icon" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Lab: Black Politicians</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-to-use-this-page">How To Use This Page</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#training-goal">Training Goal</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dataset-at-a-glance">Dataset At A Glance</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#core-design-choice-for-this-training-aid">Core Design Choice For This Training Aid</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#suggested-session-flow">Suggested Session Flow</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-1-load-the-data">Step 1: Load The Data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-2-describe-the-raw-comparison">Step 2: Describe The Raw Comparison</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-3-baseline-balance-diagnostics">Step 3: Baseline Balance Diagnostics</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-4-exact-matching-feasibility-check">Step 4: Exact Matching Feasibility Check</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-5-build-a-cem-version">Step 5: Build A CEM Version</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-6-try-entropy-balancing">Step 6: Try Entropy Balancing</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-7-estimate-and-compare">Step 7: Estimate And Compare</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#comparison-table-to-fill-in">Comparison Table To Fill In</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#debrief-questions">Debrief Questions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optional-extension">Optional Extension</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="lab-black-politicians">
+<h1>Lab: Black Politicians<a class="headerlink" href="#lab-black-politicians" title="Link to this heading">#</a></h1>
+<p><a class="reference internal" href="../index.html"><span class="std std-doc">Book home</span></a></p>
+<p>Use the R kernel. Keep the supplied <code class="docutils literal notranslate"><span class="pre">data/</span></code> folder beside this notebook. Run cells in order after installing the documented R environment. Data loading is entirely local.</p>
+<section id="how-to-use-this-page">
+<h2>How To Use This Page<a class="headerlink" href="#how-to-use-this-page" title="Link to this heading">#</a></h2>
+<p>Use this page as a guided worksheet rather than as a finished report.</p>
+<ul class="simple">
+<li><p>Read the short framing note for each step.</p></li>
+<li><p>Run the starter code in your own R session.</p></li>
+<li><p>Write down what you learn before moving to the next section.</p></li>
+<li><p>Fill in the comparison table near the end so you can compare designs side by side.</p></li>
+</ul>
+<p>The code is shown but not executed when the website is rendered. That keeps the page readable even if <code class="docutils literal notranslate"><span class="pre">causaldata</span></code> is not installed yet.</p>
+</section>
+<section id="training-goal">
+<h2>Training Goal<a class="headerlink" href="#training-goal" title="Link to this heading">#</a></h2>
+<p>Practice the design-first workflow from the matching report on a second dataset:</p>
+<ol class="arabic simple">
+<li><p>define the estimand before choosing a method</p></li>
+<li><p>map treatment, outcome, and covariates clearly</p></li>
+<li><p>diagnose raw imbalance</p></li>
+<li><p>compare exact matching, CEM, and entropy balancing</p></li>
+<li><p>interpret the tradeoff between balance, retention, and weight concentration</p></li>
+</ol>
+</section>
+<section id="dataset-at-a-glance">
+<h2>Dataset At A Glance<a class="headerlink" href="#dataset-at-a-glance" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">causaldata::black_politicians</span></code> comes from Broockman (2013), a U.S. field experiment on legislator responsiveness that is also used in the <em>Matching</em> chapter of <em>The Effect</em>.</p>
+<ul class="simple">
+<li><p>Observations: <code class="docutils literal notranslate"><span class="pre">5,593</span></code></p></li>
+<li><p>Variables: <code class="docutils literal notranslate"><span class="pre">14</span></code></p></li>
+<li><p>Unit of analysis: one email-to-legislator observation</p></li>
+<li><p>Built-in randomized factor: <code class="docutils literal notranslate"><span class="pre">treat_out</span></code> (whether the email was out-of-district)</p></li>
+</ul>
+<p>The important design feature is that this dataset contains both:</p>
+<ul class="simple">
+<li><p>an experimental component: <code class="docutils literal notranslate"><span class="pre">treat_out</span></code>, which was randomized in the original study</p></li>
+<li><p>an observational comparison: legislator characteristics such as <code class="docutils literal notranslate"><span class="pre">leg_black</span></code>, <code class="docutils literal notranslate"><span class="pre">leg_democrat</span></code>, and district composition</p></li>
+</ul>
+<p>That makes it useful for training because you can separate two different questions:</p>
+<ol class="arabic simple">
+<li><p>what the original experiment randomized</p></li>
+<li><p>what you are doing when you instead compare observed groups of legislators</p></li>
+</ol>
+<p>In this lab, we deliberately focus on the second question. We are <strong>not</strong> estimating the effect of the randomized out-of-district email treatment. Instead, we treat <code class="docutils literal notranslate"><span class="pre">leg_black</span></code> as the focal training comparison and ask whether Black and non-Black legislators can be made more comparable on a compact set of pre-outcome covariates.</p>
+<p>For this training version, we use:</p>
+<ul class="simple">
+<li><p>focal training comparison: <code class="docutils literal notranslate"><span class="pre">leg_black</span></code></p></li>
+<li><p>binary outcome: <code class="docutils literal notranslate"><span class="pre">responded</span></code></p></li>
+<li><p>core design covariates: <code class="docutils literal notranslate"><span class="pre">medianhhincom</span></code>, <code class="docutils literal notranslate"><span class="pre">blackpercent</span></code>, <code class="docutils literal notranslate"><span class="pre">leg_democrat</span></code></p></li>
+<li><p>extension covariates for later rounds: <code class="docutils literal notranslate"><span class="pre">leg_senator</span></code>, <code class="docutils literal notranslate"><span class="pre">south</span></code>, <code class="docutils literal notranslate"><span class="pre">urbanpercent</span></code>, <code class="docutils literal notranslate"><span class="pre">totalpop</span></code></p></li>
+</ul>
+<p>These variables work well for a matching lab because they mix:</p>
+<ul class="simple">
+<li><p>legislator attributes such as party and chamber</p></li>
+<li><p>district composition measures such as racial composition, income, population, and urbanicity</p></li>
+<li><p>an observable behavioral outcome, <code class="docutils literal notranslate"><span class="pre">responded</span></code></p></li>
+</ul>
+<p>That structure supports a clear design-first sequence: inspect raw imbalance, test whether literal exact matching is feasible, then compare CEM and entropy balancing under a shared <code class="docutils literal notranslate"><span class="pre">ATT</span></code> target.</p>
+<p>This is best treated as a training example for matching logic, not as a literal policy treatment that could be assigned. <code class="docutils literal notranslate"><span class="pre">leg_black</span></code> is an observed attribute, so the main teaching value here is design transparency: what comparability would have to mean, where overlap is thin, and how the matched estimand changes as you tighten the design.</p>
+</section>
+<section id="core-design-choice-for-this-training-aid">
+<h2>Core Design Choice For This Training Aid<a class="headerlink" href="#core-design-choice-for-this-training-aid" title="Link to this heading">#</a></h2>
+<p>For a first pass, keep the exercise simple and explicit.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Role</p></th>
+<th class="head"><p>Variable</p></th>
+<th class="head"><p>Why it is used here</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Treatment</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">leg_black</span></code></p></td>
+<td><p>Focal comparison for the matching exercise</p></td>
+</tr>
+<tr class="row-odd"><td><p>Outcome</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">responded</span></code></p></td>
+<td><p>Whether the legislator replied</p></td>
+</tr>
+<tr class="row-even"><td><p>Estimand</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ATT</span></code></p></td>
+<td><p>Average difference for the Black-legislator group</p></td>
+</tr>
+<tr class="row-odd"><td><p>Core covariates</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">medianhhincom</span></code>, <code class="docutils literal notranslate"><span class="pre">blackpercent</span></code>, <code class="docutils literal notranslate"><span class="pre">leg_democrat</span></code></p></td>
+<td><p>Compact set that captures district resources, district racial composition, and party</p></td>
+</tr>
+<tr class="row-even"><td><p>Extension covariates</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">leg_senator</span></code>, <code class="docutils literal notranslate"><span class="pre">south</span></code>, <code class="docutils literal notranslate"><span class="pre">urbanpercent</span></code>, <code class="docutils literal notranslate"><span class="pre">totalpop</span></code></p></td>
+<td><p>Useful once the basic workflow is clear</p></td>
+</tr>
+<tr class="row-odd"><td><p>Post-design modeling variable</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">treat_out</span></code></p></td>
+<td><p>Part of the original study design; add it after you understand the basic matched comparison</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Why not start with every variable at once? Because this page is meant to train judgement, not to hide the design behind a long formula.</p>
+</section>
+<section id="suggested-session-flow">
+<h2>Suggested Session Flow<a class="headerlink" href="#suggested-session-flow" title="Link to this heading">#</a></h2>
+<p>If you are teaching this live, a simple <code class="docutils literal notranslate"><span class="pre">35-45</span></code> minute structure works well:</p>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">5</span> <span class="pre">minutes</span></code>: frame the question and walk through the variable map</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">10</span> <span class="pre">minutes</span></code>: run raw descriptives and balance diagnostics</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">5</span> <span class="pre">minutes</span></code>: try exact matching and discuss why it struggles</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">10</span> <span class="pre">minutes</span></code>: run CEM and inspect the retention-versus-balance tradeoff</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">10</span> <span class="pre">minutes</span></code>: run entropy balancing and inspect effective sample size</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">5</span> <span class="pre">minutes</span></code>: compare designs and decide which one you would defend</p></li>
+</ol>
+</section>
+<section id="step-1-load-the-data">
+<h2>Step 1: Load The Data<a class="headerlink" href="#step-1-load-the-data" title="Link to this heading">#</a></h2>
+<p>Start by loading the packages, bringing in the data, and creating a compact analysis object.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">data_helpers</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">"data/load-data.R"</span><span class="p">,</span><span class="w"> </span><span class="s">"../data/load-data.R"</span><span class="p">,</span><span class="w"> </span><span class="s">"docs/labs/data/load-data.R"</span><span class="p">)</span>
+<span class="n">data_helpers</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">data_helpers</span><span class="p">[</span><span class="nf">file.exists</span><span class="p">(</span><span class="n">data_helpers</span><span class="p">)]</span>
+<span class="kr">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nf">length</span><span class="p">(</span><span class="n">data_helpers</span><span class="p">))</span><span class="w"> </span><span class="nf">stop</span><span class="p">(</span><span class="s">"Extract the complete lab ZIP, including its data folder, before running."</span><span class="p">)</span>
+<span class="nf">source</span><span class="p">(</span><span class="n">data_helpers</span><span class="p">[[</span><span class="m">1</span><span class="p">]])</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">required_packages</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span>
+<span class="w">  </span><span class="s">"MatchIt"</span><span class="p">,</span>
+<span class="w">  </span><span class="s">"WeightIt"</span><span class="p">,</span>
+<span class="w">  </span><span class="s">"cobalt"</span><span class="p">,</span>
+<span class="w">  </span><span class="s">"dplyr"</span><span class="p">,</span>
+<span class="w">  </span><span class="s">"ggplot2"</span>
+<span class="p">)</span>
+
+<span class="n">missing_packages</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">required_packages</span><span class="p">[</span><span class="o">!</span><span class="nf">vapply</span><span class="p">(</span>
+<span class="w">  </span><span class="n">required_packages</span><span class="p">,</span>
+<span class="w">  </span><span class="n">requireNamespace</span><span class="p">,</span>
+<span class="w">  </span><span class="nf">logical</span><span class="p">(</span><span class="m">1</span><span class="p">),</span>
+<span class="w">  </span><span class="n">quietly</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span>
+<span class="p">)]</span>
+
+<span class="kr">if</span><span class="w"> </span><span class="p">(</span><span class="nf">length</span><span class="p">(</span><span class="n">missing_packages</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nf">stop</span><span class="p">(</span><span class="s">"Install the documented R environment first; missing: "</span><span class="p">,</span><span class="w"> </span><span class="nf">paste</span><span class="p">(</span><span class="n">missing_packages</span><span class="p">,</span><span class="w"> </span><span class="n">collapse</span><span class="o">=</span><span class="s">", "</span><span class="p">),</span><span class="w"> </span><span class="n">call.</span><span class="o">=</span><span class="kc">FALSE</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="nf">invisible</span><span class="p">(</span><span class="nf">lapply</span><span class="p">(</span><span class="n">required_packages</span><span class="p">,</span><span class="w"> </span><span class="n">library</span><span class="p">,</span><span class="w"> </span><span class="n">character.only</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">))</span>
+
+<span class="n">dat</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">qed_data</span><span class="p">(</span><span class="s">"black_politicians"</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">mutate</span><span class="p">(</span>
+<span class="w">    </span><span class="n">treat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">as.integer</span><span class="p">(</span><span class="n">leg_black</span><span class="p">),</span>
+<span class="w">    </span><span class="n">outcome</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">as.integer</span><span class="p">(</span><span class="n">responded</span><span class="p">)</span>
+<span class="w">  </span><span class="p">)</span>
+
+<span class="n">design_covariates</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">"medianhhincom"</span><span class="p">,</span><span class="w"> </span><span class="s">"blackpercent"</span><span class="p">,</span><span class="w"> </span><span class="s">"leg_democrat"</span><span class="p">)</span>
+
+<span class="n">dat</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">select</span><span class="p">(</span><span class="n">treat</span><span class="p">,</span><span class="w"> </span><span class="n">outcome</span><span class="p">,</span><span class="w"> </span><span class="n">treat_out</span><span class="p">,</span><span class="w"> </span><span class="nf">all_of</span><span class="p">(</span><span class="n">design_covariates</span><span class="p">))</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">glimpse</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> cobalt (Version 4.6.2, Build Date: 2026-01-29)
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Attaching package: ‘cobalt’
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>The following object is masked from ‘package:MatchIt’:
+
+    lalonde
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Attaching package: ‘dplyr’
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>The following objects are masked from ‘package:stats’:
+
+    filter, lag
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Rows: 5,593
+Columns: 6
+$ treat         &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
+$ outcome       &lt;int&gt; 0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1,…
+$ treat_out     &lt;dbl&gt; 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 1,…
+$ medianhhincom &lt;dbl&gt; 5.0625, 4.9713, 6.9646, 4.1811, 3.1152, 6.0678, 5.5030, …
+$ blackpercent  &lt;dbl&gt; 0.007119007, 0.005796029, 0.012028725, 0.004279866, 0.00…
+$ leg_democrat  &lt;dbl&gt; 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0,…
+</pre></div>
+</div>
+</div>
+</div>
+<p>Checkpoint:</p>
+<ul class="simple">
+<li><p>Is the treatment binary?</p></li>
+<li><p>Is the outcome binary?</p></li>
+<li><p>Are the matching covariates measured before the outcome?</p></li>
+</ul>
+</section>
+<section id="step-2-describe-the-raw-comparison">
+<h2>Step 2: Describe The Raw Comparison<a class="headerlink" href="#step-2-describe-the-raw-comparison" title="Link to this heading">#</a></h2>
+<p>Do not start with a matching algorithm. First check whether the untreated group looks remotely comparable to the treated group on the covariates you care about.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">raw_summary</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">dat</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">group_by</span><span class="p">(</span><span class="n">treat</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">summarise</span><span class="p">(</span>
+<span class="w">    </span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">n</span><span class="p">(),</span>
+<span class="w">    </span><span class="n">response_rate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">outcome</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">),</span>
+<span class="w">    </span><span class="n">mean_income</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">medianhhincom</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">),</span>
+<span class="w">    </span><span class="n">mean_blackpercent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">blackpercent</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">),</span>
+<span class="w">    </span><span class="n">prop_democrat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">leg_democrat</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">),</span>
+<span class="w">    </span><span class="n">.groups</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"drop"</span>
+<span class="w">  </span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">mutate</span><span class="p">(</span><span class="n">group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">if_else</span><span class="p">(</span><span class="n">treat</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1L</span><span class="p">,</span><span class="w"> </span><span class="s">"Black legislators"</span><span class="p">,</span><span class="w"> </span><span class="s">"Non-Black legislators"</span><span class="p">))</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">select</span><span class="p">(</span><span class="n">group</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">response_rate</span><span class="p">,</span><span class="w"> </span><span class="n">mean_income</span><span class="p">,</span><span class="w"> </span><span class="n">mean_blackpercent</span><span class="p">,</span><span class="w"> </span><span class="n">prop_democrat</span><span class="p">)</span>
+
+<span class="n">raw_summary</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><table class="dataframe">
+<caption>A tibble: 2 × 6</caption>
+<thead>
+	<tr><th scope=col>group</th><th scope=col>n</th><th scope=col>response_rate</th><th scope=col>mean_income</th><th scope=col>mean_blackpercent</th><th scope=col>prop_democrat</th></tr>
+	<tr><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;int&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>Non-Black legislators</td><td>5229</td><td>0.4249378</td><td>4.434909</td><td>0.06269056</td><td>0.5006693</td></tr>
+	<tr><td>Black legislators    </td><td> 364</td><td>0.3928571</td><td>3.329848</td><td>0.51658989</td><td>0.9780220</td></tr>
+</tbody>
+</table>
+</div></div>
+</div>
+<p>What to look for:</p>
+<ul class="simple">
+<li><p>large differences in <code class="docutils literal notranslate"><span class="pre">medianhhincom</span></code></p></li>
+<li><p>large differences in <code class="docutils literal notranslate"><span class="pre">blackpercent</span></code></p></li>
+<li><p>major party imbalance on <code class="docutils literal notranslate"><span class="pre">leg_democrat</span></code></p></li>
+</ul>
+<p>If the raw groups are far apart, that does not mean matching will fail, but it does mean the burden on the design is real.</p>
+</section>
+<section id="step-3-baseline-balance-diagnostics">
+<h2>Step 3: Baseline Balance Diagnostics<a class="headerlink" href="#step-3-baseline-balance-diagnostics" title="Link to this heading">#</a></h2>
+<p>Use <code class="docutils literal notranslate"><span class="pre">MatchIt</span></code> with <code class="docutils literal notranslate"><span class="pre">method</span> <span class="pre">=</span> <span class="pre">NULL</span></code> to get a formal pre-adjustment balance benchmark.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">m_raw</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">matchit</span><span class="p">(</span>
+<span class="w">  </span><span class="n">treat</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">medianhhincom</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">blackpercent</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">leg_democrat</span><span class="p">,</span>
+<span class="w">  </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dat</span><span class="p">,</span>
+<span class="w">  </span><span class="n">method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">,</span>
+<span class="w">  </span><span class="n">estimand</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"ATT"</span>
+<span class="p">)</span>
+
+<span class="nf">summary</span><span class="p">(</span><span class="n">m_raw</span><span class="p">,</span><span class="w"> </span><span class="n">un</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span>
+
+<span class="n">cobalt</span><span class="o">::</span><span class="nf">bal.tab</span><span class="p">(</span><span class="n">m_raw</span><span class="p">,</span><span class="w"> </span><span class="n">un</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">,</span><span class="w"> </span><span class="n">m.threshold</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.1</span><span class="p">)</span>
+
+<span class="n">cobalt</span><span class="o">::</span><span class="nf">love.plot</span><span class="p">(</span>
+<span class="w">  </span><span class="n">m_raw</span><span class="p">,</span>
+<span class="w">  </span><span class="n">abs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">,</span>
+<span class="w">  </span><span class="n">thresholds</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="n">m</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.1</span><span class="p">),</span>
+<span class="w">  </span><span class="n">stars</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"raw"</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Call:
+matchit(formula = treat ~ medianhhincom + blackpercent + leg_democrat, 
+    data = dat, method = NULL, estimand = "ATT")
+
+Summary of Balance for All Data:
+              Means Treated Means Control Std. Mean Diff. Var. Ratio eCDF Mean
+distance             0.6399        0.0251          1.8660    13.4706    0.4720
+medianhhincom        3.3298        4.4349         -0.9706     0.6631    0.2596
+blackpercent         0.5166        0.0627          2.2474     4.3982    0.4807
+leg_democrat         0.9780        0.5007          3.2559          .    0.4774
+              eCDF Max
+distance        0.8449
+medianhhincom   0.4130
+blackpercent    0.8224
+leg_democrat    0.4774
+
+Sample Sizes:
+          Control Treated
+All          5229     364
+Matched      5229     364
+Unmatched       0       0
+Discarded       0       0
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Balance Measures
+                  Type Diff.Un     M.Threshold.Un
+distance      Distance  1.8660                   
+medianhhincom  Contin. -0.9706 Not Balanced, &gt;0.1
+blackpercent   Contin.  2.2474 Not Balanced, &gt;0.1
+leg_democrat    Binary  0.4774 Not Balanced, &gt;0.1
+
+Balance tally for mean differences
+                   count
+Balanced, &lt;0.1         0
+Not Balanced, &gt;0.1     3
+
+Variable with the greatest mean difference
+     Variable Diff.Un     M.Threshold.Un
+ blackpercent  2.2474 Not Balanced, &gt;0.1
+
+Sample sizes
+    Control Treated
+All    5229     364
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/a97ca74d0f3b5247fb02861f874c8ca2105b4a9366ce45e4d7785b5762227d75.png"><img alt="../_images/a97ca74d0f3b5247fb02861f874c8ca2105b4a9366ce45e4d7785b5762227d75.png" src="../_images/a97ca74d0f3b5247fb02861f874c8ca2105b4a9366ce45e4d7785b5762227d75.png" style="width: 480px; height: 288px;" />
+</a>
+</div>
+</div>
+<p>Checkpoint:</p>
+<ul class="simple">
+<li><p>Which covariate is least balanced?</p></li>
+<li><p>Are any absolute standardized mean differences already below <code class="docutils literal notranslate"><span class="pre">0.1</span></code>?</p></li>
+<li><p>If balance is poor, is the problem modest or structural?</p></li>
+</ul>
+</section>
+<section id="step-4-exact-matching-feasibility-check">
+<h2>Step 4: Exact Matching Feasibility Check<a class="headerlink" href="#step-4-exact-matching-feasibility-check" title="Link to this heading">#</a></h2>
+<p>Exact matching is easiest to explain, but it becomes restrictive quickly. Use a reduced discrete specification to show both its appeal and its limits.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">m_exact</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">matchit</span><span class="p">(</span>
+<span class="w">  </span><span class="n">treat</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">leg_democrat</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">leg_senator</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">south</span><span class="p">,</span>
+<span class="w">  </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dat</span><span class="p">,</span>
+<span class="w">  </span><span class="n">method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"exact"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">estimand</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"ATT"</span>
+<span class="p">)</span>
+
+<span class="nf">summary</span><span class="p">(</span><span class="n">m_exact</span><span class="p">,</span><span class="w"> </span><span class="n">un</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span>
+
+<span class="n">exact_dat</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">match.data</span><span class="p">(</span><span class="n">m_exact</span><span class="p">)</span>
+
+<span class="n">exact_dat</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">count</span><span class="p">(</span><span class="n">treat</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">mutate</span><span class="p">(</span><span class="n">group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">if_else</span><span class="p">(</span><span class="n">treat</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1L</span><span class="p">,</span><span class="w"> </span><span class="s">"Treated"</span><span class="p">,</span><span class="w"> </span><span class="s">"Control"</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Call:
+matchit(formula = treat ~ leg_democrat + leg_senator + south, 
+    data = dat, method = "exact", estimand = "ATT")
+
+Summary of Balance for All Data:
+             Means Treated Means Control Std. Mean Diff. Var. Ratio eCDF Mean
+leg_democrat        0.9780        0.5007          3.2559          .    0.4774
+leg_senator         0.2363        0.2658         -0.0696          .    0.0296
+south               0.5385        0.2503          0.5780          .    0.2881
+             eCDF Max
+leg_democrat   0.4774
+leg_senator    0.0296
+south          0.2881
+
+Summary of Balance for Matched Data:
+             Means Treated Means Control Std. Mean Diff. Var. Ratio eCDF Mean
+leg_democrat        0.9780        0.9780               0          .         0
+leg_senator         0.2363        0.2363              -0          .         0
+south               0.5385        0.5385               0          .         0
+             eCDF Max Std. Pair Dist.
+leg_democrat        0               0
+leg_senator         0               0
+south               0               0
+
+Sample Sizes:
+              Control Treated
+All           5229.       364
+Matched (ESS) 1637.83     364
+Matched       5059.       364
+Unmatched      170.         0
+Discarded        0.         0
+</pre></div>
+</div>
+<div class="output text_html"><table class="dataframe">
+<caption>A matchdata: 2 × 3</caption>
+<thead>
+	<tr><th scope=col>treat</th><th scope=col>n</th><th scope=col>group</th></tr>
+	<tr><th scope=col>&lt;int&gt;</th><th scope=col>&lt;int&gt;</th><th scope=col>&lt;chr&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>0</td><td>5059</td><td>Control</td></tr>
+	<tr><td>1</td><td> 364</td><td>Treated</td></tr>
+</tbody>
+</table>
+</div></div>
+</div>
+<p>What to discuss:</p>
+<ul class="simple">
+<li><p>Exact matching is transparent because every retained comparison is literal on the chosen variables.</p></li>
+<li><p>It will usually ignore important continuous differences unless you bin them first.</p></li>
+<li><p>If many treated units are dropped, the estimand begins to drift toward “the treated units for whom exact matches exist.”</p></li>
+</ul>
+</section>
+<section id="step-5-build-a-cem-version">
+<h2>Step 5: Build A CEM Version<a class="headerlink" href="#step-5-build-a-cem-version" title="Link to this heading">#</a></h2>
+<p>CEM relaxes exact matching by coarsening continuous covariates into bins. That usually improves feasibility while keeping the matching logic visible.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">create_even_breaks</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">min_x</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">min</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span>
+<span class="w">  </span><span class="n">max_x</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">max</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span>
+<span class="w">  </span><span class="n">min_x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">((</span><span class="m">0</span><span class="o">:</span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">max_x</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">min_x</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="n">cem_cutpoints</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span>
+<span class="w">  </span><span class="n">medianhhincom</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">quantile</span><span class="p">(</span><span class="n">dat</span><span class="o">$</span><span class="n">medianhhincom</span><span class="p">,</span><span class="w"> </span><span class="n">probs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="m">0</span><span class="o">:</span><span class="m">6</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="m">6</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">),</span>
+<span class="w">  </span><span class="n">blackpercent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">create_even_breaks</span><span class="p">(</span><span class="n">dat</span><span class="o">$</span><span class="n">blackpercent</span><span class="p">,</span><span class="w"> </span><span class="m">6</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">m_cem</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">matchit</span><span class="p">(</span>
+<span class="w">  </span><span class="n">treat</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">medianhhincom</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">blackpercent</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">leg_democrat</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">leg_senator</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">south</span><span class="p">,</span>
+<span class="w">  </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dat</span><span class="p">,</span>
+<span class="w">  </span><span class="n">method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"cem"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">estimand</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"ATT"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">cutpoints</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cem_cutpoints</span>
+<span class="p">)</span>
+
+<span class="nf">summary</span><span class="p">(</span><span class="n">m_cem</span><span class="p">,</span><span class="w"> </span><span class="n">un</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span>
+
+<span class="n">cobalt</span><span class="o">::</span><span class="nf">bal.tab</span><span class="p">(</span><span class="n">m_cem</span><span class="p">,</span><span class="w"> </span><span class="n">un</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">,</span><span class="w"> </span><span class="n">m.threshold</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.1</span><span class="p">)</span>
+
+<span class="n">cobalt</span><span class="o">::</span><span class="nf">love.plot</span><span class="p">(</span>
+<span class="w">  </span><span class="n">m_cem</span><span class="p">,</span>
+<span class="w">  </span><span class="n">abs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">,</span>
+<span class="w">  </span><span class="n">thresholds</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="n">m</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.1</span><span class="p">),</span>
+<span class="w">  </span><span class="n">stars</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"raw"</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Call:
+matchit(formula = treat ~ medianhhincom + blackpercent + leg_democrat + 
+    leg_senator + south, data = dat, method = "cem", estimand = "ATT", 
+    cutpoints = cem_cutpoints)
+
+Summary of Balance for All Data:
+              Means Treated Means Control Std. Mean Diff. Var. Ratio eCDF Mean
+medianhhincom        3.3298        4.4349         -0.9706     0.6631    0.2596
+blackpercent         0.5166        0.0627          2.2474     4.3982    0.4807
+leg_democrat         0.9780        0.5007          3.2559          .    0.4774
+leg_senator          0.2363        0.2658         -0.0696          .    0.0296
+south                0.5385        0.2503          0.5780          .    0.2881
+              eCDF Max
+medianhhincom   0.4130
+blackpercent    0.8224
+leg_democrat    0.4774
+leg_senator     0.0296
+south           0.2881
+
+Summary of Balance for Matched Data:
+              Means Treated Means Control Std. Mean Diff. Var. Ratio eCDF Mean
+medianhhincom        3.2240        3.2158          0.0072     1.1333    0.0091
+blackpercent         0.4894        0.4706          0.0930     0.9095    0.0253
+leg_democrat         0.9733        0.9733          0.0000          .    0.0000
+leg_senator          0.1733        0.1733          0.0000          .    0.0000
+south                0.6100        0.6100          0.0000          .    0.0000
+              eCDF Max Std. Pair Dist.
+medianhhincom   0.0623          0.4303
+blackpercent    0.1007          0.2973
+leg_democrat    0.0000          0.0000
+leg_senator     0.0000          0.0000
+south           0.0000          0.0000
+
+Sample Sizes:
+              Control Treated
+All           5229.       364
+Matched (ESS)   79.52     300
+Matched       3110.       300
+Unmatched     2119.        64
+Discarded        0.         0
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Balance Measures
+                 Type Diff.Un Diff.Adj    M.Threshold
+medianhhincom Contin. -0.9706   0.0072 Balanced, &lt;0.1
+blackpercent  Contin.  2.2474   0.0930 Balanced, &lt;0.1
+leg_democrat   Binary  0.4774   0.0000 Balanced, &lt;0.1
+leg_senator    Binary -0.0296   0.0000 Balanced, &lt;0.1
+south          Binary  0.2881   0.0000 Balanced, &lt;0.1
+
+Balance tally for mean differences
+                   count
+Balanced, &lt;0.1         5
+Not Balanced, &gt;0.1     0
+
+Variable with the greatest mean difference
+     Variable Diff.Adj    M.Threshold
+ blackpercent    0.093 Balanced, &lt;0.1
+
+Sample sizes
+                     Control Treated
+All                  5229.       364
+Matched (ESS)          79.52     300
+Matched (Unweighted) 3110.       300
+Unmatched            2119.        64
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/a5e097c92ab28de64e84c8b6f43ca6f6c439b18f1705b59c658fff506f04d4f0.png"><img alt="../_images/a5e097c92ab28de64e84c8b6f43ca6f6c439b18f1705b59c658fff506f04d4f0.png" src="../_images/a5e097c92ab28de64e84c8b6f43ca6f6c439b18f1705b59c658fff506f04d4f0.png" style="width: 480px; height: 288px;" />
+</a>
+</div>
+</div>
+<p>Questions to answer after running it:</p>
+<ol class="arabic simple">
+<li><p>How much better is balance than in the raw sample?</p></li>
+<li><p>How many treated units are retained?</p></li>
+<li><p>Which binning choices matter most for the result?</p></li>
+</ol>
+</section>
+<section id="step-6-try-entropy-balancing">
+<h2>Step 6: Try Entropy Balancing<a class="headerlink" href="#step-6-try-entropy-balancing" title="Link to this heading">#</a></h2>
+<p>Entropy balancing keeps the treated group intact and reweights the controls. That often gives excellent balance, but the price can be concentrated weights and a smaller effective control sample.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">w_ebal</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">weightit</span><span class="p">(</span>
+<span class="w">  </span><span class="n">treat</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">medianhhincom</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nf">I</span><span class="p">(</span><span class="n">medianhhincom</span><span class="o">^</span><span class="m">2</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">    </span><span class="n">blackpercent</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nf">I</span><span class="p">(</span><span class="n">blackpercent</span><span class="o">^</span><span class="m">2</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">    </span><span class="n">leg_democrat</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">leg_senator</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">south</span><span class="p">,</span>
+<span class="w">  </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dat</span><span class="p">,</span>
+<span class="w">  </span><span class="n">method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"ebal"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">estimand</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"ATT"</span>
+<span class="p">)</span>
+
+<span class="nf">summary</span><span class="p">(</span><span class="n">w_ebal</span><span class="p">)</span>
+
+<span class="n">cobalt</span><span class="o">::</span><span class="nf">bal.tab</span><span class="p">(</span><span class="n">w_ebal</span><span class="p">,</span><span class="w"> </span><span class="n">un</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">,</span><span class="w"> </span><span class="n">m.threshold</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.1</span><span class="p">)</span>
+
+<span class="n">cobalt</span><span class="o">::</span><span class="nf">love.plot</span><span class="p">(</span>
+<span class="w">  </span><span class="n">w_ebal</span><span class="p">,</span>
+<span class="w">  </span><span class="n">abs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">,</span>
+<span class="w">  </span><span class="n">thresholds</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="n">m</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.1</span><span class="p">),</span>
+<span class="w">  </span><span class="n">stars</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"raw"</span>
+<span class="p">)</span>
+
+<span class="n">ess</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="n">w</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="p">(</span><span class="nf">sum</span><span class="p">(</span><span class="n">w</span><span class="p">)</span><span class="o">^</span><span class="m">2</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">w</span><span class="o">^</span><span class="m">2</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="n">dat_ebal</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">dat</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">mutate</span><span class="p">(</span><span class="n">w</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">w_ebal</span><span class="o">$</span><span class="n">weights</span><span class="p">)</span>
+
+<span class="n">dat_ebal</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">group_by</span><span class="p">(</span><span class="n">treat</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">summarise</span><span class="p">(</span>
+<span class="w">    </span><span class="n">raw_n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">n</span><span class="p">(),</span>
+<span class="w">    </span><span class="n">ess</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">ess</span><span class="p">(</span><span class="n">w</span><span class="p">),</span>
+<span class="w">    </span><span class="n">max_weight</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">max</span><span class="p">(</span><span class="n">w</span><span class="p">),</span>
+<span class="w">    </span><span class="n">mean_weight</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">w</span><span class="p">),</span>
+<span class="w">    </span><span class="n">.groups</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"drop"</span>
+<span class="w">  </span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Warning message:
+“Some extreme weights were generated. Examine them with `summary()` and
+maybe trim them with `trim()`.”
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  Summary of weights
+
+- Weight ranges:
+
+          Min                                   Max
+treated 1.    ||                              1.   
+control 0.005 |---------------------------| 208.905
+
+- Units with the 5 most extreme weights by group:
+                                                
+               1       2       3       4       5
+ treated       1       1       1       1       1
+            2417    2402    1903    1679     636
+ control 160.571 164.396 165.571 176.962 208.905
+
+- Weight statistics:
+
+        Coef of Var   MAD Entropy # Zeros
+treated       0.000 0.000   0.000       0
+control       8.304 1.683   3.245       0
+
+- Effective Sample Sizes:
+
+           Control Treated
+Unweighted 5229.       364
+Weighted     74.76     364
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Balance Measures
+                 Type Diff.Un Diff.Adj    M.Threshold
+medianhhincom Contin. -0.9706       -0 Balanced, &lt;0.1
+blackpercent  Contin.  2.2474        0 Balanced, &lt;0.1
+leg_democrat   Binary  0.4774        0 Balanced, &lt;0.1
+leg_senator    Binary -0.0296        0 Balanced, &lt;0.1
+south          Binary  0.2881        0 Balanced, &lt;0.1
+
+Balance tally for mean differences
+                   count
+Balanced, &lt;0.1         5
+Not Balanced, &gt;0.1     0
+
+Variable with the greatest mean difference
+     Variable Diff.Adj    M.Threshold
+ leg_democrat        0 Balanced, &lt;0.1
+
+Effective sample sizes
+           Control Treated
+Unadjusted 5229.       364
+Adjusted     74.76     364
+</pre></div>
+</div>
+<div class="output text_html"><table class="dataframe">
+<caption>A tibble: 2 × 5</caption>
+<thead>
+	<tr><th scope=col>treat</th><th scope=col>raw_n</th><th scope=col>ess</th><th scope=col>max_weight</th><th scope=col>mean_weight</th></tr>
+	<tr><th scope=col>&lt;int&gt;</th><th scope=col>&lt;int&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>0</td><td>5229</td><td> 74.75574</td><td>208.9048</td><td>1</td></tr>
+	<tr><td>1</td><td> 364</td><td>364.00000</td><td>  1.0000</td><td>1</td></tr>
+</tbody>
+</table>
+</div><a class="reference internal image-reference" href="../_images/a0f92a01f5a6b5a39ea92065de70f689c995f851012dcbe96f36850fcc805fa2.png"><img alt="../_images/a0f92a01f5a6b5a39ea92065de70f689c995f851012dcbe96f36850fcc805fa2.png" src="../_images/a0f92a01f5a6b5a39ea92065de70f689c995f851012dcbe96f36850fcc805fa2.png" style="width: 480px; height: 288px;" />
+</a>
+</div>
+</div>
+<p>Interpretation prompt:</p>
+<ul class="simple">
+<li><p>If balance looks excellent but control-side ESS collapses, would you still prefer this design?</p></li>
+</ul>
+</section>
+<section id="step-7-estimate-and-compare">
+<h2>Step 7: Estimate And Compare<a class="headerlink" href="#step-7-estimate-and-compare" title="Link to this heading">#</a></h2>
+<p>Keep the outcome model simple for the training version. The point is to compare designs, not to hide differences behind a complicated specification.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">raw_fit</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">lm</span><span class="p">(</span><span class="n">outcome</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">treat</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dat</span><span class="p">)</span>
+
+<span class="n">exact_fit</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">lm</span><span class="p">(</span><span class="n">outcome</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">treat</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">exact_dat</span><span class="p">,</span><span class="w"> </span><span class="n">weights</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">weights</span><span class="p">)</span>
+
+<span class="n">cem_dat</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">match.data</span><span class="p">(</span><span class="n">m_cem</span><span class="p">)</span>
+<span class="n">cem_fit</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">lm</span><span class="p">(</span><span class="n">outcome</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">treat</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cem_dat</span><span class="p">,</span><span class="w"> </span><span class="n">weights</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">weights</span><span class="p">)</span>
+
+<span class="n">ebal_fit</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">lm</span><span class="p">(</span><span class="n">outcome</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">treat</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dat_ebal</span><span class="p">,</span><span class="w"> </span><span class="n">weights</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">w</span><span class="p">)</span>
+
+<span class="nf">coef</span><span class="p">(</span><span class="nf">summary</span><span class="p">(</span><span class="n">raw_fit</span><span class="p">))</span>
+<span class="nf">coef</span><span class="p">(</span><span class="nf">summary</span><span class="p">(</span><span class="n">exact_fit</span><span class="p">))</span>
+<span class="nf">coef</span><span class="p">(</span><span class="nf">summary</span><span class="p">(</span><span class="n">cem_fit</span><span class="p">))</span>
+<span class="nf">coef</span><span class="p">(</span><span class="nf">summary</span><span class="p">(</span><span class="n">ebal_fit</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><table class="dataframe">
+<caption>A matrix: 2 × 4 of type dbl</caption>
+<thead>
+	<tr><th></th><th scope=col>Estimate</th><th scope=col>Std. Error</th><th scope=col>t value</th><th scope=col>Pr(&gt;|t|)</th></tr>
+</thead>
+<tbody>
+	<tr><th scope=row>(Intercept)</th><td> 0.4249378</td><td>0.006832036</td><td>62.197837</td><td>0.0000000</td></tr>
+	<tr><th scope=row>treat</th><td>-0.0320807</td><td>0.026780695</td><td>-1.197904</td><td>0.2310051</td></tr>
+</tbody>
+</table>
+</div><div class="output text_html"><table class="dataframe">
+<caption>A matrix: 2 × 4 of type dbl</caption>
+<thead>
+	<tr><th></th><th scope=col>Estimate</th><th scope=col>Std. Error</th><th scope=col>t value</th><th scope=col>Pr(&gt;|t|)</th></tr>
+</thead>
+<tbody>
+	<tr><th scope=row>(Intercept)</th><td>0.389921976</td><td>0.006859119</td><td>56.8472349</td><td>0.0000000</td></tr>
+	<tr><th scope=row>treat</th><td>0.002935167</td><td>0.026475092</td><td> 0.1108652</td><td>0.9117273</td></tr>
+</tbody>
+</table>
+</div><div class="output text_html"><table class="dataframe">
+<caption>A matrix: 2 × 4 of type dbl</caption>
+<thead>
+	<tr><th></th><th scope=col>Estimate</th><th scope=col>Std. Error</th><th scope=col>t value</th><th scope=col>Pr(&gt;|t|)</th></tr>
+</thead>
+<tbody>
+	<tr><th scope=row>(Intercept)</th><td> 0.38295034</td><td>0.008709656</td><td>43.9684780</td><td>0.0000000</td></tr>
+	<tr><th scope=row>treat</th><td>-0.02295034</td><td>0.029364160</td><td>-0.7815765</td><td>0.4345178</td></tr>
+</tbody>
+</table>
+</div><div class="output text_html"><table class="dataframe">
+<caption>A matrix: 2 × 4 of type dbl</caption>
+<thead>
+	<tr><th></th><th scope=col>Estimate</th><th scope=col>Std. Error</th><th scope=col>t value</th><th scope=col>Pr(&gt;|t|)</th></tr>
+</thead>
+<tbody>
+	<tr><th scope=row>(Intercept)</th><td>0.32701393</td><td>0.006506324</td><td>50.260932</td><td>0.000000000</td></tr>
+	<tr><th scope=row>treat</th><td>0.06584321</td><td>0.025503949</td><td> 2.581687</td><td>0.009857088</td></tr>
+</tbody>
+</table>
+</div></div>
+</div>
+<p>You can stop here for an introductory session. If you want to connect the lab back to the original study design, add <code class="docutils literal notranslate"><span class="pre">treat_out</span></code> and relevant controls after the design stage rather than mixing everything together at the start.</p>
+</section>
+<section id="comparison-table-to-fill-in">
+<h2>Comparison Table To Fill In<a class="headerlink" href="#comparison-table-to-fill-in" title="Link to this heading">#</a></h2>
+<p>Use this table as the main training record.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Design</p></th>
+<th class="head"><p>Worst abs. SMD</p></th>
+<th class="head"><p>Treated retained</p></th>
+<th class="head"><p>Control ESS</p></th>
+<th class="head"><p>Estimated effect</p></th>
+<th class="head"><p>Your judgement</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Raw sample</p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p>Exact matching</p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p>CEM</p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p>Entropy balancing</p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="debrief-questions">
+<h2>Debrief Questions<a class="headerlink" href="#debrief-questions" title="Link to this heading">#</a></h2>
+<ol class="arabic simple">
+<li><p>Which design gave the best balance on the covariates you actually care about?</p></li>
+<li><p>Which design preserved the clearest connection to the original <code class="docutils literal notranslate"><span class="pre">ATT</span></code>?</p></li>
+<li><p>Did better balance come from pruning observations, reweighting heavily, or both?</p></li>
+<li><p>If you had to explain your preferred design to a non-technical policy audience, which one would be easiest to defend?</p></li>
+</ol>
+</section>
+<section id="optional-extension">
+<h2>Optional Extension<a class="headerlink" href="#optional-extension" title="Link to this heading">#</a></h2>
+<p>Once the core exercise is complete, extend the outcome model to reflect the original study more closely. This same interaction model is now included in the evaluated-code artifact so you can compare your local run with the QA checks directly.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">final_fit</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">lm</span><span class="p">(</span>
+<span class="w">  </span><span class="n">outcome</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">treat</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">treat_out</span><span class="w"> </span><span class="o">+</span>
+<span class="w">    </span><span class="n">nonblacknonwhite</span><span class="w"> </span><span class="o">+</span>
+<span class="w">    </span><span class="n">black_medianhh</span><span class="w"> </span><span class="o">+</span>
+<span class="w">    </span><span class="n">white_medianhh</span><span class="w"> </span><span class="o">+</span>
+<span class="w">    </span><span class="n">statessquireindex</span><span class="w"> </span><span class="o">+</span>
+<span class="w">    </span><span class="n">totalpop</span><span class="w"> </span><span class="o">+</span>
+<span class="w">    </span><span class="n">urbanpercent</span><span class="p">,</span>
+<span class="w">  </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cem_dat</span><span class="p">,</span>
+<span class="w">  </span><span class="n">weights</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">weights</span>
+<span class="p">)</span>
+
+<span class="nf">summary</span><span class="p">(</span><span class="n">final_fit</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Call:
+lm(formula = outcome ~ treat * treat_out + nonblacknonwhite + 
+    black_medianhh + white_medianhh + statessquireindex + totalpop + 
+    urbanpercent, data = cem_dat, weights = weights)
+
+Weighted Residuals:
+    Min      1Q  Median      3Q     Max 
+-4.8858 -0.1385 -0.0483  0.1258  6.4644 
+
+Coefficients:
+                   Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)        0.458583   0.032101  14.286  &lt; 2e-16 ***
+treat             -0.188529   0.038471  -4.901 1.00e-06 ***
+treat_out         -0.340308   0.016200 -21.006  &lt; 2e-16 ***
+nonblacknonwhite  -0.023062   0.042385  -0.544    0.586    
+black_medianhh     0.179526   0.020107   8.928  &lt; 2e-16 ***
+white_medianhh    -0.135788   0.017267  -7.864 4.95e-15 ***
+statessquireindex  0.014632   0.111150   0.132    0.895    
+totalpop           0.006274   0.001553   4.039 5.49e-05 ***
+urbanpercent       0.173038   0.029564   5.853 5.28e-09 ***
+treat:treat_out    0.230074   0.053760   4.280 1.92e-05 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.4438 on 3400 degrees of freedom
+Multiple R-squared:  0.1674,	Adjusted R-squared:  0.1652 
+F-statistic: 75.96 on 9 and 3400 DF,  p-value: &lt; 2.2e-16
+</pre></div>
+</div>
+</div>
+</div>
+<p>This extension is useful because it separates two tasks:</p>
+<ul class="simple">
+<li><p>design the comparison first</p></li>
+<li><p>fit the richer substantive model second</p></li>
+</ul>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "r"
+        },
+        kernelOptions: {
+            name: "ir",
+            path: "./notebooks"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'ir'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="lalonde-matching-lab.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Lab: LaLonde Matching</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="nsw-cps-benchmark-lab.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Lab: NSW and CPS Benchmark</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item"><div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-to-use-this-page">How To Use This Page</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#training-goal">Training Goal</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dataset-at-a-glance">Dataset At A Glance</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#core-design-choice-for-this-training-aid">Core Design Choice For This Training Aid</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#suggested-session-flow">Suggested Session Flow</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-1-load-the-data">Step 1: Load The Data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-2-describe-the-raw-comparison">Step 2: Describe The Raw Comparison</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-3-baseline-balance-diagnostics">Step 3: Baseline Balance Diagnostics</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-4-exact-matching-feasibility-check">Step 4: Exact Matching Feasibility Check</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-5-build-a-cem-version">Step 5: Build A CEM Version</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-6-try-entropy-balancing">Step 6: Try Entropy Balancing</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-7-estimate-and-compare">Step 7: Estimate And Compare</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#comparison-table-to-fill-in">Comparison Table To Fill In</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#debrief-questions">Debrief Questions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optional-extension">Optional Extension</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By QED Labs
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2026.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+<div class="extra_footer">
+  Built for offline use. External reading links are optional.
+</div>
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

@@ -1,0 +1,1384 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Lab: Modern Multi-Period Difference-in-Differences &#8212; Quasi-Experimental Design Labs</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../_static/scripts/fontawesome.js?digest=55c26ed414f5f8a31ebb"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=b8b12719"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="../_static/mathjax/tex-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/difference-in-differences-modern-estimators-lab';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Lab: Sharp RD foundations with government transfers" href="regression-discontinuity-foundations-lab.html" />
+    <link rel="prev" title="Lab: Staggered Adoption and TWFE Diagnostics" href="difference-in-differences-staggered-diagnostics-lab.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">Quasi-Experimental Design Labs</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../index.html">
+                    Quasi-Experimental Design Labs
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Start here</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../offline-setup.html">Offline setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data.html">Bundled data and provenance</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Matching and Weighting</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="lalonde-matching-lab.html">Lab: LaLonde Matching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="black-politicians-lab.html">Lab: Black Politicians</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nsw-cps-benchmark-lab.html">Lab: NSW and CPS Benchmark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hisp-ie-practice-lab.html">Lab: HISP IE in Practice</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Difference-in-Differences</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="difference-in-differences-foundations-lab.html">Lab: Difference-in-Differences Foundations With Kentucky Workers’ Compensation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="difference-in-differences-staggered-diagnostics-lab.html">Lab: Staggered Adoption and TWFE Diagnostics</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Lab: Modern Multi-Period Difference-in-Differences</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Regression Discontinuity</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="regression-discontinuity-foundations-lab.html">Lab: Sharp RD foundations with government transfers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="regression-discontinuity-diagnostics-lab.html">Lab: RDD design diagnostics and sensitivity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="regression-discontinuity-fuzzy-lab.html">Lab: Fuzzy RD and local IV with veteran home ownership</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Synthetic Control</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-mechanics-lab.html">Lab: Synthetic Control Mechanics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-proposition-99-lab.html">Lab: Proposition 99 With tidysynth</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-augmentation-lab.html">Lab: Augmented SCM With Kansas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-design-lab.html">Lab: Synthetic Control Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-donor-pool-lab.html">Lab: Synthetic Control Donor Pool Design</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Interrupted Time Series</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="interrupted-time-series-mechanics-lab.html">Lab: Interrupted Time Series Foundations With Seatbelts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interrupted-time-series-design-diagnostics-lab.html">Lab: Seatbelt Law Design and Robustness</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interrupted-time-series-counterfactual-validation-lab.html">Lab: Interrupted Time Series Counterfactual Validation</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/notebooks/difference-in-differences-modern-estimators-lab.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm pst-navbar-icon" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Lab: Modern Multi-Period Difference-in-Differences</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-to-use-this-page">How To Use This Page</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#training-goal">Training Goal</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-1-load-and-audit-mpdta">Step 1: Load And Audit <code class="docutils literal notranslate"><span class="pre">mpdta</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-2-declare-group-time-comparisons">Step 2: Declare Group-Time Comparisons</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-3-plot-cohort-outcome-paths">Step 3: Plot Cohort Outcome Paths</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-4-estimate-unconditional-group-time-effects">Step 4: Estimate Unconditional Group-Time Effects</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-5-control-the-aggregation">Step 5: Control The Aggregation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-6-plot-dynamic-effects-with-simultaneous-bands">Step 6: Plot Dynamic Effects With Simultaneous Bands</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-7-change-the-comparison-group">Step 7: Change The Comparison Group</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-8-condition-on-population">Step 8: Condition On Population</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-9-compare-with-sunabraham">Step 9: Compare With Sun–Abraham</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optional-extension-sensitivity-to-parallel-trends-violations">Optional Extension: Sensitivity To Parallel-Trends Violations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#practical-implications">Practical Implications</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#worked-answers">Worked answers</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="lab-modern-multi-period-difference-in-differences">
+<h1>Lab: Modern Multi-Period Difference-in-Differences<a class="headerlink" href="#lab-modern-multi-period-difference-in-differences" title="Link to this heading">#</a></h1>
+<p><a class="reference internal" href="../index.html"><span class="std std-doc">Book home</span></a></p>
+<p>Use the R kernel. Keep the supplied <code class="docutils literal notranslate"><span class="pre">data/</span></code> folder beside this notebook. Run cells in order after installing the documented R environment. Data loading is entirely local.</p>
+<section id="how-to-use-this-page">
+<h2>How To Use This Page<a class="headerlink" href="#how-to-use-this-page" title="Link to this heading">#</a></h2>
+<p>This is the third difference-in-differences lab. The guided core takes about 45–60 minutes; the <code class="docutils literal notranslate"><span class="pre">HonestDiD</span></code> sensitivity analysis is an optional extension.</p>
+<ul class="simple">
+<li><p>Estimate group-time effects before choosing an aggregation.</p></li>
+<li><p>Make the comparison group and parallel-trends assumption explicit.</p></li>
+<li><p>Use simultaneous confidence bands for a dynamic effect path.</p></li>
+<li><p>Compare estimators by target and support, not only by numerical proximity.</p></li>
+</ul>
+<p>The main workflow implements Callaway and Sant’Anna with the <a class="reference external" href="https://bcallaway11.github.io/did/"><code class="docutils literal notranslate"><span class="pre">did</span></code> package</a> and compares it with Sun–Abraham in <code class="docutils literal notranslate"><span class="pre">fixest</span></code> (Callaway and Sant’Anna 2021; Sun and Abraham 2021). The extension implements Rambachan and Roth with <a class="reference external" href="https://cran.r-project.org/web/packages/HonestDiD/HonestDiD.pdf"><code class="docutils literal notranslate"><span class="pre">HonestDiD</span></code></a> (Rambachan and Roth 2023). See the <a class="reference external" href="https://defenceeconomist.github.io/qedlabs/notes/did/callaway-santanna-multiple-periods-notes.html">Callaway–Sant’Anna notes</a> and <a class="reference external" href="https://defenceeconomist.github.io/qedlabs/notes/did/roth-et-al-did-synthesis-notes.html">modern DiD synthesis</a>.</p>
+<p><a class="reference external" href="https://defenceeconomist.github.io/qedlabs/labs/difference-in-differences-reproducibility.html">Tested environment and reproduction record</a></p>
+</section>
+<section id="training-goal">
+<h2>Training Goal<a class="headerlink" href="#training-goal" title="Link to this heading">#</a></h2>
+<p>By the end of the core lab, you should be able to:</p>
+<ol class="arabic simple">
+<li><p>define and estimate <span class="math notranslate nohighlight">\(`ATT(g,t)`\)</span> for staggered adoption;</p></li>
+<li><p>distinguish never-treated from not-yet-treated comparisons;</p></li>
+<li><p>aggregate effects by cohort, event time, and calendar time;</p></li>
+<li><p>distinguish unconditional from conditional parallel trends; and</p></li>
+<li><p>explain why modern estimators can disagree without either containing a coding error.</p></li>
+</ol>
+</section>
+<section id="step-1-load-and-audit-mpdta">
+<h2>Step 1: Load And Audit <code class="docutils literal notranslate"><span class="pre">mpdta</span></code><a class="headerlink" href="#step-1-load-and-audit-mpdta" title="Link to this heading">#</a></h2>
+<p><a class="reference external" href="https://bcallaway11.github.io/did/reference/mpdta.html"><code class="docutils literal notranslate"><span class="pre">did::mpdta</span></code></a> is a balanced county-year panel based on minimum-wage applications. The outcome is log teen employment (<code class="docutils literal notranslate"><span class="pre">lemp</span></code>), <code class="docutils literal notranslate"><span class="pre">first.treat</span></code> is the first treatment year, and zero identifies never-treated counties.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">data_helpers</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">"data/load-data.R"</span><span class="p">,</span><span class="w"> </span><span class="s">"../data/load-data.R"</span><span class="p">,</span><span class="w"> </span><span class="s">"docs/labs/data/load-data.R"</span><span class="p">)</span>
+<span class="n">data_helpers</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">data_helpers</span><span class="p">[</span><span class="nf">file.exists</span><span class="p">(</span><span class="n">data_helpers</span><span class="p">)]</span>
+<span class="kr">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nf">length</span><span class="p">(</span><span class="n">data_helpers</span><span class="p">))</span><span class="w"> </span><span class="nf">stop</span><span class="p">(</span><span class="s">"Extract the complete lab ZIP, including its data folder, before running."</span><span class="p">)</span>
+<span class="nf">source</span><span class="p">(</span><span class="n">data_helpers</span><span class="p">[[</span><span class="m">1</span><span class="p">]])</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">required_packages</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span>
+<span class="w">  </span><span class="s">"digest"</span><span class="p">,</span>
+<span class="w">  </span><span class="s">"did"</span><span class="p">,</span>
+<span class="w">  </span><span class="s">"dplyr"</span><span class="p">,</span>
+<span class="w">  </span><span class="s">"ggplot2"</span><span class="p">,</span>
+<span class="w">  </span><span class="s">"fixest"</span>
+<span class="p">)</span>
+<span class="n">missing_packages</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">required_packages</span><span class="p">[</span><span class="o">!</span><span class="nf">vapply</span><span class="p">(</span>
+<span class="w">  </span><span class="n">required_packages</span><span class="p">,</span>
+<span class="w">  </span><span class="n">requireNamespace</span><span class="p">,</span>
+<span class="w">  </span><span class="nf">logical</span><span class="p">(</span><span class="m">1</span><span class="p">),</span>
+<span class="w">  </span><span class="n">quietly</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span>
+<span class="p">)]</span>
+<span class="kr">if</span><span class="w"> </span><span class="p">(</span><span class="nf">length</span><span class="p">(</span><span class="n">missing_packages</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nf">stop</span><span class="p">(</span><span class="s">"Install the documented R environment first; missing: "</span><span class="p">,</span><span class="w"> </span><span class="nf">paste</span><span class="p">(</span><span class="n">missing_packages</span><span class="p">,</span><span class="w"> </span><span class="n">collapse</span><span class="o">=</span><span class="s">", "</span><span class="p">),</span><span class="w"> </span><span class="n">call.</span><span class="o">=</span><span class="kc">FALSE</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="nf">invisible</span><span class="p">(</span><span class="nf">lapply</span><span class="p">(</span><span class="n">required_packages</span><span class="p">,</span><span class="w"> </span><span class="n">library</span><span class="p">,</span><span class="w"> </span><span class="n">character.only</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">))</span>
+
+<span class="n">mpdta</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">qed_data</span><span class="p">(</span><span class="s">"mpdta"</span><span class="p">)</span>
+
+
+<span class="n">mpdta</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">mpdta</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">mutate</span><span class="p">(</span><span class="n">exposed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">as.integer</span><span class="p">(</span><span class="n">first.treat</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">year</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">first.treat</span><span class="p">))</span>
+
+<span class="c1"># treat is an ever-treated indicator; audit actual exposure instead.</span>
+<span class="n">county_audit</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">mpdta</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">arrange</span><span class="p">(</span><span class="n">countyreal</span><span class="p">,</span><span class="w"> </span><span class="n">year</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">group_by</span><span class="p">(</span><span class="n">countyreal</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">summarise</span><span class="p">(</span>
+<span class="w">    </span><span class="n">observations</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">n</span><span class="p">(),</span>
+<span class="w">    </span><span class="n">first_year</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">min</span><span class="p">(</span><span class="n">year</span><span class="p">),</span>
+<span class="w">    </span><span class="n">last_year</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">max</span><span class="p">(</span><span class="n">year</span><span class="p">),</span>
+<span class="w">    </span><span class="n">cohort_values</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">n_distinct</span><span class="p">(</span><span class="n">first.treat</span><span class="p">),</span>
+<span class="w">    </span><span class="n">treatment_reversal</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">any</span><span class="p">(</span><span class="nf">diff</span><span class="p">(</span><span class="n">exposed</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="m">0</span><span class="p">),</span>
+<span class="w">    </span><span class="n">.groups</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"drop"</span>
+<span class="w">  </span><span class="p">)</span>
+
+<span class="n">cohort_table</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">mpdta</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">distinct</span><span class="p">(</span><span class="n">countyreal</span><span class="p">,</span><span class="w"> </span><span class="n">first.treat</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">count</span><span class="p">(</span><span class="n">first.treat</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"counties"</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">mutate</span><span class="p">(</span>
+<span class="w">    </span><span class="n">cohort</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">if_else</span><span class="p">(</span>
+<span class="w">      </span><span class="n">first.treat</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">0</span><span class="p">,</span>
+<span class="w">      </span><span class="s">"Never treated"</span><span class="p">,</span>
+<span class="w">      </span><span class="nf">as.character</span><span class="p">(</span><span class="n">first.treat</span><span class="p">)</span>
+<span class="w">    </span><span class="p">)</span>
+<span class="w">  </span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">select</span><span class="p">(</span><span class="n">cohort</span><span class="p">,</span><span class="w"> </span><span class="n">first.treat</span><span class="p">,</span><span class="w"> </span><span class="n">counties</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">arrange</span><span class="p">(</span><span class="n">first.treat</span><span class="p">)</span>
+
+<span class="nf">data.frame</span><span class="p">(</span>
+<span class="w">  </span><span class="n">observations</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">nrow</span><span class="p">(</span><span class="n">mpdta</span><span class="p">),</span>
+<span class="w">  </span><span class="n">counties</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">n_distinct</span><span class="p">(</span><span class="n">mpdta</span><span class="o">$</span><span class="n">countyreal</span><span class="p">),</span>
+<span class="w">  </span><span class="n">years</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">n_distinct</span><span class="p">(</span><span class="n">mpdta</span><span class="o">$</span><span class="n">year</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="n">cohort_table</span>
+
+<span class="nf">stopifnot</span><span class="p">(</span>
+<span class="w">  </span><span class="o">!</span><span class="nf">anyDuplicated</span><span class="p">(</span><span class="n">mpdta</span><span class="p">[</span><span class="nf">c</span><span class="p">(</span><span class="s">"countyreal"</span><span class="p">,</span><span class="w"> </span><span class="s">"year"</span><span class="p">)]),</span>
+<span class="w">  </span><span class="nf">length</span><span class="p">(</span><span class="nf">unique</span><span class="p">(</span><span class="n">county_audit</span><span class="o">$</span><span class="n">observations</span><span class="p">))</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1L</span><span class="p">,</span>
+<span class="w">  </span><span class="nf">all</span><span class="p">(</span><span class="n">county_audit</span><span class="o">$</span><span class="n">cohort_values</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1L</span><span class="p">),</span>
+<span class="w">  </span><span class="o">!</span><span class="nf">any</span><span class="p">(</span><span class="n">county_audit</span><span class="o">$</span><span class="n">treatment_reversal</span><span class="p">),</span>
+<span class="w">  </span><span class="nf">any</span><span class="p">(</span><span class="n">mpdta</span><span class="o">$</span><span class="n">first.treat</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">0</span><span class="p">),</span>
+<span class="w">  </span><span class="nf">n_distinct</span><span class="p">(</span><span class="n">mpdta</span><span class="o">$</span><span class="n">first.treat</span><span class="p">[</span><span class="n">mpdta</span><span class="o">$</span><span class="n">first.treat</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">0</span><span class="p">])</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">1L</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Attaching package: ‘dplyr’
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>The following objects are masked from ‘package:stats’:
+
+    filter, lag
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+</pre></div>
+</div>
+<div class="output text_html"><table class="dataframe">
+<caption>A data.frame: 1 × 3</caption>
+<thead>
+	<tr><th scope=col>observations</th><th scope=col>counties</th><th scope=col>years</th></tr>
+	<tr><th scope=col>&lt;int&gt;</th><th scope=col>&lt;int&gt;</th><th scope=col>&lt;int&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>2500</td><td>500</td><td>5</td></tr>
+</tbody>
+</table>
+</div><div class="output text_html"><table class="dataframe">
+<caption>A data.frame: 4 × 3</caption>
+<thead>
+	<tr><th scope=col>cohort</th><th scope=col>first.treat</th><th scope=col>counties</th></tr>
+	<tr><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;int&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>Never treated</td><td>   0</td><td>309</td></tr>
+	<tr><td>2004         </td><td>2004</td><td> 20</td></tr>
+	<tr><td>2006         </td><td>2006</td><td> 40</td></tr>
+	<tr><td>2007         </td><td>2007</td><td>131</td></tr>
+</tbody>
+</table>
+</div></div>
+</div>
+</section>
+<section id="step-2-declare-group-time-comparisons">
+<h2>Step 2: Declare Group-Time Comparisons<a class="headerlink" href="#step-2-declare-group-time-comparisons" title="Link to this heading">#</a></h2>
+<p>For cohort <span class="math notranslate nohighlight">\(`g`\)</span> in year <span class="math notranslate nohighlight">\(`t`\)</span>, the target is</p>
+<div class="math notranslate nohighlight">
+\[
+ATT(g,t) = E[Y_t(1) - Y_t(0) \mid G=g].
+\]</div>
+<p>The counterfactual can be built from:</p>
+<ul class="simple">
+<li><p><strong>never-treated counties</strong>, which remain untreated throughout the panel; or</p></li>
+<li><p><strong>not-yet-treated counties</strong>, which are untreated at <span class="math notranslate nohighlight">\(`t`\)</span> but may adopt later.</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">comparison_support</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">mpdta</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">distinct</span><span class="p">(</span><span class="n">countyreal</span><span class="p">,</span><span class="w"> </span><span class="n">year</span><span class="p">,</span><span class="w"> </span><span class="n">first.treat</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">group_by</span><span class="p">(</span><span class="n">year</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">summarise</span><span class="p">(</span>
+<span class="w">    </span><span class="n">never_treated</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">first.treat</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">0</span><span class="p">),</span>
+<span class="w">    </span><span class="n">not_yet_treated</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">first.treat</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">year</span><span class="p">),</span>
+<span class="w">    </span><span class="n">eligible_never_control</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">never_treated</span><span class="p">,</span>
+<span class="w">    </span><span class="n">eligible_not_yet_control</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">never_treated</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">not_yet_treated</span><span class="p">,</span>
+<span class="w">    </span><span class="n">.groups</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"drop"</span>
+<span class="w">  </span><span class="p">)</span>
+
+<span class="n">comparison_support</span>
+
+<span class="nf">stopifnot</span><span class="p">(</span>
+<span class="w">  </span><span class="nf">all</span><span class="p">(</span><span class="n">comparison_support</span><span class="o">$</span><span class="n">eligible_not_yet_control</span><span class="w"> </span><span class="o">&gt;=</span>
+<span class="w">    </span><span class="n">comparison_support</span><span class="o">$</span><span class="n">eligible_never_control</span><span class="p">),</span>
+<span class="w">  </span><span class="nf">all</span><span class="p">(</span><span class="n">comparison_support</span><span class="o">$</span><span class="n">eligible_never_control</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">0</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><table class="dataframe">
+<caption>A tibble: 5 × 5</caption>
+<thead>
+	<tr><th scope=col>year</th><th scope=col>never_treated</th><th scope=col>not_yet_treated</th><th scope=col>eligible_never_control</th><th scope=col>eligible_not_yet_control</th></tr>
+	<tr><th scope=col>&lt;int&gt;</th><th scope=col>&lt;int&gt;</th><th scope=col>&lt;int&gt;</th><th scope=col>&lt;int&gt;</th><th scope=col>&lt;int&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>2003</td><td>309</td><td>191</td><td>309</td><td>500</td></tr>
+	<tr><td>2004</td><td>309</td><td>171</td><td>309</td><td>480</td></tr>
+	<tr><td>2005</td><td>309</td><td>171</td><td>309</td><td>480</td></tr>
+	<tr><td>2006</td><td>309</td><td>131</td><td>309</td><td>440</td></tr>
+	<tr><td>2007</td><td>309</td><td>  0</td><td>309</td><td>309</td></tr>
+</tbody>
+</table>
+</div></div>
+</div>
+<p>The not-yet-treated option can add support in early years but requires those future adopters to be valid controls before treatment.</p>
+<p>County clustering is used to reproduce the package teaching example. Minimum-wage assignment may induce dependence across counties within a state; policy inference needs assignment-level identifiers and clustering justified by that design.</p>
+</section>
+<section id="step-3-plot-cohort-outcome-paths">
+<h2>Step 3: Plot Cohort Outcome Paths<a class="headerlink" href="#step-3-plot-cohort-outcome-paths" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">10</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">5.2</span><span class="p">)</span>
+<span class="n">cohort_trends</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">mpdta</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">mutate</span><span class="p">(</span>
+<span class="w">    </span><span class="n">cohort</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">if_else</span><span class="p">(</span>
+<span class="w">      </span><span class="n">first.treat</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">0</span><span class="p">,</span>
+<span class="w">      </span><span class="s">"Never treated"</span><span class="p">,</span>
+<span class="w">      </span><span class="nf">paste</span><span class="p">(</span><span class="s">"First treated"</span><span class="p">,</span><span class="w"> </span><span class="n">first.treat</span><span class="p">)</span>
+<span class="w">    </span><span class="p">)</span>
+<span class="w">  </span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">group_by</span><span class="p">(</span><span class="n">cohort</span><span class="p">,</span><span class="w"> </span><span class="n">first.treat</span><span class="p">,</span><span class="w"> </span><span class="n">year</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">summarise</span><span class="p">(</span><span class="n">mean_log_employment</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">lemp</span><span class="p">),</span><span class="w"> </span><span class="n">.groups</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"drop"</span><span class="p">)</span>
+
+<span class="nf">ggplot</span><span class="p">(</span>
+<span class="w">  </span><span class="n">cohort_trends</span><span class="p">,</span>
+<span class="w">  </span><span class="nf">aes</span><span class="p">(</span><span class="n">year</span><span class="p">,</span><span class="w"> </span><span class="n">mean_log_employment</span><span class="p">,</span><span class="w"> </span><span class="n">colour</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cohort</span><span class="p">,</span><span class="w"> </span><span class="n">group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cohort</span><span class="p">)</span>
+<span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_line</span><span class="p">(</span><span class="n">linewidth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.8</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_point</span><span class="p">(</span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1.7</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">labs</span><span class="p">(</span>
+<span class="w">    </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Mean log teen employment"</span><span class="p">,</span>
+<span class="w">    </span><span class="n">colour</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Cohort"</span><span class="p">,</span>
+<span class="w">    </span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Treatment cohorts contribute different pre- and post-treatment windows"</span>
+<span class="w">  </span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">theme_minimal</span><span class="p">(</span><span class="n">base_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">12</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">theme</span><span class="p">(</span><span class="n">legend.position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"bottom"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<a class="reference internal image-reference" href="../_images/b71ea947725737da7b7c90c83557cddb1764d6a1e6bbc583997e9e284f19e3bd.png"><img alt="../_images/b71ea947725737da7b7c90c83557cddb1764d6a1e6bbc583997e9e284f19e3bd.png" src="../_images/b71ea947725737da7b7c90c83557cddb1764d6a1e6bbc583997e9e284f19e3bd.png" style="width: 600px; height: 312px;" />
+</a>
+</div>
+</div>
+<p>Checkpoint: which cohort contributes the longest post-treatment history, and why can that cohort receive disproportionate weight in a simple average?</p>
+</section>
+<section id="step-4-estimate-unconditional-group-time-effects">
+<h2>Step 4: Estimate Unconditional Group-Time Effects<a class="headerlink" href="#step-4-estimate-unconditional-group-time-effects" title="Link to this heading">#</a></h2>
+<p>The <a class="reference external" href="https://bcallaway11.github.io/did/reference/att_gt.html"><code class="docutils literal notranslate"><span class="pre">att_gt()</span></code> documentation</a> makes the outcome, time, unit, cohort, comparison group, anticipation period, and base period explicit. We use a universal base period so pre-treatment pseudo-effects share the same interpretation and can feed later sensitivity analysis.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="nf">set.seed</span><span class="p">(</span><span class="m">20260809</span><span class="p">)</span>
+
+<span class="n">att_never</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">att_gt</span><span class="p">(</span>
+<span class="w">  </span><span class="n">yname</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"lemp"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">tname</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"year"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">idname</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"countyreal"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">gname</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"first.treat"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">xformla</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="m">1</span><span class="p">,</span>
+<span class="w">  </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mpdta</span><span class="p">,</span>
+<span class="w">  </span><span class="n">control_group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"nevertreated"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">anticipation</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0</span><span class="p">,</span>
+<span class="w">  </span><span class="n">base_period</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"universal"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">est_method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"dr"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">bstrap</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">,</span>
+<span class="w">  </span><span class="n">biters</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">499</span><span class="p">,</span>
+<span class="w">  </span><span class="n">cband</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">,</span>
+<span class="w">  </span><span class="n">clustervars</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"countyreal"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">print_details</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span>
+<span class="p">)</span>
+
+<span class="nf">summary</span><span class="p">(</span><span class="n">att_never</span><span class="p">)</span>
+
+<span class="nf">stopifnot</span><span class="p">(</span>
+<span class="w">  </span><span class="nf">inherits</span><span class="p">(</span><span class="n">att_never</span><span class="p">,</span><span class="w"> </span><span class="s">"MP"</span><span class="p">),</span>
+<span class="w">  </span><span class="nf">length</span><span class="p">(</span><span class="n">att_never</span><span class="o">$</span><span class="n">att</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">0</span><span class="p">,</span>
+<span class="w">  </span><span class="nf">any</span><span class="p">(</span><span class="nf">is.finite</span><span class="p">(</span><span class="n">att_never</span><span class="o">$</span><span class="n">att</span><span class="p">)),</span>
+<span class="w">  </span><span class="n">att_never</span><span class="o">$</span><span class="n">DIDparams</span><span class="o">$</span><span class="n">control_group</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">"nevertreated"</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Call:
+att_gt(yname = "lemp", tname = "year", idname = "countyreal", 
+    gname = "first.treat", xformla = ~1, data = mpdta, control_group = "nevertreated", 
+    anticipation = 0, bstrap = TRUE, cband = TRUE, biters = 499, 
+    clustervars = "countyreal", est_method = "dr", base_period = "universal", 
+    print_details = FALSE)
+
+Reference: Callaway, Brantly and Pedro H.C. Sant'Anna.  "Difference-in-Differences with Multiple Time Periods." Journal of Econometrics, Vol. 225, No. 2, pp. 200-230, 2021. &lt;https://doi.org/10.1016/j.jeconom.2020.12.001&gt;, &lt;https://arxiv.org/abs/1803.09015&gt; 
+
+Group-Time Average Treatment Effects:
+ Group Time ATT(g,t) Std. Error [95% Simult.  Conf. Band]  
+  2004 2003   0.0000         NA            NA          NA  
+  2004 2004  -0.0105     0.0221       -0.0685      0.0475  
+  2004 2005  -0.0704     0.0365       -0.1664      0.0256  
+  2004 2006  -0.1373     0.0393       -0.2407     -0.0338 *
+  2004 2007  -0.1008     0.0376       -0.1996     -0.0020 *
+  2006 2003  -0.0038     0.0319       -0.0876      0.0800  
+  2006 2004   0.0028     0.0203       -0.0506      0.0561  
+  2006 2005   0.0000         NA            NA          NA  
+  2006 2006  -0.0046     0.0184       -0.0531      0.0439  
+  2006 2007  -0.0412     0.0200       -0.0939      0.0114  
+  2007 2003   0.0033     0.0253       -0.0633      0.0699  
+  2007 2004   0.0338     0.0219       -0.0238      0.0914  
+  2007 2005   0.0311     0.0185       -0.0177      0.0799  
+  2007 2006   0.0000         NA            NA          NA  
+  2007 2007  -0.0261     0.0163       -0.0689      0.0168  
+---
+Signif. codes: `*' confidence band does not cover 0
+
+P-value for pre-test of parallel trends assumption:  0.16812
+Control Group:  Never Treated,  Anticipation Periods:  0
+Estimation Method:  Doubly Robust
+</pre></div>
+</div>
+</div>
+</div>
+<p>The default doubly robust score combines outcome regression and propensity-score components. With <code class="docutils literal notranslate"><span class="pre">xformla</span> <span class="pre">=</span> <span class="pre">~</span> <span class="pre">1</span></code>, the design still invokes unconditional rather than covariate-conditional parallel trends.</p>
+</section>
+<section id="step-5-control-the-aggregation">
+<h2>Step 5: Control The Aggregation<a class="headerlink" href="#step-5-control-the-aggregation" title="Link to this heading">#</a></h2>
+<p>There is no single compulsory way to turn <span class="math notranslate nohighlight">\(`ATT(g,t)`\)</span> into one result. Each aggregation answers a different question (Callaway and Sant’Anna 2021).</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">aggregate_simple</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">aggte</span><span class="p">(</span><span class="n">att_never</span><span class="p">,</span><span class="w"> </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"simple"</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span>
+<span class="n">aggregate_group</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">aggte</span><span class="p">(</span><span class="n">att_never</span><span class="p">,</span><span class="w"> </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"group"</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span>
+<span class="n">aggregate_dynamic</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">aggte</span><span class="p">(</span><span class="n">att_never</span><span class="p">,</span><span class="w"> </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"dynamic"</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span>
+<span class="n">aggregate_calendar</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">aggte</span><span class="p">(</span><span class="n">att_never</span><span class="p">,</span><span class="w"> </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"calendar"</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span>
+
+<span class="n">aggregation_summary</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">data.frame</span><span class="p">(</span>
+<span class="w">  </span><span class="n">aggregation</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">"Simple"</span><span class="p">,</span><span class="w"> </span><span class="s">"Group"</span><span class="p">,</span><span class="w"> </span><span class="s">"Dynamic"</span><span class="p">,</span><span class="w"> </span><span class="s">"Calendar"</span><span class="p">),</span>
+<span class="w">  </span><span class="n">overall_att</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span>
+<span class="w">    </span><span class="n">aggregate_simple</span><span class="o">$</span><span class="n">overall.att</span><span class="p">,</span>
+<span class="w">    </span><span class="n">aggregate_group</span><span class="o">$</span><span class="n">overall.att</span><span class="p">,</span>
+<span class="w">    </span><span class="n">aggregate_dynamic</span><span class="o">$</span><span class="n">overall.att</span><span class="p">,</span>
+<span class="w">    </span><span class="n">aggregate_calendar</span><span class="o">$</span><span class="n">overall.att</span>
+<span class="w">  </span><span class="p">),</span>
+<span class="w">  </span><span class="n">standard_error</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span>
+<span class="w">    </span><span class="n">aggregate_simple</span><span class="o">$</span><span class="n">overall.se</span><span class="p">,</span>
+<span class="w">    </span><span class="n">aggregate_group</span><span class="o">$</span><span class="n">overall.se</span><span class="p">,</span>
+<span class="w">    </span><span class="n">aggregate_dynamic</span><span class="o">$</span><span class="n">overall.se</span><span class="p">,</span>
+<span class="w">    </span><span class="n">aggregate_calendar</span><span class="o">$</span><span class="n">overall.se</span>
+<span class="w">  </span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">aggregation_summary</span>
+
+<span class="nf">stopifnot</span><span class="p">(</span>
+<span class="w">  </span><span class="nf">nrow</span><span class="p">(</span><span class="n">aggregation_summary</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">4L</span><span class="p">,</span>
+<span class="w">  </span><span class="nf">all</span><span class="p">(</span><span class="nf">is.finite</span><span class="p">(</span><span class="n">aggregation_summary</span><span class="o">$</span><span class="n">overall_att</span><span class="p">)),</span>
+<span class="w">  </span><span class="nf">all</span><span class="p">(</span><span class="n">aggregation_summary</span><span class="o">$</span><span class="n">standard_error</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">0</span><span class="p">),</span>
+<span class="w">  </span><span class="nf">length</span><span class="p">(</span><span class="n">aggregate_dynamic</span><span class="o">$</span><span class="n">egt</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nf">length</span><span class="p">(</span><span class="n">aggregate_dynamic</span><span class="o">$</span><span class="n">att.egt</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><table class="dataframe">
+<caption>A data.frame: 4 × 3</caption>
+<thead>
+	<tr><th scope=col>aggregation</th><th scope=col>overall_att</th><th scope=col>standard_error</th></tr>
+	<tr><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>Simple  </td><td>-0.03995128</td><td>0.01374071</td></tr>
+	<tr><td>Group   </td><td>-0.03101828</td><td>0.01220355</td></tr>
+	<tr><td>Dynamic </td><td>-0.07723982</td><td>0.02280048</td></tr>
+	<tr><td>Calendar</td><td>-0.04170043</td><td>0.01873439</td></tr>
+</tbody>
+</table>
+</div></div>
+</div>
+<p>Interpret the rows separately:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">simple</span></code> averages available post-treatment group-time effects;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">group</span></code> gives cohort-specific averages before combining cohorts;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dynamic</span></code> organizes effects by exposure length;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">calendar</span></code> organizes effects by calendar year.</p></li>
+</ul>
+</section>
+<section id="step-6-plot-dynamic-effects-with-simultaneous-bands">
+<h2>Step 6: Plot Dynamic Effects With Simultaneous Bands<a class="headerlink" href="#step-6-plot-dynamic-effects-with-simultaneous-bands" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">10</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">5.2</span><span class="p">)</span>
+<span class="nf">ggdid</span><span class="p">(</span><span class="n">aggregate_dynamic</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">labs</span><span class="p">(</span>
+<span class="w">    </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Periods relative to treatment"</span><span class="p">,</span>
+<span class="w">    </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"ATT"</span><span class="p">,</span>
+<span class="w">    </span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Callaway–Sant'Anna dynamic effects"</span><span class="p">,</span>
+<span class="w">    </span><span class="n">subtitle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Bands are simultaneous because cband = TRUE"</span>
+<span class="w">  </span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">theme_minimal</span><span class="p">(</span><span class="n">base_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">12</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<a class="reference internal image-reference" href="../_images/dd8da3ee8dc47e391e43adcfaa988621e991e4b2f5a28304d58f9349169032f7.png"><img alt="../_images/dd8da3ee8dc47e391e43adcfaa988621e991e4b2f5a28304d58f9349169032f7.png" src="../_images/dd8da3ee8dc47e391e43adcfaa988621e991e4b2f5a28304d58f9349169032f7.png" style="width: 600px; height: 312px;" />
+</a>
+</div>
+</div>
+<p>Simultaneous bands address uncertainty across the displayed path. They do not turn pre-treatment estimates into proof of parallel trends or solve anticipation and spillover concerns.</p>
+</section>
+<section id="step-7-change-the-comparison-group">
+<h2>Step 7: Change The Comparison Group<a class="headerlink" href="#step-7-change-the-comparison-group" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="nf">set.seed</span><span class="p">(</span><span class="m">20260809</span><span class="p">)</span>
+
+<span class="n">att_not_yet</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">att_gt</span><span class="p">(</span>
+<span class="w">  </span><span class="n">yname</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"lemp"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">tname</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"year"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">idname</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"countyreal"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">gname</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"first.treat"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">xformla</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="m">1</span><span class="p">,</span>
+<span class="w">  </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mpdta</span><span class="p">,</span>
+<span class="w">  </span><span class="n">control_group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"notyettreated"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">anticipation</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0</span><span class="p">,</span>
+<span class="w">  </span><span class="n">base_period</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"universal"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">est_method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"dr"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">bstrap</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">,</span>
+<span class="w">  </span><span class="n">biters</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">499</span><span class="p">,</span>
+<span class="w">  </span><span class="n">cband</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">,</span>
+<span class="w">  </span><span class="n">clustervars</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"countyreal"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">print_details</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span>
+<span class="p">)</span>
+
+<span class="n">dynamic_not_yet</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">aggte</span><span class="p">(</span><span class="n">att_not_yet</span><span class="p">,</span><span class="w"> </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"dynamic"</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span>
+
+<span class="n">control_group_comparison</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">data.frame</span><span class="p">(</span>
+<span class="w">  </span><span class="n">comparison_group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">"Never treated"</span><span class="p">,</span><span class="w"> </span><span class="s">"Not yet treated"</span><span class="p">),</span>
+<span class="w">  </span><span class="n">dynamic_overall_att</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span>
+<span class="w">    </span><span class="n">aggregate_dynamic</span><span class="o">$</span><span class="n">overall.att</span><span class="p">,</span>
+<span class="w">    </span><span class="n">dynamic_not_yet</span><span class="o">$</span><span class="n">overall.att</span>
+<span class="w">  </span><span class="p">),</span>
+<span class="w">  </span><span class="n">standard_error</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span>
+<span class="w">    </span><span class="n">aggregate_dynamic</span><span class="o">$</span><span class="n">overall.se</span><span class="p">,</span>
+<span class="w">    </span><span class="n">dynamic_not_yet</span><span class="o">$</span><span class="n">overall.se</span>
+<span class="w">  </span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">control_group_comparison</span>
+
+<span class="nf">stopifnot</span><span class="p">(</span>
+<span class="w">  </span><span class="n">att_not_yet</span><span class="o">$</span><span class="n">DIDparams</span><span class="o">$</span><span class="n">control_group</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">"notyettreated"</span><span class="p">,</span>
+<span class="w">  </span><span class="nf">all</span><span class="p">(</span><span class="nf">is.finite</span><span class="p">(</span><span class="n">control_group_comparison</span><span class="o">$</span><span class="n">dynamic_overall_att</span><span class="p">)),</span>
+<span class="w">  </span><span class="nf">all</span><span class="p">(</span><span class="n">control_group_comparison</span><span class="o">$</span><span class="n">standard_error</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">0</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><table class="dataframe">
+<caption>A data.frame: 2 × 3</caption>
+<thead>
+	<tr><th scope=col>comparison_group</th><th scope=col>dynamic_overall_att</th><th scope=col>standard_error</th></tr>
+	<tr><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>Never treated  </td><td>-0.07723982</td><td>0.02280048</td></tr>
+	<tr><td>Not yet treated</td><td>-0.07739931</td><td>0.01997182</td></tr>
+</tbody>
+</table>
+</div></div>
+</div>
+<p>Do not select a control group because it produces the preferred coefficient. Defend whether future-treated counties are plausible untreated counterfactuals in each period.</p>
+</section>
+<section id="step-8-condition-on-population">
+<h2>Step 8: Condition On Population<a class="headerlink" href="#step-8-condition-on-population" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="nf">set.seed</span><span class="p">(</span><span class="m">20260809</span><span class="p">)</span>
+
+<span class="n">att_conditional</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">att_gt</span><span class="p">(</span>
+<span class="w">  </span><span class="n">yname</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"lemp"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">tname</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"year"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">idname</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"countyreal"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">gname</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"first.treat"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">xformla</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">lpop</span><span class="p">,</span>
+<span class="w">  </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mpdta</span><span class="p">,</span>
+<span class="w">  </span><span class="n">control_group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"nevertreated"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">anticipation</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0</span><span class="p">,</span>
+<span class="w">  </span><span class="n">base_period</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"universal"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">est_method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"dr"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">bstrap</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">,</span>
+<span class="w">  </span><span class="n">biters</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">499</span><span class="p">,</span>
+<span class="w">  </span><span class="n">cband</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">,</span>
+<span class="w">  </span><span class="n">clustervars</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"countyreal"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">print_details</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span>
+<span class="p">)</span>
+
+<span class="n">dynamic_conditional</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">aggte</span><span class="p">(</span><span class="n">att_conditional</span><span class="p">,</span><span class="w"> </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"dynamic"</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span>
+
+<span class="n">parallel_trends_comparison</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">data.frame</span><span class="p">(</span>
+<span class="w">  </span><span class="n">assumption</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span>
+<span class="w">    </span><span class="s">"Unconditional parallel trends"</span><span class="p">,</span>
+<span class="w">    </span><span class="s">"Parallel trends conditional on log population"</span>
+<span class="w">  </span><span class="p">),</span>
+<span class="w">  </span><span class="n">dynamic_overall_att</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span>
+<span class="w">    </span><span class="n">aggregate_dynamic</span><span class="o">$</span><span class="n">overall.att</span><span class="p">,</span>
+<span class="w">    </span><span class="n">dynamic_conditional</span><span class="o">$</span><span class="n">overall.att</span>
+<span class="w">  </span><span class="p">),</span>
+<span class="w">  </span><span class="n">standard_error</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span>
+<span class="w">    </span><span class="n">aggregate_dynamic</span><span class="o">$</span><span class="n">overall.se</span><span class="p">,</span>
+<span class="w">    </span><span class="n">dynamic_conditional</span><span class="o">$</span><span class="n">overall.se</span>
+<span class="w">  </span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">parallel_trends_comparison</span>
+
+<span class="nf">stopifnot</span><span class="p">(</span>
+<span class="w">  </span><span class="nf">all</span><span class="p">(</span><span class="nf">is.finite</span><span class="p">(</span><span class="n">parallel_trends_comparison</span><span class="o">$</span><span class="n">dynamic_overall_att</span><span class="p">)),</span>
+<span class="w">  </span><span class="nf">all</span><span class="p">(</span><span class="n">parallel_trends_comparison</span><span class="o">$</span><span class="n">standard_error</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">0</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><table class="dataframe">
+<caption>A data.frame: 2 × 3</caption>
+<thead>
+	<tr><th scope=col>assumption</th><th scope=col>dynamic_overall_att</th><th scope=col>standard_error</th></tr>
+	<tr><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>Unconditional parallel trends                </td><td>-0.07723982</td><td>0.02280048</td></tr>
+	<tr><td>Parallel trends conditional on log population</td><td>-0.08035395</td><td>0.01992247</td></tr>
+</tbody>
+</table>
+</div></div>
+</div>
+<p>Adding <code class="docutils literal notranslate"><span class="pre">lpop</span></code> changes the identifying assumption: untreated trends must now be parallel after conditioning on log population. It is defensible only if population is measured before the relevant outcome change and the conditional overlap is adequate.</p>
+</section>
+<section id="step-9-compare-with-sunabraham">
+<h2>Step 9: Compare With Sun–Abraham<a class="headerlink" href="#step-9-compare-with-sunabraham" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">sun_abraham_fit</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">feols</span><span class="p">(</span>
+<span class="w">  </span><span class="n">lemp</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="nf">sunab</span><span class="p">(</span><span class="n">first.treat</span><span class="p">,</span><span class="w"> </span><span class="n">year</span><span class="p">,</span><span class="w"> </span><span class="n">ref.p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">-1</span><span class="p">)</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">countyreal</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">year</span><span class="p">,</span>
+<span class="w">  </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mpdta</span><span class="p">,</span>
+<span class="w">  </span><span class="n">vcov</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">countyreal</span>
+<span class="p">)</span>
+
+<span class="n">sun_abraham_terms</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">data.frame</span><span class="p">(</span>
+<span class="w">  </span><span class="n">event_time</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">as.integer</span><span class="p">(</span><span class="nf">sub</span><span class="p">(</span><span class="s">".*::"</span><span class="p">,</span><span class="w"> </span><span class="s">""</span><span class="p">,</span><span class="w"> </span><span class="nf">names</span><span class="p">(</span><span class="nf">coef</span><span class="p">(</span><span class="n">sun_abraham_fit</span><span class="p">)))),</span>
+<span class="w">  </span><span class="n">estimate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">unname</span><span class="p">(</span><span class="nf">coef</span><span class="p">(</span><span class="n">sun_abraham_fit</span><span class="p">)),</span>
+<span class="w">  </span><span class="n">standard_error</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">unname</span><span class="p">(</span><span class="nf">se</span><span class="p">(</span><span class="n">sun_abraham_fit</span><span class="p">))</span>
+<span class="p">)</span>
+
+<span class="n">callaway_santanna_terms</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">data.frame</span><span class="p">(</span>
+<span class="w">  </span><span class="n">event_time</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">aggregate_dynamic</span><span class="o">$</span><span class="n">egt</span><span class="p">,</span>
+<span class="w">  </span><span class="n">estimate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">aggregate_dynamic</span><span class="o">$</span><span class="n">att.egt</span><span class="p">,</span>
+<span class="w">  </span><span class="n">standard_error</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">aggregate_dynamic</span><span class="o">$</span><span class="n">se.egt</span>
+<span class="p">)</span>
+
+<span class="n">modern_event_comparison</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">bind_rows</span><span class="p">(</span>
+<span class="w">  </span><span class="nf">transform</span><span class="p">(</span><span class="n">callaway_santanna_terms</span><span class="p">,</span><span class="w"> </span><span class="n">estimator</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Callaway–Sant'Anna"</span><span class="p">),</span>
+<span class="w">  </span><span class="nf">transform</span><span class="p">(</span><span class="n">sun_abraham_terms</span><span class="p">,</span><span class="w"> </span><span class="n">estimator</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Sun–Abraham"</span><span class="p">)</span>
+<span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">mutate</span><span class="p">(</span>
+<span class="w">    </span><span class="n">lower_95</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">estimate</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="m">1.96</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">standard_error</span><span class="p">,</span>
+<span class="w">    </span><span class="n">upper_95</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">estimate</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="m">1.96</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">standard_error</span>
+<span class="w">  </span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">filter</span><span class="p">(</span>
+<span class="w">    </span><span class="nf">is.finite</span><span class="p">(</span><span class="n">estimate</span><span class="p">),</span>
+<span class="w">    </span><span class="nf">is.finite</span><span class="p">(</span><span class="n">standard_error</span><span class="p">),</span>
+<span class="w">    </span><span class="n">event_time</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="m">-4</span><span class="p">,</span>
+<span class="w">    </span><span class="n">event_time</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="m">3</span>
+<span class="w">  </span><span class="p">)</span>
+
+<span class="n">modern_event_comparison</span>
+
+<span class="nf">stopifnot</span><span class="p">(</span>
+<span class="w">  </span><span class="nf">all</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s">"Callaway–Sant'Anna"</span><span class="p">,</span><span class="w"> </span><span class="s">"Sun–Abraham"</span><span class="p">)</span><span class="w"> </span><span class="o">%in%</span>
+<span class="w">    </span><span class="n">modern_event_comparison</span><span class="o">$</span><span class="n">estimator</span><span class="p">),</span>
+<span class="w">  </span><span class="nf">any</span><span class="p">(</span><span class="n">modern_event_comparison</span><span class="o">$</span><span class="n">event_time</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="m">0</span><span class="p">),</span>
+<span class="w">  </span><span class="nf">any</span><span class="p">(</span><span class="n">modern_event_comparison</span><span class="o">$</span><span class="n">event_time</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="m">0</span><span class="p">),</span>
+<span class="w">  </span><span class="nf">all</span><span class="p">(</span><span class="nf">is.finite</span><span class="p">(</span><span class="n">modern_event_comparison</span><span class="o">$</span><span class="n">standard_error</span><span class="p">))</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><table class="dataframe">
+<caption>A data.frame: 14 × 6</caption>
+<thead>
+	<tr><th scope=col>event_time</th><th scope=col>estimate</th><th scope=col>standard_error</th><th scope=col>estimator</th><th scope=col>lower_95</th><th scope=col>upper_95</th></tr>
+	<tr><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>-4</td><td> 0.003306357</td><td>0.02309403</td><td>Callaway–Sant'Anna</td><td>-0.041957938</td><td> 0.048570652</td></tr>
+	<tr><td>-3</td><td> 0.025021830</td><td>0.01685642</td><td>Callaway–Sant'Anna</td><td>-0.008016763</td><td> 0.058060422</td></tr>
+	<tr><td>-2</td><td> 0.024458745</td><td>0.01482257</td><td>Callaway–Sant'Anna</td><td>-0.004593497</td><td> 0.053510987</td></tr>
+	<tr><td> 0</td><td>-0.019931817</td><td>0.01154614</td><td>Callaway–Sant'Anna</td><td>-0.042562258</td><td> 0.002698625</td></tr>
+	<tr><td> 1</td><td>-0.050957367</td><td>0.01830610</td><td>Callaway–Sant'Anna</td><td>-0.086837318</td><td>-0.015077416</td></tr>
+	<tr><td> 2</td><td>-0.137258739</td><td>0.03968758</td><td>Callaway–Sant'Anna</td><td>-0.215046393</td><td>-0.059471085</td></tr>
+	<tr><td> 3</td><td>-0.100811363</td><td>0.03618244</td><td>Callaway–Sant'Anna</td><td>-0.171728948</td><td>-0.029893778</td></tr>
+	<tr><td>-4</td><td> 0.003306357</td><td>0.02455510</td><td>Sun–Abraham       </td><td>-0.044821631</td><td> 0.051434344</td></tr>
+	<tr><td>-3</td><td> 0.025021830</td><td>0.01815434</td><td>Sun–Abraham       </td><td>-0.010560685</td><td> 0.060604345</td></tr>
+	<tr><td>-2</td><td> 0.024458745</td><td>0.01426679</td><td>Sun–Abraham       </td><td>-0.003504168</td><td> 0.052421658</td></tr>
+	<tr><td> 0</td><td>-0.019931817</td><td>0.01185754</td><td>Sun–Abraham       </td><td>-0.043172593</td><td> 0.003308960</td></tr>
+	<tr><td> 1</td><td>-0.050957367</td><td>0.01687068</td><td>Sun–Abraham       </td><td>-0.084023897</td><td>-0.017890837</td></tr>
+	<tr><td> 2</td><td>-0.137258739</td><td>0.03658948</td><td>Sun–Abraham       </td><td>-0.208974112</td><td>-0.065543366</td></tr>
+	<tr><td> 3</td><td>-0.100811363</td><td>0.03450427</td><td>Sun–Abraham       </td><td>-0.168439736</td><td>-0.033182990</td></tr>
+</tbody>
+</table>
+</div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">10</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">5.2</span><span class="p">)</span>
+<span class="nf">ggplot</span><span class="p">(</span>
+<span class="w">  </span><span class="n">modern_event_comparison</span><span class="p">,</span>
+<span class="w">  </span><span class="nf">aes</span><span class="p">(</span><span class="n">event_time</span><span class="p">,</span><span class="w"> </span><span class="n">estimate</span><span class="p">,</span><span class="w"> </span><span class="n">colour</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">estimator</span><span class="p">)</span>
+<span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_hline</span><span class="p">(</span><span class="n">yintercept</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="n">colour</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"grey55"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_vline</span><span class="p">(</span><span class="n">xintercept</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">-1</span><span class="p">,</span><span class="w"> </span><span class="n">linetype</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"dashed"</span><span class="p">,</span><span class="w"> </span><span class="n">colour</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"grey55"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_line</span><span class="p">(</span><span class="n">linewidth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.75</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_point</span><span class="p">(</span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">labs</span><span class="p">(</span>
+<span class="w">    </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Periods relative to treatment"</span><span class="p">,</span>
+<span class="w">    </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Estimated effect on log teen employment"</span><span class="p">,</span>
+<span class="w">    </span><span class="n">colour</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Modern estimators need not produce identical weighted targets"</span>
+<span class="w">  </span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">theme_minimal</span><span class="p">(</span><span class="n">base_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">12</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">theme</span><span class="p">(</span><span class="n">legend.position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"bottom"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<a class="reference internal image-reference" href="../_images/857759ade43b7908b2d08f163f02ae174fe68862728aa44538071c8f139b428d.png"><img alt="../_images/857759ade43b7908b2d08f163f02ae174fe68862728aa44538071c8f139b428d.png" src="../_images/857759ade43b7908b2d08f163f02ae174fe68862728aa44538071c8f139b428d.png" style="width: 600px; height: 312px;" />
+</a>
+</div>
+</div>
+<p>Differences can arise from cohort weights, available comparisons, nuisance estimation, and support. Numerical agreement is reassuring but is not the criterion that defines a valid estimator.</p>
+</section>
+<section id="optional-extension-sensitivity-to-parallel-trends-violations">
+<h2>Optional Extension: Sensitivity To Parallel-Trends Violations<a class="headerlink" href="#optional-extension-sensitivity-to-parallel-trends-violations" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">HonestDiD</span></code> requires an ordered event-study coefficient vector and its full covariance matrix. To keep the exercise transparent, restrict the data to the 2006 cohort and never-treated counties. This creates a non-staggered design with two estimated pre-treatment coefficients, an omitted 2005 reference period, and two post-treatment coefficients.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="kr">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nf">requireNamespace</span><span class="p">(</span><span class="s">"HonestDiD"</span><span class="p">,</span><span class="w"> </span><span class="n">quietly</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nf">stop</span><span class="p">(</span><span class="s">"Install HonestDiD before running this optional extension."</span><span class="p">,</span><span class="w"> </span><span class="n">call.</span><span class="o">=</span><span class="kc">FALSE</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="n">sensitivity_sample</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">mpdta</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">filter</span><span class="p">(</span><span class="n">first.treat</span><span class="w"> </span><span class="o">%in%</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="m">2006</span><span class="p">))</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">mutate</span><span class="p">(</span><span class="n">treated_2006</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">as.integer</span><span class="p">(</span><span class="n">first.treat</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">2006</span><span class="p">))</span>
+
+<span class="n">cohort_event_fit</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">feols</span><span class="p">(</span>
+<span class="w">  </span><span class="n">lemp</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="nf">i</span><span class="p">(</span><span class="n">year</span><span class="p">,</span><span class="w"> </span><span class="n">treated_2006</span><span class="p">,</span><span class="w"> </span><span class="n">ref</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2005</span><span class="p">)</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">countyreal</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">year</span><span class="p">,</span>
+<span class="w">  </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sensitivity_sample</span><span class="p">,</span>
+<span class="w">  </span><span class="n">vcov</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">countyreal</span>
+<span class="p">)</span>
+
+<span class="n">event_coefficients</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">coef</span><span class="p">(</span><span class="n">cohort_event_fit</span><span class="p">)</span>
+<span class="n">event_covariance</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">vcov</span><span class="p">(</span><span class="n">cohort_event_fit</span><span class="p">)</span>
+<span class="n">term_year</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">as.integer</span><span class="p">(</span><span class="nf">sub</span><span class="p">(</span>
+<span class="w">  </span><span class="s">"year::([0-9]+).*"</span><span class="p">,</span>
+<span class="w">  </span><span class="s">"\\1"</span><span class="p">,</span>
+<span class="w">  </span><span class="nf">names</span><span class="p">(</span><span class="n">event_coefficients</span><span class="p">)</span>
+<span class="p">))</span>
+<span class="n">term_order</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">order</span><span class="p">(</span><span class="n">term_year</span><span class="p">)</span>
+
+<span class="n">event_coefficients</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">event_coefficients</span><span class="p">[</span><span class="n">term_order</span><span class="p">]</span>
+<span class="n">event_covariance</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">event_covariance</span><span class="p">[</span><span class="n">term_order</span><span class="p">,</span><span class="w"> </span><span class="n">term_order</span><span class="p">,</span><span class="w"> </span><span class="n">drop</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">]</span>
+<span class="n">term_year</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">term_year</span><span class="p">[</span><span class="n">term_order</span><span class="p">]</span>
+
+<span class="nf">data.frame</span><span class="p">(</span>
+<span class="w">  </span><span class="n">year</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">term_year</span><span class="p">,</span>
+<span class="w">  </span><span class="n">period</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">"Pre"</span><span class="p">,</span><span class="w"> </span><span class="s">"Pre"</span><span class="p">,</span><span class="w"> </span><span class="s">"Post"</span><span class="p">,</span><span class="w"> </span><span class="s">"Post"</span><span class="p">),</span>
+<span class="w">  </span><span class="n">estimate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">unname</span><span class="p">(</span><span class="n">event_coefficients</span><span class="p">),</span>
+<span class="w">  </span><span class="n">standard_error</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">sqrt</span><span class="p">(</span><span class="nf">diag</span><span class="p">(</span><span class="n">event_covariance</span><span class="p">))</span>
+<span class="p">)</span>
+
+<span class="nf">stopifnot</span><span class="p">(</span>
+<span class="w">  </span><span class="nf">identical</span><span class="p">(</span><span class="n">term_year</span><span class="p">,</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">2003L</span><span class="p">,</span><span class="w"> </span><span class="m">2004L</span><span class="p">,</span><span class="w"> </span><span class="m">2006L</span><span class="p">,</span><span class="w"> </span><span class="m">2007L</span><span class="p">)),</span>
+<span class="w">  </span><span class="nf">length</span><span class="p">(</span><span class="n">event_coefficients</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">4L</span><span class="p">,</span>
+<span class="w">  </span><span class="nf">all</span><span class="p">(</span><span class="nf">dim</span><span class="p">(</span><span class="n">event_covariance</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">4L</span><span class="p">,</span><span class="w"> </span><span class="m">4L</span><span class="p">)),</span>
+<span class="w">  </span><span class="nf">all</span><span class="p">(</span><span class="nf">is.finite</span><span class="p">(</span><span class="n">event_covariance</span><span class="p">))</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><table class="dataframe">
+<caption>A data.frame: 4 × 4</caption>
+<thead>
+	<tr><th></th><th scope=col>year</th><th scope=col>period</th><th scope=col>estimate</th><th scope=col>standard_error</th></tr>
+	<tr><th></th><th scope=col>&lt;int&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><th scope=row>year::2003:treated_2006</th><td>2003</td><td>Pre </td><td>-0.003769294</td><td>0.03145926</td></tr>
+	<tr><th scope=row>year::2004:treated_2006</th><td>2004</td><td>Pre </td><td> 0.002750819</td><td>0.01963172</td></tr>
+	<tr><th scope=row>year::2006:treated_2006</th><td>2006</td><td>Post</td><td>-0.004594607</td><td>0.01782161</td></tr>
+	<tr><th scope=row>year::2007:treated_2006</th><td>2007</td><td>Post</td><td>-0.041224472</td><td>0.02030485</td></tr>
+</tbody>
+</table>
+</div></div>
+</div>
+<p>The relative-magnitudes restriction indexes how large post-treatment deviations from parallel trends may be relative to the largest pre-treatment change in the untreated group gap. The procedure accounts for sampling uncertainty in the pre-treatment coefficients; it does not treat the observed maximum as known.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">sensitivity_results</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">HonestDiD</span><span class="o">::</span><span class="nf">createSensitivityResults_relativeMagnitudes</span><span class="p">(</span>
+<span class="w">  </span><span class="n">betahat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">event_coefficients</span><span class="p">,</span>
+<span class="w">  </span><span class="n">sigma</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">event_covariance</span><span class="p">,</span>
+<span class="w">  </span><span class="n">numPrePeriods</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2</span><span class="p">,</span>
+<span class="w">  </span><span class="n">numPostPeriods</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2</span><span class="p">,</span>
+<span class="w">  </span><span class="n">Mbarvec</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">seq</span><span class="p">(</span><span class="m">0.5</span><span class="p">,</span><span class="w"> </span><span class="m">2</span><span class="p">,</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.5</span><span class="p">),</span>
+<span class="w">  </span><span class="n">gridPoints</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">100</span><span class="p">,</span>
+<span class="w">  </span><span class="n">seed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">20260809</span>
+<span class="p">)</span>
+
+<span class="n">original_interval</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">HonestDiD</span><span class="o">::</span><span class="nf">constructOriginalCS</span><span class="p">(</span>
+<span class="w">  </span><span class="n">betahat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">event_coefficients</span><span class="p">,</span>
+<span class="w">  </span><span class="n">sigma</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">event_covariance</span><span class="p">,</span>
+<span class="w">  </span><span class="n">numPrePeriods</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2</span><span class="p">,</span>
+<span class="w">  </span><span class="n">numPostPeriods</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2</span>
+<span class="p">)</span>
+
+<span class="n">zero_included</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">with</span><span class="p">(</span>
+<span class="w">  </span><span class="n">sensitivity_results</span><span class="p">,</span>
+<span class="w">  </span><span class="n">lb</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">ub</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="m">0</span>
+<span class="p">)</span>
+<span class="n">first_zero_including_mbar</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="kr">if</span><span class="w"> </span><span class="p">(</span><span class="nf">any</span><span class="p">(</span><span class="n">zero_included</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nf">min</span><span class="p">(</span><span class="n">sensitivity_results</span><span class="o">$</span><span class="n">Mbar</span><span class="p">[</span><span class="n">zero_included</span><span class="p">])</span>
+<span class="p">}</span><span class="w"> </span><span class="kr">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kc">NA_real_</span>
+<span class="p">}</span>
+
+<span class="n">sensitivity_results</span>
+<span class="nf">data.frame</span><span class="p">(</span><span class="n">first_Mbar_including_zero</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">first_zero_including_mbar</span><span class="p">)</span>
+
+<span class="nf">stopifnot</span><span class="p">(</span>
+<span class="w">  </span><span class="nf">nrow</span><span class="p">(</span><span class="n">sensitivity_results</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">4L</span><span class="p">,</span>
+<span class="w">  </span><span class="nf">all</span><span class="p">(</span><span class="n">sensitivity_results</span><span class="o">$</span><span class="n">lb</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">sensitivity_results</span><span class="o">$</span><span class="n">ub</span><span class="p">),</span>
+<span class="w">  </span><span class="nf">all</span><span class="p">(</span><span class="nf">is.finite</span><span class="p">(</span><span class="n">sensitivity_results</span><span class="o">$</span><span class="n">Mbar</span><span class="p">)),</span>
+<span class="w">  </span><span class="nf">nrow</span><span class="p">(</span><span class="n">original_interval</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1L</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><table class="dataframe">
+<caption>A tibble: 4 × 5</caption>
+<thead>
+	<tr><th scope=col>lb</th><th scope=col>ub</th><th scope=col>method</th><th scope=col>Delta</th><th scope=col>Mbar</th></tr>
+	<tr><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;dbl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>-0.03960358</td><td>0.03240293</td><td>C-LF</td><td>DeltaRM</td><td>0.5</td></tr>
+	<tr><td>-0.05400488</td><td>0.04680423</td><td>C-LF</td><td>DeltaRM</td><td>1.0</td></tr>
+	<tr><td>-0.07560683</td><td>0.06840618</td><td>C-LF</td><td>DeltaRM</td><td>1.5</td></tr>
+	<tr><td>-0.09720879</td><td>0.09000814</td><td>C-LF</td><td>DeltaRM</td><td>2.0</td></tr>
+</tbody>
+</table>
+</div><div class="output text_html"><table class="dataframe">
+<caption>A data.frame: 1 × 1</caption>
+<thead>
+	<tr><th scope=col>first_Mbar_including_zero</th></tr>
+	<tr><th scope=col>&lt;dbl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>0.5</td></tr>
+</tbody>
+</table>
+</div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">9</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">5.2</span><span class="p">)</span>
+<span class="n">HonestDiD</span><span class="o">::</span><span class="nf">createSensitivityPlot_relativeMagnitudes</span><span class="p">(</span>
+<span class="w">  </span><span class="n">sensitivity_results</span><span class="p">,</span>
+<span class="w">  </span><span class="n">original_interval</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<a class="reference internal image-reference" href="../_images/77e50c69ec9e6a0f68be113467567ff160bf262b5b48328e775cf94d21796e97.png"><img alt="../_images/77e50c69ec9e6a0f68be113467567ff160bf262b5b48328e775cf94d21796e97.png" src="../_images/77e50c69ec9e6a0f68be113467567ff160bf262b5b48328e775cf94d21796e97.png" style="width: 540px; height: 312px;" />
+</a>
+</div>
+</div>
+<p>The default target is the first post-treatment effect (2006), not the average of both post-treatment periods. The sensitivity interval for this cohort already includes zero at the first reported restriction value. The exercise is still informative: sensitivity analysis should report how conclusions change under stated violations, not manufacture a decisive result.</p>
+<p>Most importantly, this is a <strong>2006-cohort-versus-never-treated</strong> estimand. It is not a sensitivity analysis for the full staggered-adoption aggregate estimated earlier.</p>
+</section>
+<section id="practical-implications">
+<h2>Practical Implications<a class="headerlink" href="#practical-implications" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Estimate <span class="math notranslate nohighlight">\(`ATT(g,t)`\)</span> before deciding how to aggregate heterogeneous effects.</p></li>
+<li><p>Comparison-group choice changes both support and the parallel-trends assumption.</p></li>
+<li><p>Covariate adjustment replaces unconditional with conditional parallel trends; it does not weaken the need for a credible design.</p></li>
+<li><p>Dynamic estimators can differ because their targets and weights differ.</p></li>
+<li><p>Sensitivity analysis should name the estimand, restriction, and breakdown point together.</p></li>
+<li><p>No modern package repairs anticipation, spillovers, outcome miscoding, or a substantively indefensible comparison group.</p></li>
+</ul>
+</section>
+<section id="worked-answers">
+<h2>Worked answers<a class="headerlink" href="#worked-answers" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>A simple aggregate gives early cohorts more post-treatment cells; cohort, calendar, and event averages answer different questions.</p></li>
+<li><p>Not-yet-treated counties add support only while untreated; they add a substantive comparison assumption.</p></li>
+<li><p>A universal baseline compares each lead to the last untreated period, whereas a varying baseline uses adjacent pre-period changes.</p></li>
+<li><p>The sensitivity exercise concerns the 2006 cohort and first post-period only. Report the tested grid rather than claiming an exact breakdown threshold.</p></li>
+</ul>
+<p>Callaway, Brantly, and Pedro H. C. Sant’Anna. 2021. “Difference-in-Differences with Multiple Time Periods.” <em>Journal of Econometrics</em> 225 (2): 200–230. <a class="reference external" href="https://doi.org/10.1016/j.jeconom.2020.12.001">https://doi.org/10.1016/j.jeconom.2020.12.001</a>.</p>
+<p>Rambachan, Ashesh, and Jonathan Roth. 2023. “A More Credible Approach to Parallel Trends.” <em>Review of Economic Studies</em> 90 (5): 2555–91. <a class="reference external" href="https://doi.org/10.1093/restud/rdad018">https://doi.org/10.1093/restud/rdad018</a>.</p>
+<p>Sun, Liyang, and Sarah Abraham. 2021. “Estimating Dynamic Treatment Effects in Event Studies with Heterogeneous Treatment Effects.” <em>Journal of Econometrics</em> 225 (2): 175–99. <a class="reference external" href="https://doi.org/10.1016/j.jeconom.2020.09.006">https://doi.org/10.1016/j.jeconom.2020.09.006</a>.</p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "r"
+        },
+        kernelOptions: {
+            name: "ir",
+            path: "./notebooks"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'ir'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="difference-in-differences-staggered-diagnostics-lab.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Lab: Staggered Adoption and TWFE Diagnostics</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="regression-discontinuity-foundations-lab.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Lab: Sharp RD foundations with government transfers</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item"><div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-to-use-this-page">How To Use This Page</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#training-goal">Training Goal</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-1-load-and-audit-mpdta">Step 1: Load And Audit <code class="docutils literal notranslate"><span class="pre">mpdta</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-2-declare-group-time-comparisons">Step 2: Declare Group-Time Comparisons</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-3-plot-cohort-outcome-paths">Step 3: Plot Cohort Outcome Paths</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-4-estimate-unconditional-group-time-effects">Step 4: Estimate Unconditional Group-Time Effects</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-5-control-the-aggregation">Step 5: Control The Aggregation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-6-plot-dynamic-effects-with-simultaneous-bands">Step 6: Plot Dynamic Effects With Simultaneous Bands</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-7-change-the-comparison-group">Step 7: Change The Comparison Group</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-8-condition-on-population">Step 8: Condition On Population</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-9-compare-with-sunabraham">Step 9: Compare With Sun–Abraham</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optional-extension-sensitivity-to-parallel-trends-violations">Optional Extension: Sensitivity To Parallel-Trends Violations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#practical-implications">Practical Implications</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#worked-answers">Worked answers</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By QED Labs
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2026.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+<div class="extra_footer">
+  Built for offline use. External reading links are optional.
+</div>
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

@@ -1,0 +1,962 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Lab: RDD design diagnostics and sensitivity &#8212; Quasi-Experimental Design Labs</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../_static/scripts/fontawesome.js?digest=55c26ed414f5f8a31ebb"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=b8b12719"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/regression-discontinuity-diagnostics-lab';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Lab: Fuzzy RD and local IV with veteran home ownership" href="regression-discontinuity-fuzzy-lab.html" />
+    <link rel="prev" title="Lab: Sharp RD foundations with government transfers" href="regression-discontinuity-foundations-lab.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">Quasi-Experimental Design Labs</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../index.html">
+                    Quasi-Experimental Design Labs
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Start here</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../offline-setup.html">Offline setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data.html">Bundled data and provenance</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Matching and Weighting</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="lalonde-matching-lab.html">Lab: LaLonde Matching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="black-politicians-lab.html">Lab: Black Politicians</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nsw-cps-benchmark-lab.html">Lab: NSW and CPS Benchmark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hisp-ie-practice-lab.html">Lab: HISP IE in Practice</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Difference-in-Differences</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="difference-in-differences-foundations-lab.html">Lab: Difference-in-Differences Foundations With Kentucky Workers’ Compensation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="difference-in-differences-staggered-diagnostics-lab.html">Lab: Staggered Adoption and TWFE Diagnostics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="difference-in-differences-modern-estimators-lab.html">Lab: Modern Multi-Period Difference-in-Differences</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Regression Discontinuity</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="regression-discontinuity-foundations-lab.html">Lab: Sharp RD foundations with government transfers</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Lab: RDD design diagnostics and sensitivity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="regression-discontinuity-fuzzy-lab.html">Lab: Fuzzy RD and local IV with veteran home ownership</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Synthetic Control</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-mechanics-lab.html">Lab: Synthetic Control Mechanics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-proposition-99-lab.html">Lab: Proposition 99 With tidysynth</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-augmentation-lab.html">Lab: Augmented SCM With Kansas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-design-lab.html">Lab: Synthetic Control Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-donor-pool-lab.html">Lab: Synthetic Control Donor Pool Design</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Interrupted Time Series</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="interrupted-time-series-mechanics-lab.html">Lab: Interrupted Time Series Foundations With Seatbelts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interrupted-time-series-design-diagnostics-lab.html">Lab: Seatbelt Law Design and Robustness</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interrupted-time-series-counterfactual-validation-lab.html">Lab: Interrupted Time Series Counterfactual Validation</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/notebooks/regression-discontinuity-diagnostics-lab.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm pst-navbar-icon" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Lab: RDD design diagnostics and sensitivity</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-to-use-this-lab">How to use this lab</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#learning-objectives">Learning objectives</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#research-question-and-design">Research question and design</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#load-both-samples">1. Load both samples</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#score-distribution-and-density-discontinuity">2. Score distribution and density discontinuity</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#observed-covariate-checks-and-missingness">3. Observed-covariate checks and missingness</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bandwidth-and-polynomial-sensitivity">4. Bandwidth and polynomial sensitivity</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#placebo-thresholds-and-donut-exclusions">5. Placebo thresholds and donut exclusions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#design-assessment-and-worked-checkpoints">6. Design assessment and worked checkpoints</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="lab-rdd-design-diagnostics-and-sensitivity">
+<h1>Lab: RDD design diagnostics and sensitivity<a class="headerlink" href="#lab-rdd-design-diagnostics-and-sensitivity" title="Link to this heading">#</a></h1>
+<p><a class="reference internal" href="../index.html"><span class="std std-doc">Book home</span></a></p>
+<p>Use the R kernel. Keep the supplied <code class="docutils literal notranslate"><span class="pre">data/</span></code> folder beside this notebook. Run cells in order after installing the documented R environment. Data loading is entirely local.</p>
+<section id="how-to-use-this-lab">
+<h2>How to use this lab<a class="headerlink" href="#how-to-use-this-lab" title="Link to this heading">#</a></h2>
+<p>Allow 60–75 minutes. You should be comfortable with basic regression and R data frames. Restore the <a class="reference external" href="https://defenceeconomist.github.io/qedlabs/labs/regression-discontinuity-reproducibility.html">tested environment</a>, then run every cell in order in a fresh kernel. Every run loads and verifies the bundled local data. No data are downloaded. The HTML page displays code; the downloadable notebook executes it.</p>
+<p><a class="reference external" href="https://defenceeconomist.github.io/qedlabs/notes/other-methods/regression-discontinuity.html">RDD overview</a> · <a class="reference external" href="https://defenceeconomist.github.io/qedlabs/notes/rdd/regression-discontinuity-sources.html">Source reading map</a></p>
+</section>
+<section id="learning-objectives">
+<h2>Learning objectives<a class="headerlink" href="#learning-objectives" title="Link to this heading">#</a></h2>
+<ol class="arabic simple">
+<li><p>Distinguish the outcome sample from the sample used for density testing.</p></li>
+<li><p>Evaluate observed-covariate discontinuities without assuming they are baseline measurements.</p></li>
+<li><p>Audit bandwidth, polynomial, placebo and donut choices.</p></li>
+<li><p>Report checks as challenges to a design, not a pass/fail certificate.</p></li>
+</ol>
+</section>
+<section id="research-question-and-design">
+<h2>Research question and design<a class="headerlink" href="#research-question-and-design" title="Link to this heading">#</a></h2>
+<p>Does threshold-based access to Uruguay’s PANES transfer programme change reported support for government? These teaching data come from Manacorda, Miguel and Vigorito and the worked example in <em>The Effect</em> (Manacorda, Miguel, and Vigorito 2011; Huntington-Klein 2025). They are a simplified teaching sample, not a replication of every paper specification.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Component</p></th>
+<th class="head"><p>Definition</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Running variable</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Income_Centered</span></code>, an assignment-income measure already centered at zero</p></td>
+</tr>
+<tr class="row-odd"><td><p>Treatment side</p></td>
+<td><p>Below zero; verify against <code class="docutils literal notranslate"><span class="pre">Participation</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Outcome</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Support</span></code>: 0 = worse than previous government, 0.5 = same, 1 = better</p></td>
+</tr>
+<tr class="row-odd"><td><p>Population</p></td>
+<td><p>Survey observations already restricted to about ±0.02 of the threshold</p></td>
+</tr>
+<tr class="row-even"><td><p>Estimand</p></td>
+<td><p>Effect of programme access at the threshold, under continuity and no competing discontinuity</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The outcome is a <strong>support score</strong>, not a binary probability. A change of 0.03 means 0.03 score units, or 3 points on a rescaled 0–100 index; it does not mean a 3-percentage-point change in the probability of supporting government. The programme includes benefits beyond a single cash payment, so interpret the treatment as the programme package.</p>
+<p>Complete the <a class="reference internal" href="regression-discontinuity-foundations-lab.html"><span class="std std-doc">foundations lab</span></a> first.</p>
+</section>
+<section id="load-both-samples">
+<h2>1. Load both samples<a class="headerlink" href="#load-both-samples" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">data_helpers</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">"data/load-data.R"</span><span class="p">,</span><span class="w"> </span><span class="s">"../data/load-data.R"</span><span class="p">,</span><span class="w"> </span><span class="s">"docs/labs/data/load-data.R"</span><span class="p">)</span>
+<span class="n">data_helpers</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">data_helpers</span><span class="p">[</span><span class="nf">file.exists</span><span class="p">(</span><span class="n">data_helpers</span><span class="p">)]</span>
+<span class="kr">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nf">length</span><span class="p">(</span><span class="n">data_helpers</span><span class="p">))</span><span class="w"> </span><span class="nf">stop</span><span class="p">(</span><span class="s">"Extract the complete lab ZIP, including its data folder, before running."</span><span class="p">)</span>
+<span class="nf">source</span><span class="p">(</span><span class="n">data_helpers</span><span class="p">[[</span><span class="m">1</span><span class="p">]])</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="c1"># Restore the isolated library documented on the setup page before running.</span>
+<span class="n">required</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">"rdrobust"</span><span class="p">,</span><span class="w"> </span><span class="s">"rddensity"</span><span class="p">,</span><span class="w"> </span><span class="s">"digest"</span><span class="p">,</span><span class="w"> </span><span class="s">"jsonlite"</span><span class="p">)</span>
+<span class="n">missing</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">required</span><span class="p">[</span><span class="o">!</span><span class="nf">vapply</span><span class="p">(</span><span class="n">required</span><span class="p">,</span><span class="w"> </span><span class="n">requireNamespace</span><span class="p">,</span><span class="w"> </span><span class="nf">logical</span><span class="p">(</span><span class="m">1</span><span class="p">),</span><span class="w"> </span><span class="n">quietly</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">)]</span>
+<span class="kr">if</span><span class="w"> </span><span class="p">(</span><span class="nf">length</span><span class="p">(</span><span class="n">missing</span><span class="p">))</span><span class="w"> </span><span class="nf">stop</span><span class="p">(</span><span class="s">"Restore the RDD environment; missing: "</span><span class="p">,</span><span class="w"> </span><span class="nf">paste</span><span class="p">(</span><span class="n">missing</span><span class="p">,</span><span class="w"> </span><span class="n">collapse</span><span class="o">=</span><span class="s">", "</span><span class="p">))</span>
+<span class="n">load_data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="w"> </span><span class="nf">as.data.frame</span><span class="p">(</span><span class="nf">qed_data</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+<span class="n">require_support</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">h</span><span class="p">,</span><span class="w"> </span><span class="n">cutoff</span><span class="o">=</span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="n">order</span><span class="o">=</span><span class="m">2</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">x</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">as.numeric</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">cutoff</span>
+<span class="w">  </span><span class="kr">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nf">is.finite</span><span class="p">(</span><span class="n">h</span><span class="p">)</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="o">!</span><span class="nf">all</span><span class="p">(</span><span class="nf">is.finite</span><span class="p">(</span><span class="n">x</span><span class="p">)))</span><span class="w"> </span><span class="nf">stop</span><span class="p">(</span><span class="s">"Nonfinite score or invalid bandwidth"</span><span class="p">)</span>
+<span class="w">  </span><span class="kr">for</span><span class="w"> </span><span class="p">(</span><span class="n">side</span><span class="w"> </span><span class="kr">in</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">x</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="o">-</span><span class="n">h</span><span class="p">],</span><span class="w"> </span><span class="n">x</span><span class="p">[</span><span class="n">x</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">h</span><span class="p">]))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kr">if</span><span class="w"> </span><span class="p">(</span><span class="nf">length</span><span class="p">(</span><span class="n">side</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="m">10</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nf">length</span><span class="p">(</span><span class="nf">unique</span><span class="p">(</span><span class="n">side</span><span class="p">))</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">order</span><span class="m">+2</span><span class="p">)</span>
+<span class="w">      </span><span class="nf">stop</span><span class="p">(</span><span class="s">"Insufficient observations or distinct scores on a cutoff side"</span><span class="p">)</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="nf">invisible</span><span class="p">(</span><span class="kc">TRUE</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="n">rd_fit</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">h</span><span class="o">=</span><span class="kc">NULL</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="o">=</span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="n">cutoff</span><span class="o">=</span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="n">treatment</span><span class="o">=</span><span class="kc">NULL</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">args</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="nf">as.numeric</span><span class="p">(</span><span class="n">y</span><span class="p">),</span><span class="w"> </span><span class="n">x</span><span class="o">=</span><span class="nf">as.numeric</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="w"> </span><span class="n">c</span><span class="o">=</span><span class="n">cutoff</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="o">=</span><span class="n">p</span><span class="p">,</span><span class="w"> </span><span class="n">q</span><span class="o">=</span><span class="n">p</span><span class="m">+1</span><span class="p">,</span>
+<span class="w">               </span><span class="n">kernel</span><span class="o">=</span><span class="s">"triangular"</span><span class="p">,</span><span class="w"> </span><span class="n">vce</span><span class="o">=</span><span class="s">"hc0"</span><span class="p">,</span><span class="w"> </span><span class="n">bwselect</span><span class="o">=</span><span class="s">"mserd"</span><span class="p">,</span><span class="w"> </span><span class="n">masspoints</span><span class="o">=</span><span class="s">"adjust"</span><span class="p">,</span>
+<span class="w">               </span><span class="n">stdvars</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">,</span><span class="w"> </span><span class="n">level</span><span class="o">=</span><span class="m">95</span><span class="p">,</span><span class="w"> </span><span class="n">bwrestrict</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">,</span><span class="w"> </span><span class="n">scaleregul</span><span class="o">=</span><span class="m">1</span><span class="p">)</span>
+<span class="w">  </span><span class="kr">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nf">is.null</span><span class="p">(</span><span class="n">h</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nf">require_support</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">h</span><span class="p">,</span><span class="w"> </span><span class="n">cutoff</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="m">+1</span><span class="p">)</span>
+<span class="w">    </span><span class="n">args</span><span class="o">$</span><span class="n">h</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">h</span><span class="p">;</span><span class="w"> </span><span class="n">args</span><span class="o">$</span><span class="n">b</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">h</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="kr">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nf">is.null</span><span class="p">(</span><span class="n">treatment</span><span class="p">))</span><span class="w"> </span><span class="n">args</span><span class="o">$</span><span class="n">fuzzy</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">as.numeric</span><span class="p">(</span><span class="n">treatment</span><span class="p">)</span>
+<span class="w">  </span><span class="nf">do.call</span><span class="p">(</span><span class="n">rdrobust</span><span class="o">::</span><span class="n">rdrobust</span><span class="p">,</span><span class="w"> </span><span class="n">args</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="n">rd_row</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="n">fit</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nf">data.frame</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">label</span><span class="p">,</span><span class="w"> </span><span class="n">jump</span><span class="o">=</span><span class="n">fit</span><span class="o">$</span><span class="n">coef</span><span class="p">[</span><span class="m">1</span><span class="p">,</span><span class="m">1</span><span class="p">],</span><span class="w"> </span><span class="n">bias_corrected</span><span class="o">=</span><span class="n">fit</span><span class="o">$</span><span class="n">coef</span><span class="p">[</span><span class="m">3</span><span class="p">,</span><span class="m">1</span><span class="p">],</span>
+<span class="w">             </span><span class="n">se_robust</span><span class="o">=</span><span class="n">fit</span><span class="o">$</span><span class="n">se</span><span class="p">[</span><span class="m">3</span><span class="p">,</span><span class="m">1</span><span class="p">],</span><span class="w"> </span><span class="n">ci_low</span><span class="o">=</span><span class="n">fit</span><span class="o">$</span><span class="n">ci</span><span class="p">[</span><span class="m">3</span><span class="p">,</span><span class="m">1</span><span class="p">],</span><span class="w"> </span><span class="n">ci_high</span><span class="o">=</span><span class="n">fit</span><span class="o">$</span><span class="n">ci</span><span class="p">[</span><span class="m">3</span><span class="p">,</span><span class="m">2</span><span class="p">],</span>
+<span class="w">             </span><span class="n">h_left</span><span class="o">=</span><span class="n">fit</span><span class="o">$</span><span class="n">bws</span><span class="p">[</span><span class="m">1</span><span class="p">,</span><span class="m">1</span><span class="p">],</span><span class="w"> </span><span class="n">h_right</span><span class="o">=</span><span class="n">fit</span><span class="o">$</span><span class="n">bws</span><span class="p">[</span><span class="m">1</span><span class="p">,</span><span class="m">2</span><span class="p">],</span>
+<span class="w">             </span><span class="n">b_left</span><span class="o">=</span><span class="n">fit</span><span class="o">$</span><span class="n">bws</span><span class="p">[</span><span class="m">2</span><span class="p">,</span><span class="m">1</span><span class="p">],</span><span class="w"> </span><span class="n">b_right</span><span class="o">=</span><span class="n">fit</span><span class="o">$</span><span class="n">bws</span><span class="p">[</span><span class="m">2</span><span class="p">,</span><span class="m">2</span><span class="p">],</span>
+<span class="w">             </span><span class="n">n_left</span><span class="o">=</span><span class="n">fit</span><span class="o">$</span><span class="n">N_h</span><span class="p">[</span><span class="m">1</span><span class="p">],</span><span class="w"> </span><span class="n">n_right</span><span class="o">=</span><span class="n">fit</span><span class="o">$</span><span class="n">N_h</span><span class="p">[</span><span class="m">2</span><span class="p">],</span><span class="w"> </span><span class="n">row.names</span><span class="o">=</span><span class="kc">NULL</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="n">binned_plot</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">width</span><span class="p">,</span><span class="w"> </span><span class="n">ylabel</span><span class="p">,</span><span class="w"> </span><span class="n">xlabel</span><span class="o">=</span><span class="s">"Centered assignment score"</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">bins</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">cut</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">breaks</span><span class="o">=</span><span class="nf">seq</span><span class="p">(</span><span class="o">-</span><span class="n">width</span><span class="p">,</span><span class="w"> </span><span class="n">width</span><span class="p">,</span><span class="w"> </span><span class="n">length.out</span><span class="o">=</span><span class="m">31</span><span class="p">),</span><span class="w"> </span><span class="n">include.lowest</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">)</span>
+<span class="w">  </span><span class="n">means</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">aggregate</span><span class="p">(</span><span class="nf">cbind</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">),</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="n">bin</span><span class="o">=</span><span class="n">bins</span><span class="p">),</span><span class="w"> </span><span class="n">mean</span><span class="p">)</span>
+<span class="w">  </span><span class="nf">plot</span><span class="p">(</span><span class="n">means</span><span class="o">$</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">means</span><span class="o">$</span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">pch</span><span class="o">=</span><span class="m">19</span><span class="p">,</span><span class="w"> </span><span class="n">col</span><span class="o">=</span><span class="s">"#174c63"</span><span class="p">,</span><span class="w"> </span><span class="n">xlab</span><span class="o">=</span><span class="n">xlabel</span><span class="p">,</span><span class="w"> </span><span class="n">ylab</span><span class="o">=</span><span class="n">ylabel</span><span class="p">)</span>
+<span class="w">  </span><span class="nf">abline</span><span class="p">(</span><span class="n">v</span><span class="o">=</span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="n">lty</span><span class="o">=</span><span class="m">2</span><span class="p">)</span>
+<span class="w">  </span><span class="nf">invisible</span><span class="p">(</span><span class="n">means</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">vapply</span><span class="p">(</span><span class="n">required</span><span class="p">,</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="w"> </span><span class="nf">as.character</span><span class="p">(</span><span class="nf">packageVersion</span><span class="p">(</span><span class="n">p</span><span class="p">)),</span><span class="w"> </span><span class="nf">character</span><span class="p">(</span><span class="m">1</span><span class="p">)))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> rdrobust rddensity    digest  jsonlite 
+  "4.0.0"     "3.0"  "0.6.39"   "2.0.0" 
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">gt</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">load_data</span><span class="p">(</span><span class="s">"gov_transfers"</span><span class="p">)</span>
+<span class="nf">stopifnot</span><span class="p">(</span><span class="nf">identical</span><span class="p">(</span><span class="nf">names</span><span class="p">(</span><span class="n">gt</span><span class="p">),</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">"Income_Centered"</span><span class="p">,</span><span class="w"> </span><span class="s">"Education"</span><span class="p">,</span><span class="w"> </span><span class="s">"Age"</span><span class="p">,</span><span class="w"> </span><span class="s">"Participation"</span><span class="p">,</span><span class="w"> </span><span class="s">"Support"</span><span class="p">)))</span>
+<span class="nf">stopifnot</span><span class="p">(</span><span class="o">!</span><span class="nf">anyNA</span><span class="p">(</span><span class="n">gt</span><span class="p">[</span><span class="nf">c</span><span class="p">(</span><span class="s">"Income_Centered"</span><span class="p">,</span><span class="w"> </span><span class="s">"Participation"</span><span class="p">,</span><span class="w"> </span><span class="s">"Support"</span><span class="p">)]))</span>
+<span class="n">x</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">gt</span><span class="o">$</span><span class="n">Income_Centered</span><span class="p">;</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">gt</span><span class="o">$</span><span class="n">Support</span>
+<span class="nf">stopifnot</span><span class="p">(</span><span class="o">!</span><span class="nf">any</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">0</span><span class="p">),</span><span class="w"> </span><span class="nf">all</span><span class="p">(</span><span class="n">gt</span><span class="o">$</span><span class="n">Participation</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nf">as.integer</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="m">0</span><span class="p">)))</span>
+<span class="nf">stopifnot</span><span class="p">(</span><span class="nf">setequal</span><span class="p">(</span><span class="nf">unique</span><span class="p">(</span><span class="n">y</span><span class="p">),</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="m">0.5</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">)))</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">table</span><span class="p">(</span><span class="n">participation</span><span class="o">=</span><span class="n">gt</span><span class="o">$</span><span class="n">Participation</span><span class="p">,</span><span class="w"> </span><span class="n">eligible</span><span class="o">=</span><span class="n">x</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="m">0</span><span class="p">))</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">colSums</span><span class="p">(</span><span class="nf">is.na</span><span class="p">(</span><span class="n">gt</span><span class="p">)))</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="nf">nrow</span><span class="p">(</span><span class="n">gt</span><span class="p">),</span><span class="w"> </span><span class="n">x_min</span><span class="o">=</span><span class="nf">min</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="w"> </span><span class="n">x_max</span><span class="o">=</span><span class="nf">max</span><span class="p">(</span><span class="n">x</span><span class="p">)))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>             eligible
+participation FALSE TRUE
+            0   821    0
+            1     0 1127
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Income_Centered       Education             Age   Participation         Support 
+              0              51               0               0               0 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>            n         x_min         x_max 
+1948.00000000   -0.01999099    0.01989200 
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="score-distribution-and-density-discontinuity">
+<h2>2. Score distribution and density discontinuity<a class="headerlink" href="#score-distribution-and-density-discontinuity" title="Link to this heading">#</a></h2>
+<p>Use the dedicated score dataset, not the 1,948-person outcome survey. Retain its observations within ±0.02 for this exercise. Density bandwidths are selected separately from outcome bandwidths.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">scores</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">load_data</span><span class="p">(</span><span class="s">"gov_transfers_density"</span><span class="p">)</span>
+<span class="n">xd</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">scores</span><span class="o">$</span><span class="n">Income_Centered</span>
+<span class="nf">stopifnot</span><span class="p">(</span><span class="nf">all</span><span class="p">(</span><span class="nf">is.finite</span><span class="p">(</span><span class="n">xd</span><span class="p">)))</span>
+<span class="n">xd</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">xd</span><span class="p">[</span><span class="nf">abs</span><span class="p">(</span><span class="n">xd</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="m">0.02</span><span class="p">]</span>
+<span class="nf">require_support</span><span class="p">(</span><span class="n">xd</span><span class="p">,</span><span class="w"> </span><span class="m">0.02</span><span class="p">,</span><span class="w"> </span><span class="n">order</span><span class="o">=</span><span class="m">3</span><span class="p">)</span>
+<span class="nf">hist</span><span class="p">(</span><span class="n">xd</span><span class="p">,</span><span class="w"> </span><span class="n">breaks</span><span class="o">=</span><span class="nf">seq</span><span class="p">(</span><span class="m">-0.02</span><span class="p">,</span><span class="m">0.02</span><span class="p">,</span><span class="n">length.out</span><span class="o">=</span><span class="m">41</span><span class="p">),</span><span class="w"> </span><span class="n">col</span><span class="o">=</span><span class="s">"#174c63"</span><span class="p">,</span>
+<span class="w">     </span><span class="n">main</span><span class="o">=</span><span class="s">""</span><span class="p">,</span><span class="w"> </span><span class="n">xlab</span><span class="o">=</span><span class="s">"Centered assignment score"</span><span class="p">,</span><span class="w"> </span><span class="n">ylab</span><span class="o">=</span><span class="s">"Records in density sample"</span><span class="p">)</span>
+<span class="nf">abline</span><span class="p">(</span><span class="n">v</span><span class="o">=</span><span class="m">0</span><span class="p">,</span><span class="n">lty</span><span class="o">=</span><span class="m">2</span><span class="p">)</span>
+<span class="n">density_fit</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">rddensity</span><span class="o">::</span><span class="nf">rddensity</span><span class="p">(</span><span class="n">xd</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="o">=</span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="o">=</span><span class="m">2</span><span class="p">,</span><span class="w"> </span><span class="n">q</span><span class="o">=</span><span class="m">3</span><span class="p">,</span><span class="w"> </span><span class="n">fitselect</span><span class="o">=</span><span class="s">"unrestricted"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">kernel</span><span class="o">=</span><span class="s">"triangular"</span><span class="p">,</span><span class="w"> </span><span class="n">vce</span><span class="o">=</span><span class="s">"jackknife"</span><span class="p">,</span><span class="w"> </span><span class="n">massPoints</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">,</span><span class="w"> </span><span class="n">regularize</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">,</span><span class="w"> </span><span class="n">bwselect</span><span class="o">=</span><span class="s">"comb"</span><span class="p">,</span><span class="w"> </span><span class="n">bino</span><span class="o">=</span><span class="kc">FALSE</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">summary</span><span class="p">(</span><span class="n">density_fit</span><span class="p">))</span>
+<span class="n">density_results</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">data.frame</span><span class="p">(</span><span class="n">metric</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="s">"source_n"</span><span class="p">,</span><span class="s">"analysis_n"</span><span class="p">,</span><span class="s">"test_stat"</span><span class="p">,</span><span class="s">"p_value"</span><span class="p">,</span><span class="s">"h_left"</span><span class="p">,</span><span class="s">"h_right"</span><span class="p">),</span>
+<span class="w">  </span><span class="n">value</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="nf">nrow</span><span class="p">(</span><span class="n">scores</span><span class="p">),</span><span class="nf">length</span><span class="p">(</span><span class="n">xd</span><span class="p">),</span><span class="n">density_fit</span><span class="o">$</span><span class="n">test</span><span class="o">$</span><span class="n">t_jk</span><span class="p">,</span><span class="n">density_fit</span><span class="o">$</span><span class="n">test</span><span class="o">$</span><span class="n">p_jk</span><span class="p">,</span>
+<span class="w">          </span><span class="n">density_fit</span><span class="o">$</span><span class="n">h</span><span class="o">$</span><span class="n">left</span><span class="p">,</span><span class="n">density_fit</span><span class="o">$</span><span class="n">h</span><span class="o">$</span><span class="n">right</span><span class="p">))</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">density_results</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Manipulation testing using local polynomial density estimation.
+
+Number of obs =       20463
+Model =               unrestricted
+Kernel =              triangular
+BW method =           estimated
+VCE method =          jackknife
+
+c = 0                 Left of c           Right of c          
+Number of obs         9077                11386               
+Eff. Number of obs    1927                2309                
+Order est. (p)        2                   2                   
+Order bias (q)        3                   3                   
+BW est. (h)           0.004               0.005               
+
+Method                T                   P &gt; |T|             
+Robust                -0.9238             0.3556              
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Warning message in summary.CJMrddensity(density_fit):
+“There are repeated observations. Point estimates and standard errors have been adjusted. Use option massPoints=FALSE to suppress this feature.”
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>NULL
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>      metric         value
+1   source_n  5.254900e+04
+2 analysis_n  2.046300e+04
+3  test_stat -9.237801e-01
+4    p_value  3.556008e-01
+5     h_left  3.626136e-03
+6    h_right  4.531114e-03
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/4e47dd235c6c9f402a4faa80c51dd659500299f2375b18f0043ec990fedfe547.png"><img alt="../_images/4e47dd235c6c9f402a4faa80c51dd659500299f2375b18f0043ec990fedfe547.png" src="../_images/4e47dd235c6c9f402a4faa80c51dd659500299f2375b18f0043ec990fedfe547.png" style="width: 480px; height: 288px;" />
+</a>
+</div>
+</div>
+<p><strong>Checkpoint:</strong> the full source has 52,549 score records. Explain why surveying outcomes near a threshold could itself alter the observed score distribution. A large density-test p-value is not proof that scores were never manipulated.</p>
+</section>
+<section id="observed-covariate-checks-and-missingness">
+<h2>3. Observed-covariate checks and missingness<a class="headerlink" href="#observed-covariate-checks-and-missingness" title="Link to this heading">#</a></h2>
+<p>Examine <code class="docutils literal notranslate"><span class="pre">Age</span></code> and <code class="docutils literal notranslate"><span class="pre">Education</span></code> with the same fixed 0.01 window. Use complete cases separately for each variable and report the number excluded. Their measurement timing is not established in the teaching data, so call these <strong>observed-covariate checks</strong>, not verified pre-treatment balance tests. Household composition and education could themselves be related to programme exposure.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">covariates</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">do.call</span><span class="p">(</span><span class="n">rbind</span><span class="p">,</span><span class="nf">lapply</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s">"Age"</span><span class="p">,</span><span class="s">"Education"</span><span class="p">),</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="n">variable</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">sample</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">gt</span><span class="p">[</span><span class="nf">complete.cases</span><span class="p">(</span><span class="n">gt</span><span class="p">[</span><span class="nf">c</span><span class="p">(</span><span class="s">"Income_Centered"</span><span class="p">,</span><span class="n">variable</span><span class="p">)]),]</span>
+<span class="w">  </span><span class="n">row</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">rd_row</span><span class="p">(</span><span class="nf">rd_fit</span><span class="p">(</span><span class="n">sample</span><span class="p">[[</span><span class="n">variable</span><span class="p">]],</span><span class="n">sample</span><span class="o">$</span><span class="n">Income_Centered</span><span class="p">,</span><span class="n">h</span><span class="o">=</span><span class="m">0.01</span><span class="p">),</span><span class="n">variable</span><span class="p">)</span>
+<span class="w">  </span><span class="n">row</span><span class="o">$</span><span class="n">available_n</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">nrow</span><span class="p">(</span><span class="n">sample</span><span class="p">);</span><span class="w"> </span><span class="n">row</span><span class="o">$</span><span class="n">missing_n</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">nrow</span><span class="p">(</span><span class="n">gt</span><span class="p">)</span><span class="o">-</span><span class="nf">nrow</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span>
+<span class="w">  </span><span class="n">row</span>
+<span class="p">}))</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">covariates</span><span class="p">)</span>
+<span class="nf">stopifnot</span><span class="p">(</span><span class="n">covariates</span><span class="o">$</span><span class="n">missing_n</span><span class="p">[</span><span class="n">covariates</span><span class="o">$</span><span class="n">model</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">"Education"</span><span class="p">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">51</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Warning message in (function (y, x, c = NULL, fuzzy = NULL, deriv = NULL, p = NULL, :
+“Mass points detected in the running variable.”
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Warning message in (function (y, x, c = NULL, fuzzy = NULL, deriv = NULL, p = NULL, :
+“Mass points detected in the running variable.”
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>      model        jump bias_corrected se_robust     ci_low   ci_high h_left
+1       Age  2.15761648      6.5122661 3.1813820  0.2768719 12.747660   0.01
+2 Education -0.01733741      0.4453786 0.3899165 -0.3188438  1.209601   0.01
+  h_right b_left b_right n_left n_right available_n missing_n
+1    0.01   0.01    0.01    537     400        1948         0
+2    0.01   0.01    0.01    521     388        1897        51
+</pre></div>
+</div>
+</div>
+</div>
+<p>Explain any discontinuity rather than adding the variable mechanically as a control. Multiple noisy checks can produce isolated findings by chance; a common-sample comparison would also be needed to distinguish adjustment from sample changes.</p>
+</section>
+<section id="bandwidth-and-polynomial-sensitivity">
+<h2>4. Bandwidth and polynomial sensitivity<a class="headerlink" href="#bandwidth-and-polynomial-sensitivity" title="Link to this heading">#</a></h2>
+<p>Use triangular kernels, <code class="docutils literal notranslate"><span class="pre">b=h</span></code>, and paired orders <code class="docutils literal notranslate"><span class="pre">(p,q)=(1,2)</span></code> and <code class="docutils literal notranslate"><span class="pre">(2,3)</span></code>. Every estimate uses the same outcome definition. Draw intervals around the bias-corrected programme effect, not around the conventional jump.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">rows</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">list</span><span class="p">()</span>
+<span class="kr">for</span><span class="w"> </span><span class="p">(</span><span class="n">h</span><span class="w"> </span><span class="kr">in</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">0.005</span><span class="p">,</span><span class="m">0.01</span><span class="p">,</span><span class="m">0.015</span><span class="p">,</span><span class="m">0.02</span><span class="p">))</span><span class="w"> </span><span class="kr">for</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="w"> </span><span class="kr">in</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="m">2</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">row</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">rd_row</span><span class="p">(</span><span class="nf">rd_fit</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">h</span><span class="o">=</span><span class="n">h</span><span class="p">,</span><span class="n">p</span><span class="o">=</span><span class="n">p</span><span class="p">),</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">"h%.3f_p%d"</span><span class="p">,</span><span class="n">h</span><span class="p">,</span><span class="n">p</span><span class="p">))</span>
+<span class="w">  </span><span class="n">row</span><span class="o">$</span><span class="n">bandwidth</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">h</span><span class="p">;</span><span class="w"> </span><span class="n">row</span><span class="o">$</span><span class="n">order</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">p</span>
+<span class="w">  </span><span class="n">rows</span><span class="p">[[</span><span class="nf">length</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span><span class="m">+1</span><span class="p">]]</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">row</span>
+<span class="p">}</span>
+<span class="n">sensitivity</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">do.call</span><span class="p">(</span><span class="n">rbind</span><span class="p">,</span><span class="n">rows</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">sensitivity</span><span class="p">)</span>
+<span class="nf">plot</span><span class="p">(</span><span class="kc">NA</span><span class="p">,</span><span class="n">xlim</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="m">0.004</span><span class="p">,</span><span class="m">0.021</span><span class="p">),</span><span class="n">ylim</span><span class="o">=</span><span class="nf">range</span><span class="p">(</span><span class="o">-</span><span class="n">sensitivity</span><span class="o">$</span><span class="n">ci_high</span><span class="p">,</span><span class="o">-</span><span class="n">sensitivity</span><span class="o">$</span><span class="n">ci_low</span><span class="p">),</span>
+<span class="w">     </span><span class="n">xlab</span><span class="o">=</span><span class="s">"Bandwidth"</span><span class="p">,</span><span class="n">ylab</span><span class="o">=</span><span class="s">"Programme effect on support score (RBC 95% CI)"</span><span class="p">)</span>
+<span class="kr">for</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="w"> </span><span class="kr">in</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="m">2</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">s</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">sensitivity</span><span class="p">[</span><span class="n">sensitivity</span><span class="o">$</span><span class="n">order</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">p</span><span class="p">,]</span>
+<span class="w">  </span><span class="nf">lines</span><span class="p">(</span><span class="n">s</span><span class="o">$</span><span class="n">bandwidth</span><span class="p">,</span><span class="o">-</span><span class="n">s</span><span class="o">$</span><span class="n">bias_corrected</span><span class="p">,</span><span class="n">type</span><span class="o">=</span><span class="s">"b"</span><span class="p">,</span><span class="n">pch</span><span class="o">=</span><span class="m">15</span><span class="o">+</span><span class="n">p</span><span class="p">,</span><span class="n">col</span><span class="o">=</span><span class="n">p</span><span class="m">+1</span><span class="p">)</span>
+<span class="w">  </span><span class="nf">arrows</span><span class="p">(</span><span class="n">s</span><span class="o">$</span><span class="n">bandwidth</span><span class="p">,</span><span class="o">-</span><span class="n">s</span><span class="o">$</span><span class="n">ci_high</span><span class="p">,</span><span class="n">s</span><span class="o">$</span><span class="n">bandwidth</span><span class="p">,</span><span class="o">-</span><span class="n">s</span><span class="o">$</span><span class="n">ci_low</span><span class="p">,</span><span class="n">angle</span><span class="o">=</span><span class="m">90</span><span class="p">,</span><span class="n">code</span><span class="o">=</span><span class="m">3</span><span class="p">,</span><span class="n">length</span><span class="o">=</span><span class="n">.</span><span class="m">04</span><span class="p">,</span><span class="n">col</span><span class="o">=</span><span class="n">p</span><span class="m">+1</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="nf">abline</span><span class="p">(</span><span class="n">h</span><span class="o">=</span><span class="m">0</span><span class="p">,</span><span class="n">lty</span><span class="o">=</span><span class="m">2</span><span class="p">);</span><span class="nf">legend</span><span class="p">(</span><span class="s">"topright"</span><span class="p">,</span><span class="n">legend</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="s">"Local linear"</span><span class="p">,</span><span class="s">"Local quadratic"</span><span class="p">),</span><span class="n">col</span><span class="o">=</span><span class="m">2</span><span class="o">:</span><span class="m">3</span><span class="p">,</span><span class="n">lty</span><span class="o">=</span><span class="m">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Warning message in (function (y, x, c = NULL, fuzzy = NULL, deriv = NULL, p = NULL, :
+“Mass points detected in the running variable.”
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Warning message in (function (y, x, c = NULL, fuzzy = NULL, deriv = NULL, p = NULL, :
+“Mass points detected in the running variable.”
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Warning message in (function (y, x, c = NULL, fuzzy = NULL, deriv = NULL, p = NULL, :
+“Mass points detected in the running variable.”
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Warning message in (function (y, x, c = NULL, fuzzy = NULL, deriv = NULL, p = NULL, :
+“Mass points detected in the running variable.”
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Warning message in (function (y, x, c = NULL, fuzzy = NULL, deriv = NULL, p = NULL, :
+“Mass points detected in the running variable.”
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Warning message in (function (y, x, c = NULL, fuzzy = NULL, deriv = NULL, p = NULL, :
+“Mass points detected in the running variable.”
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Warning message in (function (y, x, c = NULL, fuzzy = NULL, deriv = NULL, p = NULL, :
+“Mass points detected in the running variable.”
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Warning message in (function (y, x, c = NULL, fuzzy = NULL, deriv = NULL, p = NULL, :
+“Mass points detected in the running variable.”
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>      model         jump bias_corrected  se_robust      ci_low    ci_high
+1 h0.005_p1  0.027155293    0.193333153 0.14570743 -0.09224816 0.47891447
+2 h0.005_p2  0.193333153    0.512282946 0.23956466  0.04274484 0.98182105
+3 h0.010_p1 -0.033481754    0.041604922 0.07467437 -0.10475415 0.18796400
+4 h0.010_p2  0.041604922    0.126452743 0.12438708 -0.11734145 0.37024693
+5 h0.015_p1 -0.079741327   -0.001371794 0.05470766 -0.10859683 0.10585324
+6 h0.015_p2 -0.001371794    0.069470920 0.08255866 -0.09234109 0.23128293
+7 h0.020_p1 -0.095852696   -0.048293140 0.04604897 -0.13854746 0.04196119
+8 h0.020_p2 -0.048293140    0.031228335 0.06536512 -0.09688495 0.15934162
+  h_left h_right b_left b_right n_left n_right bandwidth order
+1  0.005   0.005  0.005   0.005    276     186     0.005     1
+2  0.005   0.005  0.005   0.005    276     186     0.005     2
+3  0.010   0.010  0.010   0.010    537     400     0.010     1
+4  0.010   0.010  0.010   0.010    537     400     0.010     2
+5  0.015   0.015  0.015   0.015    827     598     0.015     1
+6  0.015   0.015  0.015   0.015    827     598     0.015     2
+7  0.020   0.020  0.020   0.020   1127     821     0.020     1
+8  0.020   0.020  0.020   0.020   1127     821     0.020     2
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/2271cdba7f9df163a0cd4da32749b3c4a139df8bfab987423b1d2b60e1145077.png"><img alt="../_images/2271cdba7f9df163a0cd4da32749b3c4a139df8bfab987423b1d2b60e1145077.png" src="../_images/2271cdba7f9df163a0cd4da32749b3c4a139df8bfab987423b1d2b60e1145077.png" style="width: 480px; height: 288px;" />
+</a>
+</div>
+</div>
+<p>The source is already truncated to approximately ±0.02. A result at the widest available window is not an estimate using the full programme population. Changing plot bins would be a different exercise from changing these estimation windows.</p>
+</section>
+<section id="placebo-thresholds-and-donut-exclusions">
+<h2>5. Placebo thresholds and donut exclusions<a class="headerlink" href="#placebo-thresholds-and-donut-exclusions" title="Link to this heading">#</a></h2>
+<p>Use artificial cutoffs at −0.01 and +0.01, each with a 0.004 estimation <strong>and bias</strong> bandwidth. Neither window crosses the genuine zero cutoff. Then, at the real cutoff, remove score distances below 0.001 and 0.002 while keeping <code class="docutils literal notranslate"><span class="pre">h=b=0.01</span></code>. Donut results rely on extrapolation across the excluded gap; their intervals are model-based sensitivity summaries, not a repair for sorting or proof of validity.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">placebos</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">do.call</span><span class="p">(</span><span class="n">rbind</span><span class="p">,</span><span class="nf">lapply</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="m">-0.01</span><span class="p">,</span><span class="m">0.01</span><span class="p">),</span><span class="kr">function</span><span class="p">(</span><span class="n">cutoff</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">h</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">0.004</span><span class="p">;</span><span class="nf">stopifnot</span><span class="p">(</span><span class="nf">abs</span><span class="p">(</span><span class="n">cutoff</span><span class="p">)</span><span class="o">&gt;</span><span class="n">h</span><span class="p">)</span>
+<span class="w">  </span><span class="n">same_regime</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="kr">if</span><span class="w"> </span><span class="p">(</span><span class="n">cutoff</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="m">0</span><span class="p">)</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="kr">else</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">0</span>
+<span class="w">  </span><span class="n">row</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">rd_row</span><span class="p">(</span><span class="nf">rd_fit</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">same_regime</span><span class="p">],</span><span class="n">x</span><span class="p">[</span><span class="n">same_regime</span><span class="p">],</span><span class="n">h</span><span class="o">=</span><span class="n">h</span><span class="p">,</span><span class="n">cutoff</span><span class="o">=</span><span class="n">cutoff</span><span class="p">),</span><span class="nf">paste0</span><span class="p">(</span><span class="s">"cutoff_"</span><span class="p">,</span><span class="n">cutoff</span><span class="p">))</span>
+<span class="w">  </span><span class="n">row</span><span class="o">$</span><span class="n">cutoff</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">cutoff</span><span class="p">;</span><span class="n">row</span>
+<span class="p">}))</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">placebos</span><span class="p">)</span>
+<span class="n">donuts</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">do.call</span><span class="p">(</span><span class="n">rbind</span><span class="p">,</span><span class="nf">lapply</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="m">0.001</span><span class="p">,</span><span class="m">0.002</span><span class="p">),</span><span class="kr">function</span><span class="p">(</span><span class="n">radius</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">keep</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">abs</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">radius</span>
+<span class="w">  </span><span class="n">row</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">rd_row</span><span class="p">(</span><span class="nf">rd_fit</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">keep</span><span class="p">],</span><span class="n">x</span><span class="p">[</span><span class="n">keep</span><span class="p">],</span><span class="n">h</span><span class="o">=</span><span class="m">0.01</span><span class="p">),</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">"donut_%.3f"</span><span class="p">,</span><span class="n">radius</span><span class="p">))</span>
+<span class="w">  </span><span class="n">row</span><span class="o">$</span><span class="n">radius</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">radius</span><span class="p">;</span><span class="n">row</span><span class="o">$</span><span class="n">removed_n</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="o">!</span><span class="n">keep</span><span class="p">);</span><span class="n">row</span>
+<span class="p">}))</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">donuts</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Warning message in (function (y, x, c = NULL, fuzzy = NULL, deriv = NULL, p = NULL, :
+“Mass points detected in the running variable.”
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Warning message in (function (y, x, c = NULL, fuzzy = NULL, deriv = NULL, p = NULL, :
+“Mass points detected in the running variable.”
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>         model        jump bias_corrected  se_robust     ci_low    ci_high
+1 cutoff_-0.01  0.04772398    -0.01419843 0.07881574 -0.1686745 0.14027759
+2  cutoff_0.01 -0.10370479    -0.20122565 0.13220029 -0.4603334 0.05788215
+  h_left h_right b_left b_right n_left n_right cutoff
+1  0.004   0.004  0.004   0.004    225     207  -0.01
+2  0.004   0.004  0.004   0.004    173     161   0.01
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Warning message in (function (y, x, c = NULL, fuzzy = NULL, deriv = NULL, p = NULL, :
+“Mass points detected in the running variable.”
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Warning message in (function (y, x, c = NULL, fuzzy = NULL, deriv = NULL, p = NULL, :
+“Mass points detected in the running variable.”
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Warning message in (function (y, x, c = NULL, fuzzy = NULL, deriv = NULL, p = NULL, :
+“Mass points detected in the running variable.”
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        model        jump bias_corrected  se_robust     ci_low   ci_high h_left
+1 donut_0.000 -0.03348175     0.04160492 0.07467437 -0.1047542 0.1879640   0.01
+2 donut_0.001 -0.06193779     0.05549678 0.09945454 -0.1394305 0.2504241   0.01
+3 donut_0.002 -0.11516374    -0.05451387 0.16150670 -0.3710612 0.2620335   0.01
+  h_right b_left b_right n_left n_right radius removed_n
+1    0.01   0.01    0.01    537     400  0.000         0
+2    0.01   0.01    0.01    521     362  0.001        54
+3    0.01   0.01    0.01    443     327  0.002       167
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="design-assessment-and-worked-checkpoints">
+<h2>6. Design assessment and worked checkpoints<a class="headerlink" href="#design-assessment-and-worked-checkpoints" title="Link to this heading">#</a></h2>
+<p>The density exercise keeps <strong>20,463 of 52,549</strong> records. Its jackknife statistic is <strong>−0.923780049</strong> (<code class="docutils literal notranslate"><span class="pre">p=0.355600845</span></code>); this does not establish absence of manipulation. The observed-age bias-corrected jump is <strong>6.5123 years</strong>, with interval <strong>[0.2769, 12.7477]</strong>. Investigate this finding and measurement timing; do not declare baseline balance verified. Education uses <strong>1,897</strong> complete cases, of which <strong>521 below</strong> and <strong>388 above</strong> zero fall inside the 0.01 window.</p>
+<p>At bandwidths 0.005, 0.01, 0.015 and 0.02, the conventional local linear <strong>programme effects</strong> are <strong>−0.02716, +0.03348, +0.07974 and +0.09585</strong>. The sensitivity plot uses bias-corrected estimates instead, so its centers differ from this list. The narrow quadratic fit is especially unstable. Donut radii 0.001 and 0.002 remove <strong>54 and 167</strong> outcome-survey records. Record these changes alongside the estimates in your diagnostic table.</p>
+<p>See the <a class="reference external" href="https://defenceeconomist.github.io/qedlabs/labs/regression-discontinuity-reproducibility.html">reproduction record</a> for verified outputs and the complete comparison tables.</p>
+<p>Write a short assessment covering: the administrative allocation rule; what density and covariate checks do and do not establish; stability across windows and fits; and which uncertainty matters for the policy conclusion. Do not choose a result by significance, or describe every nonsignificant diagnostic as a successful validation.</p>
+<p>Next, study <a class="reference internal" href="regression-discontinuity-fuzzy-lab.html"><span class="std std-doc">fuzzy RD and local IV</span></a>.</p>
+<p>Huntington-Klein, Nick. 2025. “The Effect: An Introduction to Research Design and Causality. Chapter 20: Regression Discontinuity.” 2025. <a class="reference external" href="https://portal.heley.uk/researchlibrary/books/the-effect">https://portal.heley.uk/researchlibrary/books/the-effect</a>.</p>
+<p>Manacorda, Marco, Edward Miguel, and Andrea Vigorito. 2011. “Government Transfers and Political Support.” <em>American Economic Journal: Applied Economics</em> 3 (3): 1–28. <a class="reference external" href="https://doi.org/10.1257/app.3.3.1">https://doi.org/10.1257/app.3.3.1</a>.</p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "r"
+        },
+        kernelOptions: {
+            name: "ir",
+            path: "./notebooks"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'ir'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="regression-discontinuity-foundations-lab.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Lab: Sharp RD foundations with government transfers</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="regression-discontinuity-fuzzy-lab.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Lab: Fuzzy RD and local IV with veteran home ownership</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item"><div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-to-use-this-lab">How to use this lab</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#learning-objectives">Learning objectives</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#research-question-and-design">Research question and design</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#load-both-samples">1. Load both samples</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#score-distribution-and-density-discontinuity">2. Score distribution and density discontinuity</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#observed-covariate-checks-and-missingness">3. Observed-covariate checks and missingness</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bandwidth-and-polynomial-sensitivity">4. Bandwidth and polynomial sensitivity</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#placebo-thresholds-and-donut-exclusions">5. Placebo thresholds and donut exclusions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#design-assessment-and-worked-checkpoints">6. Design assessment and worked checkpoints</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By QED Labs
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2026.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+<div class="extra_footer">
+  Built for offline use. External reading links are optional.
+</div>
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

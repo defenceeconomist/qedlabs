@@ -1,0 +1,1229 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Lab: HISP IE in Practice &#8212; Quasi-Experimental Design Labs</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../_static/scripts/fontawesome.js?digest=55c26ed414f5f8a31ebb"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=b8b12719"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="../_static/mathjax/tex-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/hisp-ie-practice-lab';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Lab: Difference-in-Differences Foundations With Kentucky Workers’ Compensation" href="difference-in-differences-foundations-lab.html" />
+    <link rel="prev" title="Lab: NSW and CPS Benchmark" href="nsw-cps-benchmark-lab.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">Quasi-Experimental Design Labs</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../index.html">
+                    Quasi-Experimental Design Labs
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Start here</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../offline-setup.html">Offline setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data.html">Bundled data and provenance</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Matching and Weighting</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="lalonde-matching-lab.html">Lab: LaLonde Matching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="black-politicians-lab.html">Lab: Black Politicians</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nsw-cps-benchmark-lab.html">Lab: NSW and CPS Benchmark</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Lab: HISP IE in Practice</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Difference-in-Differences</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="difference-in-differences-foundations-lab.html">Lab: Difference-in-Differences Foundations With Kentucky Workers’ Compensation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="difference-in-differences-staggered-diagnostics-lab.html">Lab: Staggered Adoption and TWFE Diagnostics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="difference-in-differences-modern-estimators-lab.html">Lab: Modern Multi-Period Difference-in-Differences</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Regression Discontinuity</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="regression-discontinuity-foundations-lab.html">Lab: Sharp RD foundations with government transfers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="regression-discontinuity-diagnostics-lab.html">Lab: RDD design diagnostics and sensitivity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="regression-discontinuity-fuzzy-lab.html">Lab: Fuzzy RD and local IV with veteran home ownership</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Synthetic Control</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-mechanics-lab.html">Lab: Synthetic Control Mechanics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-proposition-99-lab.html">Lab: Proposition 99 With tidysynth</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-augmentation-lab.html">Lab: Augmented SCM With Kansas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-design-lab.html">Lab: Synthetic Control Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-donor-pool-lab.html">Lab: Synthetic Control Donor Pool Design</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Interrupted Time Series</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="interrupted-time-series-mechanics-lab.html">Lab: Interrupted Time Series Foundations With Seatbelts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interrupted-time-series-design-diagnostics-lab.html">Lab: Seatbelt Law Design and Robustness</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interrupted-time-series-counterfactual-validation-lab.html">Lab: Interrupted Time Series Counterfactual Validation</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/notebooks/hisp-ie-practice-lab.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm pst-navbar-icon" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Lab: HISP IE in Practice</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-to-use-this-page">How To Use This Page</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#source-baseline">Source Baseline</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-1-convert-the-stata-files-and-load-the-hisp-data">Step 1: Convert The Stata Files And Load The HISP Data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-2-method-1-before-after-among-enrolled-households">Step 2: Method 1, Before-After Among Enrolled Households</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-3-method-2-enrolled-versus-not-enrolled-at-follow-up">Step 3: Method 2, Enrolled Versus Not Enrolled At Follow-Up</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-4-method-3-randomized-assignment-among-eligible-households">Step 4: Method 3, Randomized Assignment Among Eligible Households</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-5-method-4-instrumental-variables-under-random-promotion">Step 5: Method 4, Instrumental Variables Under Random Promotion</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-6-method-5-regression-discontinuity">Step 6: Method 5, Regression Discontinuity</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-7-method-6-difference-in-differences">Step 7: Method 6, Difference-in-Differences</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-8-method-7-propensity-score-matching">Step 8: Method 7, Propensity-Score Matching</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-9-matched-difference-in-differences">Step 9: Matched Difference-in-Differences</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-10-power-calculations">Step 10: Power Calculations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#comparison-question">Comparison Question</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="lab-hisp-ie-in-practice">
+<h1>Lab: HISP IE in Practice<a class="headerlink" href="#lab-hisp-ie-in-practice" title="Link to this heading">#</a></h1>
+<p><a class="reference internal" href="../index.html"><span class="std std-doc">Book home</span></a></p>
+<p>Use the R kernel. Keep the supplied <code class="docutils literal notranslate"><span class="pre">data/</span></code> folder beside this notebook. Run cells in order after installing the documented R environment. Data loading is entirely local.</p>
+<section id="how-to-use-this-page">
+<h2>How To Use This Page<a class="headerlink" href="#how-to-use-this-page" title="Link to this heading">#</a></h2>
+<p>Use this page as a guided replication worksheet for the HISP case-study material from <em>Impact Evaluation in Practice</em>.</p>
+<ul class="simple">
+<li><p>Run the sections in the same order as the original Stata do-file.</p></li>
+<li><p>Treat the early methods as design contrasts, not as equally credible estimates.</p></li>
+<li><p>Keep notes on how the estimate moves as the design gets stronger.</p></li>
+<li><p>Use the in-page code blocks as the primary worksheet sequence in this repo.</p></li>
+</ul>
+<p>Unlike the other labs in this repository, this page is organized to follow the logic of the original HISP replication do-file as closely as possible. The aim is to translate that workflow into R, not to rewrite it into a different teaching sequence.</p>
+</section>
+<section id="source-baseline">
+<h2>Source Baseline<a class="headerlink" href="#source-baseline" title="Link to this heading">#</a></h2>
+<p>The repository and complete lab ZIP include the original HISP teaching bundle:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">HISP</span> <span class="pre">Book</span> <span class="pre">replication.do</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">evaluation.dta</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">evaluation.csv</span></code></p></li>
+</ul>
+<p>The CSV, Stata file, and original replication script are available on the <a class="reference internal" href="../data.html"><span class="std std-doc">lab data page</span></a>. No external data folder or internet connection is needed to run the worksheet.</p>
+</section>
+<section id="step-1-convert-the-stata-files-and-load-the-hisp-data">
+<h2>Step 1: Convert The Stata Files And Load The HISP Data<a class="headerlink" href="#step-1-convert-the-stata-files-and-load-the-hisp-data" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">data_helpers</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">"data/load-data.R"</span><span class="p">,</span><span class="w"> </span><span class="s">"../data/load-data.R"</span><span class="p">,</span><span class="w"> </span><span class="s">"docs/labs/data/load-data.R"</span><span class="p">)</span>
+<span class="n">data_helpers</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">data_helpers</span><span class="p">[</span><span class="nf">file.exists</span><span class="p">(</span><span class="n">data_helpers</span><span class="p">)]</span>
+<span class="kr">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nf">length</span><span class="p">(</span><span class="n">data_helpers</span><span class="p">))</span><span class="w"> </span><span class="nf">stop</span><span class="p">(</span><span class="s">"Extract the complete lab ZIP, including its data folder, before running."</span><span class="p">)</span>
+<span class="nf">source</span><span class="p">(</span><span class="n">data_helpers</span><span class="p">[[</span><span class="m">1</span><span class="p">]])</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">required_packages</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span>
+<span class="w">  </span><span class="s">"haven"</span><span class="p">,</span>
+<span class="w">  </span><span class="s">"readr"</span><span class="p">,</span>
+<span class="w">  </span><span class="s">"dplyr"</span><span class="p">,</span>
+<span class="w">  </span><span class="s">"ggplot2"</span><span class="p">,</span>
+<span class="w">  </span><span class="s">"MatchIt"</span><span class="p">,</span>
+<span class="w">  </span><span class="s">"sandwich"</span><span class="p">,</span>
+<span class="w">  </span><span class="s">"boot"</span><span class="p">,</span>
+<span class="w">  </span><span class="s">"broom"</span><span class="p">,</span>
+<span class="w">  </span><span class="s">"nlme"</span>
+<span class="p">)</span>
+
+<span class="n">missing_packages</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">required_packages</span><span class="p">[</span><span class="o">!</span><span class="nf">vapply</span><span class="p">(</span>
+<span class="w">  </span><span class="n">required_packages</span><span class="p">,</span>
+<span class="w">  </span><span class="n">requireNamespace</span><span class="p">,</span>
+<span class="w">  </span><span class="nf">logical</span><span class="p">(</span><span class="m">1</span><span class="p">),</span>
+<span class="w">  </span><span class="n">quietly</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span>
+<span class="p">)]</span>
+
+<span class="kr">if</span><span class="w"> </span><span class="p">(</span><span class="nf">length</span><span class="p">(</span><span class="n">missing_packages</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nf">stop</span><span class="p">(</span><span class="s">"Install the documented R environment first; missing: "</span><span class="p">,</span><span class="w"> </span><span class="nf">paste</span><span class="p">(</span><span class="n">missing_packages</span><span class="p">,</span><span class="w"> </span><span class="n">collapse</span><span class="o">=</span><span class="s">", "</span><span class="p">),</span><span class="w"> </span><span class="n">call.</span><span class="o">=</span><span class="kc">FALSE</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="nf">invisible</span><span class="p">(</span><span class="nf">lapply</span><span class="p">(</span><span class="n">required_packages</span><span class="p">,</span><span class="w"> </span><span class="n">library</span><span class="p">,</span><span class="w"> </span><span class="n">character.only</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">))</span>
+
+<span class="n">data_dir</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">file.path</span><span class="p">(</span><span class="nf">qed_data_directory</span><span class="p">(),</span><span class="w"> </span><span class="s">"hisp"</span><span class="p">)</span>
+<span class="nf">invisible</span><span class="p">(</span><span class="nf">qed_data</span><span class="p">(</span><span class="s">"hisp"</span><span class="p">))</span><span class="w"> </span><span class="c1"># Verify both the R snapshot and the original files.</span>
+<span class="n">evaluation_csv</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">file.path</span><span class="p">(</span><span class="n">data_dir</span><span class="p">,</span><span class="w"> </span><span class="s">"evaluation.csv"</span><span class="p">)</span>
+
+<span class="kr">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nf">file.exists</span><span class="p">(</span><span class="n">evaluation_csv</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nf">stop</span><span class="p">(</span>
+<span class="w">    </span><span class="nf">paste0</span><span class="p">(</span>
+<span class="w">      </span><span class="s">"The bundled HISP data folder does not contain evaluation.csv: "</span><span class="p">,</span>
+<span class="w">      </span><span class="n">evaluation_csv</span>
+<span class="w">    </span><span class="p">),</span>
+<span class="w">    </span><span class="n">call.</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span>
+<span class="w">  </span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="n">dta_files</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">list.files</span><span class="p">(</span><span class="n">data_dir</span><span class="p">,</span><span class="w"> </span><span class="n">pattern</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"[.]dta$"</span><span class="p">,</span><span class="w"> </span><span class="n">full.names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span>
+
+<span class="n">csv_export_manifest</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">bind_rows</span><span class="p">(</span><span class="nf">lapply</span><span class="p">(</span><span class="n">dta_files</span><span class="p">,</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="n">dta_path</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">csv_path</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">sub</span><span class="p">(</span><span class="s">"[.]dta$"</span><span class="p">,</span><span class="w"> </span><span class="s">".csv"</span><span class="p">,</span><span class="w"> </span><span class="n">dta_path</span><span class="p">)</span>
+<span class="w">  </span><span class="n">csv_exists</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">file.exists</span><span class="p">(</span><span class="n">csv_path</span><span class="p">)</span>
+<span class="w">  </span><span class="n">dat</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">haven</span><span class="o">::</span><span class="nf">read_dta</span><span class="p">(</span><span class="n">dta_path</span><span class="p">)</span>
+
+<span class="w">  </span><span class="kr">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">csv_exists</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">readr</span><span class="o">::</span><span class="nf">write_csv</span><span class="p">(</span><span class="n">dat</span><span class="p">,</span><span class="w"> </span><span class="n">csv_path</span><span class="p">)</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="nf">data.frame</span><span class="p">(</span>
+<span class="w">    </span><span class="n">dta_file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">basename</span><span class="p">(</span><span class="n">dta_path</span><span class="p">),</span>
+<span class="w">    </span><span class="n">csv_file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">basename</span><span class="p">(</span><span class="n">csv_path</span><span class="p">),</span>
+<span class="w">    </span><span class="n">csv_status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">ifelse</span><span class="p">(</span><span class="n">csv_exists</span><span class="p">,</span><span class="w"> </span><span class="s">"tracked_existing"</span><span class="p">,</span><span class="w"> </span><span class="s">"exported_from_dta"</span><span class="p">),</span>
+<span class="w">    </span><span class="n">rows</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">nrow</span><span class="p">(</span><span class="n">dat</span><span class="p">),</span>
+<span class="w">    </span><span class="n">columns</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">ncol</span><span class="p">(</span><span class="n">dat</span><span class="p">)</span>
+<span class="w">  </span><span class="p">)</span>
+<span class="p">}))</span>
+
+<span class="n">dat</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">readr</span><span class="o">::</span><span class="nf">read_csv</span><span class="p">(</span><span class="n">evaluation_csv</span><span class="p">,</span><span class="w"> </span><span class="n">show_col_types</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">)</span>
+
+<span class="n">controls</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span>
+<span class="w">  </span><span class="s">"age_hh"</span><span class="p">,</span>
+<span class="w">  </span><span class="s">"age_sp"</span><span class="p">,</span>
+<span class="w">  </span><span class="s">"educ_hh"</span><span class="p">,</span>
+<span class="w">  </span><span class="s">"educ_sp"</span><span class="p">,</span>
+<span class="w">  </span><span class="s">"female_hh"</span><span class="p">,</span>
+<span class="w">  </span><span class="s">"indigenous"</span><span class="p">,</span>
+<span class="w">  </span><span class="s">"hhsize"</span><span class="p">,</span>
+<span class="w">  </span><span class="s">"dirtfloor"</span><span class="p">,</span>
+<span class="w">  </span><span class="s">"bathroom"</span><span class="p">,</span>
+<span class="w">  </span><span class="s">"land"</span><span class="p">,</span>
+<span class="w">  </span><span class="s">"hospital_distance"</span>
+<span class="p">)</span>
+
+<span class="n">dat</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">select</span><span class="p">(</span>
+<span class="w">    </span><span class="n">household_identifier</span><span class="p">,</span>
+<span class="w">    </span><span class="n">locality_identifier</span><span class="p">,</span>
+<span class="w">    </span><span class="n">treatment_locality</span><span class="p">,</span>
+<span class="w">    </span><span class="n">promotion_locality</span><span class="p">,</span>
+<span class="w">    </span><span class="n">eligible</span><span class="p">,</span>
+<span class="w">    </span><span class="n">enrolled</span><span class="p">,</span>
+<span class="w">    </span><span class="n">round</span><span class="p">,</span>
+<span class="w">    </span><span class="n">health_expenditures</span>
+<span class="w">  </span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">head</span><span class="p">(</span><span class="m">10</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Attaching package: ‘dplyr’
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>The following objects are masked from ‘package:stats’:
+
+    filter, lag
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Attaching package: ‘nlme’
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>The following object is masked from ‘package:dplyr’:
+
+    collapse
+</pre></div>
+</div>
+<div class="output text_html"><table class="dataframe">
+<caption>A tibble: 10 × 8</caption>
+<thead>
+	<tr><th scope=col>household_identifier</th><th scope=col>locality_identifier</th><th scope=col>treatment_locality</th><th scope=col>promotion_locality</th><th scope=col>eligible</th><th scope=col>enrolled</th><th scope=col>round</th><th scope=col>health_expenditures</th></tr>
+	<tr><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td> 5</td><td>26</td><td>1</td><td>1</td><td>1</td><td>1</td><td>0</td><td>15.185455</td></tr>
+	<tr><td> 5</td><td>26</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>19.580902</td></tr>
+	<tr><td>11</td><td>26</td><td>1</td><td>1</td><td>1</td><td>1</td><td>0</td><td>13.076257</td></tr>
+	<tr><td>11</td><td>26</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td> 2.398854</td></tr>
+	<tr><td>13</td><td>26</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td> 0.000000</td></tr>
+	<tr><td>13</td><td>26</td><td>1</td><td>1</td><td>1</td><td>1</td><td>0</td><td>15.286353</td></tr>
+	<tr><td>16</td><td>26</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>20.026909</td></tr>
+	<tr><td>16</td><td>26</td><td>1</td><td>1</td><td>1</td><td>1</td><td>0</td><td>11.311761</td></tr>
+	<tr><td>21</td><td>26</td><td>1</td><td>1</td><td>1</td><td>1</td><td>0</td><td>11.223912</td></tr>
+	<tr><td>21</td><td>26</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>16.664686</td></tr>
+</tbody>
+</table>
+</div></div>
+</div>
+<p>Checkpoint:</p>
+<ul class="simple">
+<li><p>Does your external <code class="docutils literal notranslate"><span class="pre">evaluation.csv</span></code> keep the same <code class="docutils literal notranslate"><span class="pre">19,827</span></code> rows and <code class="docutils literal notranslate"><span class="pre">22</span></code> columns as the Stata source?</p></li>
+<li><p>If any CSV file was missing, did the export manifest recreate it from the <code class="docutils literal notranslate"><span class="pre">.dta</span></code> file in your local bundle?</p></li>
+</ul>
+</section>
+<section id="step-2-method-1-before-after-among-enrolled-households">
+<h2>Step 2: Method 1, Before-After Among Enrolled Households<a class="headerlink" href="#step-2-method-1-before-after-among-enrolled-households" title="Link to this heading">#</a></h2>
+<p>The Stata do-file starts with the simplest comparison: enrolled households in treatment localities, before versus after.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">method_1_dat</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">dat</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">filter</span><span class="p">(</span><span class="n">treatment_locality</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="n">enrolled</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1</span><span class="p">)</span>
+
+<span class="nf">t.test</span><span class="p">(</span>
+<span class="w">  </span><span class="n">health_expenditures</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="nf">factor</span><span class="p">(</span><span class="n">round</span><span class="p">,</span><span class="w"> </span><span class="n">levels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">)),</span>
+<span class="w">  </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">method_1_dat</span><span class="p">,</span>
+<span class="w">  </span><span class="n">var.equal</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span>
+<span class="p">)</span>
+
+<span class="n">fit_m1_raw</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">lm</span><span class="p">(</span><span class="n">health_expenditures</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">round</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">method_1_dat</span><span class="p">)</span>
+<span class="n">sandwich</span><span class="o">::</span><span class="nf">vcovCL</span><span class="p">(</span><span class="n">fit_m1_raw</span><span class="p">,</span><span class="w"> </span><span class="n">cluster</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">method_1_dat</span><span class="o">$</span><span class="n">locality_identifier</span><span class="p">,</span><span class="w"> </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"HC1"</span><span class="p">)</span>
+
+<span class="n">fit_m1_controls</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">lm</span><span class="p">(</span>
+<span class="w">  </span><span class="n">health_expenditures</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">round</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">age_hh</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">age_sp</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">educ_hh</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">educ_sp</span><span class="w"> </span><span class="o">+</span>
+<span class="w">    </span><span class="n">female_hh</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">indigenous</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">hhsize</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">dirtfloor</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">bathroom</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">land</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">hospital_distance</span><span class="p">,</span>
+<span class="w">  </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">method_1_dat</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>	Two Sample t-test
+
+data:  health_expenditures by factor(round, levels = c(0, 1))
+t = 39.765, df = 5927, p-value &lt; 2.2e-16
+alternative hypothesis: true difference in means between group 0 and group 1 is not equal to 0
+95 percent confidence interval:
+ 6.321699 6.977331
+sample estimates:
+mean in group 0 mean in group 1 
+      14.489694        7.840179 
+</pre></div>
+</div>
+<div class="output text_html"><table class="dataframe">
+<caption>A matrix: 2 × 2 of type dbl</caption>
+<thead>
+	<tr><th></th><th scope=col>(Intercept)</th><th scope=col>round</th></tr>
+</thead>
+<tbody>
+	<tr><th scope=row>(Intercept)</th><td> 0.021162267</td><td>-0.005309594</td></tr>
+	<tr><th scope=row>round</th><td>-0.005309594</td><td> 0.052318507</td></tr>
+</tbody>
+</table>
+</div></div>
+</div>
+<p>What to note:</p>
+<ul class="simple">
+<li><p>This estimate is easy to compute but vulnerable to time trends.</p></li>
+<li><p>The control-adjusted version follows the do-file, but it does not solve the design problem.</p></li>
+</ul>
+</section>
+<section id="step-3-method-2-enrolled-versus-not-enrolled-at-follow-up">
+<h2>Step 3: Method 2, Enrolled Versus Not Enrolled At Follow-Up<a class="headerlink" href="#step-3-method-2-enrolled-versus-not-enrolled-at-follow-up" title="Link to this heading">#</a></h2>
+<p>This is the second naive comparison in the book replication script: follow-up outcomes in treatment localities, comparing enrolled and nonenrolled households.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">method_2_dat</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">dat</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">filter</span><span class="p">(</span><span class="n">treatment_locality</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="n">round</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1</span><span class="p">)</span>
+
+<span class="nf">t.test</span><span class="p">(</span>
+<span class="w">  </span><span class="n">health_expenditures</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="nf">factor</span><span class="p">(</span><span class="n">enrolled</span><span class="p">,</span><span class="w"> </span><span class="n">levels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">)),</span>
+<span class="w">  </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">method_2_dat</span><span class="p">,</span>
+<span class="w">  </span><span class="n">var.equal</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span>
+<span class="p">)</span>
+
+<span class="n">fit_m2_raw</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">lm</span><span class="p">(</span><span class="n">health_expenditures</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">enrolled</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">method_2_dat</span><span class="p">)</span>
+<span class="n">fit_m2_controls</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">lm</span><span class="p">(</span>
+<span class="w">  </span><span class="n">health_expenditures</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">enrolled</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">age_hh</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">age_sp</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">educ_hh</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">educ_sp</span><span class="w"> </span><span class="o">+</span>
+<span class="w">    </span><span class="n">female_hh</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">indigenous</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">hhsize</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">dirtfloor</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">bathroom</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">land</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">hospital_distance</span><span class="p">,</span>
+<span class="w">  </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">method_2_dat</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>	Two Sample t-test
+
+data:  health_expenditures by factor(enrolled, levels = c(0, 1))
+t = 49.084, df = 4958, p-value &lt; 2.2e-16
+alternative hypothesis: true difference in means between group 0 and group 1 is not equal to 0
+95 percent confidence interval:
+ 13.88700 15.04247
+sample estimates:
+mean in group 0 mean in group 1 
+      22.304911        7.840179 
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="step-4-method-3-randomized-assignment-among-eligible-households">
+<h2>Step 4: Method 3, Randomized Assignment Among Eligible Households<a class="headerlink" href="#step-4-method-3-randomized-assignment-among-eligible-households" title="Link to this heading">#</a></h2>
+<p>The book then moves to the randomized-assignment case, using eligible households and comparing treatment versus comparison villages.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">method_3_dat</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">dat</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">filter</span><span class="p">(</span><span class="n">eligible</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1</span><span class="p">)</span>
+
+<span class="nf">t.test</span><span class="p">(</span>
+<span class="w">  </span><span class="n">health_expenditures</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="nf">factor</span><span class="p">(</span><span class="n">treatment_locality</span><span class="p">,</span><span class="w"> </span><span class="n">levels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">)),</span>
+<span class="w">  </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">filter</span><span class="p">(</span><span class="n">method_3_dat</span><span class="p">,</span><span class="w"> </span><span class="n">round</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">0</span><span class="p">),</span>
+<span class="w">  </span><span class="n">var.equal</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span>
+<span class="p">)</span>
+
+<span class="n">balance_controls</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">bind_rows</span><span class="p">(</span><span class="nf">lapply</span><span class="p">(</span><span class="n">controls</span><span class="p">,</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="n">var_name</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nf">t.test</span><span class="p">(</span>
+<span class="w">    </span><span class="n">method_3_dat</span><span class="p">[[</span><span class="n">var_name</span><span class="p">]][</span><span class="n">method_3_dat</span><span class="o">$</span><span class="n">round</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">0</span><span class="p">]</span><span class="w"> </span><span class="o">~</span>
+<span class="w">      </span><span class="nf">factor</span><span class="p">(</span><span class="n">method_3_dat</span><span class="o">$</span><span class="n">treatment_locality</span><span class="p">[</span><span class="n">method_3_dat</span><span class="o">$</span><span class="n">round</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">0</span><span class="p">],</span><span class="w"> </span><span class="n">levels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">)),</span>
+<span class="w">    </span><span class="n">var.equal</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span>
+<span class="w">  </span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">    </span><span class="n">broom</span><span class="o">::</span><span class="nf">tidy</span><span class="p">()</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">    </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">variable</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">var_name</span><span class="p">)</span>
+<span class="p">}))</span>
+
+<span class="n">fit_m3_raw</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">lm</span><span class="p">(</span>
+<span class="w">  </span><span class="n">health_expenditures</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">treatment_locality</span><span class="p">,</span>
+<span class="w">  </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">filter</span><span class="p">(</span><span class="n">method_3_dat</span><span class="p">,</span><span class="w"> </span><span class="n">round</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">fit_m3_controls</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">lm</span><span class="p">(</span>
+<span class="w">  </span><span class="n">health_expenditures</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">treatment_locality</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">age_hh</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">age_sp</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">educ_hh</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">educ_sp</span><span class="w"> </span><span class="o">+</span>
+<span class="w">    </span><span class="n">female_hh</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">indigenous</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">hhsize</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">dirtfloor</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">bathroom</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">land</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">hospital_distance</span><span class="p">,</span>
+<span class="w">  </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">filter</span><span class="p">(</span><span class="n">method_3_dat</span><span class="p">,</span><span class="w"> </span><span class="n">round</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>	Two Sample t-test
+
+data:  health_expenditures by factor(treatment_locality, levels = c(0, 1))
+t = 0.73284, df = 5626, p-value = 0.4637
+alternative hypothesis: true difference in means between group 0 and group 1 is not equal to 0
+95 percent confidence interval:
+ -0.1409600  0.3092655
+sample estimates:
+mean in group 0 mean in group 1 
+       14.57385        14.48969 
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="step-5-method-4-instrumental-variables-under-random-promotion">
+<h2>Step 5: Method 4, Instrumental Variables Under Random Promotion<a class="headerlink" href="#step-5-method-4-instrumental-variables-under-random-promotion" title="Link to this heading">#</a></h2>
+<p>The IV branch uses <code class="docutils literal notranslate"><span class="pre">promotion_locality</span></code> as the instrument for <code class="docutils literal notranslate"><span class="pre">enrolled_rp</span></code> at follow-up.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">method_4_dat</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">dat</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">filter</span><span class="p">(</span><span class="n">round</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1</span><span class="p">)</span>
+
+<span class="nf">t.test</span><span class="p">(</span>
+<span class="w">  </span><span class="n">enrolled_rp</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="nf">factor</span><span class="p">(</span><span class="n">promotion_locality</span><span class="p">,</span><span class="w"> </span><span class="n">levels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">)),</span>
+<span class="w">  </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">method_4_dat</span><span class="p">,</span>
+<span class="w">  </span><span class="n">var.equal</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span>
+<span class="p">)</span>
+
+<span class="n">first_stage</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">lm</span><span class="p">(</span>
+<span class="w">  </span><span class="n">enrolled_rp</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">promotion_locality</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">age_hh</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">age_sp</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">educ_hh</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">educ_sp</span><span class="w"> </span><span class="o">+</span>
+<span class="w">    </span><span class="n">female_hh</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">indigenous</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">hhsize</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">dirtfloor</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">bathroom</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">land</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">hospital_distance</span><span class="p">,</span>
+<span class="w">  </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">method_4_dat</span>
+<span class="p">)</span>
+
+<span class="c1"># Draft placeholder:</span>
+<span class="c1"># replace this with an in-repo helper or inline 2SLS workflow once the</span>
+<span class="c1"># full HISP execution bundle is migrated.</span>
+<span class="c1"># method_4_iv_regressions</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>	Two Sample t-test
+
+data:  enrolled_rp by factor(promotion_locality, levels = c(0, 1))
+t = -49.846, df = 9912, p-value &lt; 2.2e-16
+alternative hypothesis: true difference in means between group 0 and group 1 is not equal to 0
+95 percent confidence interval:
+ -0.4238210 -0.3917484
+sample estimates:
+mean in group 0 mean in group 1 
+     0.08424757      0.49203226 
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="step-6-method-5-regression-discontinuity">
+<h2>Step 6: Method 5, Regression Discontinuity<a class="headerlink" href="#step-6-method-5-regression-discontinuity" title="Link to this heading">#</a></h2>
+<p>The do-file normalizes the poverty index around the <code class="docutils literal notranslate"><span class="pre">58</span></code> cutoff and estimates a piecewise-linear discontinuity model in treatment localities.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">method_5_dat</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">dat</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">filter</span><span class="p">(</span><span class="n">treatment_locality</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span>
+<span class="w">    </span><span class="n">poverty_index_left</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">ifelse</span><span class="p">(</span><span class="n">poverty_index</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="m">58</span><span class="p">,</span><span class="w"> </span><span class="n">poverty_index</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="m">58</span><span class="p">,</span><span class="w"> </span><span class="m">0</span><span class="p">),</span>
+<span class="w">    </span><span class="n">poverty_index_right</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">ifelse</span><span class="p">(</span><span class="n">poverty_index</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">58</span><span class="p">,</span><span class="w"> </span><span class="n">poverty_index</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="m">58</span><span class="p">,</span><span class="w"> </span><span class="m">0</span><span class="p">)</span>
+<span class="w">  </span><span class="p">)</span>
+
+<span class="n">fit_rdd_followup</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">lm</span><span class="p">(</span>
+<span class="w">  </span><span class="n">health_expenditures</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">poverty_index_left</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">poverty_index_right</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">eligible</span><span class="p">,</span>
+<span class="w">  </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">filter</span><span class="p">(</span><span class="n">method_5_dat</span><span class="p">,</span><span class="w"> </span><span class="n">round</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">fit_rdd_controls</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">lm</span><span class="p">(</span>
+<span class="w">  </span><span class="n">health_expenditures</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">eligible</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">poverty_index_left</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">poverty_index_right</span><span class="w"> </span><span class="o">+</span>
+<span class="w">    </span><span class="n">age_hh</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">age_sp</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">educ_hh</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">educ_sp</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">female_hh</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">indigenous</span><span class="w"> </span><span class="o">+</span>
+<span class="w">    </span><span class="n">hhsize</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">dirtfloor</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">bathroom</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">land</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">hospital_distance</span><span class="p">,</span>
+<span class="w">  </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">filter</span><span class="p">(</span><span class="n">method_5_dat</span><span class="p">,</span><span class="w"> </span><span class="n">round</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">ggplot2</span><span class="o">::</span><span class="nf">ggplot</span><span class="p">(</span>
+<span class="w">  </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">filter</span><span class="p">(</span><span class="n">method_5_dat</span><span class="p">,</span><span class="w"> </span><span class="n">round</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="n">health_expenditures</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="m">60</span><span class="p">),</span>
+<span class="w">  </span><span class="n">ggplot2</span><span class="o">::</span><span class="nf">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">poverty_index</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">health_expenditures</span><span class="p">)</span>
+<span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="n">ggplot2</span><span class="o">::</span><span class="nf">geom_point</span><span class="p">(</span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.12</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="n">ggplot2</span><span class="o">::</span><span class="nf">geom_vline</span><span class="p">(</span><span class="n">xintercept</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">58</span><span class="p">,</span><span class="w"> </span><span class="n">linetype</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"dashed"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<a class="reference internal image-reference" href="../_images/8afa8a7a9ac071fdd71ebc9807ee7d5fb0faea1cedfd76ff3089cfe393dc49c5.png"><img alt="../_images/8afa8a7a9ac071fdd71ebc9807ee7d5fb0faea1cedfd76ff3089cfe393dc49c5.png" src="../_images/8afa8a7a9ac071fdd71ebc9807ee7d5fb0faea1cedfd76ff3089cfe393dc49c5.png" style="width: 480px; height: 288px;" />
+</a>
+</div>
+</div>
+</section>
+<section id="step-7-method-6-difference-in-differences">
+<h2>Step 7: Method 6, Difference-in-Differences<a class="headerlink" href="#step-7-method-6-difference-in-differences" title="Link to this heading">#</a></h2>
+<p>The DiD branch stays in treatment localities and adds the <code class="docutils literal notranslate"><span class="pre">enrolled</span> <span class="pre">*</span> <span class="pre">round</span></code> interaction.</p>
+<p>For a dedicated explanation of the four-cell contrast, parallel trends, and log-outcome interpretation, complete the <a class="reference internal" href="difference-in-differences-foundations-lab.html"><span class="std std-doc">DiD foundations lab</span></a> first. The HISP branch remains a compact application inside this multi-method replication.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">method_6_dat</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">dat</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">filter</span><span class="p">(</span><span class="n">treatment_locality</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">enrolled_round</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">enrolled</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">round</span><span class="p">)</span>
+
+<span class="nf">t.test</span><span class="p">(</span>
+<span class="w">  </span><span class="n">health_expenditures</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="nf">factor</span><span class="p">(</span><span class="n">round</span><span class="p">,</span><span class="w"> </span><span class="n">levels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">)),</span>
+<span class="w">  </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">filter</span><span class="p">(</span><span class="n">method_6_dat</span><span class="p">,</span><span class="w"> </span><span class="n">enrolled</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">0</span><span class="p">),</span>
+<span class="w">  </span><span class="n">var.equal</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span>
+<span class="p">)</span>
+
+<span class="nf">t.test</span><span class="p">(</span>
+<span class="w">  </span><span class="n">health_expenditures</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="nf">factor</span><span class="p">(</span><span class="n">round</span><span class="p">,</span><span class="w"> </span><span class="n">levels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">)),</span>
+<span class="w">  </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">filter</span><span class="p">(</span><span class="n">method_6_dat</span><span class="p">,</span><span class="w"> </span><span class="n">enrolled</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1</span><span class="p">),</span>
+<span class="w">  </span><span class="n">var.equal</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span>
+<span class="p">)</span>
+
+<span class="n">fit_did_raw</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">lm</span><span class="p">(</span>
+<span class="w">  </span><span class="n">health_expenditures</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">enrolled_round</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">round</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">enrolled</span><span class="p">,</span>
+<span class="w">  </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">method_6_dat</span>
+<span class="p">)</span>
+
+<span class="n">fit_did_controls</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">lm</span><span class="p">(</span>
+<span class="w">  </span><span class="n">health_expenditures</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">enrolled_round</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">round</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">enrolled</span><span class="w"> </span><span class="o">+</span>
+<span class="w">    </span><span class="n">age_hh</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">age_sp</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">educ_hh</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">educ_sp</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">female_hh</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">indigenous</span><span class="w"> </span><span class="o">+</span>
+<span class="w">    </span><span class="n">hhsize</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">dirtfloor</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">bathroom</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">land</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">hospital_distance</span><span class="p">,</span>
+<span class="w">  </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">method_6_dat</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>	Two Sample t-test
+
+data:  health_expenditures by factor(round, levels = c(0, 1))
+t = -4.9283, df = 3988, p-value = 8.63e-07
+alternative hypothesis: true difference in means between group 0 and group 1 is not equal to 0
+95 percent confidence interval:
+ -2.1154730 -0.9113594
+sample estimates:
+mean in group 0 mean in group 1 
+       20.79149        22.30491 
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>	Two Sample t-test
+
+data:  health_expenditures by factor(round, levels = c(0, 1))
+t = 39.765, df = 5927, p-value &lt; 2.2e-16
+alternative hypothesis: true difference in means between group 0 and group 1 is not equal to 0
+95 percent confidence interval:
+ 6.321699 6.977331
+sample estimates:
+mean in group 0 mean in group 1 
+      14.489694        7.840179 
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="step-8-method-7-propensity-score-matching">
+<h2>Step 8: Method 7, Propensity-Score Matching<a class="headerlink" href="#step-8-method-7-propensity-score-matching" title="Link to this heading">#</a></h2>
+<p>The matching section in the do-file reshapes the panel to wide form, estimates a probit propensity score, randomizes row order, and runs nearest-neighbor matching first on a restricted covariate set and then on the full control set.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">wide_dat</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">reshape</span><span class="p">(</span>
+<span class="w">  </span><span class="nf">as.data.frame</span><span class="p">(</span><span class="n">dat</span><span class="p">),</span>
+<span class="w">  </span><span class="n">direction</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"wide"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">idvar</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"household_identifier"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">timevar</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"round"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">sep</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">""</span>
+<span class="p">)</span>
+
+<span class="n">coalesce_pair</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="n">left</span><span class="p">,</span><span class="w"> </span><span class="n">right</span><span class="p">)</span><span class="w"> </span><span class="nf">ifelse</span><span class="p">(</span><span class="nf">is.na</span><span class="p">(</span><span class="n">left</span><span class="p">),</span><span class="w"> </span><span class="n">right</span><span class="p">,</span><span class="w"> </span><span class="n">left</span><span class="p">)</span>
+
+<span class="kr">for</span><span class="w"> </span><span class="p">(</span><span class="n">var_name</span><span class="w"> </span><span class="kr">in</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span>
+<span class="w">  </span><span class="s">"enrolled"</span><span class="p">,</span><span class="w"> </span><span class="s">"age_hh"</span><span class="p">,</span><span class="w"> </span><span class="s">"age_sp"</span><span class="p">,</span><span class="w"> </span><span class="s">"educ_hh"</span><span class="p">,</span><span class="w"> </span><span class="s">"educ_sp"</span><span class="p">,</span><span class="w"> </span><span class="s">"female_hh"</span><span class="p">,</span>
+<span class="w">  </span><span class="s">"indigenous"</span><span class="p">,</span><span class="w"> </span><span class="s">"hhsize"</span><span class="p">,</span><span class="w"> </span><span class="s">"dirtfloor"</span><span class="p">,</span><span class="w"> </span><span class="s">"bathroom"</span><span class="p">,</span><span class="w"> </span><span class="s">"land"</span><span class="p">,</span><span class="w"> </span><span class="s">"hospital_distance"</span>
+<span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">wide_dat</span><span class="p">[[</span><span class="n">var_name</span><span class="p">]]</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">coalesce_pair</span><span class="p">(</span><span class="n">wide_dat</span><span class="p">[[</span><span class="nf">paste0</span><span class="p">(</span><span class="n">var_name</span><span class="p">,</span><span class="w"> </span><span class="s">"0"</span><span class="p">)]],</span><span class="w"> </span><span class="n">wide_dat</span><span class="p">[[</span><span class="nf">paste0</span><span class="p">(</span><span class="n">var_name</span><span class="p">,</span><span class="w"> </span><span class="s">"1"</span><span class="p">)]])</span>
+<span class="p">}</span>
+
+<span class="n">matching_dat</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">wide_dat</span><span class="p">[</span>
+<span class="w">  </span><span class="nf">complete.cases</span><span class="p">(</span><span class="n">wide_dat</span><span class="p">[,</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span>
+<span class="w">    </span><span class="s">"enrolled"</span><span class="p">,</span>
+<span class="w">    </span><span class="s">"health_expenditures0"</span><span class="p">,</span>
+<span class="w">    </span><span class="s">"health_expenditures1"</span><span class="p">,</span>
+<span class="w">    </span><span class="s">"age_hh"</span><span class="p">,</span>
+<span class="w">    </span><span class="s">"educ_hh"</span><span class="p">,</span>
+<span class="w">    </span><span class="s">"age_sp"</span><span class="p">,</span>
+<span class="w">    </span><span class="s">"educ_sp"</span><span class="p">,</span>
+<span class="w">    </span><span class="s">"female_hh"</span><span class="p">,</span>
+<span class="w">    </span><span class="s">"indigenous"</span><span class="p">,</span>
+<span class="w">    </span><span class="s">"hhsize"</span><span class="p">,</span>
+<span class="w">    </span><span class="s">"dirtfloor"</span><span class="p">,</span>
+<span class="w">    </span><span class="s">"bathroom"</span><span class="p">,</span>
+<span class="w">    </span><span class="s">"land"</span><span class="p">,</span>
+<span class="w">    </span><span class="s">"hospital_distance"</span>
+<span class="w">  </span><span class="p">)]),</span>
+<span class="p">]</span>
+
+<span class="n">probit_fit</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">glm</span><span class="p">(</span>
+<span class="w">  </span><span class="n">enrolled</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">age_hh</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">educ_hh</span><span class="p">,</span>
+<span class="w">  </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">matching_dat</span><span class="p">,</span>
+<span class="w">  </span><span class="n">family</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">binomial</span><span class="p">(</span><span class="n">link</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"probit"</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">matching_dat</span><span class="o">$</span><span class="n">pscore</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">predict</span><span class="p">(</span><span class="n">probit_fit</span><span class="p">,</span><span class="w"> </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"response"</span><span class="p">)</span>
+
+<span class="nf">set.seed</span><span class="p">(</span><span class="m">100</span><span class="p">)</span>
+<span class="n">m_restricted</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">MatchIt</span><span class="o">::</span><span class="nf">matchit</span><span class="p">(</span>
+<span class="w">  </span><span class="n">enrolled</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">age_hh</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">educ_hh</span><span class="p">,</span>
+<span class="w">  </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">matching_dat</span><span class="p">,</span>
+<span class="w">  </span><span class="n">method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"nearest"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">distance</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"glm"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">link</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"probit"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">ratio</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">,</span>
+<span class="w">  </span><span class="n">replace</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">,</span>
+<span class="w">  </span><span class="n">m.order</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"random"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">estimand</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"ATT"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">normalize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span>
+<span class="p">)</span>
+
+<span class="n">matched_restricted</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">MatchIt</span><span class="o">::</span><span class="nf">match.data</span><span class="p">(</span><span class="n">m_restricted</span><span class="p">)</span>
+<span class="nf">lm</span><span class="p">(</span><span class="n">health_expenditures1</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">enrolled</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">matched_restricted</span><span class="p">,</span><span class="w"> </span><span class="n">weights</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">weights</span><span class="p">)</span>
+
+<span class="nf">set.seed</span><span class="p">(</span><span class="m">100</span><span class="p">)</span>
+<span class="n">m_full</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">MatchIt</span><span class="o">::</span><span class="nf">matchit</span><span class="p">(</span>
+<span class="w">  </span><span class="n">enrolled</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">age_hh</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">age_sp</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">educ_hh</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">educ_sp</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">female_hh</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">indigenous</span><span class="w"> </span><span class="o">+</span>
+<span class="w">    </span><span class="n">hhsize</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">dirtfloor</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">bathroom</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">land</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">hospital_distance</span><span class="p">,</span>
+<span class="w">  </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">matching_dat</span><span class="p">,</span>
+<span class="w">  </span><span class="n">method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"nearest"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">distance</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"glm"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">link</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"probit"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">ratio</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">,</span>
+<span class="w">  </span><span class="n">replace</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">,</span>
+<span class="w">  </span><span class="n">m.order</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"random"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">estimand</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"ATT"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">normalize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Call:
+lm(formula = health_expenditures1 ~ enrolled, data = matched_restricted, 
+    weights = weights)
+
+Coefficients:
+(Intercept)     enrolled  
+      19.00       -11.16  
+</pre></div>
+</div>
+</div>
+</div>
+<p>For the full-set branch, swap <code class="docutils literal notranslate"><span class="pre">age_hh</span> <span class="pre">+</span> <span class="pre">educ_hh</span></code> for the full control list used earlier.</p>
+</section>
+<section id="step-9-matched-difference-in-differences">
+<h2>Step 9: Matched Difference-in-Differences<a class="headerlink" href="#step-9-matched-difference-in-differences" title="Link to this heading">#</a></h2>
+<p>The do-file closes the matching chapter by computing a matched DiD on the full matched sample.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">matched_full</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">MatchIt</span><span class="o">::</span><span class="nf">match.data</span><span class="p">(</span><span class="n">m_full</span><span class="p">)</span>
+
+<span class="n">matched_pairs</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">matched_full</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">arrange</span><span class="p">(</span><span class="n">subclass</span><span class="p">,</span><span class="w"> </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">desc</span><span class="p">(</span><span class="n">enrolled</span><span class="p">))</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">group_by</span><span class="p">(</span><span class="n">subclass</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">summarise</span><span class="p">(</span>
+<span class="w">    </span><span class="n">matched_dd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">health_expenditures1</span><span class="p">[</span><span class="n">enrolled</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1</span><span class="p">]</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">health_expenditures0</span><span class="p">[</span><span class="n">enrolled</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1</span><span class="p">])</span><span class="w"> </span><span class="o">-</span>
+<span class="w">      </span><span class="p">(</span><span class="n">health_expenditures1</span><span class="p">[</span><span class="n">enrolled</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">0</span><span class="p">]</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">health_expenditures0</span><span class="p">[</span><span class="n">enrolled</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">0</span><span class="p">]),</span>
+<span class="w">    </span><span class="n">.groups</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"drop"</span>
+<span class="w">  </span><span class="p">)</span>
+
+<span class="n">matched_full</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">mutate</span><span class="p">(</span><span class="n">diff</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">health_expenditures1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">health_expenditures0</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">lm</span><span class="p">(</span><span class="n">diff</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">enrolled</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>_<span class="p">,</span><span class="w"> </span><span class="n">weights</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">weights</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Call:
+lm(formula = diff ~ enrolled, data = dplyr::mutate(matched_full, 
+    diff = health_expenditures1 - health_expenditures0), weights = weights)
+
+Coefficients:
+(Intercept)     enrolled  
+      2.691       -9.341  
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="step-10-power-calculations">
+<h2>Step 10: Power Calculations<a class="headerlink" href="#step-10-power-calculations" title="Link to this heading">#</a></h2>
+<p>The final branch follows the book’s power-calculation logic using follow-up treated means, standard deviations, and ICC estimates.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">two_sample_n_per_arm</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="n">sd_outcome</span><span class="p">,</span><span class="w"> </span><span class="n">minimum_detectable_effect</span><span class="p">,</span><span class="w"> </span><span class="n">power</span><span class="p">,</span><span class="w"> </span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.05</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">z_alpha</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">qnorm</span><span class="p">(</span><span class="m">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">alpha</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="m">2</span><span class="p">)</span>
+<span class="w">  </span><span class="n">z_beta</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">qnorm</span><span class="p">(</span><span class="n">power</span><span class="p">)</span>
+<span class="w">  </span><span class="nf">ceiling</span><span class="p">(((</span><span class="n">z_alpha</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">z_beta</span><span class="p">)</span><span class="o">^</span><span class="m">2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">sd_outcome</span><span class="o">^</span><span class="m">2</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">sd_outcome</span><span class="o">^</span><span class="m">2</span><span class="p">))</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">minimum_detectable_effect</span><span class="o">^</span><span class="m">2</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="n">power_dat</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">dat</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">filter</span><span class="p">(</span><span class="n">eligible</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="n">round</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="n">treatment_locality</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1</span><span class="p">)</span>
+
+<span class="n">m1</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">power_dat</span><span class="o">$</span><span class="n">health_expenditures</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span>
+<span class="n">sd1</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">sd</span><span class="p">(</span><span class="n">power_dat</span><span class="o">$</span><span class="n">health_expenditures</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span>
+
+<span class="nf">data.frame</span><span class="p">(</span>
+<span class="w">  </span><span class="n">minimum_detectable_effect</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="m">2</span><span class="p">,</span><span class="w"> </span><span class="m">3</span><span class="p">),</span>
+<span class="w">  </span><span class="n">target_mean</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="m">2</span><span class="p">,</span><span class="w"> </span><span class="m">3</span><span class="p">),</span>
+<span class="w">  </span><span class="n">n_per_arm_90</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">vapply</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="m">2</span><span class="p">,</span><span class="w"> </span><span class="m">3</span><span class="p">),</span><span class="w"> </span><span class="n">two_sample_n_per_arm</span><span class="p">,</span><span class="w"> </span><span class="nf">numeric</span><span class="p">(</span><span class="m">1</span><span class="p">),</span><span class="w"> </span><span class="n">sd_outcome</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sd1</span><span class="p">,</span><span class="w"> </span><span class="n">power</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.9</span><span class="p">),</span>
+<span class="w">  </span><span class="n">n_per_arm_80</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">vapply</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="m">2</span><span class="p">,</span><span class="w"> </span><span class="m">3</span><span class="p">),</span><span class="w"> </span><span class="n">two_sample_n_per_arm</span><span class="p">,</span><span class="w"> </span><span class="nf">numeric</span><span class="p">(</span><span class="m">1</span><span class="p">),</span><span class="w"> </span><span class="n">sd_outcome</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sd1</span><span class="p">,</span><span class="w"> </span><span class="n">power</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.8</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><table class="dataframe">
+<caption>A data.frame: 3 × 4</caption>
+<thead>
+	<tr><th scope=col>minimum_detectable_effect</th><th scope=col>target_mean</th><th scope=col>n_per_arm_90</th><th scope=col>n_per_arm_80</th></tr>
+	<tr><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>1</td><td>6.840179</td><td>1344</td><td>1004</td></tr>
+	<tr><td>2</td><td>5.840179</td><td> 336</td><td> 251</td></tr>
+	<tr><td>3</td><td>4.840179</td><td> 150</td><td> 112</td></tr>
+</tbody>
+</table>
+</div></div>
+</div>
+</section>
+<section id="comparison-question">
+<h2>Comparison Question<a class="headerlink" href="#comparison-question" title="Link to this heading">#</a></h2>
+<p>After running the full sequence, compare the main effect terms across methods:</p>
+<ul class="simple">
+<li><p>Which branches are obviously biased because the design is too weak?</p></li>
+<li><p>Which branches move closest to the more credible design-based estimates?</p></li>
+<li><p>How much do the estimates shift once the workflow reaches RDD, DiD, IV, and matching?</p></li>
+</ul>
+<p>The evaluated-code page collects those outputs into one place, and the QA log documents where the R workflow intentionally mirrors the Stata source.</p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "r"
+        },
+        kernelOptions: {
+            name: "ir",
+            path: "./notebooks"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'ir'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="nsw-cps-benchmark-lab.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Lab: NSW and CPS Benchmark</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="difference-in-differences-foundations-lab.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Lab: Difference-in-Differences Foundations With Kentucky Workers’ Compensation</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item"><div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-to-use-this-page">How To Use This Page</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#source-baseline">Source Baseline</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-1-convert-the-stata-files-and-load-the-hisp-data">Step 1: Convert The Stata Files And Load The HISP Data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-2-method-1-before-after-among-enrolled-households">Step 2: Method 1, Before-After Among Enrolled Households</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-3-method-2-enrolled-versus-not-enrolled-at-follow-up">Step 3: Method 2, Enrolled Versus Not Enrolled At Follow-Up</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-4-method-3-randomized-assignment-among-eligible-households">Step 4: Method 3, Randomized Assignment Among Eligible Households</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-5-method-4-instrumental-variables-under-random-promotion">Step 5: Method 4, Instrumental Variables Under Random Promotion</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-6-method-5-regression-discontinuity">Step 6: Method 5, Regression Discontinuity</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-7-method-6-difference-in-differences">Step 7: Method 6, Difference-in-Differences</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-8-method-7-propensity-score-matching">Step 8: Method 7, Propensity-Score Matching</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-9-matched-difference-in-differences">Step 9: Matched Difference-in-Differences</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-10-power-calculations">Step 10: Power Calculations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#comparison-question">Comparison Question</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By QED Labs
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2026.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+<div class="extra_footer">
+  Built for offline use. External reading links are optional.
+</div>
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

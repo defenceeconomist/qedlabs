@@ -1,0 +1,1111 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Lab: Augmented SCM With Kansas &#8212; Quasi-Experimental Design Labs</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../_static/scripts/fontawesome.js?digest=55c26ed414f5f8a31ebb"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=b8b12719"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/synthetic-control-augmentation-lab';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Lab: Synthetic Control Design" href="synthetic-control-design-lab.html" />
+    <link rel="prev" title="Lab: Proposition 99 With tidysynth" href="synthetic-control-proposition-99-lab.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">Quasi-Experimental Design Labs</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../index.html">
+                    Quasi-Experimental Design Labs
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Start here</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../offline-setup.html">Offline setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data.html">Bundled data and provenance</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Matching and Weighting</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="lalonde-matching-lab.html">Lab: LaLonde Matching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="black-politicians-lab.html">Lab: Black Politicians</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nsw-cps-benchmark-lab.html">Lab: NSW and CPS Benchmark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hisp-ie-practice-lab.html">Lab: HISP IE in Practice</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Difference-in-Differences</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="difference-in-differences-foundations-lab.html">Lab: Difference-in-Differences Foundations With Kentucky Workers’ Compensation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="difference-in-differences-staggered-diagnostics-lab.html">Lab: Staggered Adoption and TWFE Diagnostics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="difference-in-differences-modern-estimators-lab.html">Lab: Modern Multi-Period Difference-in-Differences</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Regression Discontinuity</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="regression-discontinuity-foundations-lab.html">Lab: Sharp RD foundations with government transfers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="regression-discontinuity-diagnostics-lab.html">Lab: RDD design diagnostics and sensitivity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="regression-discontinuity-fuzzy-lab.html">Lab: Fuzzy RD and local IV with veteran home ownership</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Synthetic Control</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-mechanics-lab.html">Lab: Synthetic Control Mechanics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-proposition-99-lab.html">Lab: Proposition 99 With tidysynth</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Lab: Augmented SCM With Kansas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-design-lab.html">Lab: Synthetic Control Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-donor-pool-lab.html">Lab: Synthetic Control Donor Pool Design</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Interrupted Time Series</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="interrupted-time-series-mechanics-lab.html">Lab: Interrupted Time Series Foundations With Seatbelts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interrupted-time-series-design-diagnostics-lab.html">Lab: Seatbelt Law Design and Robustness</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interrupted-time-series-counterfactual-validation-lab.html">Lab: Interrupted Time Series Counterfactual Validation</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/notebooks/synthetic-control-augmentation-lab.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm pst-navbar-icon" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Lab: Augmented SCM With Kansas</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-to-use-this-page">How To Use This Page</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#training-goal">Training Goal</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dataset-at-a-glance">Dataset At A Glance</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-to-hand-back">What To Hand Back</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-1-load-packages-and-inspect-the-kansas-panel">Step 1: Load Packages And Inspect The Kansas Panel</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-2-collapse-to-a-clean-annual-panel">Step 2: Collapse To A Clean Annual Panel</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-3-inspect-the-raw-kansas-trend">Step 3: Inspect The Raw Kansas Trend</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-4-fit-a-classical-scm-benchmark">Step 4: Fit A Classical SCM Benchmark</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-5-fit-ridge-augmented-scm">Step 5: Fit Ridge-Augmented SCM</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-6-compare-pre-treatment-fit-visually">Step 6: Compare Pre-Treatment Fit Visually</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-7-compare-the-two-specifications-side-by-side">Step 7: Compare The Two Specifications Side By Side</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-8-add-a-placebo-in-time-style-stress-test">Step 8: Add A Placebo-In-Time Style Stress Test</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-9-write-the-design-judgment">Step 9: Write The Design Judgment</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#final-prompt">Final Prompt</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#next-step">Next Step</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="lab-augmented-scm-with-kansas">
+<h1>Lab: Augmented SCM With Kansas<a class="headerlink" href="#lab-augmented-scm-with-kansas" title="Link to this heading">#</a></h1>
+<p><a class="reference internal" href="../index.html"><span class="std std-doc">Book home</span></a></p>
+<p>Use the R kernel. Keep the supplied <code class="docutils literal notranslate"><span class="pre">data/</span></code> folder beside this notebook. Run cells in order after installing the documented R environment. Data loading is entirely local.</p>
+<section id="how-to-use-this-page">
+<h2>How To Use This Page<a class="headerlink" href="#how-to-use-this-page" title="Link to this heading">#</a></h2>
+<p>Use this page as the advanced SCM lab.</p>
+<ul class="simple">
+<li><p>Keep the <a class="reference external" href="https://defenceeconomist.github.io/qedlabs/notes/scm/synthetic-control.html">Synthetic Control</a> overview open for the baseline design conditions.</p></li>
+<li><p>Use the <a class="reference external" href="https://defenceeconomist.github.io/qedlabs/notes/scm/augmented-synthetic-control-method-notes.html">Augmented Synthetic Control Method notes</a> when you want the paper-level rationale for controlled extrapolation.</p></li>
+<li><p>Read this lab as a design comparison, not as a software upgrade tutorial.</p></li>
+<li><p>End by deciding whether the Kansas case supports classical SCM, augmented SCM, or neither.</p></li>
+</ul>
+<p>The code is shown but not executed when the site is rendered. That keeps the page readable while preserving a runnable workflow for teaching and self-study.</p>
+</section>
+<section id="training-goal">
+<h2>Training Goal<a class="headerlink" href="#training-goal" title="Link to this heading">#</a></h2>
+<p>Use the Kansas tax-cut case to understand why augmentation exists:</p>
+<ol class="arabic simple">
+<li><p>build a clean comparative-case panel</p></li>
+<li><p>fit a classical SCM benchmark</p></li>
+<li><p>fit a ridge-augmented SCM on the same outcome</p></li>
+<li><p>compare the two designs on pre-treatment fit, interpretability, and extrapolation risk</p></li>
+<li><p>state whether augmentation solves a real design problem or only hides one</p></li>
+</ol>
+</section>
+<section id="dataset-at-a-glance">
+<h2>Dataset At A Glance<a class="headerlink" href="#dataset-at-a-glance" title="Link to this heading">#</a></h2>
+<p>This lab uses <code class="docutils literal notranslate"><span class="pre">augsynth::kansas</span></code>, a quarterly state panel used in the ASCM paper’s empirical illustration.</p>
+<ul class="simple">
+<li><p>Substantive case: the Kansas tax cuts associated with the Brownback period</p></li>
+<li><p>Teaching role: advanced extension case rather than first exposure to SCM</p></li>
+<li><p>Main outcome here: log GDP per capita</p></li>
+<li><p>Main lesson: poor classical fit is a warning signal, and augmentation is a controlled response to that warning rather than an automatic improvement</p></li>
+</ul>
+</section>
+<section id="what-to-hand-back">
+<h2>What To Hand Back<a class="headerlink" href="#what-to-hand-back" title="Link to this heading">#</a></h2>
+<p>By the end of the lab, you should be able to report:</p>
+<ul class="simple">
+<li><p>how the Kansas panel was collapsed into an annual comparative-case dataset</p></li>
+<li><p>whether classical SCM alone fits Kansas well enough before treatment</p></li>
+<li><p>what changes when ridge augmentation is introduced</p></li>
+<li><p>why negative or non-simplex weighting is a cost rather than a free benefit</p></li>
+<li><p>whether the design should be defended with classical SCM, augmented SCM, or abandoned for a different strategy</p></li>
+</ul>
+</section>
+<section id="step-1-load-packages-and-inspect-the-kansas-panel">
+<h2>Step 1: Load Packages And Inspect The Kansas Panel<a class="headerlink" href="#step-1-load-packages-and-inspect-the-kansas-panel" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">data_helpers</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">"data/load-data.R"</span><span class="p">,</span><span class="w"> </span><span class="s">"../data/load-data.R"</span><span class="p">,</span><span class="w"> </span><span class="s">"docs/labs/data/load-data.R"</span><span class="p">)</span>
+<span class="n">data_helpers</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">data_helpers</span><span class="p">[</span><span class="nf">file.exists</span><span class="p">(</span><span class="n">data_helpers</span><span class="p">)]</span>
+<span class="kr">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nf">length</span><span class="p">(</span><span class="n">data_helpers</span><span class="p">))</span><span class="w"> </span><span class="nf">stop</span><span class="p">(</span><span class="s">"Extract the complete lab ZIP, including its data folder, before running."</span><span class="p">)</span>
+<span class="nf">source</span><span class="p">(</span><span class="n">data_helpers</span><span class="p">[[</span><span class="m">1</span><span class="p">]])</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">required_packages</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span>
+<span class="w">  </span><span class="s">"augsynth"</span><span class="p">,</span>
+<span class="w">  </span><span class="s">"dplyr"</span><span class="p">,</span>
+<span class="w">  </span><span class="s">"ggplot2"</span><span class="p">,</span>
+<span class="w">  </span><span class="s">"tibble"</span>
+<span class="p">)</span>
+
+<span class="n">missing_packages</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">required_packages</span><span class="p">[</span><span class="o">!</span><span class="nf">vapply</span><span class="p">(</span>
+<span class="w">  </span><span class="n">required_packages</span><span class="p">,</span>
+<span class="w">  </span><span class="n">requireNamespace</span><span class="p">,</span>
+<span class="w">  </span><span class="nf">logical</span><span class="p">(</span><span class="m">1</span><span class="p">),</span>
+<span class="w">  </span><span class="n">quietly</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span>
+<span class="p">)]</span>
+
+<span class="kr">if</span><span class="w"> </span><span class="p">(</span><span class="nf">length</span><span class="p">(</span><span class="n">missing_packages</span><span class="p">))</span><span class="w"> </span><span class="nf">stop</span><span class="p">(</span><span class="s">"Install the documented R environment first; missing: "</span><span class="p">,</span><span class="w"> </span><span class="nf">paste</span><span class="p">(</span><span class="n">missing_packages</span><span class="p">,</span><span class="w"> </span><span class="n">collapse</span><span class="o">=</span><span class="s">", "</span><span class="p">))</span>
+
+<span class="nf">invisible</span><span class="p">(</span><span class="nf">lapply</span><span class="p">(</span><span class="n">required_packages</span><span class="p">,</span><span class="w"> </span><span class="n">library</span><span class="p">,</span><span class="w"> </span><span class="n">character.only</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">))</span>
+
+<span class="n">kansas</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">qed_data</span><span class="p">(</span><span class="s">"kansas"</span><span class="p">)</span>
+
+<span class="n">kansas</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">glimpse</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Attaching package: ‘dplyr’
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>The following objects are masked from ‘package:stats’:
+
+    filter, lag
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Rows: 5,250
+Columns: 32
+$ fips                &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,…
+$ year                &lt;dbl&gt; 1990, 1990, 1990, 1990, 1991, 1991, 1991, 1991, 19…
+$ qtr                 &lt;dbl&gt; 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1,…
+$ state               &lt;chr&gt; "Alabama", "Alabama", "Alabama", "Alabama", "Alaba…
+$ gdp                 &lt;dbl&gt; 71610.00, 72718.25, 73826.50, 74934.75, 76043.00, …
+$ revenuepop          &lt;dbl&gt; <span class=" -Color -Color-Red">NA</span>, <span class=" -Color -Color-Red">NA</span>, <span class=" -Color -Color-Red">NA</span>, <span class=" -Color -Color-Red">NA</span>, <span class=" -Color -Color-Red">NA</span>, <span class=" -Color -Color-Red">NA</span>, <span class=" -Color -Color-Red">NA</span>, <span class=" -Color -Color-Red">NA</span>, 1443.286, 1443.286…
+$ rev_state_total     &lt;dbl&gt; <span class=" -Color -Color-Red">NA</span>, <span class=" -Color -Color-Red">NA</span>, <span class=" -Color -Color-Red">NA</span>, <span class=" -Color -Color-Red">NA</span>, <span class=" -Color -Color-Red">NA</span>, <span class=" -Color -Color-Red">NA</span>, <span class=" -Color -Color-Red">NA</span>, <span class=" -Color -Color-Red">NA</span>, <span class=" -Color -Color-Red">NA</span>, <span class=" -Color -Color-Red">NA</span>, <span class=" -Color -Color-Red">NA</span>, <span class=" -Color -Color-Red">NA</span>, <span class=" -Color -Color-Red">NA</span>…
+$ rev_local_total     &lt;dbl&gt; <span class=" -Color -Color-Red">NA</span>, <span class=" -Color -Color-Red">NA</span>, <span class=" -Color -Color-Red">NA</span>, <span class=" -Color -Color-Red">NA</span>, <span class=" -Color -Color-Red">NA</span>, <span class=" -Color -Color-Red">NA</span>, <span class=" -Color -Color-Red">NA</span>, <span class=" -Color -Color-Red">NA</span>, <span class=" -Color -Color-Red">NA</span>, <span class=" -Color -Color-Red">NA</span>, <span class=" -Color -Color-Red">NA</span>, <span class=" -Color -Color-Red">NA</span>, <span class=" -Color -Color-Red">NA</span>…
+$ popestimate         &lt;dbl&gt; 4050055, 4062330, 4074606, 4086881, 4099156, 41128…
+$ qtrly_estabs_count  &lt;dbl&gt; 86586, 86188, 86799, 87915, 91626, 91880, 93501, 9…
+$ month1_emplvl       &lt;dbl&gt; 1571410, 1599077, 1599355, 1612133, 1581388, 15988…
+$ month2_emplvl       &lt;dbl&gt; 1572535, 1610310, 1604376, 1614907, 1580574, 16079…
+$ month3_emplvl       &lt;dbl&gt; 1581994, 1618397, 1611040, 1615504, 1590768, 16110…
+$ total_qtrly_wages   &lt;dbl&gt; 7832159837, 8107228382, 8102930357, 8725347965, 81…
+$ taxable_qtrly_wages &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
+$ avg_wkly_wage       &lt;dbl&gt; 382, 388, 388, 416, 396, 404, 406, 432, 414, 416, …
+$ year_qtr            &lt;dbl&gt; 1990.00, 1990.25, 1990.50, 1990.75, 1991.00, 1991.…
+$ treated             &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
+$ gdpcapita           &lt;dbl&gt; 17681.24, 17900.62, 18118.69, 18335.44, 18550.89, …
+$ lngdp               &lt;dbl&gt; 11.17899, 11.19435, 11.20947, 11.22437, 11.23905, …
+$ lngdpcapita         &lt;dbl&gt; 9.780260, 9.792591, 9.804699, 9.816591, 9.828273, …
+$ revstatecapita      &lt;dbl&gt; <span class=" -Color -Color-Red">NA</span>, <span class=" -Color -Color-Red">NA</span>, <span class=" -Color -Color-Red">NA</span>, <span class=" -Color -Color-Red">NA</span>, <span class=" -Color -Color-Red">NA</span>, <span class=" -Color -Color-Red">NA</span>, <span class=" -Color -Color-Red">NA</span>, <span class=" -Color -Color-Red">NA</span>, <span class=" -Color -Color-Red">NA</span>, <span class=" -Color -Color-Red">NA</span>, <span class=" -Color -Color-Red">NA</span>, <span class=" -Color -Color-Red">NA</span>, <span class=" -Color -Color-Red">NA</span>…
+$ revlocalcapita      &lt;dbl&gt; <span class=" -Color -Color-Red">NA</span>, <span class=" -Color -Color-Red">NA</span>, <span class=" -Color -Color-Red">NA</span>, <span class=" -Color -Color-Red">NA</span>, <span class=" -Color -Color-Red">NA</span>, <span class=" -Color -Color-Red">NA</span>, <span class=" -Color -Color-Red">NA</span>, <span class=" -Color -Color-Red">NA</span>, <span class=" -Color -Color-Red">NA</span>, <span class=" -Color -Color-Red">NA</span>, <span class=" -Color -Color-Red">NA</span>, <span class=" -Color -Color-Red">NA</span>, <span class=" -Color -Color-Red">NA</span>…
+$ emplvl1capita       &lt;dbl&gt; 0.3879972, 0.3936354, 0.3925178, 0.3944654, 0.3857…
+$ emplvl2capita       &lt;dbl&gt; 0.3882750, 0.3964006, 0.3937500, 0.3951441, 0.3855…
+$ emplvl3capita       &lt;dbl&gt; 0.3906105, 0.3983913, 0.3953855, 0.3952902, 0.3880…
+$ emplvlcapita        &lt;dbl&gt; 0.3889609, 0.3961424, 0.3938844, 0.3949666, 0.3864…
+$ totalwagescapita    &lt;dbl&gt; 1933.840, 1995.709, 1988.642, 2134.965, 1992.086, …
+$ taxwagescapita      &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
+$ avgwklywagecapita   &lt;dbl&gt; 382, 388, 388, 416, 396, 404, 406, 432, 414, 416, …
+$ estabscapita        &lt;dbl&gt; 0.02137897, 0.02121639, 0.02130243, 0.02151152, 0.…
+$ abb                 &lt;chr&gt; "AL", "AL", "AL", "AL", "AL", "AL", "AL", "AL", "A…
+</pre></div>
+</div>
+</div>
+</div>
+<p>Checkpoint:</p>
+<ul class="simple">
+<li><p>The raw data are quarterly and much richer than the smoking case.</p></li>
+<li><p>That makes this a better lab for weak-fit problems than for first-pass SCM mechanics.</p></li>
+</ul>
+</section>
+<section id="step-2-collapse-to-a-clean-annual-panel">
+<h2>Step 2: Collapse To A Clean Annual Panel<a class="headerlink" href="#step-2-collapse-to-a-clean-annual-panel" title="Link to this heading">#</a></h2>
+<p>This is a teaching choice. The underlying data are quarterly, but an annual panel makes the design logic easier to inspect in a first advanced lab.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">kansas_annual</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">kansas</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">filter</span><span class="p">(</span><span class="n">year</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="m">1990</span><span class="p">,</span><span class="w"> </span><span class="n">year</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="m">2016</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">group_by</span><span class="p">(</span><span class="n">state</span><span class="p">,</span><span class="w"> </span><span class="n">year</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">summarise</span><span class="p">(</span>
+<span class="w">    </span><span class="n">treated</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">max</span><span class="p">(</span><span class="n">treated</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">),</span>
+<span class="w">    </span><span class="n">lngdpcapita</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">lngdpcapita</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">),</span>
+<span class="w">    </span><span class="n">revenuepop</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">revenuepop</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">),</span>
+<span class="w">    </span><span class="n">emplvlcapita</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">emplvlcapita</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">),</span>
+<span class="w">    </span><span class="n">.groups</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"drop"</span>
+<span class="w">  </span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">mutate</span><span class="p">(</span><span class="n">treated</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">as.integer</span><span class="p">(</span><span class="n">treated</span><span class="p">))</span>
+
+<span class="n">kansas_annual</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">glimpse</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Rows: 1,350
+Columns: 6
+$ state        &lt;chr&gt; "Alabama", "Alabama", "Alabama", "Alabama", "Alabama", "A…
+$ year         &lt;dbl&gt; 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 199…
+$ treated      &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …
+$ lngdpcapita  &lt;dbl&gt; 9.798535, 9.848501, 9.890989, 9.926799, 9.979501, 10.0260…
+$ revenuepop   &lt;dbl&gt; <span class=" -Color -Color-Red">NaN</span>, <span class=" -Color -Color-Red">NaN</span>, 1443.286, <span class=" -Color -Color-Red">NaN</span>, <span class=" -Color -Color-Red">NaN</span>, <span class=" -Color -Color-Red">NaN</span>, <span class=" -Color -Color-Red">NaN</span>, 1842.061, <span class=" -Color -Color-Red">NaN</span>, <span class=" -Color -Color-Red">Na</span>…
+$ emplvlcapita &lt;dbl&gt; 0.3934886, 0.3899750, 0.3923385, 0.3969037, 0.4006081, 0.…
+</pre></div>
+</div>
+</div>
+</div>
+<p>What to discuss:</p>
+<ul class="simple">
+<li><p>aggregation is part of design, not only convenience</p></li>
+<li><p>when you collapse data, say clearly what information is being smoothed away</p></li>
+<li><p>the tradeoff here is readability versus finer-grained timing</p></li>
+</ul>
+</section>
+<section id="step-3-inspect-the-raw-kansas-trend">
+<h2>Step 3: Inspect The Raw Kansas Trend<a class="headerlink" href="#step-3-inspect-the-raw-kansas-trend" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">5.5</span><span class="p">)</span>
+<span class="n">kansas_annual</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">mutate</span><span class="p">(</span><span class="n">group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">if_else</span><span class="p">(</span><span class="n">state</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">"Kansas"</span><span class="p">,</span><span class="w"> </span><span class="s">"Kansas"</span><span class="p">,</span><span class="w"> </span><span class="s">"Donor pool"</span><span class="p">))</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">group_by</span><span class="p">(</span><span class="n">group</span><span class="p">,</span><span class="w"> </span><span class="n">year</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">summarise</span><span class="p">(</span><span class="n">lngdpcapita</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">lngdpcapita</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">),</span><span class="w"> </span><span class="n">.groups</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"drop"</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">ggplot</span><span class="p">(</span><span class="nf">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">year</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lngdpcapita</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">group</span><span class="p">))</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_line</span><span class="p">(</span><span class="n">linewidth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1.1</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_vline</span><span class="p">(</span><span class="n">xintercept</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2012</span><span class="p">,</span><span class="w"> </span><span class="n">linetype</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"gray40"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">labs</span><span class="p">(</span>
+<span class="w">    </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Log GDP per capita"</span><span class="p">,</span>
+<span class="w">    </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span>
+<span class="w">  </span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">theme_minimal</span><span class="p">(</span><span class="n">base_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">12</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<a class="reference internal image-reference" href="../_images/fcaa5d162b77c4b0c60abb0e5ed48a3b9975a73bec3814fffc975be23ab4d770.png"><img alt="../_images/fcaa5d162b77c4b0c60abb0e5ed48a3b9975a73bec3814fffc975be23ab4d770.png" src="../_images/fcaa5d162b77c4b0c60abb0e5ed48a3b9975a73bec3814fffc975be23ab4d770.png" style="width: 480px; height: 330px;" />
+</a>
+</div>
+</div>
+<p>Checkpoint:</p>
+<ul class="simple">
+<li><p>This is only a benchmark plot.</p></li>
+<li><p>The key question is whether any convex combination of donors can reconstruct Kansas well enough before <code class="docutils literal notranslate"><span class="pre">2012</span></code>.</p></li>
+</ul>
+</section>
+<section id="step-4-fit-a-classical-scm-benchmark">
+<h2>Step 4: Fit A Classical SCM Benchmark<a class="headerlink" href="#step-4-fit-a-classical-scm-benchmark" title="Link to this heading">#</a></h2>
+<p>Use <code class="docutils literal notranslate"><span class="pre">augsynth</span></code> itself to fit the classical benchmark by turning the outcome model off.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">kansas_scm</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">augsynth</span><span class="p">(</span>
+<span class="w">  </span><span class="n">lngdpcapita</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">treated</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">revenuepop</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">emplvlcapita</span><span class="p">,</span>
+<span class="w">  </span><span class="n">unit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">state</span><span class="p">,</span>
+<span class="w">  </span><span class="n">time</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">year</span><span class="p">,</span>
+<span class="w">  </span><span class="n">t_int</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2012</span><span class="p">,</span>
+<span class="w">  </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">kansas_annual</span><span class="p">,</span>
+<span class="w">  </span><span class="n">progfunc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"None"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">scm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span>
+<span class="p">)</span>
+
+<span class="nf">summary</span><span class="p">(</span><span class="n">kansas_scm</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>One outcome and one treatment time found. Running single_augsynth.
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Call:
+single_augsynth(form = form, unit = !!enquo(unit), time = !!enquo(time), 
+    t_int = t_int, data = data, progfunc = "None", scm = TRUE)
+
+Fit to 50 units and 22+5 = 27 time points; 1 treated at year 2012.
+
+7 donor units used with weights of 0.017 to 0.222
+Average ATT Estimate (p Value for Joint Null):  -0.0558   ( 0.97 )
+L2 Imbalance: 0.055
+Percent improvement from uniform weights: 72.3%
+
+Covariate L2 Imbalance: 0.012
+Percent improvement from uniform weights: 91.1%
+
+Avg Estimated Bias: NA
+
+Inference type: Conformal inference
+
+ Time Estimate 95% CI Lower Bound 95% CI Upper Bound p Value
+ 2012   -0.040             -0.149              0.064   0.600
+ 2013   -0.052             -0.123              0.057   0.491
+ 2014   -0.058             -0.143              0.056   0.545
+ 2015   -0.058             -0.153              0.056   0.477
+ 2016   -0.071             -0.185              0.037   0.280
+</pre></div>
+</div>
+</div>
+</div>
+<p>Why start here:</p>
+<ul class="simple">
+<li><p>classical SCM remains the baseline</p></li>
+<li><p>if the baseline already fits well, the case for augmentation is weaker</p></li>
+<li><p>if the baseline fits poorly, that poor fit is the design problem augmentation is trying to address</p></li>
+</ul>
+</section>
+<section id="step-5-fit-ridge-augmented-scm">
+<h2>Step 5: Fit Ridge-Augmented SCM<a class="headerlink" href="#step-5-fit-ridge-augmented-scm" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">kansas_ridge</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">augsynth</span><span class="p">(</span>
+<span class="w">  </span><span class="n">lngdpcapita</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">treated</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">revenuepop</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">emplvlcapita</span><span class="p">,</span>
+<span class="w">  </span><span class="n">unit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">state</span><span class="p">,</span>
+<span class="w">  </span><span class="n">time</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">year</span><span class="p">,</span>
+<span class="w">  </span><span class="n">t_int</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2012</span><span class="p">,</span>
+<span class="w">  </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">kansas_annual</span><span class="p">,</span>
+<span class="w">  </span><span class="n">progfunc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Ridge"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">scm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span>
+<span class="p">)</span>
+
+<span class="nf">summary</span><span class="p">(</span><span class="n">kansas_ridge</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>One outcome and one treatment time found. Running single_augsynth.
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Call:
+single_augsynth(form = form, unit = !!enquo(unit), time = !!enquo(time), 
+    t_int = t_int, data = data, progfunc = "Ridge", scm = TRUE)
+
+Fit to 50 units and 22+5 = 27 time points; 1 treated at year 2012.
+
+49 donor units used with weights of 0.002 to 0.226
+Average ATT Estimate (p Value for Joint Null):  -0.0647   ( 0.23 )
+L2 Imbalance: 0.023
+Percent improvement from uniform weights: 88.7%
+
+Covariate L2 Imbalance: 0.002
+Percent improvement from uniform weights: 98.9%
+
+Avg Estimated Bias: 0.546
+
+Inference type: Conformal inference
+
+ Time Estimate 95% CI Lower Bound 95% CI Upper Bound p Value
+ 2012   -0.042             -0.174              0.090   0.475
+ 2013   -0.064             -0.196              0.068   0.363
+ 2014   -0.072             -0.204              0.060   0.427
+ 2015   -0.067             -0.199              0.065   0.414
+ 2016   -0.079             -0.210              0.053   0.389
+</pre></div>
+</div>
+</div>
+</div>
+<p>What changed:</p>
+<ul class="simple">
+<li><p>the SCM weighting logic remains the starting point</p></li>
+<li><p>the ridge outcome model is used to correct bias from imperfect pre-treatment fit</p></li>
+<li><p>this may require limited extrapolation away from the donor convex hull</p></li>
+</ul>
+</section>
+<section id="step-6-compare-pre-treatment-fit-visually">
+<h2>Step 6: Compare Pre-Treatment Fit Visually<a class="headerlink" href="#step-6-compare-pre-treatment-fit-visually" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">5.7</span><span class="p">)</span>
+<span class="nf">plot</span><span class="p">(</span><span class="n">kansas_scm</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Plotting augsynth objects with inf=TRUE may be slow. For faster results, first create a summary object and plot that object directly (e.g., s &lt;- summary(augsynth_obj); plot(s)).
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/dde3d47b7e93cd4dd88e5ba546b26e1930b3ee16b72cbaef0219ecbe6e8ebfa3.png"><img alt="../_images/dde3d47b7e93cd4dd88e5ba546b26e1930b3ee16b72cbaef0219ecbe6e8ebfa3.png" src="../_images/dde3d47b7e93cd4dd88e5ba546b26e1930b3ee16b72cbaef0219ecbe6e8ebfa3.png" style="width: 480px; height: 342px;" />
+</a>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">5.7</span><span class="p">)</span>
+<span class="nf">plot</span><span class="p">(</span><span class="n">kansas_ridge</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Plotting augsynth objects with inf=TRUE may be slow. For faster results, first create a summary object and plot that object directly (e.g., s &lt;- summary(augsynth_obj); plot(s)).
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/d85a1b8e839a0cc7ca409463d41886d2a7954e8cdf09d6d94dce66f3d2eb2abb.png"><img alt="../_images/d85a1b8e839a0cc7ca409463d41886d2a7954e8cdf09d6d94dce66f3d2eb2abb.png" src="../_images/d85a1b8e839a0cc7ca409463d41886d2a7954e8cdf09d6d94dce66f3d2eb2abb.png" style="width: 480px; height: 342px;" />
+</a>
+</div>
+</div>
+<p>Checkpoint:</p>
+<ul class="simple">
+<li><p>Does ridge augmentation visibly improve the pre-treatment path?</p></li>
+<li><p>If yes, ask whether that improvement looks modest and disciplined or aggressive and opaque.</p></li>
+</ul>
+</section>
+<section id="step-7-compare-the-two-specifications-side-by-side">
+<h2>Step 7: Compare The Two Specifications Side By Side<a class="headerlink" href="#step-7-compare-the-two-specifications-side-by-side" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">model_summaries</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span>
+<span class="w">  </span><span class="n">classical_scm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">summary</span><span class="p">(</span><span class="n">kansas_scm</span><span class="p">),</span>
+<span class="w">  </span><span class="n">ridge_ascm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">summary</span><span class="p">(</span><span class="n">kansas_ridge</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">model_summaries</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>$classical_scm
+
+Call:
+single_augsynth(form = form, unit = !!enquo(unit), time = !!enquo(time), 
+    t_int = t_int, data = data, progfunc = "None", scm = TRUE)
+
+Fit to 50 units and 22+5 = 27 time points; 1 treated at year 2012.
+
+7 donor units used with weights of 0.017 to 0.222
+Average ATT Estimate (p Value for Joint Null):  -0.0558   ( 0.96 )
+L2 Imbalance: 0.055
+Percent improvement from uniform weights: 72.3%
+
+Covariate L2 Imbalance: 0.012
+Percent improvement from uniform weights: 91.1%
+
+Avg Estimated Bias: NA
+
+Inference type: Conformal inference
+
+ Time Estimate 95% CI Lower Bound 95% CI Upper Bound p Value
+ 2012   -0.040             -0.149              0.064   0.622
+ 2013   -0.052             -0.123              0.057   0.489
+ 2014   -0.058             -0.148              0.056   0.575
+ 2015   -0.058             -0.167              0.056   0.481
+ 2016   -0.071             -0.166              0.037   0.258
+
+$ridge_ascm
+
+Call:
+single_augsynth(form = form, unit = !!enquo(unit), time = !!enquo(time), 
+    t_int = t_int, data = data, progfunc = "Ridge", scm = TRUE)
+
+Fit to 50 units and 22+5 = 27 time points; 1 treated at year 2012.
+
+49 donor units used with weights of 0.002 to 0.226
+Average ATT Estimate (p Value for Joint Null):  -0.0647   ( 0.26 )
+L2 Imbalance: 0.023
+Percent improvement from uniform weights: 88.7%
+
+Covariate L2 Imbalance: 0.002
+Percent improvement from uniform weights: 98.9%
+
+Avg Estimated Bias: 0.546
+
+Inference type: Conformal inference
+
+ Time Estimate 95% CI Lower Bound 95% CI Upper Bound p Value
+ 2012   -0.042             -0.174              0.090   0.458
+ 2013   -0.064             -0.196              0.068   0.370
+ 2014   -0.072             -0.204              0.060   0.457
+ 2015   -0.067             -0.199              0.065   0.434
+ 2016   -0.079             -0.210              0.053   0.415
+</pre></div>
+</div>
+</div>
+</div>
+<p>Use this step to compare:</p>
+<ul class="simple">
+<li><p>pre-treatment fit quality</p></li>
+<li><p>implied post-treatment effect direction</p></li>
+<li><p>how much additional modeling you had to buy in order to improve fit</p></li>
+</ul>
+</section>
+<section id="step-8-add-a-placebo-in-time-style-stress-test">
+<h2>Step 8: Add A Placebo-In-Time Style Stress Test<a class="headerlink" href="#step-8-add-a-placebo-in-time-style-stress-test" title="Link to this heading">#</a></h2>
+<p>The advanced design question is not only whether ASCM fits better. It is whether it creates treatment-timed divergence only when treatment is plausibly active.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">kansas_backdate</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">augsynth</span><span class="p">(</span>
+<span class="w">  </span><span class="n">lngdpcapita</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">treated</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">revenuepop</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">emplvlcapita</span><span class="p">,</span>
+<span class="w">  </span><span class="n">unit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">state</span><span class="p">,</span>
+<span class="w">  </span><span class="n">time</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">year</span><span class="p">,</span>
+<span class="w">  </span><span class="n">t_int</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2008</span><span class="p">,</span>
+<span class="w">  </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">kansas_annual</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">    </span><span class="nf">mutate</span><span class="p">(</span><span class="n">treated</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">if_else</span><span class="p">(</span><span class="n">state</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">"Kansas"</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">year</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="m">2008</span><span class="p">,</span><span class="w"> </span><span class="m">1L</span><span class="p">,</span><span class="w"> </span><span class="m">0L</span><span class="p">)),</span>
+<span class="w">  </span><span class="n">progfunc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Ridge"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">scm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span>
+<span class="p">)</span>
+
+<span class="nf">summary</span><span class="p">(</span><span class="n">kansas_backdate</span><span class="p">)</span>
+<span class="nf">plot</span><span class="p">(</span><span class="n">kansas_backdate</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>One outcome and one treatment time found. Running single_augsynth.
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Call:
+single_augsynth(form = form, unit = !!enquo(unit), time = !!enquo(time), 
+    t_int = t_int, data = data, progfunc = "Ridge", scm = TRUE)
+
+Fit to 50 units and 18+9 = 27 time points; 1 treated at year 2008.
+
+49 donor units used with weights of 0.004 to 0.284
+Average ATT Estimate (p Value for Joint Null):  -0.0825   ( 0.16 )
+L2 Imbalance: 0.002
+Percent improvement from uniform weights: 99.2%
+
+Covariate L2 Imbalance: 0.000
+Percent improvement from uniform weights: 100%
+
+Avg Estimated Bias: 1.760
+
+Inference type: Conformal inference
+
+ Time Estimate 95% CI Lower Bound 95% CI Upper Bound p Value
+ 2008   -0.009             -0.189              0.171   0.831
+ 2009   -0.049             -0.229              0.131   0.845
+ 2010   -0.066             -0.246              0.114   0.897
+ 2011   -0.067             -0.247              0.113   0.904
+ 2012   -0.091             -0.271              0.089   1.000
+ 2013   -0.107             -0.287              0.073   1.000
+ 2014   -0.121             -0.301              0.059   1.000
+ 2015   -0.112             -0.292              0.068   1.000
+ 2016   -0.120             -0.300              0.059   1.000
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Plotting augsynth objects with inf=TRUE may be slow. For faster results, first create a summary object and plot that object directly (e.g., s &lt;- summary(augsynth_obj); plot(s)).
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/2803378a2ea317b7219fad66fa0601b33569de171be56f21e69762566f943d61.png"><img alt="../_images/2803378a2ea317b7219fad66fa0601b33569de171be56f21e69762566f943d61.png" src="../_images/2803378a2ea317b7219fad66fa0601b33569de171be56f21e69762566f943d61.png" style="width: 480px; height: 288px;" />
+</a>
+</div>
+</div>
+<p>How to read it:</p>
+<ul class="simple">
+<li><p>a large placebo-in-time effect would suggest instability or overfitting</p></li>
+<li><p>a near-zero placebo effect does not prove the design, but it is useful reassurance when fit is otherwise credible</p></li>
+</ul>
+</section>
+<section id="step-9-write-the-design-judgment">
+<h2>Step 9: Write The Design Judgment<a class="headerlink" href="#step-9-write-the-design-judgment" title="Link to this heading">#</a></h2>
+<p>Use the outputs above to answer:</p>
+<ol class="arabic simple">
+<li><p>Does classical SCM fit Kansas well enough to stand on its own?</p></li>
+<li><p>What does ridge augmentation improve?</p></li>
+<li><p>What extrapolation cost are you implicitly accepting when you move from classical SCM to ASCM?</p></li>
+<li><p>Is this a case for classical SCM, augmented SCM, or a different design altogether?</p></li>
+</ol>
+</section>
+<section id="final-prompt">
+<h2>Final Prompt<a class="headerlink" href="#final-prompt" title="Link to this heading">#</a></h2>
+<p>Write a short memo with one of these conclusions:</p>
+<ul class="simple">
+<li><p>stay with classical SCM because fit is already good enough</p></li>
+<li><p>use augmented SCM because the comparative-case design is still credible but classical fit is too weak</p></li>
+<li><p>abandon the SCM family here because even augmentation would be doing too much work</p></li>
+</ul>
+</section>
+<section id="next-step">
+<h2>Next Step<a class="headerlink" href="#next-step" title="Link to this heading">#</a></h2>
+<p>After this lab, go back to the <a class="reference external" href="https://defenceeconomist.github.io/qedlabs/slides/scm.html">Synthetic Control slides</a> and <a class="reference external" href="https://defenceeconomist.github.io/qedlabs/slides/scm_script.html">SCM presenter script</a> to consolidate the bigger design lesson: SCM credibility comes from donor support, pre-treatment fit, and transparent diagnostics before it comes from any single package call.</p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "r"
+        },
+        kernelOptions: {
+            name: "ir",
+            path: "./notebooks"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'ir'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="synthetic-control-proposition-99-lab.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Lab: Proposition 99 With tidysynth</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="synthetic-control-design-lab.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Lab: Synthetic Control Design</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item"><div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-to-use-this-page">How To Use This Page</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#training-goal">Training Goal</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dataset-at-a-glance">Dataset At A Glance</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-to-hand-back">What To Hand Back</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-1-load-packages-and-inspect-the-kansas-panel">Step 1: Load Packages And Inspect The Kansas Panel</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-2-collapse-to-a-clean-annual-panel">Step 2: Collapse To A Clean Annual Panel</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-3-inspect-the-raw-kansas-trend">Step 3: Inspect The Raw Kansas Trend</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-4-fit-a-classical-scm-benchmark">Step 4: Fit A Classical SCM Benchmark</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-5-fit-ridge-augmented-scm">Step 5: Fit Ridge-Augmented SCM</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-6-compare-pre-treatment-fit-visually">Step 6: Compare Pre-Treatment Fit Visually</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-7-compare-the-two-specifications-side-by-side">Step 7: Compare The Two Specifications Side By Side</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-8-add-a-placebo-in-time-style-stress-test">Step 8: Add A Placebo-In-Time Style Stress Test</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-9-write-the-design-judgment">Step 9: Write The Design Judgment</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#final-prompt">Final Prompt</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#next-step">Next Step</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By QED Labs
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2026.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+<div class="extra_footer">
+  Built for offline use. External reading links are optional.
+</div>
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

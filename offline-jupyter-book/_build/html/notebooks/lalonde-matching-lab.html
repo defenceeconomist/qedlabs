@@ -1,0 +1,1570 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Lab: LaLonde Matching &#8212; Quasi-Experimental Design Labs</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../_static/scripts/fontawesome.js?digest=55c26ed414f5f8a31ebb"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=b8b12719"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="../_static/mathjax/tex-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/lalonde-matching-lab';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Lab: Black Politicians" href="black-politicians-lab.html" />
+    <link rel="prev" title="Bundled data and provenance" href="../data.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">Quasi-Experimental Design Labs</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../index.html">
+                    Quasi-Experimental Design Labs
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Start here</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../offline-setup.html">Offline setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data.html">Bundled data and provenance</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Matching and Weighting</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Lab: LaLonde Matching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="black-politicians-lab.html">Lab: Black Politicians</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nsw-cps-benchmark-lab.html">Lab: NSW and CPS Benchmark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hisp-ie-practice-lab.html">Lab: HISP IE in Practice</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Difference-in-Differences</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="difference-in-differences-foundations-lab.html">Lab: Difference-in-Differences Foundations With Kentucky Workers’ Compensation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="difference-in-differences-staggered-diagnostics-lab.html">Lab: Staggered Adoption and TWFE Diagnostics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="difference-in-differences-modern-estimators-lab.html">Lab: Modern Multi-Period Difference-in-Differences</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Regression Discontinuity</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="regression-discontinuity-foundations-lab.html">Lab: Sharp RD foundations with government transfers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="regression-discontinuity-diagnostics-lab.html">Lab: RDD design diagnostics and sensitivity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="regression-discontinuity-fuzzy-lab.html">Lab: Fuzzy RD and local IV with veteran home ownership</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Synthetic Control</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-mechanics-lab.html">Lab: Synthetic Control Mechanics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-proposition-99-lab.html">Lab: Proposition 99 With tidysynth</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-augmentation-lab.html">Lab: Augmented SCM With Kansas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-design-lab.html">Lab: Synthetic Control Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-donor-pool-lab.html">Lab: Synthetic Control Donor Pool Design</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Interrupted Time Series</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="interrupted-time-series-mechanics-lab.html">Lab: Interrupted Time Series Foundations With Seatbelts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interrupted-time-series-design-diagnostics-lab.html">Lab: Seatbelt Law Design and Robustness</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interrupted-time-series-counterfactual-validation-lab.html">Lab: Interrupted Time Series Counterfactual Validation</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/notebooks/lalonde-matching-lab.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm pst-navbar-icon" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Lab: LaLonde Matching</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-to-use-this-page">How To Use This Page</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#training-goal">Training Goal</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dataset-at-a-glance">Dataset At A Glance</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-to-hand-back">What To Hand Back</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-1-load-packages-and-prepare-the-data">Step 1: Load Packages And Prepare The Data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-2-describe-the-raw-comparison">Step 2: Describe The Raw Comparison</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-3-build-the-baseline-balance-benchmark">Step 3: Build The Baseline Balance Benchmark</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-4-exact-matching-on-a-reduced-discrete-set">Step 4: Exact Matching On A Reduced Discrete Set</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-5-compare-two-cem-specifications">Step 5: Compare Two CEM Specifications</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-6-compare-entropy-balancing-specifications">Step 6: Compare Entropy-Balancing Specifications</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-7-compare-the-methods-side-by-side">Step 7: Compare The Methods Side By Side</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-8-write-the-design-judgement">Step 8: Write The Design Judgement</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#suggested-close">Suggested Close</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="lab-lalonde-matching">
+<h1>Lab: LaLonde Matching<a class="headerlink" href="#lab-lalonde-matching" title="Link to this heading">#</a></h1>
+<p><a class="reference internal" href="../index.html"><span class="std std-doc">Book home</span></a></p>
+<p>Use the R kernel. Keep the supplied <code class="docutils literal notranslate"><span class="pre">data/</span></code> folder beside this notebook. Run cells in order after installing the documented R environment. Data loading is entirely local.</p>
+<section id="how-to-use-this-page">
+<h2>How To Use This Page<a class="headerlink" href="#how-to-use-this-page" title="Link to this heading">#</a></h2>
+<p>Use this page as the guided lab version of the main matching overview.</p>
+<ul class="simple">
+<li><p>Keep the <a class="reference external" href="https://defenceeconomist.github.io/qedlabs/notes/matching/matching-and-weighting.html">Matching and Weighting</a> note open in another tab.</p></li>
+<li><p>Run each step in order rather than skipping to the estimates.</p></li>
+<li><p>Record balance, retention, and weighting cost as you go.</p></li>
+<li><p>End with a design judgement, not just a preferred coefficient.</p></li>
+</ul>
+<p>The code is shown but not executed when the site is rendered. That keeps the page readable while preserving the main workflow for live teaching and self-study.</p>
+</section>
+<section id="training-goal">
+<h2>Training Goal<a class="headerlink" href="#training-goal" title="Link to this heading">#</a></h2>
+<p>Turn the <code class="docutils literal notranslate"><span class="pre">lalonde</span></code> comparison into a repeatable lab exercise:</p>
+<ol class="arabic simple">
+<li><p>define the <code class="docutils literal notranslate"><span class="pre">ATT</span></code> before any adjustment choice</p></li>
+<li><p>inspect the raw treated-versus-control comparison</p></li>
+<li><p>compare exact matching, <code class="docutils literal notranslate"><span class="pre">CEM</span></code>, and entropy balancing on the same covariate set</p></li>
+<li><p>judge each method on balance, overlap, retention, and weight concentration</p></li>
+<li><p>decide which design you would defend for programme participants</p></li>
+</ol>
+</section>
+<section id="dataset-at-a-glance">
+<h2>Dataset At A Glance<a class="headerlink" href="#dataset-at-a-glance" title="Link to this heading">#</a></h2>
+<p>This lab uses <code class="docutils literal notranslate"><span class="pre">MatchIt::lalonde</span></code>, the same dataset used in the main matching overview.</p>
+<ul class="simple">
+<li><p>Treated group: National Supported Work programme participants</p></li>
+<li><p>Comparison group: observational controls</p></li>
+<li><p>Outcome: <code class="docutils literal notranslate"><span class="pre">re78</span></code></p></li>
+<li><p>Design covariates: <code class="docutils literal notranslate"><span class="pre">age</span></code>, <code class="docutils literal notranslate"><span class="pre">educ</span></code>, <code class="docutils literal notranslate"><span class="pre">race</span></code>, <code class="docutils literal notranslate"><span class="pre">married</span></code>, <code class="docutils literal notranslate"><span class="pre">nodegree</span></code>, <code class="docutils literal notranslate"><span class="pre">re74</span></code>, <code class="docutils literal notranslate"><span class="pre">re75</span></code></p></li>
+<li><p>Target estimand: <code class="docutils literal notranslate"><span class="pre">ATT</span></code></p></li>
+</ul>
+<p>This is the cleanest place to practice the repo’s design-first workflow because the data are already familiar from the notes and the tradeoffs are visible quickly.</p>
+</section>
+<section id="what-to-hand-back">
+<h2>What To Hand Back<a class="headerlink" href="#what-to-hand-back" title="Link to this heading">#</a></h2>
+<p>By the end of the lab, you should be able to report:</p>
+<ul class="simple">
+<li><p>the worst raw imbalance before adjustment</p></li>
+<li><p>the strongest exact-matching result you can defend</p></li>
+<li><p>the <code class="docutils literal notranslate"><span class="pre">CEM</span></code> retention-versus-balance tradeoff</p></li>
+<li><p>the entropy-balancing control <code class="docutils literal notranslate"><span class="pre">ESS</span></code> and maximum control weight</p></li>
+<li><p>the design you would defend, plus one limitation you would still state clearly</p></li>
+</ul>
+</section>
+<section id="step-1-load-packages-and-prepare-the-data">
+<h2>Step 1: Load Packages And Prepare The Data<a class="headerlink" href="#step-1-load-packages-and-prepare-the-data" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">data_helpers</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">"data/load-data.R"</span><span class="p">,</span><span class="w"> </span><span class="s">"../data/load-data.R"</span><span class="p">,</span><span class="w"> </span><span class="s">"docs/labs/data/load-data.R"</span><span class="p">)</span>
+<span class="n">data_helpers</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">data_helpers</span><span class="p">[</span><span class="nf">file.exists</span><span class="p">(</span><span class="n">data_helpers</span><span class="p">)]</span>
+<span class="kr">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nf">length</span><span class="p">(</span><span class="n">data_helpers</span><span class="p">))</span><span class="w"> </span><span class="nf">stop</span><span class="p">(</span><span class="s">"Extract the complete lab ZIP, including its data folder, before running."</span><span class="p">)</span>
+<span class="nf">source</span><span class="p">(</span><span class="n">data_helpers</span><span class="p">[[</span><span class="m">1</span><span class="p">]])</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">required_packages</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span>
+<span class="w">  </span><span class="s">"MatchIt"</span><span class="p">,</span>
+<span class="w">  </span><span class="s">"WeightIt"</span><span class="p">,</span>
+<span class="w">  </span><span class="s">"cobalt"</span><span class="p">,</span>
+<span class="w">  </span><span class="s">"dplyr"</span><span class="p">,</span>
+<span class="w">  </span><span class="s">"ggplot2"</span>
+<span class="p">)</span>
+
+<span class="n">missing_packages</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">required_packages</span><span class="p">[</span><span class="o">!</span><span class="nf">vapply</span><span class="p">(</span>
+<span class="w">  </span><span class="n">required_packages</span><span class="p">,</span>
+<span class="w">  </span><span class="n">requireNamespace</span><span class="p">,</span>
+<span class="w">  </span><span class="nf">logical</span><span class="p">(</span><span class="m">1</span><span class="p">),</span>
+<span class="w">  </span><span class="n">quietly</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span>
+<span class="p">)]</span>
+
+<span class="kr">if</span><span class="w"> </span><span class="p">(</span><span class="nf">length</span><span class="p">(</span><span class="n">missing_packages</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nf">stop</span><span class="p">(</span><span class="s">"Install the documented R environment first; missing: "</span><span class="p">,</span><span class="w"> </span><span class="nf">paste</span><span class="p">(</span><span class="n">missing_packages</span><span class="p">,</span><span class="w"> </span><span class="n">collapse</span><span class="o">=</span><span class="s">", "</span><span class="p">),</span><span class="w"> </span><span class="n">call.</span><span class="o">=</span><span class="kc">FALSE</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="nf">invisible</span><span class="p">(</span><span class="nf">lapply</span><span class="p">(</span><span class="n">required_packages</span><span class="p">,</span><span class="w"> </span><span class="n">library</span><span class="p">,</span><span class="w"> </span><span class="n">character.only</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">))</span>
+
+<span class="n">lalonde</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">qed_data</span><span class="p">(</span><span class="s">"lalonde"</span><span class="p">)</span>
+
+<span class="n">dat</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">lalonde</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">mutate</span><span class="p">(</span>
+<span class="w">    </span><span class="n">treat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">as.integer</span><span class="p">(</span><span class="n">treat</span><span class="p">),</span>
+<span class="w">    </span><span class="n">outcome</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">re78</span><span class="p">,</span>
+<span class="w">    </span><span class="n">married</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">factor</span><span class="p">(</span><span class="n">married</span><span class="p">,</span><span class="w"> </span><span class="n">levels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">),</span><span class="w"> </span><span class="n">labels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">"not_married"</span><span class="p">,</span><span class="w"> </span><span class="s">"married"</span><span class="p">)),</span>
+<span class="w">    </span><span class="n">nodegree</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">factor</span><span class="p">(</span><span class="n">nodegree</span><span class="p">,</span><span class="w"> </span><span class="n">levels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">),</span><span class="w"> </span><span class="n">labels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">"has_degree"</span><span class="p">,</span><span class="w"> </span><span class="s">"no_degree"</span><span class="p">))</span>
+<span class="w">  </span><span class="p">)</span>
+
+<span class="n">design_covariates</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span>
+<span class="w">  </span><span class="s">"age"</span><span class="p">,</span><span class="w"> </span><span class="s">"educ"</span><span class="p">,</span><span class="w"> </span><span class="s">"race"</span><span class="p">,</span><span class="w"> </span><span class="s">"married"</span><span class="p">,</span><span class="w"> </span><span class="s">"nodegree"</span><span class="p">,</span><span class="w"> </span><span class="s">"re74"</span><span class="p">,</span><span class="w"> </span><span class="s">"re75"</span>
+<span class="p">)</span>
+
+<span class="n">dat</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">select</span><span class="p">(</span><span class="n">treat</span><span class="p">,</span><span class="w"> </span><span class="n">outcome</span><span class="p">,</span><span class="w"> </span><span class="nf">all_of</span><span class="p">(</span><span class="n">design_covariates</span><span class="p">))</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">glimpse</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> cobalt (Version 4.6.2, Build Date: 2026-01-29)
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Attaching package: ‘cobalt’
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>The following object is masked from ‘package:MatchIt’:
+
+    lalonde
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Attaching package: ‘dplyr’
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>The following objects are masked from ‘package:stats’:
+
+    filter, lag
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Rows: 614
+Columns: 9
+$ treat    &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1…
+$ outcome  &lt;dbl&gt; 9930.0460, 3595.8940, 24909.4500, 7506.1460, 289.7899, 4056.4…
+$ age      &lt;int&gt; 37, 22, 30, 27, 33, 22, 23, 32, 22, 33, 19, 21, 18, 27, 17, 1…
+$ educ     &lt;int&gt; 11, 9, 12, 11, 8, 9, 12, 11, 16, 12, 9, 13, 8, 10, 7, 10, 13,…
+$ race     &lt;fct&gt; black, hispan, black, black, black, black, black, black, blac…
+$ married  &lt;fct&gt; married, not_married, not_married, not_married, not_married, …
+$ nodegree &lt;fct&gt; no_degree, no_degree, has_degree, no_degree, no_degree, no_de…
+$ re74     &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
+$ re75     &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
+</pre></div>
+</div>
+</div>
+</div>
+<p>Checkpoint:</p>
+<ul class="simple">
+<li><p>Is the estimand clear before any method is chosen?</p></li>
+<li><p>Are all design covariates measured before the outcome?</p></li>
+</ul>
+</section>
+<section id="step-2-describe-the-raw-comparison">
+<h2>Step 2: Describe The Raw Comparison<a class="headerlink" href="#step-2-describe-the-raw-comparison" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">pre_match_summary</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">dat</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">group_by</span><span class="p">(</span><span class="n">treat</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">summarise</span><span class="p">(</span>
+<span class="w">    </span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">n</span><span class="p">(),</span>
+<span class="w">    </span><span class="n">mean_outcome</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">outcome</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">),</span>
+<span class="w">    </span><span class="n">mean_age</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">age</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">),</span>
+<span class="w">    </span><span class="n">mean_educ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">educ</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">),</span>
+<span class="w">    </span><span class="n">prop_married</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">married</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">"married"</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">),</span>
+<span class="w">    </span><span class="n">prop_no_degree</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">nodegree</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">"no_degree"</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">),</span>
+<span class="w">    </span><span class="n">mean_re74</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">re74</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">),</span>
+<span class="w">    </span><span class="n">mean_re75</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">re75</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">),</span>
+<span class="w">    </span><span class="n">.groups</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"drop"</span>
+<span class="w">  </span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">mutate</span><span class="p">(</span><span class="n">group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">if_else</span><span class="p">(</span><span class="n">treat</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1L</span><span class="p">,</span><span class="w"> </span><span class="s">"Treated"</span><span class="p">,</span><span class="w"> </span><span class="s">"Control"</span><span class="p">))</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">select</span><span class="p">(</span>
+<span class="w">    </span><span class="n">group</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">mean_outcome</span><span class="p">,</span><span class="w"> </span><span class="n">mean_age</span><span class="p">,</span><span class="w"> </span><span class="n">mean_educ</span><span class="p">,</span>
+<span class="w">    </span><span class="n">prop_married</span><span class="p">,</span><span class="w"> </span><span class="n">prop_no_degree</span><span class="p">,</span><span class="w"> </span><span class="n">mean_re74</span><span class="p">,</span><span class="w"> </span><span class="n">mean_re75</span>
+<span class="w">  </span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">mutate</span><span class="p">(</span><span class="nf">across</span><span class="p">(</span><span class="o">-</span><span class="nf">c</span><span class="p">(</span><span class="n">group</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">),</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="nf">round</span><span class="p">(</span><span class="n">.x</span><span class="p">,</span><span class="w"> </span><span class="m">3</span><span class="p">)))</span>
+
+<span class="n">pre_match_summary</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><table class="dataframe">
+<caption>A tibble: 2 × 9</caption>
+<thead>
+	<tr><th scope=col>group</th><th scope=col>n</th><th scope=col>mean_outcome</th><th scope=col>mean_age</th><th scope=col>mean_educ</th><th scope=col>prop_married</th><th scope=col>prop_no_degree</th><th scope=col>mean_re74</th><th scope=col>mean_re75</th></tr>
+	<tr><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;int&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>Control</td><td>429</td><td>6984.170</td><td>28.030</td><td>10.235</td><td>0.513</td><td>0.597</td><td>5619.237</td><td>2466.484</td></tr>
+	<tr><td>Treated</td><td>185</td><td>6349.144</td><td>25.816</td><td>10.346</td><td>0.189</td><td>0.708</td><td>2095.574</td><td>1532.055</td></tr>
+</tbody>
+</table>
+</div></div>
+</div>
+<p>What to look for:</p>
+<ul class="simple">
+<li><p>lower prior earnings in the treated group</p></li>
+<li><p>lower marriage rates in the treated group</p></li>
+<li><p>whether the untreated group looks remotely usable without design work</p></li>
+</ul>
+</section>
+<section id="step-3-build-the-baseline-balance-benchmark">
+<h2>Step 3: Build The Baseline Balance Benchmark<a class="headerlink" href="#step-3-build-the-baseline-balance-benchmark" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">m_out0</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">matchit</span><span class="p">(</span>
+<span class="w">  </span><span class="n">treat</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">age</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">educ</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">race</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">married</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">nodegree</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">re74</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">re75</span><span class="p">,</span>
+<span class="w">  </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dat</span><span class="p">,</span>
+<span class="w">  </span><span class="n">method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">,</span>
+<span class="w">  </span><span class="n">estimand</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"ATT"</span>
+<span class="p">)</span>
+
+<span class="nf">summary</span><span class="p">(</span><span class="n">m_out0</span><span class="p">,</span><span class="w"> </span><span class="n">un</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span>
+
+<span class="n">unadjusted_balance</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">bal.tab</span><span class="p">(</span>
+<span class="w">  </span><span class="n">m_out0</span><span class="p">,</span>
+<span class="w">  </span><span class="n">un</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">,</span>
+<span class="w">  </span><span class="n">binary</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"std"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">disp.v.ratio</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">,</span>
+<span class="w">  </span><span class="n">m.threshold</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.1</span>
+<span class="p">)</span>
+
+<span class="n">unadjusted_balance</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Call:
+matchit(formula = treat ~ age + educ + race + married + nodegree + 
+    re74 + re75, data = dat, method = NULL, estimand = "ATT")
+
+Summary of Balance for All Data:
+                   Means Treated Means Control Std. Mean Diff. Var. Ratio
+distance                  0.5774        0.1822          1.7941     0.9211
+age                      25.8162       28.0303         -0.3094     0.4400
+educ                     10.3459       10.2354          0.0550     0.4959
+raceblack                 0.8432        0.2028          1.7615          .
+racehispan                0.0595        0.1422         -0.3498          .
+racewhite                 0.0973        0.6550         -1.8819          .
+marriednot_married        0.8108        0.4872          0.8263          .
+marriedmarried            0.1892        0.5128         -0.8263          .
+nodegreehas_degree        0.2919        0.4033         -0.2450          .
+nodegreeno_degree         0.7081        0.5967          0.2450          .
+re74                   2095.5737     5619.2365         -0.7211     0.5181
+re75                   1532.0553     2466.4844         -0.2903     0.9563
+                   eCDF Mean eCDF Max
+distance              0.3777   0.6444
+age                   0.0813   0.1577
+educ                  0.0347   0.1114
+raceblack             0.6404   0.6404
+racehispan            0.0827   0.0827
+racewhite             0.5577   0.5577
+marriednot_married    0.3236   0.3236
+marriedmarried        0.3236   0.3236
+nodegreehas_degree    0.1114   0.1114
+nodegreeno_degree     0.1114   0.1114
+re74                  0.2248   0.4470
+re75                  0.1342   0.2876
+
+Sample Sizes:
+          Control Treated
+All           429     185
+Matched       429     185
+Unmatched       0       0
+Discarded       0       0
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Balance Measures
+                       Type Diff.Un     M.Threshold.Un V.Ratio.Un
+distance           Distance  1.7941                        0.9211
+age                 Contin. -0.3094 Not Balanced, &gt;0.1     0.4400
+educ                Contin.  0.0550     Balanced, &lt;0.1     0.4959
+race_black           Binary  1.7615 Not Balanced, &gt;0.1          .
+race_hispan          Binary -0.3498 Not Balanced, &gt;0.1          .
+race_white           Binary -1.8819 Not Balanced, &gt;0.1          .
+married_married      Binary -0.8263 Not Balanced, &gt;0.1          .
+nodegree_no_degree   Binary  0.2450 Not Balanced, &gt;0.1          .
+re74                Contin. -0.7211 Not Balanced, &gt;0.1     0.5181
+re75                Contin. -0.2903 Not Balanced, &gt;0.1     0.9563
+
+Balance tally for mean differences
+                   count
+Balanced, &lt;0.1         1
+Not Balanced, &gt;0.1     8
+
+Variable with the greatest mean difference
+   Variable Diff.Un     M.Threshold.Un
+ race_white -1.8819 Not Balanced, &gt;0.1
+
+Sample sizes
+    Control Treated
+All     429     185
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">5.5</span><span class="p">)</span>
+<span class="nf">love.plot</span><span class="p">(</span>
+<span class="w">  </span><span class="n">m_out0</span><span class="p">,</span>
+<span class="w">  </span><span class="n">stats</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"mean.diffs"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">abs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">,</span>
+<span class="w">  </span><span class="n">binary</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"std"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">thresholds</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="n">m</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.1</span><span class="p">),</span>
+<span class="w">  </span><span class="n">var.order</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"unadjusted"</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<a class="reference internal image-reference" href="../_images/85023b815774213acb9e073dd4993473ed4fa89633ccec08a66a97a2ff1df649.png"><img alt="../_images/85023b815774213acb9e073dd4993473ed4fa89633ccec08a66a97a2ff1df649.png" src="../_images/85023b815774213acb9e073dd4993473ed4fa89633ccec08a66a97a2ff1df649.png" style="width: 480px; height: 330px;" />
+</a>
+</div>
+</div>
+<p>Checkpoint:</p>
+<ul class="simple">
+<li><p>Which covariates are most imbalanced before adjustment?</p></li>
+<li><p>Does the raw sample fail on one variable or on most of the design?</p></li>
+</ul>
+</section>
+<section id="step-4-exact-matching-on-a-reduced-discrete-set">
+<h2>Step 4: Exact Matching On A Reduced Discrete Set<a class="headerlink" href="#step-4-exact-matching-on-a-reduced-discrete-set" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">m_exact</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">matchit</span><span class="p">(</span>
+<span class="w">  </span><span class="n">treat</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">race</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">married</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">nodegree</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">educ</span><span class="p">,</span>
+<span class="w">  </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dat</span><span class="p">,</span>
+<span class="w">  </span><span class="n">method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"exact"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">estimand</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"ATT"</span>
+<span class="p">)</span>
+
+<span class="n">matched_exact</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">match.data</span><span class="p">(</span><span class="n">m_exact</span><span class="p">)</span>
+
+<span class="n">exact_retention</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">tibble</span><span class="p">(</span>
+<span class="w">  </span><span class="n">metric</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span>
+<span class="w">    </span><span class="s">"Treated units in full sample"</span><span class="p">,</span>
+<span class="w">    </span><span class="s">"Treated units retained"</span><span class="p">,</span>
+<span class="w">    </span><span class="s">"Control units in full sample"</span><span class="p">,</span>
+<span class="w">    </span><span class="s">"Control units retained"</span><span class="p">,</span>
+<span class="w">    </span><span class="s">"Matched subclasses"</span>
+<span class="w">  </span><span class="p">),</span>
+<span class="w">  </span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span>
+<span class="w">    </span><span class="nf">sum</span><span class="p">(</span><span class="n">dat</span><span class="o">$</span><span class="n">treat</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1</span><span class="p">),</span>
+<span class="w">    </span><span class="nf">sum</span><span class="p">(</span><span class="n">matched_exact</span><span class="o">$</span><span class="n">treat</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1</span><span class="p">),</span>
+<span class="w">    </span><span class="nf">sum</span><span class="p">(</span><span class="n">dat</span><span class="o">$</span><span class="n">treat</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">0</span><span class="p">),</span>
+<span class="w">    </span><span class="nf">sum</span><span class="p">(</span><span class="n">matched_exact</span><span class="o">$</span><span class="n">treat</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">0</span><span class="p">),</span>
+<span class="w">    </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">n_distinct</span><span class="p">(</span><span class="n">matched_exact</span><span class="o">$</span><span class="n">subclass</span><span class="p">)</span>
+<span class="w">  </span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">exact_retention</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><table class="dataframe">
+<caption>A tibble: 5 × 2</caption>
+<thead>
+	<tr><th scope=col>metric</th><th scope=col>value</th></tr>
+	<tr><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;int&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>Treated units in full sample</td><td>185</td></tr>
+	<tr><td>Treated units retained      </td><td>183</td></tr>
+	<tr><td>Control units in full sample</td><td>429</td></tr>
+	<tr><td>Control units retained      </td><td>284</td></tr>
+	<tr><td>Matched subclasses          </td><td> 35</td></tr>
+</tbody>
+</table>
+</div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="nf">summary</span><span class="p">(</span><span class="n">m_exact</span><span class="p">,</span><span class="w"> </span><span class="n">un</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span>
+
+<span class="n">exact_balance</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">bal.tab</span><span class="p">(</span>
+<span class="w">  </span><span class="n">m_exact</span><span class="p">,</span>
+<span class="w">  </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dat</span><span class="p">,</span>
+<span class="w">  </span><span class="n">un</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">,</span>
+<span class="w">  </span><span class="n">binary</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"std"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">disp.v.ratio</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">,</span>
+<span class="w">  </span><span class="n">m.threshold</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.1</span><span class="p">,</span>
+<span class="w">  </span><span class="n">addl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">age</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">re74</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">re75</span>
+<span class="p">)</span>
+
+<span class="n">exact_balance</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Call:
+matchit(formula = treat ~ race + married + nodegree + educ, data = dat, 
+    method = "exact", estimand = "ATT")
+
+Summary of Balance for All Data:
+                   Means Treated Means Control Std. Mean Diff. Var. Ratio
+raceblack                 0.8432        0.2028          1.7615          .
+racehispan                0.0595        0.1422         -0.3498          .
+racewhite                 0.0973        0.6550         -1.8819          .
+marriednot_married        0.8108        0.4872          0.8263          .
+marriedmarried            0.1892        0.5128         -0.8263          .
+nodegreehas_degree        0.2919        0.4033         -0.2450          .
+nodegreeno_degree         0.7081        0.5967          0.2450          .
+educ                     10.3459       10.2354          0.0550     0.4959
+                   eCDF Mean eCDF Max
+raceblack             0.6404   0.6404
+racehispan            0.0827   0.0827
+racewhite             0.5577   0.5577
+marriednot_married    0.3236   0.3236
+marriedmarried        0.3236   0.3236
+nodegreehas_degree    0.1114   0.1114
+nodegreeno_degree     0.1114   0.1114
+educ                  0.0347   0.1114
+
+Summary of Balance for Matched Data:
+                   Means Treated Means Control Std. Mean Diff. Var. Ratio
+raceblack                 0.8415        0.8415               0          .
+racehispan                0.0601        0.0601              -0          .
+racewhite                 0.0984        0.0984               0          .
+marriednot_married        0.8142        0.8142               0          .
+marriedmarried            0.1858        0.1858               0          .
+nodegreehas_degree        0.2896        0.2896               0          .
+nodegreeno_degree         0.7104        0.7104               0          .
+educ                     10.3552       10.3552               0     0.9945
+                   eCDF Mean eCDF Max Std. Pair Dist.
+raceblack                  0        0               0
+racehispan                 0        0               0
+racewhite                  0        0               0
+marriednot_married         0        0               0
+marriedmarried             0        0               0
+nodegreehas_degree         0        0               0
+nodegreeno_degree          0        0               0
+educ                       0        0               0
+
+Sample Sizes:
+              Control Treated
+All            429.       185
+Matched (ESS)   91.22     183
+Matched        284.       183
+Unmatched      145.         2
+Discarded        0.         0
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Balance Measures
+                      Type Diff.Un V.Ratio.Un Diff.Adj        M.Threshold
+race_black          Binary  1.7615          .   0.0000     Balanced, &lt;0.1
+race_hispan         Binary -0.3498          .  -0.0000     Balanced, &lt;0.1
+race_white          Binary -1.8819          .   0.0000     Balanced, &lt;0.1
+married_married     Binary -0.8263          .   0.0000     Balanced, &lt;0.1
+nodegree_no_degree  Binary  0.2450          .   0.0000     Balanced, &lt;0.1
+educ               Contin.  0.0550     0.4959   0.0000     Balanced, &lt;0.1
+age                Contin. -0.3094     0.4400   0.0548     Balanced, &lt;0.1
+re74               Contin. -0.7211     0.5181  -0.1300 Not Balanced, &gt;0.1
+re75               Contin. -0.2903     0.9563   0.0087     Balanced, &lt;0.1
+                   V.Ratio.Adj
+race_black                   .
+race_hispan                  .
+race_white                   .
+married_married              .
+nodegree_no_degree           .
+educ                    0.9945
+age                     0.4163
+re74                    0.9587
+re75                    1.4110
+
+Balance tally for mean differences
+                   count
+Balanced, &lt;0.1         8
+Not Balanced, &gt;0.1     1
+
+Variable with the greatest mean difference
+ Variable Diff.Adj        M.Threshold
+     re74    -0.13 Not Balanced, &gt;0.1
+
+Sample sizes
+                     Control Treated
+All                   429.       185
+Matched (ESS)          91.22     183
+Matched (Unweighted)  284.       183
+Unmatched             145.         2
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">fit_exact</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">lm</span><span class="p">(</span><span class="n">outcome</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">treat</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">matched_exact</span><span class="p">,</span><span class="w"> </span><span class="n">weights</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">weights</span><span class="p">)</span>
+
+<span class="n">exact_effect</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">exact_coef</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">coef</span><span class="p">(</span><span class="nf">summary</span><span class="p">(</span><span class="n">fit_exact</span><span class="p">))[</span><span class="s">"treat"</span><span class="p">,</span><span class="w"> </span><span class="p">]</span>
+<span class="w">  </span><span class="nf">tibble</span><span class="p">(</span>
+<span class="w">    </span><span class="n">method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Exact matching"</span><span class="p">,</span>
+<span class="w">    </span><span class="n">estimate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">unname</span><span class="p">(</span><span class="n">exact_coef</span><span class="p">[</span><span class="s">"Estimate"</span><span class="p">]),</span>
+<span class="w">    </span><span class="n">std_error</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">unname</span><span class="p">(</span><span class="n">exact_coef</span><span class="p">[</span><span class="s">"Std. Error"</span><span class="p">]),</span>
+<span class="w">    </span><span class="n">p_value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">unname</span><span class="p">(</span><span class="n">exact_coef</span><span class="p">[</span><span class="s">"Pr(&gt;|t|)"</span><span class="p">])</span>
+<span class="w">  </span><span class="p">)</span>
+<span class="p">}</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">mutate</span><span class="p">(</span><span class="nf">across</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="n">estimate</span><span class="p">,</span><span class="w"> </span><span class="n">std_error</span><span class="p">,</span><span class="w"> </span><span class="n">p_value</span><span class="p">),</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="nf">round</span><span class="p">(</span><span class="n">.x</span><span class="p">,</span><span class="w"> </span><span class="m">3</span><span class="p">)))</span>
+
+<span class="n">exact_effect</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><table class="dataframe">
+<caption>A tibble: 1 × 4</caption>
+<thead>
+	<tr><th scope=col>method</th><th scope=col>estimate</th><th scope=col>std_error</th><th scope=col>p_value</th></tr>
+	<tr><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>Exact matching</td><td>717.44</td><td>667.997</td><td>0.283</td></tr>
+</tbody>
+</table>
+</div></div>
+</div>
+<p>What to discuss:</p>
+<ul class="simple">
+<li><p>Exact matching is transparent because the rules are visible.</p></li>
+<li><p>The price is that important continuous variables still sit outside the exact constraints.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">re74</span></code> remains above <code class="docutils literal notranslate"><span class="pre">0.1</span></code>, exact matching has not fully solved the design problem.</p></li>
+</ul>
+</section>
+<section id="step-5-compare-two-cem-specifications">
+<h2>Step 5: Compare Two CEM Specifications<a class="headerlink" href="#step-5-compare-two-cem-specifications" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">m_cem_default</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">matchit</span><span class="p">(</span>
+<span class="w">  </span><span class="n">treat</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">age</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">educ</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">race</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">married</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">nodegree</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">re74</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">re75</span><span class="p">,</span>
+<span class="w">  </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dat</span><span class="p">,</span>
+<span class="w">  </span><span class="n">method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"cem"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">estimand</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"ATT"</span>
+<span class="p">)</span>
+
+<span class="n">matched_cem_default</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">match.data</span><span class="p">(</span><span class="n">m_cem_default</span><span class="p">)</span>
+
+<span class="n">cem_cutpoints</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span>
+<span class="w">  </span><span class="n">age</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"q5"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">educ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4</span><span class="p">,</span>
+<span class="w">  </span><span class="n">re74</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"q4"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">re75</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"q4"</span>
+<span class="p">)</span>
+
+<span class="n">m_cem</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">matchit</span><span class="p">(</span>
+<span class="w">  </span><span class="n">treat</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">age</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">educ</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">race</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">married</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">nodegree</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">re74</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">re75</span><span class="p">,</span>
+<span class="w">  </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dat</span><span class="p">,</span>
+<span class="w">  </span><span class="n">method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"cem"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">estimand</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"ATT"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">cutpoints</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cem_cutpoints</span>
+<span class="p">)</span>
+
+<span class="n">matched_cem</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">match.data</span><span class="p">(</span><span class="n">m_cem</span><span class="p">)</span>
+
+<span class="n">cem_default_balance</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">bal.tab</span><span class="p">(</span>
+<span class="w">  </span><span class="n">m_cem_default</span><span class="p">,</span>
+<span class="w">  </span><span class="n">un</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">,</span>
+<span class="w">  </span><span class="n">binary</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"std"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">disp.v.ratio</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">,</span>
+<span class="w">  </span><span class="n">m.threshold</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.1</span>
+<span class="p">)</span>
+
+<span class="n">cem_balance</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">bal.tab</span><span class="p">(</span>
+<span class="w">  </span><span class="n">m_cem</span><span class="p">,</span>
+<span class="w">  </span><span class="n">un</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">,</span>
+<span class="w">  </span><span class="n">binary</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"std"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">disp.v.ratio</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">,</span>
+<span class="w">  </span><span class="n">m.threshold</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.1</span>
+<span class="p">)</span>
+
+<span class="n">cem_comparison</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">tibble</span><span class="p">(</span>
+<span class="w">  </span><span class="n">specification</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">"Default CEM"</span><span class="p">,</span><span class="w"> </span><span class="s">"Documented custom cutpoints"</span><span class="p">),</span>
+<span class="w">  </span><span class="n">treated_retained</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span>
+<span class="w">    </span><span class="nf">sum</span><span class="p">(</span><span class="n">matched_cem_default</span><span class="o">$</span><span class="n">treat</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1</span><span class="p">),</span>
+<span class="w">    </span><span class="nf">sum</span><span class="p">(</span><span class="n">matched_cem</span><span class="o">$</span><span class="n">treat</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1</span><span class="p">)</span>
+<span class="w">  </span><span class="p">),</span>
+<span class="w">  </span><span class="n">control_retained</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span>
+<span class="w">    </span><span class="nf">sum</span><span class="p">(</span><span class="n">matched_cem_default</span><span class="o">$</span><span class="n">treat</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">0</span><span class="p">),</span>
+<span class="w">    </span><span class="nf">sum</span><span class="p">(</span><span class="n">matched_cem</span><span class="o">$</span><span class="n">treat</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">0</span><span class="p">)</span>
+<span class="w">  </span><span class="p">),</span>
+<span class="w">  </span><span class="n">matched_subclasses</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span>
+<span class="w">    </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">n_distinct</span><span class="p">(</span><span class="n">matched_cem_default</span><span class="o">$</span><span class="n">subclass</span><span class="p">),</span>
+<span class="w">    </span><span class="n">dplyr</span><span class="o">::</span><span class="nf">n_distinct</span><span class="p">(</span><span class="n">matched_cem</span><span class="o">$</span><span class="n">subclass</span><span class="p">)</span>
+<span class="w">  </span><span class="p">),</span>
+<span class="w">  </span><span class="n">max_abs_adjusted_smd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span>
+<span class="w">    </span><span class="nf">max</span><span class="p">(</span><span class="nf">abs</span><span class="p">(</span><span class="n">cem_default_balance</span><span class="o">$</span><span class="n">Balance</span><span class="o">$</span><span class="n">Diff.Adj</span><span class="p">),</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">),</span>
+<span class="w">    </span><span class="nf">max</span><span class="p">(</span><span class="nf">abs</span><span class="p">(</span><span class="n">cem_balance</span><span class="o">$</span><span class="n">Balance</span><span class="o">$</span><span class="n">Diff.Adj</span><span class="p">),</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span>
+<span class="w">  </span><span class="p">)</span>
+<span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">mutate</span><span class="p">(</span><span class="nf">across</span><span class="p">(</span><span class="nf">where</span><span class="p">(</span><span class="n">is.numeric</span><span class="p">),</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="nf">round</span><span class="p">(</span><span class="n">.x</span><span class="p">,</span><span class="w"> </span><span class="m">3</span><span class="p">)))</span>
+
+<span class="n">cem_comparison</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><table class="dataframe">
+<caption>A tibble: 2 × 5</caption>
+<thead>
+	<tr><th scope=col>specification</th><th scope=col>treated_retained</th><th scope=col>control_retained</th><th scope=col>matched_subclasses</th><th scope=col>max_abs_adjusted_smd</th></tr>
+	<tr><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>Default CEM                </td><td>65</td><td>75</td><td>25</td><td>0.049</td></tr>
+	<tr><td>Documented custom cutpoints</td><td>81</td><td>68</td><td>32</td><td>0.077</td></tr>
+</tbody>
+</table>
+</div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">fit_cem</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">lm</span><span class="p">(</span><span class="n">outcome</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">treat</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">matched_cem</span><span class="p">,</span><span class="w"> </span><span class="n">weights</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">weights</span><span class="p">)</span>
+
+<span class="n">cem_effect</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">cem_coef</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">coef</span><span class="p">(</span><span class="nf">summary</span><span class="p">(</span><span class="n">fit_cem</span><span class="p">))[</span><span class="s">"treat"</span><span class="p">,</span><span class="w"> </span><span class="p">]</span>
+<span class="w">  </span><span class="nf">tibble</span><span class="p">(</span>
+<span class="w">    </span><span class="n">method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Coarsened exact matching"</span><span class="p">,</span>
+<span class="w">    </span><span class="n">estimate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">unname</span><span class="p">(</span><span class="n">cem_coef</span><span class="p">[</span><span class="s">"Estimate"</span><span class="p">]),</span>
+<span class="w">    </span><span class="n">std_error</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">unname</span><span class="p">(</span><span class="n">cem_coef</span><span class="p">[</span><span class="s">"Std. Error"</span><span class="p">]),</span>
+<span class="w">    </span><span class="n">p_value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">unname</span><span class="p">(</span><span class="n">cem_coef</span><span class="p">[</span><span class="s">"Pr(&gt;|t|)"</span><span class="p">])</span>
+<span class="w">  </span><span class="p">)</span>
+<span class="p">}</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">mutate</span><span class="p">(</span><span class="nf">across</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="n">estimate</span><span class="p">,</span><span class="w"> </span><span class="n">std_error</span><span class="p">,</span><span class="w"> </span><span class="n">p_value</span><span class="p">),</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="nf">round</span><span class="p">(</span><span class="n">.x</span><span class="p">,</span><span class="w"> </span><span class="m">3</span><span class="p">)))</span>
+
+<span class="n">cem_effect</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><table class="dataframe">
+<caption>A tibble: 1 × 4</caption>
+<thead>
+	<tr><th scope=col>method</th><th scope=col>estimate</th><th scope=col>std_error</th><th scope=col>p_value</th></tr>
+	<tr><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>Coarsened exact matching</td><td>1176.712</td><td>977.717</td><td>0.231</td></tr>
+</tbody>
+</table>
+</div></div>
+</div>
+<p>Checkpoint:</p>
+<ul class="simple">
+<li><p>Which <code class="docutils literal notranslate"><span class="pre">CEM</span></code> version would you defend?</p></li>
+<li><p>How much treated retention are you willing to lose for stronger balance?</p></li>
+</ul>
+</section>
+<section id="step-6-compare-entropy-balancing-specifications">
+<h2>Step 6: Compare Entropy-Balancing Specifications<a class="headerlink" href="#step-6-compare-entropy-balancing-specifications" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">w_ebal_default</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">weightit</span><span class="p">(</span>
+<span class="w">  </span><span class="n">treat</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">age</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">educ</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">race</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">married</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">nodegree</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">re74</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">re75</span><span class="p">,</span>
+<span class="w">  </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dat</span><span class="p">,</span>
+<span class="w">  </span><span class="n">method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"ebal"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">estimand</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"ATT"</span>
+<span class="p">)</span>
+
+<span class="n">w_ebal_moments</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">weightit</span><span class="p">(</span>
+<span class="w">  </span><span class="n">treat</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">age</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">educ</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">race</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">married</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">nodegree</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">re74</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">re75</span><span class="p">,</span>
+<span class="w">  </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dat</span><span class="p">,</span>
+<span class="w">  </span><span class="n">method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"ebal"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">estimand</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"ATT"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">moments</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="n">age</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2</span><span class="p">,</span><span class="w"> </span><span class="n">re74</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2</span><span class="p">,</span><span class="w"> </span><span class="n">re75</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">ebal_default_summary</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">summary</span><span class="p">(</span><span class="n">w_ebal_default</span><span class="p">)</span>
+<span class="n">ebal_moments_summary</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">summary</span><span class="p">(</span><span class="n">w_ebal_moments</span><span class="p">)</span>
+
+<span class="n">ebal_default_tuning_balance</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">bal.tab</span><span class="p">(</span>
+<span class="w">  </span><span class="n">w_ebal_default</span><span class="p">,</span>
+<span class="w">  </span><span class="n">un</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">,</span>
+<span class="w">  </span><span class="n">binary</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"std"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">addl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="nf">I</span><span class="p">(</span><span class="n">age</span><span class="o">^</span><span class="m">2</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nf">I</span><span class="p">(</span><span class="n">re74</span><span class="o">^</span><span class="m">2</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nf">I</span><span class="p">(</span><span class="n">re75</span><span class="o">^</span><span class="m">2</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">ebal_moments_tuning_balance</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">bal.tab</span><span class="p">(</span>
+<span class="w">  </span><span class="n">w_ebal_moments</span><span class="p">,</span>
+<span class="w">  </span><span class="n">un</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">,</span>
+<span class="w">  </span><span class="n">binary</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"std"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">addl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="nf">I</span><span class="p">(</span><span class="n">age</span><span class="o">^</span><span class="m">2</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nf">I</span><span class="p">(</span><span class="n">re74</span><span class="o">^</span><span class="m">2</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nf">I</span><span class="p">(</span><span class="n">re75</span><span class="o">^</span><span class="m">2</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">second_moment_terms</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">"I(age^2)"</span><span class="p">,</span><span class="w"> </span><span class="s">"I(re74^2)"</span><span class="p">,</span><span class="w"> </span><span class="s">"I(re75^2)"</span><span class="p">)</span>
+
+<span class="n">ebal_tuning_comparison</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">tibble</span><span class="p">(</span>
+<span class="w">  </span><span class="n">specification</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span>
+<span class="w">    </span><span class="s">"Default means only"</span><span class="p">,</span>
+<span class="w">    </span><span class="s">"Tuned squares for age and prior earnings"</span>
+<span class="w">  </span><span class="p">),</span>
+<span class="w">  </span><span class="n">control_ess</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span>
+<span class="w">    </span><span class="n">ebal_default_summary</span><span class="o">$</span><span class="n">effective.sample.size</span><span class="p">[</span><span class="s">"Weighted"</span><span class="p">,</span><span class="w"> </span><span class="s">"Control"</span><span class="p">],</span>
+<span class="w">    </span><span class="n">ebal_moments_summary</span><span class="o">$</span><span class="n">effective.sample.size</span><span class="p">[</span><span class="s">"Weighted"</span><span class="p">,</span><span class="w"> </span><span class="s">"Control"</span><span class="p">]</span>
+<span class="w">  </span><span class="p">),</span>
+<span class="w">  </span><span class="n">max_control_weight</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span>
+<span class="w">    </span><span class="nf">max</span><span class="p">(</span><span class="n">w_ebal_default</span><span class="o">$</span><span class="n">weights</span><span class="p">[</span><span class="n">dat</span><span class="o">$</span><span class="n">treat</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">0</span><span class="p">]),</span>
+<span class="w">    </span><span class="nf">max</span><span class="p">(</span><span class="n">w_ebal_moments</span><span class="o">$</span><span class="n">weights</span><span class="p">[</span><span class="n">dat</span><span class="o">$</span><span class="n">treat</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">0</span><span class="p">])</span>
+<span class="w">  </span><span class="p">),</span>
+<span class="w">  </span><span class="n">max_abs_adj_smd_means</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span>
+<span class="w">    </span><span class="nf">max</span><span class="p">(</span><span class="nf">abs</span><span class="p">(</span><span class="n">ebal_default_tuning_balance</span><span class="o">$</span><span class="n">Balance</span><span class="p">[</span><span class="nf">setdiff</span><span class="p">(</span><span class="nf">rownames</span><span class="p">(</span><span class="n">ebal_default_tuning_balance</span><span class="o">$</span><span class="n">Balance</span><span class="p">),</span><span class="w"> </span><span class="n">second_moment_terms</span><span class="p">),</span><span class="w"> </span><span class="s">"Diff.Adj"</span><span class="p">]),</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">),</span>
+<span class="w">    </span><span class="nf">max</span><span class="p">(</span><span class="nf">abs</span><span class="p">(</span><span class="n">ebal_moments_tuning_balance</span><span class="o">$</span><span class="n">Balance</span><span class="p">[</span><span class="nf">setdiff</span><span class="p">(</span><span class="nf">rownames</span><span class="p">(</span><span class="n">ebal_moments_tuning_balance</span><span class="o">$</span><span class="n">Balance</span><span class="p">),</span><span class="w"> </span><span class="n">second_moment_terms</span><span class="p">),</span><span class="w"> </span><span class="s">"Diff.Adj"</span><span class="p">]),</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span>
+<span class="w">  </span><span class="p">),</span>
+<span class="w">  </span><span class="n">max_abs_adj_smd_selected_squares</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span>
+<span class="w">    </span><span class="nf">max</span><span class="p">(</span><span class="nf">abs</span><span class="p">(</span><span class="n">ebal_default_tuning_balance</span><span class="o">$</span><span class="n">Balance</span><span class="p">[</span><span class="n">second_moment_terms</span><span class="p">,</span><span class="w"> </span><span class="s">"Diff.Adj"</span><span class="p">]),</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">),</span>
+<span class="w">    </span><span class="nf">max</span><span class="p">(</span><span class="nf">abs</span><span class="p">(</span><span class="n">ebal_moments_tuning_balance</span><span class="o">$</span><span class="n">Balance</span><span class="p">[</span><span class="n">second_moment_terms</span><span class="p">,</span><span class="w"> </span><span class="s">"Diff.Adj"</span><span class="p">]),</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span>
+<span class="w">  </span><span class="p">)</span>
+<span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">mutate</span><span class="p">(</span><span class="nf">across</span><span class="p">(</span><span class="nf">where</span><span class="p">(</span><span class="n">is.numeric</span><span class="p">),</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="nf">round</span><span class="p">(</span><span class="n">.x</span><span class="p">,</span><span class="w"> </span><span class="m">3</span><span class="p">)))</span>
+
+<span class="n">ebal_tuning_comparison</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><table class="dataframe">
+<caption>A tibble: 2 × 5</caption>
+<thead>
+	<tr><th scope=col>specification</th><th scope=col>control_ess</th><th scope=col>max_control_weight</th><th scope=col>max_abs_adj_smd_means</th><th scope=col>max_abs_adj_smd_selected_squares</th></tr>
+	<tr><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>Default means only                      </td><td>98.458</td><td> 9.421</td><td>0</td><td>0.169</td></tr>
+	<tr><td>Tuned squares for age and prior earnings</td><td>38.515</td><td>48.712</td><td>0</td><td>0.000</td></tr>
+</tbody>
+</table>
+</div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">w_ebal</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">w_ebal_default</span>
+<span class="n">ebal_summary</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">ebal_default_summary</span>
+
+<span class="n">dat_ebal</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">dat</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">mutate</span><span class="p">(</span><span class="n">ebal_weight</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">w_ebal</span><span class="o">$</span><span class="n">weights</span><span class="p">)</span>
+
+<span class="n">ebal_weight_diagnostics</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">tibble</span><span class="p">(</span>
+<span class="w">  </span><span class="n">metric</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span>
+<span class="w">    </span><span class="s">"Treated units"</span><span class="p">,</span>
+<span class="w">    </span><span class="s">"Control units"</span><span class="p">,</span>
+<span class="w">    </span><span class="s">"Treated effective sample size"</span><span class="p">,</span>
+<span class="w">    </span><span class="s">"Control effective sample size"</span><span class="p">,</span>
+<span class="w">    </span><span class="s">"Maximum control weight"</span><span class="p">,</span>
+<span class="w">    </span><span class="s">"Control coefficient of variation"</span>
+<span class="w">  </span><span class="p">),</span>
+<span class="w">  </span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span>
+<span class="w">    </span><span class="nf">sum</span><span class="p">(</span><span class="n">dat</span><span class="o">$</span><span class="n">treat</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1</span><span class="p">),</span>
+<span class="w">    </span><span class="nf">sum</span><span class="p">(</span><span class="n">dat</span><span class="o">$</span><span class="n">treat</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">0</span><span class="p">),</span>
+<span class="w">    </span><span class="n">ebal_summary</span><span class="o">$</span><span class="n">effective.sample.size</span><span class="p">[</span><span class="s">"Weighted"</span><span class="p">,</span><span class="w"> </span><span class="s">"Treated"</span><span class="p">],</span>
+<span class="w">    </span><span class="n">ebal_summary</span><span class="o">$</span><span class="n">effective.sample.size</span><span class="p">[</span><span class="s">"Weighted"</span><span class="p">,</span><span class="w"> </span><span class="s">"Control"</span><span class="p">],</span>
+<span class="w">    </span><span class="nf">max</span><span class="p">(</span><span class="n">dat_ebal</span><span class="o">$</span><span class="n">ebal_weight</span><span class="p">[</span><span class="n">dat_ebal</span><span class="o">$</span><span class="n">treat</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">0</span><span class="p">]),</span>
+<span class="w">    </span><span class="nf">unname</span><span class="p">(</span><span class="n">ebal_summary</span><span class="o">$</span><span class="n">coef.of.var</span><span class="p">[</span><span class="s">"control"</span><span class="p">])</span>
+<span class="w">  </span><span class="p">)</span>
+<span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">mutate</span><span class="p">(</span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">round</span><span class="p">(</span><span class="n">value</span><span class="p">,</span><span class="w"> </span><span class="m">3</span><span class="p">))</span>
+
+<span class="n">ebal_weight_diagnostics</span>
+
+<span class="n">ebal_balance</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">bal.tab</span><span class="p">(</span>
+<span class="w">  </span><span class="n">w_ebal</span><span class="p">,</span>
+<span class="w">  </span><span class="n">un</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">,</span>
+<span class="w">  </span><span class="n">binary</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"std"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">disp.v.ratio</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">,</span>
+<span class="w">  </span><span class="n">m.threshold</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.1</span>
+<span class="p">)</span>
+
+<span class="n">ebal_balance</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><table class="dataframe">
+<caption>A tibble: 6 × 2</caption>
+<thead>
+	<tr><th scope=col>metric</th><th scope=col>value</th></tr>
+	<tr><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;dbl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>Treated units                   </td><td>185.000</td></tr>
+	<tr><td>Control units                   </td><td>429.000</td></tr>
+	<tr><td>Treated effective sample size   </td><td>185.000</td></tr>
+	<tr><td>Control effective sample size   </td><td> 98.458</td></tr>
+	<tr><td>Maximum control weight          </td><td>  9.421</td></tr>
+	<tr><td>Control coefficient of variation</td><td>  1.834</td></tr>
+</tbody>
+</table>
+</div><div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Balance Measures
+                      Type Diff.Un V.Ratio.Un Diff.Adj    M.Threshold
+age                Contin. -0.3094     0.4400        0 Balanced, &lt;0.1
+educ               Contin.  0.0550     0.4959        0 Balanced, &lt;0.1
+race_black          Binary  1.7615          .        0 Balanced, &lt;0.1
+race_hispan         Binary -0.3498          .       -0 Balanced, &lt;0.1
+race_white          Binary -1.8819          .       -0 Balanced, &lt;0.1
+married_married     Binary -0.8263          .        0 Balanced, &lt;0.1
+nodegree_no_degree  Binary  0.2450          .       -0 Balanced, &lt;0.1
+re74               Contin. -0.7211     0.5181        0 Balanced, &lt;0.1
+re75               Contin. -0.2903     0.9563       -0 Balanced, &lt;0.1
+                   V.Ratio.Adj
+age                     0.4096
+educ                    0.6636
+race_black                   .
+race_hispan                  .
+race_white                   .
+married_married              .
+nodegree_no_degree           .
+re74                    1.3265
+re75                    1.3351
+
+Balance tally for mean differences
+                   count
+Balanced, &lt;0.1         9
+Not Balanced, &gt;0.1     0
+
+Variable with the greatest mean difference
+   Variable Diff.Adj    M.Threshold
+ race_white       -0 Balanced, &lt;0.1
+
+Effective sample sizes
+           Control Treated
+Unadjusted  429.       185
+Adjusted     98.46     185
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">fit_ebal</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">lm_weightit</span><span class="p">(</span>
+<span class="w">  </span><span class="n">outcome</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">treat</span><span class="p">,</span>
+<span class="w">  </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dat</span><span class="p">,</span>
+<span class="w">  </span><span class="n">weightit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">w_ebal</span>
+<span class="p">)</span>
+
+<span class="n">ebal_effect</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">ebal_coef</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">coef</span><span class="p">(</span><span class="nf">summary</span><span class="p">(</span><span class="n">fit_ebal</span><span class="p">))[</span><span class="s">"treat"</span><span class="p">,</span><span class="w"> </span><span class="p">]</span>
+<span class="w">  </span><span class="nf">tibble</span><span class="p">(</span>
+<span class="w">    </span><span class="n">method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Entropy balancing"</span><span class="p">,</span>
+<span class="w">    </span><span class="n">estimate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">unname</span><span class="p">(</span><span class="n">ebal_coef</span><span class="p">[</span><span class="s">"Estimate"</span><span class="p">]),</span>
+<span class="w">    </span><span class="n">std_error</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">unname</span><span class="p">(</span><span class="n">ebal_coef</span><span class="p">[</span><span class="s">"Std. Error"</span><span class="p">]),</span>
+<span class="w">    </span><span class="n">p_value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">unname</span><span class="p">(</span><span class="n">ebal_coef</span><span class="p">[</span><span class="m">4</span><span class="p">])</span>
+<span class="w">  </span><span class="p">)</span>
+<span class="p">}</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">mutate</span><span class="p">(</span><span class="nf">across</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="n">estimate</span><span class="p">,</span><span class="w"> </span><span class="n">std_error</span><span class="p">,</span><span class="w"> </span><span class="n">p_value</span><span class="p">),</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="nf">round</span><span class="p">(</span><span class="n">.x</span><span class="p">,</span><span class="w"> </span><span class="m">3</span><span class="p">)))</span>
+
+<span class="n">ebal_effect</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><table class="dataframe">
+<caption>A tibble: 1 × 4</caption>
+<thead>
+	<tr><th scope=col>method</th><th scope=col>estimate</th><th scope=col>std_error</th><th scope=col>p_value</th></tr>
+	<tr><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>Entropy balancing</td><td>1273.243</td><td>780.879</td><td>0.103</td></tr>
+</tbody>
+</table>
+</div></div>
+</div>
+<p>What to discuss:</p>
+<ul class="simple">
+<li><p>Entropy balancing can preserve the treated population while shrinking the control information.</p></li>
+<li><p>The weighting design is only defensible if the balance gain is worth the <code class="docutils literal notranslate"><span class="pre">ESS</span></code> loss and weight concentration.</p></li>
+</ul>
+</section>
+<section id="step-7-compare-the-methods-side-by-side">
+<h2>Step 7: Compare The Methods Side By Side<a class="headerlink" href="#step-7-compare-the-methods-side-by-side" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">comparison_balance</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">tibble</span><span class="p">(</span>
+<span class="w">  </span><span class="n">method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">"Raw sample"</span><span class="p">,</span><span class="w"> </span><span class="s">"Exact matching"</span><span class="p">,</span><span class="w"> </span><span class="s">"CEM"</span><span class="p">,</span><span class="w"> </span><span class="s">"Entropy balancing"</span><span class="p">),</span>
+<span class="w">  </span><span class="n">max_abs_smd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span>
+<span class="w">    </span><span class="nf">max</span><span class="p">(</span><span class="nf">abs</span><span class="p">(</span><span class="n">unadjusted_balance</span><span class="o">$</span><span class="n">Balance</span><span class="o">$</span><span class="n">Diff.Un</span><span class="p">),</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">),</span>
+<span class="w">    </span><span class="nf">max</span><span class="p">(</span><span class="nf">abs</span><span class="p">(</span><span class="n">exact_balance</span><span class="o">$</span><span class="n">Balance</span><span class="o">$</span><span class="n">Diff.Adj</span><span class="p">),</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">),</span>
+<span class="w">    </span><span class="nf">max</span><span class="p">(</span><span class="nf">abs</span><span class="p">(</span><span class="n">cem_balance</span><span class="o">$</span><span class="n">Balance</span><span class="o">$</span><span class="n">Diff.Adj</span><span class="p">),</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">),</span>
+<span class="w">    </span><span class="nf">max</span><span class="p">(</span><span class="nf">abs</span><span class="p">(</span><span class="n">ebal_balance</span><span class="o">$</span><span class="n">Balance</span><span class="o">$</span><span class="n">Diff.Adj</span><span class="p">),</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span>
+<span class="w">  </span><span class="p">),</span>
+<span class="w">  </span><span class="n">covariates_above_0_1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span>
+<span class="w">    </span><span class="nf">sum</span><span class="p">(</span><span class="nf">abs</span><span class="p">(</span><span class="n">unadjusted_balance</span><span class="o">$</span><span class="n">Balance</span><span class="o">$</span><span class="n">Diff.Un</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">0.1</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">),</span>
+<span class="w">    </span><span class="nf">sum</span><span class="p">(</span><span class="nf">abs</span><span class="p">(</span><span class="n">exact_balance</span><span class="o">$</span><span class="n">Balance</span><span class="o">$</span><span class="n">Diff.Adj</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">0.1</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">),</span>
+<span class="w">    </span><span class="nf">sum</span><span class="p">(</span><span class="nf">abs</span><span class="p">(</span><span class="n">cem_balance</span><span class="o">$</span><span class="n">Balance</span><span class="o">$</span><span class="n">Diff.Adj</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">0.1</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">),</span>
+<span class="w">    </span><span class="nf">sum</span><span class="p">(</span><span class="nf">abs</span><span class="p">(</span><span class="n">ebal_balance</span><span class="o">$</span><span class="n">Balance</span><span class="o">$</span><span class="n">Diff.Adj</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">0.1</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span>
+<span class="w">  </span><span class="p">)</span>
+<span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">mutate</span><span class="p">(</span><span class="nf">across</span><span class="p">(</span><span class="nf">where</span><span class="p">(</span><span class="n">is.numeric</span><span class="p">),</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="nf">round</span><span class="p">(</span><span class="n">.x</span><span class="p">,</span><span class="w"> </span><span class="m">3</span><span class="p">)))</span>
+
+<span class="n">comparison_balance</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><table class="dataframe">
+<caption>A tibble: 4 × 3</caption>
+<thead>
+	<tr><th scope=col>method</th><th scope=col>max_abs_smd</th><th scope=col>covariates_above_0_1</th></tr>
+	<tr><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>Raw sample       </td><td>1.882</td><td>9</td></tr>
+	<tr><td>Exact matching   </td><td>0.130</td><td>1</td></tr>
+	<tr><td>CEM              </td><td>0.077</td><td>0</td></tr>
+	<tr><td>Entropy balancing</td><td>0.000</td><td>0</td></tr>
+</tbody>
+</table>
+</div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">comparison_information</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">tibble</span><span class="p">(</span>
+<span class="w">  </span><span class="n">method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">"Exact matching"</span><span class="p">,</span><span class="w"> </span><span class="s">"CEM"</span><span class="p">,</span><span class="w"> </span><span class="s">"Entropy balancing"</span><span class="p">),</span>
+<span class="w">  </span><span class="n">treated_units_used</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span>
+<span class="w">    </span><span class="nf">sum</span><span class="p">(</span><span class="n">matched_exact</span><span class="o">$</span><span class="n">treat</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1</span><span class="p">),</span>
+<span class="w">    </span><span class="nf">sum</span><span class="p">(</span><span class="n">matched_cem</span><span class="o">$</span><span class="n">treat</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1</span><span class="p">),</span>
+<span class="w">    </span><span class="nf">sum</span><span class="p">(</span><span class="n">dat</span><span class="o">$</span><span class="n">treat</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1</span><span class="p">)</span>
+<span class="w">  </span><span class="p">),</span>
+<span class="w">  </span><span class="n">control_units_used</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span>
+<span class="w">    </span><span class="nf">sum</span><span class="p">(</span><span class="n">matched_exact</span><span class="o">$</span><span class="n">treat</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">0</span><span class="p">),</span>
+<span class="w">    </span><span class="nf">sum</span><span class="p">(</span><span class="n">matched_cem</span><span class="o">$</span><span class="n">treat</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">0</span><span class="p">),</span>
+<span class="w">    </span><span class="nf">sum</span><span class="p">(</span><span class="n">dat</span><span class="o">$</span><span class="n">treat</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">0</span><span class="p">)</span>
+<span class="w">  </span><span class="p">),</span>
+<span class="w">  </span><span class="n">control_information</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span>
+<span class="w">    </span><span class="nf">sum</span><span class="p">(</span><span class="n">matched_exact</span><span class="o">$</span><span class="n">treat</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">0</span><span class="p">),</span>
+<span class="w">    </span><span class="nf">sum</span><span class="p">(</span><span class="n">matched_cem</span><span class="o">$</span><span class="n">treat</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">0</span><span class="p">),</span>
+<span class="w">    </span><span class="n">ebal_summary</span><span class="o">$</span><span class="n">effective.sample.size</span><span class="p">[</span><span class="s">"Weighted"</span><span class="p">,</span><span class="w"> </span><span class="s">"Control"</span><span class="p">]</span>
+<span class="w">  </span><span class="p">)</span>
+<span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">mutate</span><span class="p">(</span><span class="nf">across</span><span class="p">(</span><span class="nf">where</span><span class="p">(</span><span class="n">is.numeric</span><span class="p">),</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="nf">round</span><span class="p">(</span><span class="n">.x</span><span class="p">,</span><span class="w"> </span><span class="m">3</span><span class="p">)))</span>
+
+<span class="n">comparison_information</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><table class="dataframe">
+<caption>A tibble: 3 × 4</caption>
+<thead>
+	<tr><th scope=col>method</th><th scope=col>treated_units_used</th><th scope=col>control_units_used</th><th scope=col>control_information</th></tr>
+	<tr><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>Exact matching   </td><td>183</td><td>284</td><td>284.000</td></tr>
+	<tr><td>CEM              </td><td> 81</td><td> 68</td><td> 68.000</td></tr>
+	<tr><td>Entropy balancing</td><td>185</td><td>429</td><td> 98.458</td></tr>
+</tbody>
+</table>
+</div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">treatment_effect_summary</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">bind_rows</span><span class="p">(</span>
+<span class="w">  </span><span class="n">exact_effect</span><span class="p">,</span>
+<span class="w">  </span><span class="n">cem_effect</span><span class="p">,</span>
+<span class="w">  </span><span class="n">ebal_effect</span>
+<span class="p">)</span>
+
+<span class="n">treatment_effect_summary</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><table class="dataframe">
+<caption>A tibble: 3 × 4</caption>
+<thead>
+	<tr><th scope=col>method</th><th scope=col>estimate</th><th scope=col>std_error</th><th scope=col>p_value</th></tr>
+	<tr><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>Exact matching          </td><td> 717.440</td><td>667.997</td><td>0.283</td></tr>
+	<tr><td>Coarsened exact matching</td><td>1176.712</td><td>977.717</td><td>0.231</td></tr>
+	<tr><td>Entropy balancing       </td><td>1273.243</td><td>780.879</td><td>0.103</td></tr>
+</tbody>
+</table>
+</div></div>
+</div>
+</section>
+<section id="step-8-write-the-design-judgement">
+<h2>Step 8: Write The Design Judgement<a class="headerlink" href="#step-8-write-the-design-judgement" title="Link to this heading">#</a></h2>
+<p>Use your outputs to answer all five:</p>
+<ol class="arabic simple">
+<li><p>Which method gave the strongest observed balance?</p></li>
+<li><p>Which method stayed closest to the original treated population?</p></li>
+<li><p>Which method paid the highest information cost?</p></li>
+<li><p>Which design would you defend for an evaluator-facing <code class="docutils literal notranslate"><span class="pre">ATT</span></code>?</p></li>
+<li><p>What limitation would you still state even after adjustment?</p></li>
+</ol>
+</section>
+<section id="suggested-close">
+<h2>Suggested Close<a class="headerlink" href="#suggested-close" title="Link to this heading">#</a></h2>
+<p>If you want to go deeper after this page:</p>
+<ul class="simple">
+<li><p>review the <a class="reference external" href="https://defenceeconomist.github.io/qedlabs/notes/matching/matching-and-weighting.html">Matching and Weighting</a> note for the method overview</p></li>
+<li><p>move next to the <a class="reference internal" href="black-politicians-lab.html"><span class="std std-doc">Black Politicians Lab</span></a> for the first dataset extension</p></li>
+</ul>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "r"
+        },
+        kernelOptions: {
+            name: "ir",
+            path: "./notebooks"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'ir'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../data.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Bundled data and provenance</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="black-politicians-lab.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Lab: Black Politicians</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item"><div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-to-use-this-page">How To Use This Page</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#training-goal">Training Goal</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dataset-at-a-glance">Dataset At A Glance</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-to-hand-back">What To Hand Back</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-1-load-packages-and-prepare-the-data">Step 1: Load Packages And Prepare The Data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-2-describe-the-raw-comparison">Step 2: Describe The Raw Comparison</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-3-build-the-baseline-balance-benchmark">Step 3: Build The Baseline Balance Benchmark</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-4-exact-matching-on-a-reduced-discrete-set">Step 4: Exact Matching On A Reduced Discrete Set</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-5-compare-two-cem-specifications">Step 5: Compare Two CEM Specifications</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-6-compare-entropy-balancing-specifications">Step 6: Compare Entropy-Balancing Specifications</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-7-compare-the-methods-side-by-side">Step 7: Compare The Methods Side By Side</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-8-write-the-design-judgement">Step 8: Write The Design Judgement</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#suggested-close">Suggested Close</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By QED Labs
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2026.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+<div class="extra_footer">
+  Built for offline use. External reading links are optional.
+</div>
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

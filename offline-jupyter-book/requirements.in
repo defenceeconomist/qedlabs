@@ -1,0 +1,4 @@
+jupyter-book==1.0.4.post1
+jupyterlab==4.6.4
+sphinx-mathjax-offline==0.0.2
+

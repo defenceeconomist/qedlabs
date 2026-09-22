@@ -1,0 +1,1532 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Lab: NSW and CPS Benchmark &#8212; Quasi-Experimental Design Labs</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../_static/scripts/fontawesome.js?digest=55c26ed414f5f8a31ebb"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=b8b12719"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="../_static/mathjax/tex-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/nsw-cps-benchmark-lab';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Lab: HISP IE in Practice" href="hisp-ie-practice-lab.html" />
+    <link rel="prev" title="Lab: Black Politicians" href="black-politicians-lab.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">Quasi-Experimental Design Labs</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../index.html">
+                    Quasi-Experimental Design Labs
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Start here</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../offline-setup.html">Offline setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data.html">Bundled data and provenance</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Matching and Weighting</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="lalonde-matching-lab.html">Lab: LaLonde Matching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="black-politicians-lab.html">Lab: Black Politicians</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Lab: NSW and CPS Benchmark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hisp-ie-practice-lab.html">Lab: HISP IE in Practice</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Difference-in-Differences</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="difference-in-differences-foundations-lab.html">Lab: Difference-in-Differences Foundations With Kentucky Workers’ Compensation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="difference-in-differences-staggered-diagnostics-lab.html">Lab: Staggered Adoption and TWFE Diagnostics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="difference-in-differences-modern-estimators-lab.html">Lab: Modern Multi-Period Difference-in-Differences</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Regression Discontinuity</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="regression-discontinuity-foundations-lab.html">Lab: Sharp RD foundations with government transfers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="regression-discontinuity-diagnostics-lab.html">Lab: RDD design diagnostics and sensitivity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="regression-discontinuity-fuzzy-lab.html">Lab: Fuzzy RD and local IV with veteran home ownership</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Synthetic Control</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-mechanics-lab.html">Lab: Synthetic Control Mechanics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-proposition-99-lab.html">Lab: Proposition 99 With tidysynth</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-augmentation-lab.html">Lab: Augmented SCM With Kansas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-design-lab.html">Lab: Synthetic Control Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-donor-pool-lab.html">Lab: Synthetic Control Donor Pool Design</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Interrupted Time Series</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="interrupted-time-series-mechanics-lab.html">Lab: Interrupted Time Series Foundations With Seatbelts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interrupted-time-series-design-diagnostics-lab.html">Lab: Seatbelt Law Design and Robustness</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interrupted-time-series-counterfactual-validation-lab.html">Lab: Interrupted Time Series Counterfactual Validation</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/notebooks/nsw-cps-benchmark-lab.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm pst-navbar-icon" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Lab: NSW and CPS Benchmark</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-to-use-this-page">How To Use This Page</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#training-goal">Training Goal</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dataset-at-a-glance">Dataset At A Glance</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#acronyms-and-background">Acronyms And Background</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dataset-provenance-for-this-lab">Dataset Provenance For This Lab</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-this-example-matters-in-the-mixtape">Why This Example Matters In The Mixtape</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-1-load-packages-and-build-analysis-datasets">Step 1: Load Packages And Build Analysis Datasets</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-2-compute-the-experimental-benchmark">Step 2: Compute The Experimental Benchmark</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-3-raw-observational-estimate-nsw-treated-vs-cps-controls">Step 3: Raw Observational Estimate (NSW Treated Vs CPS Controls)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-4-baseline-balance-and-overlap-diagnostics">Step 4: Baseline Balance And Overlap Diagnostics</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-5-exact-matching-branch">Step 5: Exact Matching Branch</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-6-cem-branch">Step 6: CEM Branch</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-7-entropy-balancing-branch">Step 7: Entropy Balancing Branch</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-8-compare-against-the-experimental-benchmark">Step 8: Compare Against The Experimental Benchmark</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#comparison-table-to-fill-in">Comparison Table To Fill In</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#debrief-questions">Debrief Questions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optional-extension">Optional Extension</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="lab-nsw-and-cps-benchmark">
+<h1>Lab: NSW and CPS Benchmark<a class="headerlink" href="#lab-nsw-and-cps-benchmark" title="Link to this heading">#</a></h1>
+<p><a class="reference internal" href="../index.html"><span class="std std-doc">Book home</span></a></p>
+<p>Use the R kernel. Keep the supplied <code class="docutils literal notranslate"><span class="pre">data/</span></code> folder beside this notebook. Run cells in order after installing the documented R environment. Data loading is entirely local.</p>
+<section id="how-to-use-this-page">
+<h2>How To Use This Page<a class="headerlink" href="#how-to-use-this-page" title="Link to this heading">#</a></h2>
+<p>Use this page as a guided benchmark worksheet.</p>
+<ul class="simple">
+<li><p>Read the benchmark framing before running any model.</p></li>
+<li><p>Run each design branch in order: raw, exact, CEM, entropy balancing.</p></li>
+<li><p>Track retention, balance, and benchmark gap together.</p></li>
+<li><p>Treat the experimental NSW estimate as the reference target.</p></li>
+</ul>
+<p>Code is shown but not executed when this page is rendered. That keeps the page readable even if your local R library is incomplete.</p>
+</section>
+<section id="training-goal">
+<h2>Training Goal<a class="headerlink" href="#training-goal" title="Link to this heading">#</a></h2>
+<p>This lab focuses on one practical question:</p>
+<p>Can observational adjustment recover the known NSW experimental result when the control pool comes from CPS?</p>
+<p>In <em>Causal Inference: The Mixtape</em>, this example matters because it sits inside a longer debate about whether matching and propensity-score methods can recover credible programme effects from observational data. The NSW experiment gives a randomized benchmark, while the CPS comparison pool creates the harder observational problem. That makes the exercise more than a coding drill: it is a direct test of whether a design built on observed covariates can get back to something close to the experimental answer.</p>
+<p>The workflow mirrors the main report’s design-first sequence:</p>
+<ol class="arabic simple">
+<li><p>define the estimand</p></li>
+<li><p>isolate benchmark versus observational datasets</p></li>
+<li><p>diagnose raw imbalance and overlap</p></li>
+<li><p>compare exact matching, CEM, and entropy balancing</p></li>
+<li><p>evaluate each estimate against the experimental benchmark</p></li>
+</ol>
+</section>
+<section id="dataset-at-a-glance">
+<h2>Dataset At A Glance<a class="headerlink" href="#dataset-at-a-glance" title="Link to this heading">#</a></h2>
+<p>We use two <code class="docutils literal notranslate"><span class="pre">causaldata</span></code> datasets:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">nsw_mixtape</span></code>: treated and control units from the <strong>National Supported Work Demonstration (NSW)</strong> job-training experiment</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cps_mixtape</span></code>: observational controls drawn from the <strong>Current Population Survey (CPS)</strong></p></li>
+</ul>
+<section id="acronyms-and-background">
+<h3>Acronyms And Background<a class="headerlink" href="#acronyms-and-background" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>NSW = National Supported Work Demonstration.</strong> This was a U.S. randomized employment and training demonstration used as a benchmark in later causal-inference comparisons.<br />
+Background and evaluation context: <a class="reference external" href="https://www.mdrc.org/work/publications/summary-and-findings-national-supported-work-demonstration">MDRC summary report (1980)</a>, <a class="reference external" href="https://econpapers.repec.org/RePEc%3Aaea%3Aaecrev%3Av%3A76%3Ay%3A1986%3Ai%3A4%3Ap%3A604-20">LaLonde (1986), <em>American Economic Review</em> metadata</a>.</p></li>
+<li><p><strong>CPS = Current Population Survey.</strong> This is the monthly household labor-force survey jointly run by the U.S. Census Bureau and the U.S. Bureau of Labor Statistics.<br />
+Official background: <a class="reference external" href="https://www.census.gov/programs-surveys/cps.html">Census CPS program page</a>, <a class="reference external" href="https://www.bls.gov/opub/hom/cps/">BLS CPS overview</a>.</p></li>
+</ul>
+</section>
+<section id="dataset-provenance-for-this-lab">
+<h3>Dataset Provenance For This Lab<a class="headerlink" href="#dataset-provenance-for-this-lab" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">nsw_mixtape</span></code> documentation and variable definitions: <a class="reference external" href="https://search.r-project.org/CRAN/refmans/causaldata/html/nsw_mixtape.html">CRAN reference</a> (<code class="docutils literal notranslate"><span class="pre">445</span></code> rows, <code class="docutils literal notranslate"><span class="pre">11</span></code> variables).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cps_mixtape</span></code> documentation and variable definitions: <a class="reference external" href="https://search.r-project.org/CRAN/refmans/causaldata/html/cps_mixtape.html">CRAN reference</a> (<code class="docutils literal notranslate"><span class="pre">15,992</span></code> rows, <code class="docutils literal notranslate"><span class="pre">11</span></code> variables).</p></li>
+<li><p>The benchmark-comparison framing (NSW experiment versus observational controls) is tied to: <a class="reference external" href="https://www.nber.org/papers/w6586">Dehejia and Wahba (1998/1999) NBER working-paper version</a> and its published <em>JASA</em> article listed there.</p></li>
+</ul>
+</section>
+<section id="why-this-example-matters-in-the-mixtape">
+<h3>Why This Example Matters In The Mixtape<a class="headerlink" href="#why-this-example-matters-in-the-mixtape" title="Link to this heading">#</a></h3>
+<p>The Mixtape uses the NSW setting to illustrate a core matching problem: a randomized study can tell us what the programme did in the experimental sample, but analysts often have to work with non-experimental control groups in practice. LaLonde’s comparison between the experimental NSW estimate and observational alternatives made this dataset a benchmark case because many standard non-experimental estimators performed poorly against the experimental result. Later work, especially Dehejia and Wahba, argued that design choices such as covariate selection and propensity-score-based adjustment could do better.</p>
+<p>For study purposes, the important context is:</p>
+<ul class="simple">
+<li><p>NSW gives the benchmark because treatment and control were randomly assigned inside that sample.</p></li>
+<li><p>CPS gives the observational challenge because those controls were not randomized against the NSW treated group.</p></li>
+<li><p>The exercise is therefore not “estimate a treatment effect from scratch.” It is “see how close different observational designs get to a reference effect that is already available from the experiment.”</p></li>
+<li><p>This is why balance, overlap, retained sample size, and benchmark gap should all be interpreted together.</p></li>
+</ul>
+<p>Core setup:</p>
+<ul class="simple">
+<li><p>experimental benchmark: <code class="docutils literal notranslate"><span class="pre">ATT</span></code> from NSW treated versus NSW controls</p></li>
+<li><p>observational design: NSW treated versus CPS controls</p></li>
+<li><p>outcome: <code class="docutils literal notranslate"><span class="pre">re78</span></code> (post-program earnings)</p></li>
+<li><p>covariates: <code class="docutils literal notranslate"><span class="pre">age</span></code>, <code class="docutils literal notranslate"><span class="pre">educ</span></code>, <code class="docutils literal notranslate"><span class="pre">black</span></code>, <code class="docutils literal notranslate"><span class="pre">hisp</span></code>, <code class="docutils literal notranslate"><span class="pre">marr</span></code>, <code class="docutils literal notranslate"><span class="pre">nodegree</span></code>, <code class="docutils literal notranslate"><span class="pre">re74</span></code>, <code class="docutils literal notranslate"><span class="pre">re75</span></code></p></li>
+</ul>
+</section>
+</section>
+<section id="step-1-load-packages-and-build-analysis-datasets">
+<h2>Step 1: Load Packages And Build Analysis Datasets<a class="headerlink" href="#step-1-load-packages-and-build-analysis-datasets" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">data_helpers</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">"data/load-data.R"</span><span class="p">,</span><span class="w"> </span><span class="s">"../data/load-data.R"</span><span class="p">,</span><span class="w"> </span><span class="s">"docs/labs/data/load-data.R"</span><span class="p">)</span>
+<span class="n">data_helpers</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">data_helpers</span><span class="p">[</span><span class="nf">file.exists</span><span class="p">(</span><span class="n">data_helpers</span><span class="p">)]</span>
+<span class="kr">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nf">length</span><span class="p">(</span><span class="n">data_helpers</span><span class="p">))</span><span class="w"> </span><span class="nf">stop</span><span class="p">(</span><span class="s">"Extract the complete lab ZIP, including its data folder, before running."</span><span class="p">)</span>
+<span class="nf">source</span><span class="p">(</span><span class="n">data_helpers</span><span class="p">[[</span><span class="m">1</span><span class="p">]])</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">required_packages</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span>
+<span class="w">  </span><span class="s">"MatchIt"</span><span class="p">,</span>
+<span class="w">  </span><span class="s">"WeightIt"</span><span class="p">,</span>
+<span class="w">  </span><span class="s">"cobalt"</span><span class="p">,</span>
+<span class="w">  </span><span class="s">"dplyr"</span><span class="p">,</span>
+<span class="w">  </span><span class="s">"ggplot2"</span>
+<span class="p">)</span>
+
+<span class="n">missing_packages</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">required_packages</span><span class="p">[</span><span class="o">!</span><span class="nf">vapply</span><span class="p">(</span>
+<span class="w">  </span><span class="n">required_packages</span><span class="p">,</span>
+<span class="w">  </span><span class="n">requireNamespace</span><span class="p">,</span>
+<span class="w">  </span><span class="nf">logical</span><span class="p">(</span><span class="m">1</span><span class="p">),</span>
+<span class="w">  </span><span class="n">quietly</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span>
+<span class="p">)]</span>
+
+<span class="kr">if</span><span class="w"> </span><span class="p">(</span><span class="nf">length</span><span class="p">(</span><span class="n">missing_packages</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nf">stop</span><span class="p">(</span><span class="s">"Install the documented R environment first; missing: "</span><span class="p">,</span><span class="w"> </span><span class="nf">paste</span><span class="p">(</span><span class="n">missing_packages</span><span class="p">,</span><span class="w"> </span><span class="n">collapse</span><span class="o">=</span><span class="s">", "</span><span class="p">),</span><span class="w"> </span><span class="n">call.</span><span class="o">=</span><span class="kc">FALSE</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="nf">invisible</span><span class="p">(</span><span class="nf">lapply</span><span class="p">(</span><span class="n">required_packages</span><span class="p">,</span><span class="w"> </span><span class="n">library</span><span class="p">,</span><span class="w"> </span><span class="n">character.only</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">))</span>
+
+<span class="n">nsw</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">qed_data</span><span class="p">(</span><span class="s">"nsw_mixtape"</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">mutate</span><span class="p">(</span>
+<span class="w">    </span><span class="n">treat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">as.integer</span><span class="p">(</span><span class="n">treat</span><span class="p">),</span>
+<span class="w">    </span><span class="n">outcome</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">re78</span>
+<span class="w">  </span><span class="p">)</span>
+
+<span class="n">cps</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">qed_data</span><span class="p">(</span><span class="s">"cps_mixtape"</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">mutate</span><span class="p">(</span>
+<span class="w">    </span><span class="n">treat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">as.integer</span><span class="p">(</span><span class="n">treat</span><span class="p">),</span>
+<span class="w">    </span><span class="n">outcome</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">re78</span>
+<span class="w">  </span><span class="p">)</span>
+
+<span class="c1"># Experimental benchmark sample: NSW treated + NSW controls.</span>
+<span class="n">benchmark_dat</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">nsw</span>
+
+<span class="c1"># Observational sample: NSW treated + CPS controls.</span>
+<span class="n">obs_dat</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">bind_rows</span><span class="p">(</span>
+<span class="w">  </span><span class="n">nsw</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">filter</span><span class="p">(</span><span class="n">treat</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1L</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">mutate</span><span class="p">(</span><span class="n">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"NSW treated"</span><span class="p">),</span>
+<span class="w">  </span><span class="n">cps</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">filter</span><span class="p">(</span><span class="n">treat</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">0L</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nf">mutate</span><span class="p">(</span><span class="n">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"CPS controls"</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">design_covariates</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">"age"</span><span class="p">,</span><span class="w"> </span><span class="s">"educ"</span><span class="p">,</span><span class="w"> </span><span class="s">"black"</span><span class="p">,</span><span class="w"> </span><span class="s">"hisp"</span><span class="p">,</span><span class="w"> </span><span class="s">"marr"</span><span class="p">,</span><span class="w"> </span><span class="s">"nodegree"</span><span class="p">,</span><span class="w"> </span><span class="s">"re74"</span><span class="p">,</span><span class="w"> </span><span class="s">"re75"</span><span class="p">)</span>
+
+<span class="n">obs_dat</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">select</span><span class="p">(</span><span class="n">source</span><span class="p">,</span><span class="w"> </span><span class="n">treat</span><span class="p">,</span><span class="w"> </span><span class="n">outcome</span><span class="p">,</span><span class="w"> </span><span class="nf">all_of</span><span class="p">(</span><span class="n">design_covariates</span><span class="p">))</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">glimpse</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> cobalt (Version 4.6.2, Build Date: 2026-01-29)
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Attaching package: ‘cobalt’
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>The following object is masked from ‘package:MatchIt’:
+
+    lalonde
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Attaching package: ‘dplyr’
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>The following objects are masked from ‘package:stats’:
+
+    filter, lag
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Rows: 16,177
+Columns: 11
+$ source   &lt;chr&gt; "NSW treated", "NSW treated", "NSW treated", "NSW treated", "…
+$ treat    &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1…
+$ outcome  &lt;dbl&gt; 9930.0459, 3595.8940, 24909.4492, 7506.1460, 289.7899, 4056.4…
+$ age      &lt;dbl&gt; 37, 22, 30, 27, 33, 22, 23, 32, 22, 33, 19, 21, 18, 27, 17, 1…
+$ educ     &lt;dbl&gt; 11, 9, 12, 11, 8, 9, 12, 11, 16, 12, 9, 13, 8, 10, 7, 10, 13,…
+$ black    &lt;dbl&gt; 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1…
+$ hisp     &lt;dbl&gt; 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
+$ marr     &lt;dbl&gt; 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0…
+$ nodegree &lt;dbl&gt; 1, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0, 1…
+$ re74     &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
+$ re75     &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
+</pre></div>
+</div>
+</div>
+</div>
+<p>Checkpoint:</p>
+<ul class="simple">
+<li><p>Is the benchmark estimate coming only from NSW randomized groups?</p></li>
+<li><p>Is the observational sample restricted to NSW treated plus CPS controls?</p></li>
+</ul>
+</section>
+<section id="step-2-compute-the-experimental-benchmark">
+<h2>Step 2: Compute The Experimental Benchmark<a class="headerlink" href="#step-2-compute-the-experimental-benchmark" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">benchmark_summary</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">benchmark_dat</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">group_by</span><span class="p">(</span><span class="n">treat</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">summarise</span><span class="p">(</span>
+<span class="w">    </span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">n</span><span class="p">(),</span>
+<span class="w">    </span><span class="n">mean_re78</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">outcome</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">),</span>
+<span class="w">    </span><span class="n">mean_re74</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">re74</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">),</span>
+<span class="w">    </span><span class="n">mean_re75</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">re75</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">),</span>
+<span class="w">    </span><span class="n">.groups</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"drop"</span>
+<span class="w">  </span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">mutate</span><span class="p">(</span><span class="n">group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">if_else</span><span class="p">(</span><span class="n">treat</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1L</span><span class="p">,</span><span class="w"> </span><span class="s">"NSW treated"</span><span class="p">,</span><span class="w"> </span><span class="s">"NSW controls"</span><span class="p">))</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">select</span><span class="p">(</span><span class="n">group</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">mean_re78</span><span class="p">,</span><span class="w"> </span><span class="n">mean_re74</span><span class="p">,</span><span class="w"> </span><span class="n">mean_re75</span><span class="p">)</span>
+
+<span class="n">benchmark_fit</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">lm</span><span class="p">(</span><span class="n">outcome</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">treat</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">benchmark_dat</span><span class="p">)</span>
+<span class="n">benchmark_att</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">coef</span><span class="p">(</span><span class="nf">summary</span><span class="p">(</span><span class="n">benchmark_fit</span><span class="p">))[</span><span class="s">"treat"</span><span class="p">,</span><span class="w"> </span><span class="p">]</span>
+
+<span class="n">benchmark_summary</span>
+<span class="n">benchmark_att</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><table class="dataframe">
+<caption>A tibble: 2 × 5</caption>
+<thead>
+	<tr><th scope=col>group</th><th scope=col>n</th><th scope=col>mean_re78</th><th scope=col>mean_re74</th><th scope=col>mean_re75</th></tr>
+	<tr><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;int&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>NSW controls</td><td>260</td><td>4554.801</td><td>2107.027</td><td>1266.909</td></tr>
+	<tr><td>NSW treated </td><td>185</td><td>6349.144</td><td>2095.574</td><td>1532.055</td></tr>
+</tbody>
+</table>
+</div><div class="output text_html"><style>
+.dl-inline {width: auto; margin:0; padding: 0}
+.dl-inline>dt, .dl-inline>dd {float: none; width: auto; display: inline-block}
+.dl-inline>dt::after {content: ":\0020"; padding-right: .5ex}
+.dl-inline>dt:not(:first-of-type) {padding-left: .5ex}
+</style><dl class=dl-inline><dt>Estimate</dt><dd>1794.3423818501</dd><dt>Std. Error</dt><dd>632.853392414366</dd><dt>t value</dt><dd>2.83532079207887</dd><dt>Pr(&gt;|t|)</dt><dd>0.00478753002103074</dd></dl>
+</div></div>
+</div>
+<p>This <code class="docutils literal notranslate"><span class="pre">treat</span></code> coefficient is the reference effect we try to recover with observational adjustment.</p>
+</section>
+<section id="step-3-raw-observational-estimate-nsw-treated-vs-cps-controls">
+<h2>Step 3: Raw Observational Estimate (NSW Treated Vs CPS Controls)<a class="headerlink" href="#step-3-raw-observational-estimate-nsw-treated-vs-cps-controls" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">raw_summary</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">obs_dat</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">group_by</span><span class="p">(</span><span class="n">treat</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">summarise</span><span class="p">(</span>
+<span class="w">    </span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">n</span><span class="p">(),</span>
+<span class="w">    </span><span class="n">mean_re78</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">outcome</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">),</span>
+<span class="w">    </span><span class="n">mean_age</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">age</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">),</span>
+<span class="w">    </span><span class="n">mean_educ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">educ</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">),</span>
+<span class="w">    </span><span class="n">prop_black</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">black</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">),</span>
+<span class="w">    </span><span class="n">mean_re74</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">re74</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">),</span>
+<span class="w">    </span><span class="n">mean_re75</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">re75</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">),</span>
+<span class="w">    </span><span class="n">.groups</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"drop"</span>
+<span class="w">  </span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">mutate</span><span class="p">(</span><span class="n">group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">if_else</span><span class="p">(</span><span class="n">treat</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1L</span><span class="p">,</span><span class="w"> </span><span class="s">"NSW treated"</span><span class="p">,</span><span class="w"> </span><span class="s">"CPS controls"</span><span class="p">))</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">select</span><span class="p">(</span><span class="n">group</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">mean_re78</span><span class="p">,</span><span class="w"> </span><span class="n">mean_age</span><span class="p">,</span><span class="w"> </span><span class="n">mean_educ</span><span class="p">,</span><span class="w"> </span><span class="n">prop_black</span><span class="p">,</span><span class="w"> </span><span class="n">mean_re74</span><span class="p">,</span><span class="w"> </span><span class="n">mean_re75</span><span class="p">)</span>
+
+<span class="n">raw_fit</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">lm</span><span class="p">(</span><span class="n">outcome</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">treat</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">obs_dat</span><span class="p">)</span>
+<span class="n">raw_obs_att</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">coef</span><span class="p">(</span><span class="nf">summary</span><span class="p">(</span><span class="n">raw_fit</span><span class="p">))[</span><span class="s">"treat"</span><span class="p">,</span><span class="w"> </span><span class="p">]</span>
+
+<span class="n">raw_summary</span>
+<span class="n">raw_obs_att</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><table class="dataframe">
+<caption>A tibble: 2 × 8</caption>
+<thead>
+	<tr><th scope=col>group</th><th scope=col>n</th><th scope=col>mean_re78</th><th scope=col>mean_age</th><th scope=col>mean_educ</th><th scope=col>prop_black</th><th scope=col>mean_re74</th><th scope=col>mean_re75</th></tr>
+	<tr><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;int&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>CPS controls</td><td>15992</td><td>14846.660</td><td>33.22524</td><td>12.02751</td><td>0.07353677</td><td>14016.800</td><td>13650.804</td></tr>
+	<tr><td>NSW treated </td><td>  185</td><td> 6349.144</td><td>25.81622</td><td>10.34595</td><td>0.84324324</td><td> 2095.574</td><td> 1532.055</td></tr>
+</tbody>
+</table>
+</div><div class="output text_html"><style>
+.dl-inline {width: auto; margin:0; padding: 0}
+.dl-inline>dt, .dl-inline>dd {float: none; width: auto; display: inline-block}
+.dl-inline>dt::after {content: ":\0020"; padding-right: .5ex}
+.dl-inline>dt:not(:first-of-type) {padding-left: .5ex}
+</style><dl class=dl-inline><dt>Estimate</dt><dd>-8497.51614813295</dd><dt>Std. Error</dt><dd>712.020720199282</dd><dt>t value</dt><dd>-11.9343663843865</dd><dt>Pr(&gt;|t|)</dt><dd>1.07480321449658e-32</dd></dl>
+</div></div>
+</div>
+<p>Compare this raw observational estimate with the benchmark from Step 2.</p>
+</section>
+<section id="step-4-baseline-balance-and-overlap-diagnostics">
+<h2>Step 4: Baseline Balance And Overlap Diagnostics<a class="headerlink" href="#step-4-baseline-balance-and-overlap-diagnostics" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">m_raw</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">matchit</span><span class="p">(</span>
+<span class="w">  </span><span class="n">treat</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">age</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">educ</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">black</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">hisp</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">marr</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">nodegree</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">re74</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">re75</span><span class="p">,</span>
+<span class="w">  </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">obs_dat</span><span class="p">,</span>
+<span class="w">  </span><span class="n">method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">,</span>
+<span class="w">  </span><span class="n">estimand</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"ATT"</span>
+<span class="p">)</span>
+
+<span class="nf">summary</span><span class="p">(</span><span class="n">m_raw</span><span class="p">,</span><span class="w"> </span><span class="n">un</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span>
+
+<span class="n">cobalt</span><span class="o">::</span><span class="nf">bal.tab</span><span class="p">(</span>
+<span class="w">  </span><span class="n">m_raw</span><span class="p">,</span>
+<span class="w">  </span><span class="n">un</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">,</span>
+<span class="w">  </span><span class="n">binary</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"std"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">m.threshold</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.1</span>
+<span class="p">)</span>
+
+<span class="n">cobalt</span><span class="o">::</span><span class="nf">love.plot</span><span class="p">(</span>
+<span class="w">  </span><span class="n">m_raw</span><span class="p">,</span>
+<span class="w">  </span><span class="n">abs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">,</span>
+<span class="w">  </span><span class="n">thresholds</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="n">m</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.1</span><span class="p">),</span>
+<span class="w">  </span><span class="n">stars</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"raw"</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Call:
+matchit(formula = treat ~ age + educ + black + hisp + marr + 
+    nodegree + re74 + re75, data = obs_dat, method = NULL, estimand = "ATT")
+
+Summary of Balance for All Data:
+         Means Treated Means Control Std. Mean Diff. Var. Ratio eCDF Mean
+distance        0.2706        0.0084          1.5587    15.3107    0.5065
+age            25.8162       33.2252         -1.0355     0.4196    0.1863
+educ           10.3459       12.0275         -0.8363     0.4905    0.0908
+black           0.8432        0.0735          2.1171          .    0.7697
+hisp            0.0595        0.0720         -0.0532          .    0.0126
+marr            0.1892        0.7117         -1.3342          .    0.5225
+nodegree        0.7081        0.2958          0.9068          .    0.4123
+re74         2095.5737    14016.8004         -2.4396     0.2607    0.4591
+re75         1532.0553    13650.8035         -3.7645     0.1206    0.4751
+         eCDF Max
+distance   0.8149
+age        0.3427
+educ       0.4123
+black      0.7697
+hisp       0.0126
+marr       0.5225
+nodegree   0.4123
+re74       0.6031
+re75       0.6509
+
+Sample Sizes:
+          Control Treated
+All         15992     185
+Matched     15992     185
+Unmatched       0       0
+Discarded       0       0
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Balance Measures
+             Type Diff.Un     M.Threshold.Un
+distance Distance  1.5587                   
+age       Contin. -1.0355 Not Balanced, &gt;0.1
+educ      Contin. -0.8363 Not Balanced, &gt;0.1
+black      Binary  2.1171 Not Balanced, &gt;0.1
+hisp       Binary -0.0532     Balanced, &lt;0.1
+marr       Binary -1.3342 Not Balanced, &gt;0.1
+nodegree   Binary  0.9068 Not Balanced, &gt;0.1
+re74      Contin. -2.4396 Not Balanced, &gt;0.1
+re75      Contin. -3.7645 Not Balanced, &gt;0.1
+
+Balance tally for mean differences
+                   count
+Balanced, &lt;0.1         1
+Not Balanced, &gt;0.1     7
+
+Variable with the greatest mean difference
+ Variable Diff.Un     M.Threshold.Un
+     re75 -3.7645 Not Balanced, &gt;0.1
+
+Sample sizes
+    Control Treated
+All   15992     185
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/cf98c3345cfa45b81b796236ff11367f681580c1e5664ee93305eff50b40e751.png"><img alt="../_images/cf98c3345cfa45b81b796236ff11367f681580c1e5664ee93305eff50b40e751.png" src="../_images/cf98c3345cfa45b81b796236ff11367f681580c1e5664ee93305eff50b40e751.png" style="width: 480px; height: 288px;" />
+</a>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="c1"># Quick propensity-score overlap check.</span>
+<span class="n">ps_fit</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">glm</span><span class="p">(</span>
+<span class="w">  </span><span class="n">treat</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">age</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">educ</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">black</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">hisp</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">marr</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">nodegree</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">re74</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">re75</span><span class="p">,</span>
+<span class="w">  </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">obs_dat</span><span class="p">,</span>
+<span class="w">  </span><span class="n">family</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">binomial</span><span class="p">()</span>
+<span class="p">)</span>
+
+<span class="n">obs_dat</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">obs_dat</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">mutate</span><span class="p">(</span><span class="n">ps</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">predict</span><span class="p">(</span><span class="n">ps_fit</span><span class="p">,</span><span class="w"> </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"response"</span><span class="p">))</span>
+
+<span class="n">overlap_bounds</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">obs_dat</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">group_by</span><span class="p">(</span><span class="n">treat</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">summarise</span><span class="p">(</span>
+<span class="w">    </span><span class="n">min_ps</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">min</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">),</span>
+<span class="w">    </span><span class="n">max_ps</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">max</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">),</span>
+<span class="w">    </span><span class="n">.groups</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"drop"</span>
+<span class="w">  </span><span class="p">)</span>
+
+<span class="n">common_support_low</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">max</span><span class="p">(</span><span class="n">overlap_bounds</span><span class="o">$</span><span class="n">min_ps</span><span class="p">)</span>
+<span class="n">common_support_high</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">min</span><span class="p">(</span><span class="n">overlap_bounds</span><span class="o">$</span><span class="n">max_ps</span><span class="p">)</span>
+
+<span class="n">overlap_summary</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">obs_dat</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">group_by</span><span class="p">(</span><span class="n">treat</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">summarise</span><span class="p">(</span>
+<span class="w">    </span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">n</span><span class="p">(),</span>
+<span class="w">    </span><span class="n">min_ps</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">min</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">),</span>
+<span class="w">    </span><span class="n">p10_ps</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">quantile</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span><span class="w"> </span><span class="m">0.10</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">),</span>
+<span class="w">    </span><span class="n">p50_ps</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">quantile</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span><span class="w"> </span><span class="m">0.50</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">),</span>
+<span class="w">    </span><span class="n">p90_ps</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">quantile</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span><span class="w"> </span><span class="m">0.90</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">),</span>
+<span class="w">    </span><span class="n">max_ps</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">max</span><span class="p">(</span><span class="n">ps</span><span class="p">,</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">),</span>
+<span class="w">    </span><span class="n">in_common_support</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">ps</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">common_support_low</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">ps</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">common_support_high</span><span class="p">),</span>
+<span class="w">    </span><span class="n">.groups</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"drop"</span>
+<span class="w">  </span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">mutate</span><span class="p">(</span><span class="n">group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">if_else</span><span class="p">(</span><span class="n">treat</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1L</span><span class="p">,</span><span class="w"> </span><span class="s">"NSW treated"</span><span class="p">,</span><span class="w"> </span><span class="s">"CPS controls"</span><span class="p">))</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">select</span><span class="p">(</span><span class="n">group</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">min_ps</span><span class="p">,</span><span class="w"> </span><span class="n">p10_ps</span><span class="p">,</span><span class="w"> </span><span class="n">p50_ps</span><span class="p">,</span><span class="w"> </span><span class="n">p90_ps</span><span class="p">,</span><span class="w"> </span><span class="n">max_ps</span><span class="p">,</span><span class="w"> </span><span class="n">in_common_support</span><span class="p">)</span>
+
+<span class="n">overlap_summary</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><table class="dataframe">
+<caption>A tibble: 2 × 8</caption>
+<thead>
+	<tr><th scope=col>group</th><th scope=col>n</th><th scope=col>min_ps</th><th scope=col>p10_ps</th><th scope=col>p50_ps</th><th scope=col>p90_ps</th><th scope=col>max_ps</th><th scope=col>in_common_support</th></tr>
+	<tr><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;int&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>CPS controls</td><td>15992</td><td>3.765001e-06</td><td>4.569906e-06</td><td>0.0001420737</td><td>0.009124844</td><td>0.4883897</td><td>0.3611806</td></tr>
+	<tr><td>NSW treated </td><td>  185</td><td>7.016468e-04</td><td>1.060993e-02</td><td>0.2568346059</td><td>0.478896543</td><td>0.4874457</td><td>1.0000000</td></tr>
+</tbody>
+</table>
+</div></div>
+</div>
+<p>Questions:</p>
+<ol class="arabic simple">
+<li><p>Which covariates are most imbalanced before adjustment?</p></li>
+<li><p>How much treated-support mass lies in thin CPS-support regions?</p></li>
+</ol>
+</section>
+<section id="step-5-exact-matching-branch">
+<h2>Step 5: Exact Matching Branch<a class="headerlink" href="#step-5-exact-matching-branch" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">m_exact</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">matchit</span><span class="p">(</span>
+<span class="w">  </span><span class="n">treat</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">black</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">hisp</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">marr</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">nodegree</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">educ</span><span class="p">,</span>
+<span class="w">  </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">obs_dat</span><span class="p">,</span>
+<span class="w">  </span><span class="n">method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"exact"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">estimand</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"ATT"</span>
+<span class="p">)</span>
+
+<span class="nf">summary</span><span class="p">(</span><span class="n">m_exact</span><span class="p">,</span><span class="w"> </span><span class="n">un</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span>
+
+<span class="n">exact_dat</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">match.data</span><span class="p">(</span><span class="n">m_exact</span><span class="p">)</span>
+
+<span class="n">exact_dat</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">count</span><span class="p">(</span><span class="n">treat</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">mutate</span><span class="p">(</span><span class="n">group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">if_else</span><span class="p">(</span><span class="n">treat</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1L</span><span class="p">,</span><span class="w"> </span><span class="s">"Treated"</span><span class="p">,</span><span class="w"> </span><span class="s">"Control"</span><span class="p">))</span>
+
+<span class="n">cobalt</span><span class="o">::</span><span class="nf">bal.tab</span><span class="p">(</span>
+<span class="w">  </span><span class="n">m_exact</span><span class="p">,</span>
+<span class="w">  </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">obs_dat</span><span class="p">,</span>
+<span class="w">  </span><span class="n">un</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">,</span>
+<span class="w">  </span><span class="n">binary</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"std"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">m.threshold</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.1</span><span class="p">,</span>
+<span class="w">  </span><span class="n">addl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">age</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">re74</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">re75</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Call:
+matchit(formula = treat ~ black + hisp + marr + nodegree + educ, 
+    data = obs_dat, method = "exact", estimand = "ATT")
+
+Summary of Balance for All Data:
+         Means Treated Means Control Std. Mean Diff. Var. Ratio eCDF Mean
+black           0.8432        0.0735          2.1171          .    0.7697
+hisp            0.0595        0.0720         -0.0532          .    0.0126
+marr            0.1892        0.7117         -1.3342          .    0.5225
+nodegree        0.7081        0.2958          0.9068          .    0.4123
+educ           10.3459       12.0275         -0.8363     0.4905    0.0908
+         eCDF Max
+black      0.7697
+hisp       0.0126
+marr       0.5225
+nodegree   0.4123
+educ       0.4123
+
+Summary of Balance for Matched Data:
+         Means Treated Means Control Std. Mean Diff. Var. Ratio eCDF Mean
+black           0.8432        0.8432               0          .         0
+hisp            0.0595        0.0595               0          .         0
+marr            0.1892        0.1892               0          .         0
+nodegree        0.7081        0.7081               0          .         0
+educ           10.3459       10.3459               0     1.0038         0
+         eCDF Max Std. Pair Dist.
+black           0               0
+hisp            0               0
+marr            0               0
+nodegree        0               0
+educ            0               0
+
+Sample Sizes:
+               Control Treated
+All           15992.       185
+Matched (ESS)   604.83     185
+Matched        9600.       185
+Unmatched      6392.         0
+Discarded         0.         0
+</pre></div>
+</div>
+<div class="output text_html"><table class="dataframe">
+<caption>A matchdata: 2 × 3</caption>
+<thead>
+	<tr><th scope=col>treat</th><th scope=col>n</th><th scope=col>group</th></tr>
+	<tr><th scope=col>&lt;int&gt;</th><th scope=col>&lt;int&gt;</th><th scope=col>&lt;chr&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>0</td><td>9600</td><td>Control</td></tr>
+	<tr><td>1</td><td> 185</td><td>Treated</td></tr>
+</tbody>
+</table>
+</div><div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Balance Measures
+            Type Diff.Un Diff.Adj        M.Threshold
+black     Binary  2.1171   0.0000     Balanced, &lt;0.1
+hisp      Binary -0.0532   0.0000     Balanced, &lt;0.1
+marr      Binary -1.3342   0.0000     Balanced, &lt;0.1
+nodegree  Binary  0.9068   0.0000     Balanced, &lt;0.1
+educ     Contin. -0.8363   0.0000     Balanced, &lt;0.1
+age      Contin. -1.0355  -0.2447 Not Balanced, &gt;0.1
+re74     Contin. -2.4396  -1.1014 Not Balanced, &gt;0.1
+re75     Contin. -3.7645  -1.7701 Not Balanced, &gt;0.1
+
+Balance tally for mean differences
+                   count
+Balanced, &lt;0.1         5
+Not Balanced, &gt;0.1     3
+
+Variable with the greatest mean difference
+ Variable Diff.Adj        M.Threshold
+     re75  -1.7701 Not Balanced, &gt;0.1
+
+Sample sizes
+                      Control Treated
+All                  15992.       185
+Matched (ESS)          604.83     185
+Matched (Unweighted)  9600.       185
+Unmatched             6392.         0
+</pre></div>
+</div>
+</div>
+</div>
+<p>Interpretation prompt:</p>
+<ul class="simple">
+<li><p>Exact matching can preserve transparency, but does it solve imbalance on prior earnings?</p></li>
+</ul>
+</section>
+<section id="step-6-cem-branch">
+<h2>Step 6: CEM Branch<a class="headerlink" href="#step-6-cem-branch" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">cem_cutpoints</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span>
+<span class="w">  </span><span class="n">age</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"q5"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">educ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4</span><span class="p">,</span>
+<span class="w">  </span><span class="n">re74</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"q6"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">re75</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"q6"</span>
+<span class="p">)</span>
+
+<span class="n">m_cem</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">matchit</span><span class="p">(</span>
+<span class="w">  </span><span class="n">treat</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">age</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">educ</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">black</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">hisp</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">marr</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">nodegree</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">re74</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">re75</span><span class="p">,</span>
+<span class="w">  </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">obs_dat</span><span class="p">,</span>
+<span class="w">  </span><span class="n">method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"cem"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">estimand</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"ATT"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">cutpoints</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cem_cutpoints</span>
+<span class="p">)</span>
+
+<span class="nf">summary</span><span class="p">(</span><span class="n">m_cem</span><span class="p">,</span><span class="w"> </span><span class="n">un</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span>
+
+<span class="n">cobalt</span><span class="o">::</span><span class="nf">bal.tab</span><span class="p">(</span>
+<span class="w">  </span><span class="n">m_cem</span><span class="p">,</span>
+<span class="w">  </span><span class="n">un</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">,</span>
+<span class="w">  </span><span class="n">binary</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"std"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">m.threshold</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.1</span>
+<span class="p">)</span>
+
+<span class="n">cobalt</span><span class="o">::</span><span class="nf">love.plot</span><span class="p">(</span>
+<span class="w">  </span><span class="n">m_cem</span><span class="p">,</span>
+<span class="w">  </span><span class="n">abs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">,</span>
+<span class="w">  </span><span class="n">thresholds</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="n">m</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.1</span><span class="p">),</span>
+<span class="w">  </span><span class="n">stars</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"raw"</span>
+<span class="p">)</span>
+
+<span class="n">cem_dat</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">match.data</span><span class="p">(</span><span class="n">m_cem</span><span class="p">)</span>
+
+<span class="n">cem_dat</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">count</span><span class="p">(</span><span class="n">treat</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">mutate</span><span class="p">(</span><span class="n">group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">if_else</span><span class="p">(</span><span class="n">treat</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1L</span><span class="p">,</span><span class="w"> </span><span class="s">"Treated"</span><span class="p">,</span><span class="w"> </span><span class="s">"Control"</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Call:
+matchit(formula = treat ~ age + educ + black + hisp + marr + 
+    nodegree + re74 + re75, data = obs_dat, method = "cem", estimand = "ATT", 
+    cutpoints = cem_cutpoints)
+
+Summary of Balance for All Data:
+         Means Treated Means Control Std. Mean Diff. Var. Ratio eCDF Mean
+age            25.8162       33.2252         -1.0355     0.4196    0.1863
+educ           10.3459       12.0275         -0.8363     0.4905    0.0908
+black           0.8432        0.0735          2.1171          .    0.7697
+hisp            0.0595        0.0720         -0.0532          .    0.0126
+marr            0.1892        0.7117         -1.3342          .    0.5225
+nodegree        0.7081        0.2958          0.9068          .    0.4123
+re74         2095.5737    14016.8004         -2.4396     0.2607    0.4591
+re75         1532.0553    13650.8035         -3.7645     0.1206    0.4751
+         eCDF Max
+age        0.3427
+educ       0.4123
+black      0.7697
+hisp       0.0126
+marr       0.5225
+nodegree   0.4123
+re74       0.6031
+re75       0.6509
+
+Summary of Balance for Matched Data:
+         Means Treated Means Control Std. Mean Diff. Var. Ratio eCDF Mean
+age            25.4967       24.8252          0.0939     0.7963    0.0310
+educ           10.6291       10.5113          0.0586     0.7285    0.0099
+black           0.8543        0.8543          0.0000          .    0.0000
+hisp            0.0331        0.0331          0.0000          .    0.0000
+marr            0.1656        0.1656          0.0000          .    0.0000
+nodegree        0.6689        0.6689          0.0000          .    0.0000
+re74         1623.9671     1559.3853          0.0132     1.2260    0.0094
+re75         1235.9509     1398.6565         -0.0505     0.8986    0.0088
+         eCDF Max Std. Pair Dist.
+age        0.1198          0.3435
+educ       0.0415          0.3807
+black      0.0000          0.0000
+hisp       0.0000          0.0000
+marr       0.0000          0.0000
+nodegree   0.0000          0.0000
+re74       0.1612          0.0862
+re75       0.1351          0.1902
+
+Sample Sizes:
+               Control Treated
+All           15992.       185
+Matched (ESS)   120.96     151
+Matched        1356.       151
+Unmatched     14636.        34
+Discarded         0.         0
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Balance Measures
+            Type Diff.Un Diff.Adj    M.Threshold
+age      Contin. -1.0355   0.0939 Balanced, &lt;0.1
+educ     Contin. -0.8363   0.0586 Balanced, &lt;0.1
+black     Binary  2.1171   0.0000 Balanced, &lt;0.1
+hisp      Binary -0.0532   0.0000 Balanced, &lt;0.1
+marr      Binary -1.3342   0.0000 Balanced, &lt;0.1
+nodegree  Binary  0.9068   0.0000 Balanced, &lt;0.1
+re74     Contin. -2.4396   0.0132 Balanced, &lt;0.1
+re75     Contin. -3.7645  -0.0505 Balanced, &lt;0.1
+
+Balance tally for mean differences
+                   count
+Balanced, &lt;0.1         8
+Not Balanced, &gt;0.1     0
+
+Variable with the greatest mean difference
+ Variable Diff.Adj    M.Threshold
+      age   0.0939 Balanced, &lt;0.1
+
+Sample sizes
+                      Control Treated
+All                  15992.       185
+Matched (ESS)          120.96     151
+Matched (Unweighted)  1356.       151
+Unmatched            14636.        34
+</pre></div>
+</div>
+<div class="output text_html"><table class="dataframe">
+<caption>A matchdata: 2 × 3</caption>
+<thead>
+	<tr><th scope=col>treat</th><th scope=col>n</th><th scope=col>group</th></tr>
+	<tr><th scope=col>&lt;int&gt;</th><th scope=col>&lt;int&gt;</th><th scope=col>&lt;chr&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>0</td><td>1356</td><td>Control</td></tr>
+	<tr><td>1</td><td> 151</td><td>Treated</td></tr>
+</tbody>
+</table>
+</div><a class="reference internal image-reference" href="../_images/00514f199c17507b5377ac3dc607f4f82f2e11ab2ddab97087ba30fb2871283f.png"><img alt="../_images/00514f199c17507b5377ac3dc607f4f82f2e11ab2ddab97087ba30fb2871283f.png" src="../_images/00514f199c17507b5377ac3dc607f4f82f2e11ab2ddab97087ba30fb2871283f.png" style="width: 480px; height: 288px;" />
+</a>
+</div>
+</div>
+<p>Track whether CEM improves balance while retaining enough treated units to keep the <code class="docutils literal notranslate"><span class="pre">ATT</span></code> target credible.</p>
+</section>
+<section id="step-7-entropy-balancing-branch">
+<h2>Step 7: Entropy Balancing Branch<a class="headerlink" href="#step-7-entropy-balancing-branch" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">w_ebal</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">weightit</span><span class="p">(</span>
+<span class="w">  </span><span class="n">treat</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">age</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nf">I</span><span class="p">(</span><span class="n">age</span><span class="o">^</span><span class="m">2</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">    </span><span class="n">educ</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nf">I</span><span class="p">(</span><span class="n">educ</span><span class="o">^</span><span class="m">2</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">    </span><span class="n">black</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">hisp</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">marr</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">nodegree</span><span class="w"> </span><span class="o">+</span>
+<span class="w">    </span><span class="n">re74</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nf">I</span><span class="p">(</span><span class="n">re74</span><span class="o">^</span><span class="m">2</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">    </span><span class="n">re75</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nf">I</span><span class="p">(</span><span class="n">re75</span><span class="o">^</span><span class="m">2</span><span class="p">),</span>
+<span class="w">  </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">obs_dat</span><span class="p">,</span>
+<span class="w">  </span><span class="n">method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"ebal"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">estimand</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"ATT"</span>
+<span class="p">)</span>
+
+<span class="nf">summary</span><span class="p">(</span><span class="n">w_ebal</span><span class="p">)</span>
+
+<span class="n">cobalt</span><span class="o">::</span><span class="nf">bal.tab</span><span class="p">(</span>
+<span class="w">  </span><span class="n">w_ebal</span><span class="p">,</span>
+<span class="w">  </span><span class="n">un</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">,</span>
+<span class="w">  </span><span class="n">binary</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"std"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">m.threshold</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.1</span>
+<span class="p">)</span>
+
+<span class="n">cobalt</span><span class="o">::</span><span class="nf">love.plot</span><span class="p">(</span>
+<span class="w">  </span><span class="n">w_ebal</span><span class="p">,</span>
+<span class="w">  </span><span class="n">abs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">,</span>
+<span class="w">  </span><span class="n">thresholds</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="n">m</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.1</span><span class="p">),</span>
+<span class="w">  </span><span class="n">stars</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"raw"</span>
+<span class="p">)</span>
+
+<span class="n">ess</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="n">w</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="p">(</span><span class="nf">sum</span><span class="p">(</span><span class="n">w</span><span class="p">)</span><span class="o">^</span><span class="m">2</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">w</span><span class="o">^</span><span class="m">2</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="n">obs_ebal</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">obs_dat</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">mutate</span><span class="p">(</span><span class="n">w</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">w_ebal</span><span class="o">$</span><span class="n">weights</span><span class="p">)</span>
+
+<span class="n">obs_ebal</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">group_by</span><span class="p">(</span><span class="n">treat</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">summarise</span><span class="p">(</span>
+<span class="w">    </span><span class="n">raw_n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">n</span><span class="p">(),</span>
+<span class="w">    </span><span class="n">ess</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">ess</span><span class="p">(</span><span class="n">w</span><span class="p">),</span>
+<span class="w">    </span><span class="n">max_weight</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">max</span><span class="p">(</span><span class="n">w</span><span class="p">),</span>
+<span class="w">    </span><span class="n">mean_weight</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">w</span><span class="p">),</span>
+<span class="w">    </span><span class="n">.groups</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"drop"</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Warning message:
+“Some extreme weights were generated. Examine them with `summary()` and
+maybe trim them with `trim()`.”
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                  Summary of weights
+
+- Weight ranges:
+
+        Min                                   Max
+treated   1 ||                              1.   
+control   0 |---------------------------| 513.258
+
+- Units with the 5 most extreme weights by group:
+                                                
+               1       2       3       4       5
+ treated       1       1       1       1       1
+           14421   11525   10283    6092    5633
+ control 348.122 350.964 450.051 493.559 513.258
+
+- Weight statistics:
+
+        Coef of Var  MAD Entropy # Zeros
+treated       0.000 0.00     0.0       0
+control      10.508 1.71     3.5       0
+
+- Effective Sample Sizes:
+
+            Control Treated
+Unweighted 15992.       185
+Weighted     143.53     185
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Balance Measures
+            Type Diff.Un Diff.Adj    M.Threshold
+age      Contin. -1.0355        0 Balanced, &lt;0.1
+educ     Contin. -0.8363        0 Balanced, &lt;0.1
+black     Binary  2.1171        0 Balanced, &lt;0.1
+hisp      Binary -0.0532        0 Balanced, &lt;0.1
+marr      Binary -1.3342       -0 Balanced, &lt;0.1
+nodegree  Binary  0.9068        0 Balanced, &lt;0.1
+re74     Contin. -2.4396       -0 Balanced, &lt;0.1
+re75     Contin. -3.7645       -0 Balanced, &lt;0.1
+
+Balance tally for mean differences
+                   count
+Balanced, &lt;0.1         8
+Not Balanced, &gt;0.1     0
+
+Variable with the greatest mean difference
+ Variable Diff.Adj    M.Threshold
+    black        0 Balanced, &lt;0.1
+
+Effective sample sizes
+            Control Treated
+Unadjusted 15992.       185
+Adjusted     143.53     185
+</pre></div>
+</div>
+<div class="output text_html"><table class="dataframe">
+<caption>A tibble: 2 × 5</caption>
+<thead>
+	<tr><th scope=col>treat</th><th scope=col>raw_n</th><th scope=col>ess</th><th scope=col>max_weight</th><th scope=col>mean_weight</th></tr>
+	<tr><th scope=col>&lt;int&gt;</th><th scope=col>&lt;int&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>0</td><td>15992</td><td>143.5328</td><td>513.258</td><td>1</td></tr>
+	<tr><td>1</td><td>  185</td><td>185.0000</td><td>  1.000</td><td>1</td></tr>
+</tbody>
+</table>
+</div><a class="reference internal image-reference" href="../_images/b77afdbe3714954f984f5012d114cf98d3a77c1f296805e94d8e3bae9055ced0.png"><img alt="../_images/b77afdbe3714954f984f5012d114cf98d3a77c1f296805e94d8e3bae9055ced0.png" src="../_images/b77afdbe3714954f984f5012d114cf98d3a77c1f296805e94d8e3bae9055ced0.png" style="width: 480px; height: 288px;" />
+</a>
+</div>
+</div>
+<p>If balance is excellent but control ESS collapses, note that as a design cost.</p>
+</section>
+<section id="step-8-compare-against-the-experimental-benchmark">
+<h2>Step 8: Compare Against The Experimental Benchmark<a class="headerlink" href="#step-8-compare-against-the-experimental-benchmark" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">exact_fit</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">lm</span><span class="p">(</span><span class="n">outcome</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">treat</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">exact_dat</span><span class="p">,</span><span class="w"> </span><span class="n">weights</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">weights</span><span class="p">)</span>
+<span class="n">cem_fit</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">lm</span><span class="p">(</span><span class="n">outcome</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">treat</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cem_dat</span><span class="p">,</span><span class="w"> </span><span class="n">weights</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">weights</span><span class="p">)</span>
+<span class="n">ebal_fit</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">lm</span><span class="p">(</span><span class="n">outcome</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">treat</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">obs_ebal</span><span class="p">,</span><span class="w"> </span><span class="n">weights</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">w</span><span class="p">)</span>
+
+<span class="n">get_treat_row</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="n">fit</span><span class="p">,</span><span class="w"> </span><span class="n">design_name</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">out</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">coef</span><span class="p">(</span><span class="nf">summary</span><span class="p">(</span><span class="n">fit</span><span class="p">))</span>
+<span class="w">  </span><span class="nf">data.frame</span><span class="p">(</span>
+<span class="w">    </span><span class="n">design</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">design_name</span><span class="p">,</span>
+<span class="w">    </span><span class="n">estimate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">unname</span><span class="p">(</span><span class="n">out</span><span class="p">[</span><span class="s">"treat"</span><span class="p">,</span><span class="w"> </span><span class="s">"Estimate"</span><span class="p">]),</span>
+<span class="w">    </span><span class="n">std_error</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">unname</span><span class="p">(</span><span class="n">out</span><span class="p">[</span><span class="s">"treat"</span><span class="p">,</span><span class="w"> </span><span class="s">"Std. Error"</span><span class="p">]),</span>
+<span class="w">    </span><span class="n">p_value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">unname</span><span class="p">(</span><span class="n">out</span><span class="p">[</span><span class="s">"treat"</span><span class="p">,</span><span class="w"> </span><span class="s">"Pr(&gt;|t|)"</span><span class="p">]),</span>
+<span class="w">    </span><span class="n">row.names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">check.names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span>
+<span class="w">  </span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="n">experimental_estimate</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">unname</span><span class="p">(</span><span class="n">benchmark_att</span><span class="p">[</span><span class="s">"Estimate"</span><span class="p">])</span>
+
+<span class="n">estimate_comparison</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">bind_rows</span><span class="p">(</span>
+<span class="w">  </span><span class="nf">get_treat_row</span><span class="p">(</span><span class="n">benchmark_fit</span><span class="p">,</span><span class="w"> </span><span class="s">"Experimental benchmark (NSW RCT)"</span><span class="p">),</span>
+<span class="w">  </span><span class="nf">get_treat_row</span><span class="p">(</span><span class="n">raw_fit</span><span class="p">,</span><span class="w"> </span><span class="s">"Raw observational (NSW treated vs CPS)"</span><span class="p">),</span>
+<span class="w">  </span><span class="nf">get_treat_row</span><span class="p">(</span><span class="n">exact_fit</span><span class="p">,</span><span class="w"> </span><span class="s">"Exact matching"</span><span class="p">),</span>
+<span class="w">  </span><span class="nf">get_treat_row</span><span class="p">(</span><span class="n">cem_fit</span><span class="p">,</span><span class="w"> </span><span class="s">"CEM"</span><span class="p">),</span>
+<span class="w">  </span><span class="nf">get_treat_row</span><span class="p">(</span><span class="n">ebal_fit</span><span class="p">,</span><span class="w"> </span><span class="s">"Entropy balancing"</span><span class="p">)</span>
+<span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">mutate</span><span class="p">(</span>
+<span class="w">    </span><span class="n">benchmark_gap</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">estimate</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">experimental_estimate</span><span class="p">,</span>
+<span class="w">    </span><span class="n">abs_benchmark_gap</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">abs</span><span class="p">(</span><span class="n">benchmark_gap</span><span class="p">)</span>
+<span class="w">  </span><span class="p">)</span>
+
+<span class="n">estimate_comparison</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><table class="dataframe">
+<caption>A data.frame: 5 × 6</caption>
+<thead>
+	<tr><th scope=col>design</th><th scope=col>estimate</th><th scope=col>std_error</th><th scope=col>p_value</th><th scope=col>benchmark_gap</th><th scope=col>abs_benchmark_gap</th></tr>
+	<tr><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>Experimental benchmark (NSW RCT)      </td><td> 1794.342</td><td>632.8534</td><td>4.787530e-03</td><td>     0.00000</td><td>    0.00000</td></tr>
+	<tr><td>Raw observational (NSW treated vs CPS)</td><td>-8497.516</td><td>712.0207</td><td>1.074803e-32</td><td>-10291.85853</td><td>10291.85853</td></tr>
+	<tr><td>Exact matching                        </td><td>-3036.991</td><td>614.8626</td><td>7.970094e-07</td><td> -4831.33326</td><td> 4831.33326</td></tr>
+	<tr><td>CEM                                   </td><td> 1710.845</td><td>514.4499</td><td>9.035828e-04</td><td>   -83.49744</td><td>   83.49744</td></tr>
+	<tr><td>Entropy balancing                     </td><td> 1345.873</td><td>461.4985</td><td>3.546837e-03</td><td>  -448.46920</td><td>  448.46920</td></tr>
+</tbody>
+</table>
+</div></div>
+</div>
+<p>This table is the core benchmark output for the lab.</p>
+</section>
+<section id="comparison-table-to-fill-in">
+<h2>Comparison Table To Fill In<a class="headerlink" href="#comparison-table-to-fill-in" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Design</p></th>
+<th class="head"><p>Worst abs. SMD</p></th>
+<th class="head"><p>Treated retained</p></th>
+<th class="head"><p>Control ESS</p></th>
+<th class="head"><p>Estimate</p></th>
+<th class="head"><p>Gap vs benchmark</p></th>
+<th class="head"><p>Your judgement</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Raw observational</p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p>Exact matching</p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p>CEM</p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p>Entropy balancing</p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="debrief-questions">
+<h2>Debrief Questions<a class="headerlink" href="#debrief-questions" title="Link to this heading">#</a></h2>
+<ol class="arabic simple">
+<li><p>Which method got closest to the NSW benchmark?</p></li>
+<li><p>Which method’s benchmark closeness depended most on aggressive reweighting?</p></li>
+<li><p>Did better benchmark recovery come from tighter matching, richer balance constraints, or both?</p></li>
+<li><p>If you had to defend one design to a policy audience, which would you choose and why?</p></li>
+</ol>
+</section>
+<section id="optional-extension">
+<h2>Optional Extension<a class="headerlink" href="#optional-extension" title="Link to this heading">#</a></h2>
+<p>Add one sensitivity branch and compare benchmark drift:</p>
+<ul class="simple">
+<li><p>trim extreme entropy weights (<code class="docutils literal notranslate"><span class="pre">trim()</span></code> in <code class="docutils literal notranslate"><span class="pre">WeightIt</span></code>)</p></li>
+<li><p>rerun CEM with slightly coarser and finer <code class="docutils literal notranslate"><span class="pre">re74</span></code>/<code class="docutils literal notranslate"><span class="pre">re75</span></code> bins</p></li>
+<li><p>report how benchmark gap and control ESS move under each choice</p></li>
+</ul>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "r"
+        },
+        kernelOptions: {
+            name: "ir",
+            path: "./notebooks"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'ir'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="black-politicians-lab.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Lab: Black Politicians</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="hisp-ie-practice-lab.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Lab: HISP IE in Practice</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item"><div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-to-use-this-page">How To Use This Page</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#training-goal">Training Goal</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dataset-at-a-glance">Dataset At A Glance</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#acronyms-and-background">Acronyms And Background</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dataset-provenance-for-this-lab">Dataset Provenance For This Lab</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-this-example-matters-in-the-mixtape">Why This Example Matters In The Mixtape</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-1-load-packages-and-build-analysis-datasets">Step 1: Load Packages And Build Analysis Datasets</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-2-compute-the-experimental-benchmark">Step 2: Compute The Experimental Benchmark</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-3-raw-observational-estimate-nsw-treated-vs-cps-controls">Step 3: Raw Observational Estimate (NSW Treated Vs CPS Controls)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-4-baseline-balance-and-overlap-diagnostics">Step 4: Baseline Balance And Overlap Diagnostics</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-5-exact-matching-branch">Step 5: Exact Matching Branch</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-6-cem-branch">Step 6: CEM Branch</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-7-entropy-balancing-branch">Step 7: Entropy Balancing Branch</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-8-compare-against-the-experimental-benchmark">Step 8: Compare Against The Experimental Benchmark</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#comparison-table-to-fill-in">Comparison Table To Fill In</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#debrief-questions">Debrief Questions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optional-extension">Optional Extension</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By QED Labs
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2026.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+<div class="extra_footer">
+  Built for offline use. External reading links are optional.
+</div>
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

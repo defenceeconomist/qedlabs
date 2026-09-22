@@ -1,0 +1,1063 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Lab: Difference-in-Differences Foundations With Kentucky Workers’ Compensation &#8212; Quasi-Experimental Design Labs</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../_static/scripts/fontawesome.js?digest=55c26ed414f5f8a31ebb"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=b8b12719"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="../_static/mathjax/tex-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/difference-in-differences-foundations-lab';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Lab: Staggered Adoption and TWFE Diagnostics" href="difference-in-differences-staggered-diagnostics-lab.html" />
+    <link rel="prev" title="Lab: HISP IE in Practice" href="hisp-ie-practice-lab.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">Quasi-Experimental Design Labs</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../index.html">
+                    Quasi-Experimental Design Labs
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Start here</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../offline-setup.html">Offline setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data.html">Bundled data and provenance</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Matching and Weighting</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="lalonde-matching-lab.html">Lab: LaLonde Matching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="black-politicians-lab.html">Lab: Black Politicians</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nsw-cps-benchmark-lab.html">Lab: NSW and CPS Benchmark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hisp-ie-practice-lab.html">Lab: HISP IE in Practice</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Difference-in-Differences</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Lab: Difference-in-Differences Foundations With Kentucky Workers’ Compensation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="difference-in-differences-staggered-diagnostics-lab.html">Lab: Staggered Adoption and TWFE Diagnostics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="difference-in-differences-modern-estimators-lab.html">Lab: Modern Multi-Period Difference-in-Differences</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Regression Discontinuity</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="regression-discontinuity-foundations-lab.html">Lab: Sharp RD foundations with government transfers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="regression-discontinuity-diagnostics-lab.html">Lab: RDD design diagnostics and sensitivity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="regression-discontinuity-fuzzy-lab.html">Lab: Fuzzy RD and local IV with veteran home ownership</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Synthetic Control</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-mechanics-lab.html">Lab: Synthetic Control Mechanics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-proposition-99-lab.html">Lab: Proposition 99 With tidysynth</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-augmentation-lab.html">Lab: Augmented SCM With Kansas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-design-lab.html">Lab: Synthetic Control Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-donor-pool-lab.html">Lab: Synthetic Control Donor Pool Design</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Interrupted Time Series</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="interrupted-time-series-mechanics-lab.html">Lab: Interrupted Time Series Foundations With Seatbelts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interrupted-time-series-design-diagnostics-lab.html">Lab: Seatbelt Law Design and Robustness</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interrupted-time-series-counterfactual-validation-lab.html">Lab: Interrupted Time Series Counterfactual Validation</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/notebooks/difference-in-differences-foundations-lab.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm pst-navbar-icon" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Lab: Difference-in-Differences Foundations With Kentucky Workers’ Compensation</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-to-use-this-page">How To Use This Page</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#training-goal">Training Goal</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-1-declare-the-design">Step 1: Declare The Design</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-2-load-and-audit-the-data">Step 2: Load And Audit The Data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-3-plot-the-four-cells">Step 3: Plot The Four Cells</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-4-calculate-difference-in-differences-by-hand">Step 4: Calculate Difference-in-Differences By Hand</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-5-recover-the-same-contrast-with-regression">Step 5: Recover The Same Contrast With Regression</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-6-interpret-the-log-outcome">Step 6: Interpret The Log Outcome</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-7-compare-a-prespecified-adjusted-model">Step 7: Compare A Prespecified Adjusted Model</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-8-audit-identification-and-inference">Step 8: Audit Identification And Inference</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#practical-implications">Practical Implications</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#worked-answers">Worked answers</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="lab-difference-in-differences-foundations-with-kentucky-workers-compensation">
+<h1>Lab: Difference-in-Differences Foundations With Kentucky Workers’ Compensation<a class="headerlink" href="#lab-difference-in-differences-foundations-with-kentucky-workers-compensation" title="Link to this heading">#</a></h1>
+<p><a class="reference internal" href="../index.html"><span class="std std-doc">Book home</span></a></p>
+<p>Use the R kernel. Keep the supplied <code class="docutils literal notranslate"><span class="pre">data/</span></code> folder beside this notebook. Run cells in order after installing the documented R environment. Data loading is entirely local.</p>
+<section id="how-to-use-this-page">
+<h2>How To Use This Page<a class="headerlink" href="#how-to-use-this-page" title="Link to this heading">#</a></h2>
+<p>This is the first difference-in-differences lab. The guided core takes about 45–60 minutes and starts with the four means that define the canonical two-group, two-period estimator.</p>
+<ul class="simple">
+<li><p>Declare the treated group, comparison group, policy date, outcome, and estimand before fitting a model.</p></li>
+<li><p>Calculate the contrast by hand before using an interaction regression.</p></li>
+<li><p>Separate a numerical estimate from the assumptions that give it a causal interpretation.</p></li>
+<li><p>Treat covariate adjustment and standard errors as design decisions, not automatic upgrades.</p></li>
+</ul>
+<p>The workflow draws on Gertler et al.’s counterfactual framing, Huntington-Klein’s design-first treatment, and Andrew Heiss’s worked example (Gertler et al. 2016; Huntington-Klein 2021; Heiss 2026). See the <a class="reference external" href="https://defenceeconomist.github.io/qedlabs/notes/did/difference-in-differences.html">DiD overview</a> and <a class="reference external" href="https://defenceeconomist.github.io/qedlabs/notes/did/andrew-heiss-difference-in-differences-notes.html">Heiss source notes</a> for the underlying reading.</p>
+<p><a class="reference external" href="https://defenceeconomist.github.io/qedlabs/labs/difference-in-differences-reproducibility.html">Tested environment and reproduction record</a></p>
+</section>
+<section id="training-goal">
+<h2>Training Goal<a class="headerlink" href="#training-goal" title="Link to this heading">#</a></h2>
+<p>By the end of the lab, you should be able to:</p>
+<ol class="arabic simple">
+<li><p>identify the four cells in a canonical DiD design;</p></li>
+<li><p>calculate the DiD contrast manually and recover it with regression;</p></li>
+<li><p>interpret a log-outcome estimate on a percentage scale;</p></li>
+<li><p>state the parallel-trends and composition assumptions precisely; and</p></li>
+<li><p>explain what robust standard errors and covariate adjustment do—and do not—solve.</p></li>
+</ol>
+</section>
+<section id="step-1-declare-the-design">
+<h2>Step 1: Declare The Design<a class="headerlink" href="#step-1-declare-the-design" title="Link to this heading">#</a></h2>
+<p>Kentucky raised its cap on covered weekly earnings in 1980. The change affected high earners but not low earners, so high earners form the policy-exposed group and low earners form the comparison group. The outcome is the log duration of workers’ compensation benefits following an injury (Meyer, Viscusi, and Durbin 1995).</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Design component</p></th>
+<th class="head"><p>Definition</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Treated group</p></td>
+<td><p>High-earning Kentucky claimants</p></td>
+</tr>
+<tr class="row-odd"><td><p>Comparison group</p></td>
+<td><p>Low-earning Kentucky claimants</p></td>
+</tr>
+<tr class="row-even"><td><p>Before/after indicator</p></td>
+<td><p>Claim occurred before or after the 1980 change</p></td>
+</tr>
+<tr class="row-odd"><td><p>Outcome</p></td>
+<td><p>Log weeks receiving benefits</p></td>
+</tr>
+<tr class="row-even"><td><p>Target contrast</p></td>
+<td><p>Change for high earners minus the contemporaneous change for low earners</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The records are repeated cross-sections of claims, not a panel following the same injured workers over time. Under parallel trends, no anticipation, stable group composition, and no spillovers, the contrast can be interpreted as the average policy effect for the exposed group.</p>
+</section>
+<section id="step-2-load-and-audit-the-data">
+<h2>Step 2: Load And Audit The Data<a class="headerlink" href="#step-2-load-and-audit-the-data" title="Link to this heading">#</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">injury</span></code> data are distributed with the <a class="reference external" href="https://search.r-project.org/CRAN/refmans/wooldridge/html/injury.html"><code class="docutils literal notranslate"><span class="pre">wooldridge</span></code> R package</a>. We use a pinned snapshot bundled in this repository, not a runtime download.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">data_helpers</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">"data/load-data.R"</span><span class="p">,</span><span class="w"> </span><span class="s">"../data/load-data.R"</span><span class="p">,</span><span class="w"> </span><span class="s">"docs/labs/data/load-data.R"</span><span class="p">)</span>
+<span class="n">data_helpers</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">data_helpers</span><span class="p">[</span><span class="nf">file.exists</span><span class="p">(</span><span class="n">data_helpers</span><span class="p">)]</span>
+<span class="kr">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nf">length</span><span class="p">(</span><span class="n">data_helpers</span><span class="p">))</span><span class="w"> </span><span class="nf">stop</span><span class="p">(</span><span class="s">"Extract the complete lab ZIP, including its data folder, before running."</span><span class="p">)</span>
+<span class="nf">source</span><span class="p">(</span><span class="n">data_helpers</span><span class="p">[[</span><span class="m">1</span><span class="p">]])</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">required_packages</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span>
+<span class="w">  </span><span class="s">"digest"</span><span class="p">,</span><span class="w"> </span><span class="s">"dplyr"</span><span class="p">,</span><span class="w"> </span><span class="s">"ggplot2"</span><span class="p">,</span><span class="w"> </span><span class="s">"fixest"</span><span class="p">)</span>
+<span class="n">missing_packages</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">required_packages</span><span class="p">[</span><span class="o">!</span><span class="nf">vapply</span><span class="p">(</span>
+<span class="w">  </span><span class="n">required_packages</span><span class="p">,</span>
+<span class="w">  </span><span class="n">requireNamespace</span><span class="p">,</span>
+<span class="w">  </span><span class="nf">logical</span><span class="p">(</span><span class="m">1</span><span class="p">),</span>
+<span class="w">  </span><span class="n">quietly</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span>
+<span class="p">)]</span>
+<span class="kr">if</span><span class="w"> </span><span class="p">(</span><span class="nf">length</span><span class="p">(</span><span class="n">missing_packages</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nf">stop</span><span class="p">(</span><span class="s">"Install the documented R environment first; missing: "</span><span class="p">,</span><span class="w"> </span><span class="nf">paste</span><span class="p">(</span><span class="n">missing_packages</span><span class="p">,</span><span class="w"> </span><span class="n">collapse</span><span class="o">=</span><span class="s">", "</span><span class="p">),</span><span class="w"> </span><span class="n">call.</span><span class="o">=</span><span class="kc">FALSE</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="nf">invisible</span><span class="p">(</span><span class="nf">lapply</span><span class="p">(</span><span class="n">required_packages</span><span class="p">,</span><span class="w"> </span><span class="n">library</span><span class="p">,</span><span class="w"> </span><span class="n">character.only</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">))</span>
+
+<span class="n">injury</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">qed_data</span><span class="p">(</span><span class="s">"injury"</span><span class="p">)</span>
+
+
+<span class="n">injury_ky</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">injury</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">filter</span><span class="p">(</span><span class="n">ky</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">transmute</span><span class="p">(</span>
+<span class="w">    </span><span class="n">duration</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">durat</span><span class="p">,</span>
+<span class="w">    </span><span class="n">log_duration</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ldurat</span><span class="p">,</span>
+<span class="w">    </span><span class="n">after_change</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">afchnge</span><span class="p">,</span>
+<span class="w">    </span><span class="n">high_earner</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">highearn</span><span class="p">,</span>
+<span class="w">    </span><span class="n">male</span><span class="p">,</span>
+<span class="w">    </span><span class="n">married</span><span class="p">,</span>
+<span class="w">    </span><span class="n">age</span><span class="p">,</span>
+<span class="w">    </span><span class="n">hospitalized</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hosp</span><span class="p">,</span>
+<span class="w">    </span><span class="n">industry</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">factor</span><span class="p">(</span><span class="n">indust</span><span class="p">),</span>
+<span class="w">    </span><span class="n">injury_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">factor</span><span class="p">(</span><span class="n">injtype</span><span class="p">),</span>
+<span class="w">    </span><span class="n">log_pre_wage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lprewage</span>
+<span class="w">  </span><span class="p">)</span>
+
+<span class="n">cell_counts</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">with</span><span class="p">(</span><span class="n">injury_ky</span><span class="p">,</span><span class="w"> </span><span class="nf">table</span><span class="p">(</span><span class="n">after_change</span><span class="p">,</span><span class="w"> </span><span class="n">high_earner</span><span class="p">))</span>
+
+<span class="nf">data.frame</span><span class="p">(</span>
+<span class="w">  </span><span class="n">observations</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">nrow</span><span class="p">(</span><span class="n">injury_ky</span><span class="p">),</span>
+<span class="w">  </span><span class="n">before_claims</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">injury_ky</span><span class="o">$</span><span class="n">after_change</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">0</span><span class="p">),</span>
+<span class="w">  </span><span class="n">after_claims</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">injury_ky</span><span class="o">$</span><span class="n">after_change</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1</span><span class="p">),</span>
+<span class="w">  </span><span class="n">low_earner_claims</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">injury_ky</span><span class="o">$</span><span class="n">high_earner</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">0</span><span class="p">),</span>
+<span class="w">  </span><span class="n">high_earner_claims</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">injury_ky</span><span class="o">$</span><span class="n">high_earner</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">cell_counts</span>
+
+<span class="nf">stopifnot</span><span class="p">(</span>
+<span class="w">  </span><span class="nf">nrow</span><span class="p">(</span><span class="n">injury_ky</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">5626L</span><span class="p">,</span>
+<span class="w">  </span><span class="nf">all</span><span class="p">(</span><span class="n">cell_counts</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">0</span><span class="p">),</span>
+<span class="w">  </span><span class="nf">all</span><span class="p">(</span><span class="nf">is.finite</span><span class="p">(</span><span class="n">injury_ky</span><span class="o">$</span><span class="n">log_duration</span><span class="p">)),</span>
+<span class="w">  </span><span class="nf">all</span><span class="p">(</span><span class="n">injury_ky</span><span class="o">$</span><span class="n">duration</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">0</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Attaching package: ‘dplyr’
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>The following objects are masked from ‘package:stats’:
+
+    filter, lag
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+</pre></div>
+</div>
+<div class="output text_html"><table class="dataframe">
+<caption>A data.frame: 1 × 5</caption>
+<thead>
+	<tr><th scope=col>observations</th><th scope=col>before_claims</th><th scope=col>after_claims</th><th scope=col>low_earner_claims</th><th scope=col>high_earner_claims</th></tr>
+	<tr><th scope=col>&lt;int&gt;</th><th scope=col>&lt;int&gt;</th><th scope=col>&lt;int&gt;</th><th scope=col>&lt;int&gt;</th><th scope=col>&lt;int&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>5626</td><td>2938</td><td>2688</td><td>3232</td><td>2394</td></tr>
+</tbody>
+</table>
+</div><div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>            high_earner
+after_change    0    1
+           0 1705 1233
+           1 1527 1161
+</pre></div>
+</div>
+</div>
+</div>
+<p>Checkpoint: what would fail if the policy also materially changed which low earners filed claims after 1980?</p>
+</section>
+<section id="step-3-plot-the-four-cells">
+<h2>Step 3: Plot The Four Cells<a class="headerlink" href="#step-3-plot-the-four-cells" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">9</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">5</span><span class="p">)</span>
+<span class="n">cell_means</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">injury_ky</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">group_by</span><span class="p">(</span><span class="n">after_change</span><span class="p">,</span><span class="w"> </span><span class="n">high_earner</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">summarise</span><span class="p">(</span>
+<span class="w">    </span><span class="n">mean_log_duration</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">log_duration</span><span class="p">),</span>
+<span class="w">    </span><span class="n">standard_error</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">sd</span><span class="p">(</span><span class="n">log_duration</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="nf">sqrt</span><span class="p">(</span><span class="nf">n</span><span class="p">()),</span>
+<span class="w">    </span><span class="n">claims</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">n</span><span class="p">(),</span>
+<span class="w">    </span><span class="n">.groups</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"drop"</span>
+<span class="w">  </span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">mutate</span><span class="p">(</span>
+<span class="w">    </span><span class="n">period</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">factor</span><span class="p">(</span>
+<span class="w">      </span><span class="n">after_change</span><span class="p">,</span>
+<span class="w">      </span><span class="n">levels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">),</span>
+<span class="w">      </span><span class="n">labels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">"Before 1980"</span><span class="p">,</span><span class="w"> </span><span class="s">"After 1980"</span><span class="p">)</span>
+<span class="w">    </span><span class="p">),</span>
+<span class="w">    </span><span class="n">group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">factor</span><span class="p">(</span>
+<span class="w">      </span><span class="n">high_earner</span><span class="p">,</span>
+<span class="w">      </span><span class="n">levels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">),</span>
+<span class="w">      </span><span class="n">labels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">"Low earners"</span><span class="p">,</span><span class="w"> </span><span class="s">"High earners"</span><span class="p">)</span>
+<span class="w">    </span><span class="p">),</span>
+<span class="w">    </span><span class="n">lower_95</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mean_log_duration</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="m">1.96</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">standard_error</span><span class="p">,</span>
+<span class="w">    </span><span class="n">upper_95</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mean_log_duration</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="m">1.96</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">standard_error</span>
+<span class="w">  </span><span class="p">)</span>
+
+<span class="nf">ggplot</span><span class="p">(</span>
+<span class="w">  </span><span class="n">cell_means</span><span class="p">,</span>
+<span class="w">  </span><span class="nf">aes</span><span class="p">(</span><span class="n">period</span><span class="p">,</span><span class="w"> </span><span class="n">mean_log_duration</span><span class="p">,</span><span class="w"> </span><span class="n">colour</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">group</span><span class="p">,</span><span class="w"> </span><span class="n">group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">group</span><span class="p">)</span>
+<span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_line</span><span class="p">(</span><span class="n">linewidth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.8</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_pointrange</span><span class="p">(</span>
+<span class="w">    </span><span class="nf">aes</span><span class="p">(</span><span class="n">ymin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lower_95</span><span class="p">,</span><span class="w"> </span><span class="n">ymax</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">upper_95</span><span class="p">),</span>
+<span class="w">    </span><span class="n">linewidth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.7</span>
+<span class="w">  </span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">labs</span><span class="p">(</span>
+<span class="w">    </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Mean log benefit duration"</span><span class="p">,</span>
+<span class="w">    </span><span class="n">colour</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"The canonical DiD plot contains four group-period means"</span>
+<span class="w">  </span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">theme_minimal</span><span class="p">(</span><span class="n">base_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">12</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">theme</span><span class="p">(</span><span class="n">legend.position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"bottom"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<a class="reference internal image-reference" href="../_images/7eb7c4780317a82159b2332212419e7ed56f2bcfa1fc031f4405c6f4f0b9386c.png"><img alt="../_images/7eb7c4780317a82159b2332212419e7ed56f2bcfa1fc031f4405c6f4f0b9386c.png" src="../_images/7eb7c4780317a82159b2332212419e7ed56f2bcfa1fc031f4405c6f4f0b9386c.png" style="width: 540px; height: 300px;" />
+</a>
+</div>
+</div>
+<p>The graph describes the observed means. With only one before period, it cannot show whether the two groups followed parallel trends before the policy.</p>
+</section>
+<section id="step-4-calculate-difference-in-differences-by-hand">
+<h2>Step 4: Calculate Difference-in-Differences By Hand<a class="headerlink" href="#step-4-calculate-difference-in-differences-by-hand" title="Link to this heading">#</a></h2>
+<p>Let <span class="math notranslate nohighlight">\(`\bar{Y}_{g,t}`\)</span> denote a group-period mean. The canonical contrast is</p>
+<div class="math notranslate nohighlight">
+\[
+\widehat{ATT}_{DiD} =
+(\bar{Y}_{T,post} - \bar{Y}_{T,pre}) -
+(\bar{Y}_{C,post} - \bar{Y}_{C,pre}).
+\]</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">cell_value</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="n">after_value</span><span class="p">,</span><span class="w"> </span><span class="n">high_value</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">cell_means</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">    </span><span class="nf">filter</span><span class="p">(</span>
+<span class="w">      </span><span class="n">after_change</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">after_value</span><span class="p">,</span>
+<span class="w">      </span><span class="n">high_earner</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">high_value</span>
+<span class="w">    </span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">    </span><span class="nf">pull</span><span class="p">(</span><span class="n">mean_log_duration</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="n">treated_before</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">cell_value</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">)</span>
+<span class="n">treated_after</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">cell_value</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">)</span>
+<span class="n">control_before</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">cell_value</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="m">0</span><span class="p">)</span>
+<span class="n">control_after</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">cell_value</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="m">0</span><span class="p">)</span>
+
+<span class="n">treated_change</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">treated_after</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">treated_before</span>
+<span class="n">control_change</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">control_after</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">control_before</span>
+<span class="n">did_manual</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">treated_change</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">control_change</span>
+
+<span class="n">did_table</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">data.frame</span><span class="p">(</span>
+<span class="w">  </span><span class="n">group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">"Low earners"</span><span class="p">,</span><span class="w"> </span><span class="s">"High earners"</span><span class="p">,</span><span class="w"> </span><span class="s">"Difference"</span><span class="p">),</span>
+<span class="w">  </span><span class="n">before</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="n">control_before</span><span class="p">,</span><span class="w"> </span><span class="n">treated_before</span><span class="p">,</span><span class="w"> </span><span class="n">treated_before</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">control_before</span><span class="p">),</span>
+<span class="w">  </span><span class="n">after</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="n">control_after</span><span class="p">,</span><span class="w"> </span><span class="n">treated_after</span><span class="p">,</span><span class="w"> </span><span class="n">treated_after</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">control_after</span><span class="p">),</span>
+<span class="w">  </span><span class="n">change</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="n">control_change</span><span class="p">,</span><span class="w"> </span><span class="n">treated_change</span><span class="p">,</span><span class="w"> </span><span class="n">did_manual</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">did_table</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">mutate</span><span class="p">(</span><span class="nf">across</span><span class="p">(</span><span class="nf">where</span><span class="p">(</span><span class="n">is.numeric</span><span class="p">),</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="nf">round</span><span class="p">(</span><span class="n">.x</span><span class="p">,</span><span class="w"> </span><span class="m">3</span><span class="p">)))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><table class="dataframe">
+<caption>A data.frame: 3 × 4</caption>
+<thead>
+	<tr><th scope=col>group</th><th scope=col>before</th><th scope=col>after</th><th scope=col>change</th></tr>
+	<tr><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>Low earners </td><td>1.126</td><td>1.133</td><td>0.008</td></tr>
+	<tr><td>High earners</td><td>1.382</td><td>1.580</td><td>0.198</td></tr>
+	<tr><td>Difference  </td><td>0.256</td><td>0.447</td><td>0.191</td></tr>
+</tbody>
+</table>
+</div></div>
+</div>
+<p>Checkpoint: identify the unobserved counterfactual mean that the low-earner change is being used to construct.</p>
+</section>
+<section id="step-5-recover-the-same-contrast-with-regression">
+<h2>Step 5: Recover The Same Contrast With Regression<a class="headerlink" href="#step-5-recover-the-same-contrast-with-regression" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">basic_fit</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">feols</span><span class="p">(</span>
+<span class="w">  </span><span class="n">log_duration</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">high_earner</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">after_change</span><span class="p">,</span>
+<span class="w">  </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">injury_ky</span><span class="p">,</span>
+<span class="w">  </span><span class="n">vcov</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"hetero"</span>
+<span class="p">)</span>
+
+<span class="n">did_regression</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">coef</span><span class="p">(</span><span class="n">basic_fit</span><span class="p">)[[</span><span class="s">"high_earner:after_change"</span><span class="p">]]</span>
+<span class="n">did_standard_error</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">se</span><span class="p">(</span><span class="n">basic_fit</span><span class="p">)[[</span><span class="s">"high_earner:after_change"</span><span class="p">]]</span>
+
+<span class="n">basic_result</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">data.frame</span><span class="p">(</span>
+<span class="w">  </span><span class="n">estimate_log_points</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">did_regression</span><span class="p">,</span>
+<span class="w">  </span><span class="n">heteroskedasticity_robust_se</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">did_standard_error</span><span class="p">,</span>
+<span class="w">  </span><span class="n">lower_95</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">did_regression</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="m">1.96</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">did_standard_error</span><span class="p">,</span>
+<span class="w">  </span><span class="n">upper_95</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">did_regression</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="m">1.96</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">did_standard_error</span>
+<span class="p">)</span>
+
+<span class="n">basic_result</span>
+
+<span class="nf">stopifnot</span><span class="p">(</span>
+<span class="w">  </span><span class="nf">abs</span><span class="p">(</span><span class="n">did_manual</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">did_regression</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="m">1e-10</span><span class="p">,</span>
+<span class="w">  </span><span class="nf">is.finite</span><span class="p">(</span><span class="n">did_standard_error</span><span class="p">),</span>
+<span class="w">  </span><span class="n">did_standard_error</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">0</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><table class="dataframe">
+<caption>A data.frame: 1 × 4</caption>
+<thead>
+	<tr><th scope=col>estimate_log_points</th><th scope=col>heteroskedasticity_robust_se</th><th scope=col>lower_95</th><th scope=col>upper_95</th></tr>
+	<tr><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>0.1906012</td><td>0.06898196</td><td>0.05539656</td><td>0.3258058</td></tr>
+</tbody>
+</table>
+</div></div>
+</div>
+<p>The interaction coefficient is algebraically identical to the manual DiD contrast. Regression has not changed the identifying comparison; it has made inference and extensions easier.</p>
+</section>
+<section id="step-6-interpret-the-log-outcome">
+<h2>Step 6: Interpret The Log Outcome<a class="headerlink" href="#step-6-interpret-the-log-outcome" title="Link to this heading">#</a></h2>
+<p>For a contrast in mean log outcomes, <span class="math notranslate nohighlight">\(`100\widehat{\delta}`\)</span> approximates the percentage difference in the ratio of geometric-mean changes. The exact transformation of that ratio is <span class="math notranslate nohighlight">\(`100[\exp(\widehat{\delta})-1]`\)</span>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">percentage_approximation</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">100</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">did_regression</span>
+<span class="n">percentage_exact</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">100</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="nf">exp</span><span class="p">(</span><span class="n">did_regression</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="m">1</span><span class="p">)</span>
+
+<span class="nf">data.frame</span><span class="p">(</span>
+<span class="w">  </span><span class="n">interpretation</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">"Approximation"</span><span class="p">,</span><span class="w"> </span><span class="s">"Exact transformation"</span><span class="p">),</span>
+<span class="w">  </span><span class="n">percent_change</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="n">percentage_approximation</span><span class="p">,</span><span class="w"> </span><span class="n">percentage_exact</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="nf">stopifnot</span><span class="p">(</span>
+<span class="w">  </span><span class="n">percentage_exact</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">percentage_approximation</span><span class="p">,</span>
+<span class="w">  </span><span class="n">percentage_exact</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">0</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><table class="dataframe">
+<caption>A data.frame: 2 × 2</caption>
+<thead>
+	<tr><th scope=col>interpretation</th><th scope=col>percent_change</th></tr>
+	<tr><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;dbl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>Approximation       </td><td>19.06012</td></tr>
+	<tr><td>Exact transformation</td><td>20.99768</td></tr>
+</tbody>
+</table>
+</div></div>
+</div>
+<p>State the 0.191 log-point result and its approximately 21% geometric-mean ratio interpretation. It is not automatically a 21% causal change in arithmetic mean weeks or the average individual percentage effect; those interpretations need additional assumptions.</p>
+</section>
+<section id="step-7-compare-a-prespecified-adjusted-model">
+<h2>Step 7: Compare A Prespecified Adjusted Model<a class="headerlink" href="#step-7-compare-a-prespecified-adjusted-model" title="Link to this heading">#</a></h2>
+<p>Heiss’s example adds claimant, injury, and industry characteristics. This can improve precision and address observed composition differences only if the variables are measured consistently and are not consequences of the policy (Heiss 2026). It cannot repair differential unobserved trends. Because some covariates are missing, compare models on a common complete-case sample before attributing a coefficient change to adjustment.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">adjustment_variables</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span>
+<span class="w">  </span><span class="s">"male"</span><span class="p">,</span>
+<span class="w">  </span><span class="s">"married"</span><span class="p">,</span>
+<span class="w">  </span><span class="s">"age"</span><span class="p">,</span>
+<span class="w">  </span><span class="s">"hospitalized"</span><span class="p">,</span>
+<span class="w">  </span><span class="s">"industry"</span><span class="p">,</span>
+<span class="w">  </span><span class="s">"injury_type"</span><span class="p">,</span>
+<span class="w">  </span><span class="s">"log_pre_wage"</span>
+<span class="p">)</span>
+
+<span class="n">adjusted_sample</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">injury_ky</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">filter</span><span class="p">(</span><span class="nf">if_all</span><span class="p">(</span><span class="nf">all_of</span><span class="p">(</span><span class="n">adjustment_variables</span><span class="p">),</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="o">!</span><span class="nf">is.na</span><span class="p">(</span><span class="n">.x</span><span class="p">)))</span>
+
+<span class="n">basic_common_sample_fit</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">feols</span><span class="p">(</span>
+<span class="w">  </span><span class="n">log_duration</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">high_earner</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">after_change</span><span class="p">,</span>
+<span class="w">  </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">adjusted_sample</span><span class="p">,</span>
+<span class="w">  </span><span class="n">vcov</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"hetero"</span>
+<span class="p">)</span>
+
+<span class="n">adjusted_fit</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">feols</span><span class="p">(</span>
+<span class="w">  </span><span class="n">log_duration</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">high_earner</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">after_change</span><span class="w"> </span><span class="o">+</span>
+<span class="w">    </span><span class="n">male</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">married</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">age</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">hospitalized</span><span class="w"> </span><span class="o">+</span>
+<span class="w">    </span><span class="n">industry</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">injury_type</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">log_pre_wage</span><span class="p">,</span>
+<span class="w">  </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">adjusted_sample</span><span class="p">,</span>
+<span class="w">  </span><span class="n">vcov</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"hetero"</span>
+<span class="p">)</span>
+
+<span class="n">model_comparison</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">data.frame</span><span class="p">(</span>
+<span class="w">  </span><span class="n">model</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span>
+<span class="w">    </span><span class="s">"Unadjusted, full sample"</span><span class="p">,</span>
+<span class="w">    </span><span class="s">"Unadjusted, common sample"</span><span class="p">,</span>
+<span class="w">    </span><span class="s">"Adjusted, common sample"</span>
+<span class="w">  </span><span class="p">),</span>
+<span class="w">  </span><span class="n">observations</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span>
+<span class="w">    </span><span class="nf">nobs</span><span class="p">(</span><span class="n">basic_fit</span><span class="p">),</span>
+<span class="w">    </span><span class="nf">nobs</span><span class="p">(</span><span class="n">basic_common_sample_fit</span><span class="p">),</span>
+<span class="w">    </span><span class="nf">nobs</span><span class="p">(</span><span class="n">adjusted_fit</span><span class="p">)</span>
+<span class="w">  </span><span class="p">),</span>
+<span class="w">  </span><span class="n">estimate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span>
+<span class="w">    </span><span class="nf">coef</span><span class="p">(</span><span class="n">basic_fit</span><span class="p">)[[</span><span class="s">"high_earner:after_change"</span><span class="p">]],</span>
+<span class="w">    </span><span class="nf">coef</span><span class="p">(</span><span class="n">basic_common_sample_fit</span><span class="p">)[[</span><span class="s">"high_earner:after_change"</span><span class="p">]],</span>
+<span class="w">    </span><span class="nf">coef</span><span class="p">(</span><span class="n">adjusted_fit</span><span class="p">)[[</span><span class="s">"high_earner:after_change"</span><span class="p">]]</span>
+<span class="w">  </span><span class="p">),</span>
+<span class="w">  </span><span class="n">robust_se</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span>
+<span class="w">    </span><span class="nf">se</span><span class="p">(</span><span class="n">basic_fit</span><span class="p">)[[</span><span class="s">"high_earner:after_change"</span><span class="p">]],</span>
+<span class="w">    </span><span class="nf">se</span><span class="p">(</span><span class="n">basic_common_sample_fit</span><span class="p">)[[</span><span class="s">"high_earner:after_change"</span><span class="p">]],</span>
+<span class="w">    </span><span class="nf">se</span><span class="p">(</span><span class="n">adjusted_fit</span><span class="p">)[[</span><span class="s">"high_earner:after_change"</span><span class="p">]]</span>
+<span class="w">  </span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">model_comparison</span><span class="o">$</span><span class="n">exact_percent</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">100</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="nf">exp</span><span class="p">(</span><span class="n">model_comparison</span><span class="o">$</span><span class="n">estimate</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="m">1</span><span class="p">)</span>
+<span class="n">model_comparison</span>
+
+<span class="nf">stopifnot</span><span class="p">(</span>
+<span class="w">  </span><span class="nf">nrow</span><span class="p">(</span><span class="n">model_comparison</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">3L</span><span class="p">,</span>
+<span class="w">  </span><span class="nf">nobs</span><span class="p">(</span><span class="n">basic_common_sample_fit</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nf">nobs</span><span class="p">(</span><span class="n">adjusted_fit</span><span class="p">),</span>
+<span class="w">  </span><span class="nf">nobs</span><span class="p">(</span><span class="n">adjusted_fit</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nf">nobs</span><span class="p">(</span><span class="n">basic_fit</span><span class="p">),</span>
+<span class="w">  </span><span class="nf">all</span><span class="p">(</span><span class="nf">is.finite</span><span class="p">(</span><span class="nf">as.matrix</span><span class="p">(</span><span class="n">model_comparison</span><span class="p">[</span><span class="nf">c</span><span class="p">(</span><span class="s">"estimate"</span><span class="p">,</span><span class="w"> </span><span class="s">"robust_se"</span><span class="p">,</span><span class="w"> </span><span class="s">"exact_percent"</span><span class="p">)])))</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><table class="dataframe">
+<caption>A data.frame: 3 × 5</caption>
+<thead>
+	<tr><th scope=col>model</th><th scope=col>observations</th><th scope=col>estimate</th><th scope=col>robust_se</th><th scope=col>exact_percent</th></tr>
+	<tr><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;int&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>Unadjusted, full sample  </td><td>5626</td><td>0.1906012</td><td>0.06898196</td><td>20.99768</td></tr>
+	<tr><td>Unadjusted, common sample</td><td>5347</td><td>0.2291051</td><td>0.07037358</td><td>25.74742</td></tr>
+	<tr><td>Adjusted, common sample  </td><td>5347</td><td>0.1687213</td><td>0.06390652</td><td>18.37902</td></tr>
+</tbody>
+</table>
+</div></div>
+</div>
+<p>Checkpoint: for each added variable, ask whether it is a pre-policy characteristic, a measure that could respond to the policy, or a proxy for changing claim composition.</p>
+</section>
+<section id="step-8-audit-identification-and-inference">
+<h2>Step 8: Audit Identification And Inference<a class="headerlink" href="#step-8-audit-identification-and-inference" title="Link to this heading">#</a></h2>
+<p>Complete this table before writing a causal conclusion.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Issue</p></th>
+<th class="head"><p>What the data show</p></th>
+<th class="head"><p>What remains assumed</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Parallel trends</p></td>
+<td><p>One pre-policy mean per group</p></td>
+<td><p>The untreated group gap would otherwise have remained stable</p></td>
+</tr>
+<tr class="row-odd"><td><p>No anticipation</p></td>
+<td><p>Policy timing is coded before/after</p></td>
+<td><p>Claims and behaviour did not adjust before the recorded change</p></td>
+</tr>
+<tr class="row-even"><td><p>Composition</p></td>
+<td><p>Claim characteristics can be compared</p></td>
+<td><p>The policy did not differentially change who appears in each group</p></td>
+</tr>
+<tr class="row-odd"><td><p>Spillovers</p></td>
+<td><p>Low earners were not directly covered by the higher cap</p></td>
+<td><p>Their claims were not indirectly affected</p></td>
+</tr>
+<tr class="row-even"><td><p>Inference</p></td>
+<td><p>Thousands of claims permit heteroskedasticity-robust calculations</p></td>
+<td><p>There are only two policy groups and one policy change</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The robust standard error allows unequal residual variance across claims. It does not create thousands of independent policy assignments, and clustering on only two earnings groups would not provide reliable cluster inference. The design’s identifying variation remains group by period.</p>
+</section>
+<section id="practical-implications">
+<h2>Practical Implications<a class="headerlink" href="#practical-implications" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>The four-cell calculation is the design; the regression interaction is its representation.</p></li>
+<li><p>A two-period design cannot use pre-policy leads to diagnose parallel trends.</p></li>
+<li><p>Covariate adjustment may improve comparability or precision, but only after the covariates’ causal timing is defended.</p></li>
+<li><p>Individual-level sample size should not be confused with the number of independent policy shocks.</p></li>
+<li><p>A defensible conclusion reports the estimate, the comparison group, and the unsupported assumptions together.</p></li>
+</ul>
+<p>Next, use the <a class="reference internal" href="difference-in-differences-staggered-diagnostics-lab.html"><span class="std std-doc">staggered-adoption diagnostics lab</span></a> to see why the meaning of TWFE changes when treatment begins at different times.</p>
+</section>
+<section id="worked-answers">
+<h2>Worked answers<a class="headerlink" href="#worked-answers" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>The regression interaction equals the manual DiD because the unadjusted model is saturated in the four group-period cells.</p></li>
+<li><p>A flat-looking two-point graph contains no evidence about pre-treatment trends.</p></li>
+<li><p>Compare adjusted and unadjusted estimates on a common sample to separate covariate adjustment from missing-data selection.</p></li>
+<li><p>Exponentiating the log contrast describes a ratio of geometric-mean changes, not automatically the effect on arithmetic mean weeks.</p></li>
+</ul>
+<p>Gertler, Paul J., Sebastian Martinez, Patrick Premand, Laura B. Rawlings, and Christel M. J. Vermeersch. 2016. “Chapter 7: Difference-in-Differences.” In <em>Impact Evaluation in Practice</em>, 2nd ed. Washington, DC: Inter-American Development Bank; World Bank. <a class="reference external" href="https://doi.org/10.1596/978-1-4648-0779-4">https://doi.org/10.1596/978-1-4648-0779-4</a>.</p>
+<p>Heiss, Andrew. 2026. “Difference-in-Differences: Worked Example.” 2026. <a class="reference external" href="https://evalsp26.classes.andrewheiss.com/example/diff-in-diff.html">https://evalsp26.classes.andrewheiss.com/example/diff-in-diff.html</a>.</p>
+<p>Huntington-Klein, Nick. 2021. “Difference-in-Differences.” In <em>The Effect: An Introduction to Research Design and Causality</em>. Chapman; Hall/CRC. <a class="reference external" href="https://theeffectbook.net/ch-DifferenceinDifference.html">https://theeffectbook.net/ch-DifferenceinDifference.html</a>.</p>
+<p>Meyer, Bruce D., W. Kip Viscusi, and David L. Durbin. 1995. “Workers’ Compensation and Injury Duration: Evidence from a Natural Experiment.” <em>American Economic Review</em> 85 (3): 322–40. <a class="reference external" href="https://www.jstor.org/stable/2118178">https://www.jstor.org/stable/2118178</a>.</p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "r"
+        },
+        kernelOptions: {
+            name: "ir",
+            path: "./notebooks"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'ir'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="hisp-ie-practice-lab.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Lab: HISP IE in Practice</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="difference-in-differences-staggered-diagnostics-lab.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Lab: Staggered Adoption and TWFE Diagnostics</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item"><div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-to-use-this-page">How To Use This Page</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#training-goal">Training Goal</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-1-declare-the-design">Step 1: Declare The Design</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-2-load-and-audit-the-data">Step 2: Load And Audit The Data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-3-plot-the-four-cells">Step 3: Plot The Four Cells</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-4-calculate-difference-in-differences-by-hand">Step 4: Calculate Difference-in-Differences By Hand</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-5-recover-the-same-contrast-with-regression">Step 5: Recover The Same Contrast With Regression</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-6-interpret-the-log-outcome">Step 6: Interpret The Log Outcome</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-7-compare-a-prespecified-adjusted-model">Step 7: Compare A Prespecified Adjusted Model</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-8-audit-identification-and-inference">Step 8: Audit Identification And Inference</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#practical-implications">Practical Implications</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#worked-answers">Worked answers</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By QED Labs
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2026.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+<div class="extra_footer">
+  Built for offline use. External reading links are optional.
+</div>
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

@@ -1,0 +1,7 @@
+.venv/
+.r-library/
+.jupyter_cache/
+.ipynb_checkpoints/
+_build/.doctrees/
+_build/jupyter_execute/
+_build/.jupyter_cache/

@@ -1,0 +1,8 @@
+{
+  "argv": [
+    "{resource_dir}/launch-ir.sh",
+    "{connection_file}"
+  ],
+  "display_name": "R (QED Labs Offline)",
+  "language": "R"
+}

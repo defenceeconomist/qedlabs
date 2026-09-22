@@ -1,0 +1,876 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Lab: Fuzzy RD and local IV with veteran home ownership &#8212; Quasi-Experimental Design Labs</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../_static/scripts/fontawesome.js?digest=55c26ed414f5f8a31ebb"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=b8b12719"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/regression-discontinuity-fuzzy-lab';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Lab: Synthetic Control Mechanics" href="synthetic-control-mechanics-lab.html" />
+    <link rel="prev" title="Lab: RDD design diagnostics and sensitivity" href="regression-discontinuity-diagnostics-lab.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">Quasi-Experimental Design Labs</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../index.html">
+                    Quasi-Experimental Design Labs
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Start here</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../offline-setup.html">Offline setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data.html">Bundled data and provenance</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Matching and Weighting</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="lalonde-matching-lab.html">Lab: LaLonde Matching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="black-politicians-lab.html">Lab: Black Politicians</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nsw-cps-benchmark-lab.html">Lab: NSW and CPS Benchmark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hisp-ie-practice-lab.html">Lab: HISP IE in Practice</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Difference-in-Differences</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="difference-in-differences-foundations-lab.html">Lab: Difference-in-Differences Foundations With Kentucky Workers’ Compensation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="difference-in-differences-staggered-diagnostics-lab.html">Lab: Staggered Adoption and TWFE Diagnostics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="difference-in-differences-modern-estimators-lab.html">Lab: Modern Multi-Period Difference-in-Differences</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Regression Discontinuity</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="regression-discontinuity-foundations-lab.html">Lab: Sharp RD foundations with government transfers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="regression-discontinuity-diagnostics-lab.html">Lab: RDD design diagnostics and sensitivity</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Lab: Fuzzy RD and local IV with veteran home ownership</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Synthetic Control</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-mechanics-lab.html">Lab: Synthetic Control Mechanics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-proposition-99-lab.html">Lab: Proposition 99 With tidysynth</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-augmentation-lab.html">Lab: Augmented SCM With Kansas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-design-lab.html">Lab: Synthetic Control Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-donor-pool-lab.html">Lab: Synthetic Control Donor Pool Design</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Interrupted Time Series</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="interrupted-time-series-mechanics-lab.html">Lab: Interrupted Time Series Foundations With Seatbelts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interrupted-time-series-design-diagnostics-lab.html">Lab: Seatbelt Law Design and Robustness</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interrupted-time-series-counterfactual-validation-lab.html">Lab: Interrupted Time Series Counterfactual Validation</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/notebooks/regression-discontinuity-fuzzy-lab.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm pst-navbar-icon" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Lab: Fuzzy RD and local IV with veteran home ownership</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-to-use-this-lab">How to use this lab</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#learning-objectives">Learning objectives</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#research-question-and-design">Research question and design</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#load-data-and-inspect-the-cutoff">1. Load data and inspect the cutoff</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#match-the-local-first-stage-reduced-form-and-iv">2. Match the local first stage, reduced form and IV</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fuzzy-rd-and-robust-bias-correction">3. Fuzzy RD and robust bias correction</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#interpretation-and-worked-checkpoints">4. Interpretation and worked checkpoints</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="lab-fuzzy-rd-and-local-iv-with-veteran-home-ownership">
+<h1>Lab: Fuzzy RD and local IV with veteran home ownership<a class="headerlink" href="#lab-fuzzy-rd-and-local-iv-with-veteran-home-ownership" title="Link to this heading">#</a></h1>
+<p><a class="reference internal" href="../index.html"><span class="std std-doc">Book home</span></a></p>
+<p>Use the R kernel. Keep the supplied <code class="docutils literal notranslate"><span class="pre">data/</span></code> folder beside this notebook. Run cells in order after installing the documented R environment. Data loading is entirely local.</p>
+<section id="how-to-use-this-lab">
+<h2>How to use this lab<a class="headerlink" href="#how-to-use-this-lab" title="Link to this heading">#</a></h2>
+<p>Allow 60–90 minutes. You should be comfortable with basic regression and R data frames. Restore the <a class="reference external" href="https://defenceeconomist.github.io/qedlabs/labs/regression-discontinuity-reproducibility.html">tested environment</a>, then run every cell in order in a fresh kernel. Every run loads and verifies the bundled local data. No data are downloaded. The HTML page displays code; the downloadable notebook executes it.</p>
+<p><a class="reference external" href="https://defenceeconomist.github.io/qedlabs/notes/other-methods/regression-discontinuity.html">RDD overview</a> · <a class="reference external" href="https://defenceeconomist.github.io/qedlabs/notes/rdd/regression-discontinuity-sources.html">Source reading map</a></p>
+</section>
+<section id="learning-objectives">
+<h2>Learning objectives<a class="headerlink" href="#learning-objectives" title="Link to this heading">#</a></h2>
+<ol class="arabic simple">
+<li><p>Separate assignment, receipt and outcomes.</p></li>
+<li><p>Recover the same conventional local effect as a Wald ratio, an IV fit and fuzzy RD.</p></li>
+<li><p>Distinguish conventional estimates from robust bias-corrected estimates and intervals.</p></li>
+<li><p>Assess the first stage, discrete-score support, exclusion restriction and local interpretation.</p></li>
+</ol>
+</section>
+<section id="research-question-and-design">
+<h2>Research question and design<a class="headerlink" href="#research-question-and-design" title="Link to this heading">#</a></h2>
+<p>Does veteran status induced by a birth-cohort threshold affect home ownership? The data derive from Fetter’s study of mid-century GI Bills and the worked example in <em>The Effect</em> (Fetter 2013; Huntington-Klein 2025). This exercise reproduces an <strong>unadjusted local teaching contrast</strong>, not the paper’s full covariate-adjusted specification.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Component</p></th>
+<th class="head"><p>Definition</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Running variable</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">qob_minus_kw</span></code>, quarter of birth centered on the supplied threshold</p></td>
+</tr>
+<tr class="row-odd"><td><p>Instrument</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">z</span> <span class="pre">=</span> <span class="pre">1(qob_minus_kw</span> <span class="pre">&gt;=</span> <span class="pre">0)</span></code>; keep the supplied orientation</p></td>
+</tr>
+<tr class="row-even"><td><p>Actual treatment</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">vet_wwko</span></code>, veteran of World War II or the Korean War</p></td>
+</tr>
+<tr class="row-odd"><td><p>Outcome</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">home_ownership</span></code>, a binary indicator</p></td>
+</tr>
+<tr class="row-even"><td><p>Primary window</p></td>
+<td><p>Strictly within 12 quarters; sensitivity within 6 and 9</p></td>
+</tr>
+<tr class="row-odd"><td><p>Target</p></td>
+<td><p>Local IV effect of veteran status for threshold compliers, conditional on the IV and score-model assumptions</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The catalogue’s eligibility wording is not enough to determine first-stage direction: veteran rates <strong>fall</strong> across this score’s zero. The first-stage and reduced-form jumps must therefore retain their signs. The score has half-integer quarterly support, not arbitrarily close observations. Finite-support extrapolation is a substantive limitation, even with many people.</p>
+</section>
+<section id="load-data-and-inspect-the-cutoff">
+<h2>1. Load data and inspect the cutoff<a class="headerlink" href="#load-data-and-inspect-the-cutoff" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">data_helpers</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">"data/load-data.R"</span><span class="p">,</span><span class="w"> </span><span class="s">"../data/load-data.R"</span><span class="p">,</span><span class="w"> </span><span class="s">"docs/labs/data/load-data.R"</span><span class="p">)</span>
+<span class="n">data_helpers</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">data_helpers</span><span class="p">[</span><span class="nf">file.exists</span><span class="p">(</span><span class="n">data_helpers</span><span class="p">)]</span>
+<span class="kr">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nf">length</span><span class="p">(</span><span class="n">data_helpers</span><span class="p">))</span><span class="w"> </span><span class="nf">stop</span><span class="p">(</span><span class="s">"Extract the complete lab ZIP, including its data folder, before running."</span><span class="p">)</span>
+<span class="nf">source</span><span class="p">(</span><span class="n">data_helpers</span><span class="p">[[</span><span class="m">1</span><span class="p">]])</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="c1"># Restore the isolated library documented on the setup page before running.</span>
+<span class="n">required</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">"rdrobust"</span><span class="p">,</span><span class="w"> </span><span class="s">"rddensity"</span><span class="p">,</span><span class="w"> </span><span class="s">"digest"</span><span class="p">,</span><span class="w"> </span><span class="s">"jsonlite"</span><span class="p">)</span>
+<span class="n">missing</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">required</span><span class="p">[</span><span class="o">!</span><span class="nf">vapply</span><span class="p">(</span><span class="n">required</span><span class="p">,</span><span class="w"> </span><span class="n">requireNamespace</span><span class="p">,</span><span class="w"> </span><span class="nf">logical</span><span class="p">(</span><span class="m">1</span><span class="p">),</span><span class="w"> </span><span class="n">quietly</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">)]</span>
+<span class="kr">if</span><span class="w"> </span><span class="p">(</span><span class="nf">length</span><span class="p">(</span><span class="n">missing</span><span class="p">))</span><span class="w"> </span><span class="nf">stop</span><span class="p">(</span><span class="s">"Restore the RDD environment; missing: "</span><span class="p">,</span><span class="w"> </span><span class="nf">paste</span><span class="p">(</span><span class="n">missing</span><span class="p">,</span><span class="w"> </span><span class="n">collapse</span><span class="o">=</span><span class="s">", "</span><span class="p">))</span>
+<span class="n">load_data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="w"> </span><span class="nf">as.data.frame</span><span class="p">(</span><span class="nf">qed_data</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+<span class="n">require_support</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">h</span><span class="p">,</span><span class="w"> </span><span class="n">cutoff</span><span class="o">=</span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="n">order</span><span class="o">=</span><span class="m">2</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">x</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">as.numeric</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">cutoff</span>
+<span class="w">  </span><span class="kr">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nf">is.finite</span><span class="p">(</span><span class="n">h</span><span class="p">)</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="o">!</span><span class="nf">all</span><span class="p">(</span><span class="nf">is.finite</span><span class="p">(</span><span class="n">x</span><span class="p">)))</span><span class="w"> </span><span class="nf">stop</span><span class="p">(</span><span class="s">"Nonfinite score or invalid bandwidth"</span><span class="p">)</span>
+<span class="w">  </span><span class="kr">for</span><span class="w"> </span><span class="p">(</span><span class="n">side</span><span class="w"> </span><span class="kr">in</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">x</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="o">-</span><span class="n">h</span><span class="p">],</span><span class="w"> </span><span class="n">x</span><span class="p">[</span><span class="n">x</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">h</span><span class="p">]))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kr">if</span><span class="w"> </span><span class="p">(</span><span class="nf">length</span><span class="p">(</span><span class="n">side</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="m">10</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nf">length</span><span class="p">(</span><span class="nf">unique</span><span class="p">(</span><span class="n">side</span><span class="p">))</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">order</span><span class="m">+2</span><span class="p">)</span>
+<span class="w">      </span><span class="nf">stop</span><span class="p">(</span><span class="s">"Insufficient observations or distinct scores on a cutoff side"</span><span class="p">)</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="nf">invisible</span><span class="p">(</span><span class="kc">TRUE</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="n">rd_fit</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">h</span><span class="o">=</span><span class="kc">NULL</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="o">=</span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="n">cutoff</span><span class="o">=</span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="n">treatment</span><span class="o">=</span><span class="kc">NULL</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">args</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="nf">as.numeric</span><span class="p">(</span><span class="n">y</span><span class="p">),</span><span class="w"> </span><span class="n">x</span><span class="o">=</span><span class="nf">as.numeric</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="w"> </span><span class="n">c</span><span class="o">=</span><span class="n">cutoff</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="o">=</span><span class="n">p</span><span class="p">,</span><span class="w"> </span><span class="n">q</span><span class="o">=</span><span class="n">p</span><span class="m">+1</span><span class="p">,</span>
+<span class="w">               </span><span class="n">kernel</span><span class="o">=</span><span class="s">"triangular"</span><span class="p">,</span><span class="w"> </span><span class="n">vce</span><span class="o">=</span><span class="s">"hc0"</span><span class="p">,</span><span class="w"> </span><span class="n">bwselect</span><span class="o">=</span><span class="s">"mserd"</span><span class="p">,</span><span class="w"> </span><span class="n">masspoints</span><span class="o">=</span><span class="s">"adjust"</span><span class="p">,</span>
+<span class="w">               </span><span class="n">stdvars</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">,</span><span class="w"> </span><span class="n">level</span><span class="o">=</span><span class="m">95</span><span class="p">,</span><span class="w"> </span><span class="n">bwrestrict</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">,</span><span class="w"> </span><span class="n">scaleregul</span><span class="o">=</span><span class="m">1</span><span class="p">)</span>
+<span class="w">  </span><span class="kr">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nf">is.null</span><span class="p">(</span><span class="n">h</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nf">require_support</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">h</span><span class="p">,</span><span class="w"> </span><span class="n">cutoff</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="m">+1</span><span class="p">)</span>
+<span class="w">    </span><span class="n">args</span><span class="o">$</span><span class="n">h</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">h</span><span class="p">;</span><span class="w"> </span><span class="n">args</span><span class="o">$</span><span class="n">b</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">h</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="kr">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nf">is.null</span><span class="p">(</span><span class="n">treatment</span><span class="p">))</span><span class="w"> </span><span class="n">args</span><span class="o">$</span><span class="n">fuzzy</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">as.numeric</span><span class="p">(</span><span class="n">treatment</span><span class="p">)</span>
+<span class="w">  </span><span class="nf">do.call</span><span class="p">(</span><span class="n">rdrobust</span><span class="o">::</span><span class="n">rdrobust</span><span class="p">,</span><span class="w"> </span><span class="n">args</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="n">rd_row</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="n">fit</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nf">data.frame</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">label</span><span class="p">,</span><span class="w"> </span><span class="n">jump</span><span class="o">=</span><span class="n">fit</span><span class="o">$</span><span class="n">coef</span><span class="p">[</span><span class="m">1</span><span class="p">,</span><span class="m">1</span><span class="p">],</span><span class="w"> </span><span class="n">bias_corrected</span><span class="o">=</span><span class="n">fit</span><span class="o">$</span><span class="n">coef</span><span class="p">[</span><span class="m">3</span><span class="p">,</span><span class="m">1</span><span class="p">],</span>
+<span class="w">             </span><span class="n">se_robust</span><span class="o">=</span><span class="n">fit</span><span class="o">$</span><span class="n">se</span><span class="p">[</span><span class="m">3</span><span class="p">,</span><span class="m">1</span><span class="p">],</span><span class="w"> </span><span class="n">ci_low</span><span class="o">=</span><span class="n">fit</span><span class="o">$</span><span class="n">ci</span><span class="p">[</span><span class="m">3</span><span class="p">,</span><span class="m">1</span><span class="p">],</span><span class="w"> </span><span class="n">ci_high</span><span class="o">=</span><span class="n">fit</span><span class="o">$</span><span class="n">ci</span><span class="p">[</span><span class="m">3</span><span class="p">,</span><span class="m">2</span><span class="p">],</span>
+<span class="w">             </span><span class="n">h_left</span><span class="o">=</span><span class="n">fit</span><span class="o">$</span><span class="n">bws</span><span class="p">[</span><span class="m">1</span><span class="p">,</span><span class="m">1</span><span class="p">],</span><span class="w"> </span><span class="n">h_right</span><span class="o">=</span><span class="n">fit</span><span class="o">$</span><span class="n">bws</span><span class="p">[</span><span class="m">1</span><span class="p">,</span><span class="m">2</span><span class="p">],</span>
+<span class="w">             </span><span class="n">b_left</span><span class="o">=</span><span class="n">fit</span><span class="o">$</span><span class="n">bws</span><span class="p">[</span><span class="m">2</span><span class="p">,</span><span class="m">1</span><span class="p">],</span><span class="w"> </span><span class="n">b_right</span><span class="o">=</span><span class="n">fit</span><span class="o">$</span><span class="n">bws</span><span class="p">[</span><span class="m">2</span><span class="p">,</span><span class="m">2</span><span class="p">],</span>
+<span class="w">             </span><span class="n">n_left</span><span class="o">=</span><span class="n">fit</span><span class="o">$</span><span class="n">N_h</span><span class="p">[</span><span class="m">1</span><span class="p">],</span><span class="w"> </span><span class="n">n_right</span><span class="o">=</span><span class="n">fit</span><span class="o">$</span><span class="n">N_h</span><span class="p">[</span><span class="m">2</span><span class="p">],</span><span class="w"> </span><span class="n">row.names</span><span class="o">=</span><span class="kc">NULL</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="n">binned_plot</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">width</span><span class="p">,</span><span class="w"> </span><span class="n">ylabel</span><span class="p">,</span><span class="w"> </span><span class="n">xlabel</span><span class="o">=</span><span class="s">"Centered assignment score"</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">bins</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">cut</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">breaks</span><span class="o">=</span><span class="nf">seq</span><span class="p">(</span><span class="o">-</span><span class="n">width</span><span class="p">,</span><span class="w"> </span><span class="n">width</span><span class="p">,</span><span class="w"> </span><span class="n">length.out</span><span class="o">=</span><span class="m">31</span><span class="p">),</span><span class="w"> </span><span class="n">include.lowest</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">)</span>
+<span class="w">  </span><span class="n">means</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">aggregate</span><span class="p">(</span><span class="nf">cbind</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">),</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="n">bin</span><span class="o">=</span><span class="n">bins</span><span class="p">),</span><span class="w"> </span><span class="n">mean</span><span class="p">)</span>
+<span class="w">  </span><span class="nf">plot</span><span class="p">(</span><span class="n">means</span><span class="o">$</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">means</span><span class="o">$</span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">pch</span><span class="o">=</span><span class="m">19</span><span class="p">,</span><span class="w"> </span><span class="n">col</span><span class="o">=</span><span class="s">"#174c63"</span><span class="p">,</span><span class="w"> </span><span class="n">xlab</span><span class="o">=</span><span class="n">xlabel</span><span class="p">,</span><span class="w"> </span><span class="n">ylab</span><span class="o">=</span><span class="n">ylabel</span><span class="p">)</span>
+<span class="w">  </span><span class="nf">abline</span><span class="p">(</span><span class="n">v</span><span class="o">=</span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="n">lty</span><span class="o">=</span><span class="m">2</span><span class="p">)</span>
+<span class="w">  </span><span class="nf">invisible</span><span class="p">(</span><span class="n">means</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">vapply</span><span class="p">(</span><span class="n">required</span><span class="p">,</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="w"> </span><span class="nf">as.character</span><span class="p">(</span><span class="nf">packageVersion</span><span class="p">(</span><span class="n">p</span><span class="p">)),</span><span class="w"> </span><span class="nf">character</span><span class="p">(</span><span class="m">1</span><span class="p">)))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> rdrobust rddensity    digest  jsonlite 
+  "4.0.0"     "3.0"  "0.6.39"   "2.0.0" 
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">raw</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">load_data</span><span class="p">(</span><span class="s">"mortgages"</span><span class="p">)</span>
+<span class="n">required_columns</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">"qob_minus_kw"</span><span class="p">,</span><span class="s">"vet_wwko"</span><span class="p">,</span><span class="s">"home_ownership"</span><span class="p">)</span>
+<span class="nf">stopifnot</span><span class="p">(</span><span class="nf">all</span><span class="p">(</span><span class="n">required_columns</span><span class="w"> </span><span class="o">%in%</span><span class="w"> </span><span class="nf">names</span><span class="p">(</span><span class="n">raw</span><span class="p">)))</span>
+<span class="n">window</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">raw</span><span class="p">[</span><span class="o">!</span><span class="nf">is.na</span><span class="p">(</span><span class="n">raw</span><span class="o">$</span><span class="n">qob_minus_kw</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="nf">abs</span><span class="p">(</span><span class="n">raw</span><span class="o">$</span><span class="n">qob_minus_kw</span><span class="p">)</span><span class="o">&lt;</span><span class="m">12</span><span class="p">,]</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">colSums</span><span class="p">(</span><span class="nf">is.na</span><span class="p">(</span><span class="n">window</span><span class="p">[</span><span class="n">required_columns</span><span class="p">])))</span>
+<span class="n">vet</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">window</span><span class="p">[</span><span class="nf">complete.cases</span><span class="p">(</span><span class="n">window</span><span class="p">[</span><span class="n">required_columns</span><span class="p">]),]</span>
+<span class="n">x</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">vet</span><span class="o">$</span><span class="n">qob_minus_kw</span><span class="p">;</span><span class="n">d</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">vet</span><span class="o">$</span><span class="n">vet_wwko</span><span class="p">;</span><span class="n">y</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">vet</span><span class="o">$</span><span class="n">home_ownership</span>
+<span class="nf">stopifnot</span><span class="p">(</span><span class="nf">setequal</span><span class="p">(</span><span class="nf">unique</span><span class="p">(</span><span class="n">d</span><span class="p">),</span><span class="nf">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="m">1</span><span class="p">)),</span><span class="nf">setequal</span><span class="p">(</span><span class="nf">unique</span><span class="p">(</span><span class="n">y</span><span class="p">),</span><span class="nf">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="m">1</span><span class="p">)),</span><span class="o">!</span><span class="nf">any</span><span class="p">(</span><span class="n">x</span><span class="o">==</span><span class="m">0</span><span class="p">))</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="n">source_n</span><span class="o">=</span><span class="nf">nrow</span><span class="p">(</span><span class="n">raw</span><span class="p">),</span><span class="n">window_n</span><span class="o">=</span><span class="nf">nrow</span><span class="p">(</span><span class="n">window</span><span class="p">),</span><span class="n">complete_n</span><span class="o">=</span><span class="nf">nrow</span><span class="p">(</span><span class="n">vet</span><span class="p">)))</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">list</span><span class="p">(</span><span class="n">left_support</span><span class="o">=</span><span class="nf">sort</span><span class="p">(</span><span class="nf">unique</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">x</span><span class="o">&lt;</span><span class="m">0</span><span class="p">])),</span><span class="n">right_support</span><span class="o">=</span><span class="nf">sort</span><span class="p">(</span><span class="nf">unique</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">x</span><span class="o">&gt;</span><span class="m">0</span><span class="p">]))))</span>
+<span class="n">quarter_means</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">aggregate</span><span class="p">(</span><span class="nf">cbind</span><span class="p">(</span><span class="n">vet_wwko</span><span class="p">,</span><span class="n">home_ownership</span><span class="p">)</span><span class="o">~</span><span class="n">qob_minus_kw</span><span class="p">,</span><span class="n">data</span><span class="o">=</span><span class="n">vet</span><span class="p">,</span><span class="n">mean</span><span class="p">)</span>
+<span class="nf">par</span><span class="p">(</span><span class="n">mfrow</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="m">2</span><span class="p">))</span>
+<span class="nf">plot</span><span class="p">(</span><span class="n">quarter_means</span><span class="o">$</span><span class="n">qob_minus_kw</span><span class="p">,</span><span class="n">quarter_means</span><span class="o">$</span><span class="n">vet_wwko</span><span class="p">,</span><span class="n">pch</span><span class="o">=</span><span class="m">19</span><span class="p">,</span>
+<span class="w">     </span><span class="n">xlab</span><span class="o">=</span><span class="s">"Centered birth quarter"</span><span class="p">,</span><span class="n">ylab</span><span class="o">=</span><span class="s">"Veteran probability"</span><span class="p">);</span><span class="nf">abline</span><span class="p">(</span><span class="n">v</span><span class="o">=</span><span class="m">0</span><span class="p">,</span><span class="n">lty</span><span class="o">=</span><span class="m">2</span><span class="p">)</span>
+<span class="nf">plot</span><span class="p">(</span><span class="n">quarter_means</span><span class="o">$</span><span class="n">qob_minus_kw</span><span class="p">,</span><span class="n">quarter_means</span><span class="o">$</span><span class="n">home_ownership</span><span class="p">,</span><span class="n">pch</span><span class="o">=</span><span class="m">19</span><span class="p">,</span>
+<span class="w">     </span><span class="n">xlab</span><span class="o">=</span><span class="s">"Centered birth quarter"</span><span class="p">,</span><span class="n">ylab</span><span class="o">=</span><span class="s">"Home-ownership probability"</span><span class="p">);</span><span class="nf">abline</span><span class="p">(</span><span class="n">v</span><span class="o">=</span><span class="m">0</span><span class="p">,</span><span class="n">lty</span><span class="o">=</span><span class="m">2</span><span class="p">)</span>
+<span class="nf">par</span><span class="p">(</span><span class="n">mfrow</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="m">1</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  qob_minus_kw       vet_wwko home_ownership 
+             0              0              0 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  source_n   window_n complete_n 
+    214144      56901      56901 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>$left_support
+ [1] -11.5 -10.5  -9.5  -8.5  -7.5  -6.5  -5.5  -4.5  -3.5  -2.5  -1.5  -0.5
+
+$right_support
+ [1]  0.5  1.5  2.5  3.5  4.5  5.5  6.5  7.5  8.5  9.5 10.5 11.5
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/07000eb8a8258ed52d9481a55b0ddc9966a522477ecbb1db838eca0bf5624f57.png"><img alt="../_images/07000eb8a8258ed52d9481a55b0ddc9966a522477ecbb1db838eca0bf5624f57.png" src="../_images/07000eb8a8258ed52d9481a55b0ddc9966a522477ecbb1db838eca0bf5624f57.png" style="width: 480px; height: 288px;" />
+</a>
+</div>
+</div>
+<p><strong>Checkpoint:</strong> the full file has 214,144 records. Report the number of distinct quarters, not just people, in the analysis window. The two panels are the <strong>first stage</strong> and <strong>reduced form</strong>; the outcome plot is not a fitted second-stage IV equation.</p>
+</section>
+<section id="match-the-local-first-stage-reduced-form-and-iv">
+<h2>2. Match the local first stage, reduced form and IV<a class="headerlink" href="#match-the-local-first-stage-reduced-form-and-iv" title="Link to this heading">#</a></h2>
+<p>Use the same complete-case sample, triangular weights and linear score controls in both regressions. The exogenous controls are an intercept, scaled score <code class="docutils literal notranslate"><span class="pre">u=x/h</span></code>, and the score-by-cutoff interaction <code class="docutils literal notranslate"><span class="pre">u*z</span></code>. Veteran status is endogenous and <code class="docutils literal notranslate"><span class="pre">z</span></code> is the excluded instrument. There is one endogenous treatment and one excluded instrument; do not accidentally treat actual participation as assignment.</p>
+<p>The ratio guard below rejects jumps smaller than one percentage point. This is a transparent classroom numerical safeguard, <strong>not a general weak-instrument test</strong>. Report the first-stage uncertainty as well.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">safe_wald</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="n">reduced_form</span><span class="p">,</span><span class="w"> </span><span class="n">first_stage</span><span class="p">,</span><span class="w"> </span><span class="n">minimum</span><span class="o">=</span><span class="m">0.01</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kr">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nf">all</span><span class="p">(</span><span class="nf">is.finite</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="n">reduced_form</span><span class="p">,</span><span class="n">first_stage</span><span class="p">)))</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nf">abs</span><span class="p">(</span><span class="n">first_stage</span><span class="p">)</span><span class="o">&lt;</span><span class="n">minimum</span><span class="p">)</span>
+<span class="w">    </span><span class="nf">stop</span><span class="p">(</span><span class="s">"Unusable first stage: local ratio is unstable"</span><span class="p">)</span>
+<span class="w">  </span><span class="n">reduced_form</span><span class="o">/</span><span class="n">first_stage</span>
+<span class="p">}</span>
+<span class="n">local_iv</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">d</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">h</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nf">require_support</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">h</span><span class="p">)</span>
+<span class="w">  </span><span class="n">keep</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">abs</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">&lt;</span><span class="n">h</span>
+<span class="w">  </span><span class="n">u</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">x</span><span class="p">[</span><span class="n">keep</span><span class="p">]</span><span class="o">/</span><span class="n">h</span><span class="p">;</span><span class="n">yy</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">y</span><span class="p">[</span><span class="n">keep</span><span class="p">];</span><span class="n">dd</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">d</span><span class="p">[</span><span class="n">keep</span><span class="p">]</span>
+<span class="w">  </span><span class="n">z</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">as.numeric</span><span class="p">(</span><span class="n">u</span><span class="o">&gt;=</span><span class="m">0</span><span class="p">);</span><span class="n">w</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">1</span><span class="o">-</span><span class="nf">abs</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+<span class="w">  </span><span class="n">exog</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">cbind</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="n">u</span><span class="p">,</span><span class="n">u</span><span class="o">*</span><span class="n">z</span><span class="p">)</span>
+<span class="w">  </span><span class="n">Z</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">cbind</span><span class="p">(</span><span class="n">exog</span><span class="p">,</span><span class="n">z</span><span class="p">);</span><span class="n">X</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">cbind</span><span class="p">(</span><span class="n">exog</span><span class="p">,</span><span class="n">dd</span><span class="p">)</span>
+<span class="w">  </span><span class="n">first</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">lm.wfit</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span><span class="n">dd</span><span class="p">,</span><span class="n">w</span><span class="p">)</span>
+<span class="w">  </span><span class="n">reduced</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">lm.wfit</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span><span class="n">yy</span><span class="p">,</span><span class="n">w</span><span class="p">)</span>
+<span class="w">  </span><span class="n">first_jump</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">unname</span><span class="p">(</span><span class="n">first</span><span class="o">$</span><span class="n">coefficients</span><span class="p">[</span><span class="m">4</span><span class="p">]);</span><span class="n">reduced_jump</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">unname</span><span class="p">(</span><span class="n">reduced</span><span class="o">$</span><span class="n">coefficients</span><span class="p">[</span><span class="m">4</span><span class="p">])</span>
+<span class="w">  </span><span class="n">ratio</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">safe_wald</span><span class="p">(</span><span class="n">reduced_jump</span><span class="p">,</span><span class="n">first_jump</span><span class="p">)</span>
+<span class="w">  </span><span class="c1"># Just-identified weighted IV moment equation, with a heteroskedastic sandwich.</span>
+<span class="w">  </span><span class="n">A</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">solve</span><span class="p">(</span><span class="nf">crossprod</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span><span class="n">w</span><span class="o">*</span><span class="n">X</span><span class="p">))</span>
+<span class="w">  </span><span class="n">beta</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">drop</span><span class="p">(</span><span class="n">A</span><span class="w"> </span><span class="o">%*%</span><span class="w"> </span><span class="nf">crossprod</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span><span class="n">w</span><span class="o">*</span><span class="n">yy</span><span class="p">))</span>
+<span class="w">  </span><span class="n">residual</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">yy</span><span class="o">-</span><span class="nf">drop</span><span class="p">(</span><span class="n">X</span><span class="w"> </span><span class="o">%*%</span><span class="w"> </span><span class="n">beta</span><span class="p">)</span>
+<span class="w">  </span><span class="n">variance</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">%*%</span><span class="w"> </span><span class="nf">crossprod</span><span class="p">(</span><span class="n">Z</span><span class="p">,(</span><span class="n">w</span><span class="o">*</span><span class="n">residual</span><span class="p">)</span><span class="o">^</span><span class="m">2</span><span class="o">*</span><span class="n">Z</span><span class="p">)</span><span class="w"> </span><span class="o">%*%</span><span class="w"> </span><span class="nf">t</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+<span class="w">  </span><span class="n">bread_first</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">solve</span><span class="p">(</span><span class="nf">crossprod</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span><span class="n">w</span><span class="o">*</span><span class="n">Z</span><span class="p">))</span>
+<span class="w">  </span><span class="n">variance_first</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">bread_first</span><span class="w"> </span><span class="o">%*%</span><span class="w"> </span><span class="nf">crossprod</span><span class="p">(</span><span class="n">Z</span><span class="p">,(</span><span class="n">w</span><span class="o">*</span><span class="n">first</span><span class="o">$</span><span class="n">residuals</span><span class="p">)</span><span class="o">^</span><span class="m">2</span><span class="o">*</span><span class="n">Z</span><span class="p">)</span><span class="w"> </span><span class="o">%*%</span><span class="w"> </span><span class="n">bread_first</span>
+<span class="w">  </span><span class="n">estimate</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">beta</span><span class="p">[</span><span class="m">4</span><span class="p">];</span><span class="n">se</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">sqrt</span><span class="p">(</span><span class="n">variance</span><span class="p">[</span><span class="m">4</span><span class="p">,</span><span class="m">4</span><span class="p">])</span>
+<span class="w">  </span><span class="nf">stopifnot</span><span class="p">(</span><span class="nf">abs</span><span class="p">(</span><span class="n">ratio</span><span class="o">-</span><span class="n">estimate</span><span class="p">)</span><span class="o">&lt;</span><span class="m">1e-7</span><span class="p">)</span>
+<span class="w">  </span><span class="nf">data.frame</span><span class="p">(</span><span class="n">bandwidth</span><span class="o">=</span><span class="n">h</span><span class="p">,</span><span class="n">first_stage</span><span class="o">=</span><span class="n">first_jump</span><span class="p">,</span><span class="n">first_se</span><span class="o">=</span><span class="nf">sqrt</span><span class="p">(</span><span class="n">variance_first</span><span class="p">[</span><span class="m">4</span><span class="p">,</span><span class="m">4</span><span class="p">]),</span>
+<span class="w">    </span><span class="n">reduced_form</span><span class="o">=</span><span class="n">reduced_jump</span><span class="p">,</span><span class="n">ratio</span><span class="o">=</span><span class="n">ratio</span><span class="p">,</span><span class="n">iv_estimate</span><span class="o">=</span><span class="n">estimate</span><span class="p">,</span><span class="n">iv_se</span><span class="o">=</span><span class="n">se</span><span class="p">,</span>
+<span class="w">    </span><span class="n">n_left</span><span class="o">=</span><span class="nf">sum</span><span class="p">(</span><span class="n">u</span><span class="o">&lt;</span><span class="m">0</span><span class="p">),</span><span class="n">n_right</span><span class="o">=</span><span class="nf">sum</span><span class="p">(</span><span class="n">u</span><span class="o">&gt;=</span><span class="m">0</span><span class="p">),</span><span class="n">support_left</span><span class="o">=</span><span class="nf">length</span><span class="p">(</span><span class="nf">unique</span><span class="p">(</span><span class="n">u</span><span class="p">[</span><span class="n">u</span><span class="o">&lt;</span><span class="m">0</span><span class="p">])),</span>
+<span class="w">    </span><span class="n">support_right</span><span class="o">=</span><span class="nf">length</span><span class="p">(</span><span class="nf">unique</span><span class="p">(</span><span class="n">u</span><span class="p">[</span><span class="n">u</span><span class="o">&gt;=</span><span class="m">0</span><span class="p">])))</span>
+<span class="p">}</span>
+<span class="n">iv_results</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">do.call</span><span class="p">(</span><span class="n">rbind</span><span class="p">,</span><span class="nf">lapply</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="m">6</span><span class="p">,</span><span class="m">9</span><span class="p">,</span><span class="m">12</span><span class="p">),</span><span class="kr">function</span><span class="p">(</span><span class="n">h</span><span class="p">)</span><span class="w"> </span><span class="nf">local_iv</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">d</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">h</span><span class="p">)))</span>
+<span class="nf">stopifnot</span><span class="p">(</span><span class="nf">all</span><span class="p">(</span><span class="n">iv_results</span><span class="o">$</span><span class="n">first_stage</span><span class="o">&lt;</span><span class="m">0</span><span class="p">))</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">iv_results</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>    bandwidth first_stage    first_se reduced_form     ratio iv_estimate
+dd          6 -0.05773611 0.013097475  -0.02569961 0.4451220   0.4451220
+dd1         9 -0.09315658 0.010596182  -0.02267763 0.2434357   0.2434357
+dd2        12 -0.12132268 0.009093182  -0.02260365 0.1863102   0.1863102
+         iv_se n_left n_right support_left support_right
+dd  0.22475357  14240   14070            6             6
+dd1 0.10671921  21461   21185            9             9
+dd2 0.06996534  28776   28125           12            12
+</pre></div>
+</div>
+</div>
+</div>
+<p>The calculation solves the weighted IV moment equations. It does not use ordinary second-stage OLS standard errors as if the fitted treatment were observed without estimation. The reported IV standard error is heteroskedasticity-robust but does <strong>not</strong> correct score-function approximation bias or eliminate the discrete-support limitation.</p>
+</section>
+<section id="fuzzy-rd-and-robust-bias-correction">
+<h2>3. Fuzzy RD and robust bias correction<a class="headerlink" href="#fuzzy-rd-and-robust-bias-correction" title="Link to this heading">#</a></h2>
+<p>Use the same fixed windows and kernel with <code class="docutils literal notranslate"><span class="pre">p=1</span></code>, <code class="docutils literal notranslate"><span class="pre">q=2</span></code>, <code class="docutils literal notranslate"><span class="pre">b=h</span></code>, HC0 residual variance and mass-point handling. For each window, estimate treatment and outcome jumps separately and also pass actual veteran status to the fuzzy estimator. The conventional fuzzy coefficient should equal the conventional ratio. The bias-corrected coefficient need not equal a naive ratio of separately bias-corrected jumps.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">fuzzy_rows</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">list</span><span class="p">();</span><span class="n">stage_rows</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">list</span><span class="p">()</span>
+<span class="kr">for</span><span class="w"> </span><span class="p">(</span><span class="n">h</span><span class="w"> </span><span class="kr">in</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">6</span><span class="p">,</span><span class="m">9</span><span class="p">,</span><span class="m">12</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">sample</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">abs</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">&lt;</span><span class="n">h</span>
+<span class="w">  </span><span class="n">ff</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">rd_fit</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">sample</span><span class="p">],</span><span class="n">x</span><span class="p">[</span><span class="n">sample</span><span class="p">],</span><span class="n">h</span><span class="o">=</span><span class="n">h</span><span class="p">,</span><span class="n">treatment</span><span class="o">=</span><span class="n">d</span><span class="p">[</span><span class="n">sample</span><span class="p">])</span>
+<span class="w">  </span><span class="n">fs</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">rd_fit</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="n">sample</span><span class="p">],</span><span class="n">x</span><span class="p">[</span><span class="n">sample</span><span class="p">],</span><span class="n">h</span><span class="o">=</span><span class="n">h</span><span class="p">)</span>
+<span class="w">  </span><span class="n">rf</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">rd_fit</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">sample</span><span class="p">],</span><span class="n">x</span><span class="p">[</span><span class="n">sample</span><span class="p">],</span><span class="n">h</span><span class="o">=</span><span class="n">h</span><span class="p">)</span>
+<span class="w">  </span><span class="n">fuzzy_rows</span><span class="p">[[</span><span class="nf">length</span><span class="p">(</span><span class="n">fuzzy_rows</span><span class="p">)</span><span class="m">+1</span><span class="p">]]</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">rd_row</span><span class="p">(</span><span class="n">ff</span><span class="p">,</span><span class="nf">paste0</span><span class="p">(</span><span class="s">"h"</span><span class="p">,</span><span class="n">h</span><span class="p">))</span>
+<span class="w">  </span><span class="n">stage_rows</span><span class="p">[[</span><span class="nf">length</span><span class="p">(</span><span class="n">stage_rows</span><span class="p">)</span><span class="m">+1</span><span class="p">]]</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">rd_row</span><span class="p">(</span><span class="n">fs</span><span class="p">,</span><span class="nf">paste0</span><span class="p">(</span><span class="s">"first_h"</span><span class="p">,</span><span class="n">h</span><span class="p">))</span>
+<span class="w">  </span><span class="n">stage_rows</span><span class="p">[[</span><span class="nf">length</span><span class="p">(</span><span class="n">stage_rows</span><span class="p">)</span><span class="m">+1</span><span class="p">]]</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">rd_row</span><span class="p">(</span><span class="n">rf</span><span class="p">,</span><span class="nf">paste0</span><span class="p">(</span><span class="s">"reduced_h"</span><span class="p">,</span><span class="n">h</span><span class="p">))</span>
+<span class="w">  </span><span class="n">conventional_ratio</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">safe_wald</span><span class="p">(</span><span class="n">rf</span><span class="o">$</span><span class="n">coef</span><span class="p">[</span><span class="m">1</span><span class="p">,</span><span class="m">1</span><span class="p">],</span><span class="n">fs</span><span class="o">$</span><span class="n">coef</span><span class="p">[</span><span class="m">1</span><span class="p">,</span><span class="m">1</span><span class="p">])</span>
+<span class="w">  </span><span class="n">target</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">iv_results</span><span class="o">$</span><span class="n">ratio</span><span class="p">[</span><span class="n">iv_results</span><span class="o">$</span><span class="n">bandwidth</span><span class="o">==</span><span class="n">h</span><span class="p">]</span>
+<span class="w">  </span><span class="nf">stopifnot</span><span class="p">(</span><span class="nf">abs</span><span class="p">(</span><span class="n">conventional_ratio</span><span class="o">-</span><span class="n">target</span><span class="p">)</span><span class="o">&lt;</span><span class="m">1e-7</span><span class="p">,</span><span class="nf">abs</span><span class="p">(</span><span class="n">ff</span><span class="o">$</span><span class="n">coef</span><span class="p">[</span><span class="m">1</span><span class="p">,</span><span class="m">1</span><span class="p">]</span><span class="o">-</span><span class="n">target</span><span class="p">)</span><span class="o">&lt;</span><span class="m">1e-7</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="n">fuzzy_results</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">do.call</span><span class="p">(</span><span class="n">rbind</span><span class="p">,</span><span class="n">fuzzy_rows</span><span class="p">);</span><span class="n">stages</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">do.call</span><span class="p">(</span><span class="n">rbind</span><span class="p">,</span><span class="n">stage_rows</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">fuzzy_results</span><span class="p">);</span><span class="nf">print</span><span class="p">(</span><span class="n">stages</span><span class="p">)</span>
+<span class="nf">plot</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="m">6</span><span class="p">,</span><span class="m">9</span><span class="p">,</span><span class="m">12</span><span class="p">),</span><span class="n">fuzzy_results</span><span class="o">$</span><span class="n">bias_corrected</span><span class="p">,</span><span class="n">type</span><span class="o">=</span><span class="s">"b"</span><span class="p">,</span><span class="n">pch</span><span class="o">=</span><span class="m">19</span><span class="p">,</span>
+<span class="w">     </span><span class="n">ylim</span><span class="o">=</span><span class="nf">range</span><span class="p">(</span><span class="n">fuzzy_results</span><span class="o">$</span><span class="n">ci_low</span><span class="p">,</span><span class="n">fuzzy_results</span><span class="o">$</span><span class="n">ci_high</span><span class="p">),</span>
+<span class="w">     </span><span class="n">xlab</span><span class="o">=</span><span class="s">"Bandwidth in quarters"</span><span class="p">,</span><span class="n">ylab</span><span class="o">=</span><span class="s">"Fuzzy effect on home ownership (RBC 95% CI)"</span><span class="p">)</span>
+<span class="nf">arrows</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="m">6</span><span class="p">,</span><span class="m">9</span><span class="p">,</span><span class="m">12</span><span class="p">),</span><span class="n">fuzzy_results</span><span class="o">$</span><span class="n">ci_low</span><span class="p">,</span><span class="nf">c</span><span class="p">(</span><span class="m">6</span><span class="p">,</span><span class="m">9</span><span class="p">,</span><span class="m">12</span><span class="p">),</span><span class="n">fuzzy_results</span><span class="o">$</span><span class="n">ci_high</span><span class="p">,</span>
+<span class="w">       </span><span class="n">angle</span><span class="o">=</span><span class="m">90</span><span class="p">,</span><span class="n">code</span><span class="o">=</span><span class="m">3</span><span class="p">,</span><span class="n">length</span><span class="o">=</span><span class="n">.</span><span class="m">05</span><span class="p">);</span><span class="nf">abline</span><span class="p">(</span><span class="n">h</span><span class="o">=</span><span class="m">0</span><span class="p">,</span><span class="n">lty</span><span class="o">=</span><span class="m">2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Warning message in (function (y, x, c = NULL, fuzzy = NULL, deriv = NULL, p = NULL, :
+“Mass points detected in the running variable.”
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Warning message in (function (y, x, c = NULL, fuzzy = NULL, deriv = NULL, p = NULL, :
+“Mass points detected in the running variable.”
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Warning message in (function (y, x, c = NULL, fuzzy = NULL, deriv = NULL, p = NULL, :
+“Mass points detected in the running variable.”
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Warning message in (function (y, x, c = NULL, fuzzy = NULL, deriv = NULL, p = NULL, :
+“Mass points detected in the running variable.”
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Warning message in (function (y, x, c = NULL, fuzzy = NULL, deriv = NULL, p = NULL, :
+“Mass points detected in the running variable.”
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Warning message in (function (y, x, c = NULL, fuzzy = NULL, deriv = NULL, p = NULL, :
+“Mass points detected in the running variable.”
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Warning message in (function (y, x, c = NULL, fuzzy = NULL, deriv = NULL, p = NULL, :
+“Mass points detected in the running variable.”
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Warning message in (function (y, x, c = NULL, fuzzy = NULL, deriv = NULL, p = NULL, :
+“Mass points detected in the running variable.”
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Warning message in (function (y, x, c = NULL, fuzzy = NULL, deriv = NULL, p = NULL, :
+“Mass points detected in the running variable.”
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  model      jump bias_corrected se_robust     ci_low   ci_high h_left h_right
+1    h6 0.4451220      0.7036597 0.3418614 0.03362363 1.3736958      6       6
+2    h9 0.2434357      0.4748561 0.1590273 0.16316834 0.7865438      9       9
+3   h12 0.1863102      0.3093225 0.1038987 0.10568487 0.5129602     12      12
+  b_left b_right n_left n_right
+1      6       6  14240   14070
+2      9       9  21461   21185
+3     12      12  28776   28125
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>        model        jump bias_corrected  se_robust      ci_low       ci_high
+1    first_h6 -0.05773611   -0.002533677 0.02000070 -0.04173433  0.0366669733
+2  reduced_h6 -0.02569961   -0.016054760 0.01827216 -0.05186754  0.0197580237
+3    first_h9 -0.09315658   -0.024737224 0.01590211 -0.05590479  0.0064303441
+4  reduced_h9 -0.02267763   -0.027580258 0.01457978 -0.05615609  0.0009955772
+5   first_h12 -0.12132268   -0.049764760 0.01360651 -0.07643302 -0.0230964979
+6 reduced_h12 -0.02260365   -0.024195870 0.01252722 -0.04874877  0.0003570292
+  h_left h_right b_left b_right n_left n_right
+1      6       6      6       6  14240   14070
+2      6       6      6       6  14240   14070
+3      9       9      9       9  21461   21185
+4      9       9      9       9  21461   21185
+5     12      12     12      12  28776   28125
+6     12      12     12      12  28776   28125
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/5dc6a3095522596056eb3972fa5ca40069d4cee98394740674ec017746c65667.png"><img alt="../_images/5dc6a3095522596056eb3972fa5ca40069d4cee98394740674ec017746c65667.png" src="../_images/5dc6a3095522596056eb3972fa5ca40069d4cee98394740674ec017746c65667.png" style="width: 480px; height: 288px;" />
+</a>
+</div>
+</div>
+</section>
+<section id="interpretation-and-worked-checkpoints">
+<h2>4. Interpretation and worked checkpoints<a class="headerlink" href="#interpretation-and-worked-checkpoints" title="Link to this heading">#</a></h2>
+<p>Within 12 quarters, <strong>56,901 complete observations</strong> remain: <strong>28,776 below</strong> and <strong>28,125 above</strong> zero, with <strong>12 distinct quarters per side</strong> and no missing required fields in this window. The right-minus-left first stage is <strong>−0.121322680</strong> (robust SE <strong>0.009093182</strong>); the reduced form is <strong>−0.022603652</strong>. Their ratio and the matched local IV estimate are <strong>+0.186310193</strong>, about <strong>18.63 percentage points</strong> in home ownership under the stated assumptions.</p>
+<p>The conventional ratio is <strong>0.445121959</strong> at six quarters and <strong>0.243435664</strong> at nine quarters. At 12 quarters, fuzzy <code class="docutils literal notranslate"><span class="pre">rdrobust</span></code> gives a <strong>bias-corrected estimate 0.309322544</strong> and robust 95% interval <strong>[0.105684869, 0.512960219]</strong>. This is not the conventional ratio with its ordinary IV standard error. The large changes across windows deserve substantive discussion; the <a class="reference external" href="https://defenceeconomist.github.io/qedlabs/labs/regression-discontinuity-reproducibility.html">reproduction record</a> provides all three windows.</p>
+<p>Home ownership is binary, so multiply a treatment-effect coefficient by 100 to express a percentage-point change. Do not change the numerator’s sign without changing the denominator’s sign. Here a negative first stage is expected from the supplied orientation; define monotonicity toward the side that raises veteran status.</p>
+<p>The local IV interpretation requires a relevant threshold, continuity/model assumptions, exclusion, and monotonicity. Birth cohort may relate to outcomes through other historical experiences. Veteran status changes more than access to a mortgage subsidy. An effect of veteran status is not automatically the isolated effect of mortgage subsidies.</p>
+<p>The nearest scores are −0.5 and +0.5 quarters. There are only 6, 9 or 12 distinct values on each side in these windows. Mass-point adjustment helps software account for repeated scores; it does not create observations arbitrarily close to zero. The reported intervals remain conditional on approximation assumptions, and neither clustering by quarter nor a continuous-density test is a generic repair. Avoid claiming reliable design-based coverage just because there are many individual records.</p>
+<p><strong>Deliverable:</strong> report the 12-quarter first stage, reduced form, conventional ratio and bias-corrected interval; contrast the 6- and 9-quarter results. Explain which assumption would be needed to isolate a mortgage-subsidy effect and what further evidence would support the coarse-score extrapolation.</p>
+<p>Fetter, Daniel K. 2013. “How Do Mortgage Subsidies Affect Home Ownership? Evidence from the Mid-Century GI Bills.” <em>American Economic Journal: Economic Policy</em> 5 (2): 111–47. <a class="reference external" href="https://doi.org/10.1257/pol.5.2.111">https://doi.org/10.1257/pol.5.2.111</a>.</p>
+<p>Huntington-Klein, Nick. 2025. “The Effect: An Introduction to Research Design and Causality. Chapter 20: Regression Discontinuity.” 2025. <a class="reference external" href="https://portal.heley.uk/researchlibrary/books/the-effect">https://portal.heley.uk/researchlibrary/books/the-effect</a>.</p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "r"
+        },
+        kernelOptions: {
+            name: "ir",
+            path: "./notebooks"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'ir'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="regression-discontinuity-diagnostics-lab.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Lab: RDD design diagnostics and sensitivity</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="synthetic-control-mechanics-lab.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Lab: Synthetic Control Mechanics</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item"><div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-to-use-this-lab">How to use this lab</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#learning-objectives">Learning objectives</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#research-question-and-design">Research question and design</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#load-data-and-inspect-the-cutoff">1. Load data and inspect the cutoff</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#match-the-local-first-stage-reduced-form-and-iv">2. Match the local first stage, reduced form and IV</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fuzzy-rd-and-robust-bias-correction">3. Fuzzy RD and robust bias correction</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#interpretation-and-worked-checkpoints">4. Interpretation and worked checkpoints</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By QED Labs
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2026.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+<div class="extra_footer">
+  Built for offline use. External reading links are optional.
+</div>
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

@@ -1,0 +1,51 @@
+title: "Quasi-Experimental Design Labs"
+author: "QED Labs"
+copyright: "2026"
+
+only_build_toc_files: true
+exclude_patterns:
+  - ".venv/**"
+  - ".r-library/**"
+  - ".jupyter_cache/**"
+  - "_build/**"
+  - "data/**"
+  - "vendor/**"
+  - "scripts/**"
+  - "README.md"
+
+execute:
+  execute_notebooks: cache
+  allow_errors: false
+  timeout: 900
+  run_in_temp: false
+  exclude_patterns:
+    - "notebooks/synthetic-control-design-lab.ipynb"
+    - "notebooks/synthetic-control-donor-pool-lab.ipynb"
+
+parse:
+  myst_enable_extensions:
+    - colon_fence
+    - dollarmath
+    - linkify
+
+html:
+  favicon: ""
+  use_repository_button: false
+  use_issues_button: false
+  use_edit_page_button: false
+  use_multitoc_numbering: false
+  extra_footer: "Built for offline use. External reading links are optional."
+
+repository:
+  url: ""
+
+launch_buttons:
+  notebook_interface: "jupyterlab"
+
+sphinx:
+  extra_extensions:
+    - sphinx-mathjax-offline
+  config:
+    html_show_sourcelink: false
+    suppress_warnings:
+      - myst.header

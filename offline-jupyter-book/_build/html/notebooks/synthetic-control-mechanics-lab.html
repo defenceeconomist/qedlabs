@@ -1,0 +1,1216 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Lab: Synthetic Control Mechanics &#8212; Quasi-Experimental Design Labs</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../_static/scripts/fontawesome.js?digest=55c26ed414f5f8a31ebb"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=b8b12719"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="../_static/mathjax/tex-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/synthetic-control-mechanics-lab';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Lab: Proposition 99 With tidysynth" href="synthetic-control-proposition-99-lab.html" />
+    <link rel="prev" title="Lab: Fuzzy RD and local IV with veteran home ownership" href="regression-discontinuity-fuzzy-lab.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">Quasi-Experimental Design Labs</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../index.html">
+                    Quasi-Experimental Design Labs
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Start here</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../offline-setup.html">Offline setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data.html">Bundled data and provenance</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Matching and Weighting</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="lalonde-matching-lab.html">Lab: LaLonde Matching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="black-politicians-lab.html">Lab: Black Politicians</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nsw-cps-benchmark-lab.html">Lab: NSW and CPS Benchmark</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hisp-ie-practice-lab.html">Lab: HISP IE in Practice</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Difference-in-Differences</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="difference-in-differences-foundations-lab.html">Lab: Difference-in-Differences Foundations With Kentucky Workers’ Compensation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="difference-in-differences-staggered-diagnostics-lab.html">Lab: Staggered Adoption and TWFE Diagnostics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="difference-in-differences-modern-estimators-lab.html">Lab: Modern Multi-Period Difference-in-Differences</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Regression Discontinuity</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="regression-discontinuity-foundations-lab.html">Lab: Sharp RD foundations with government transfers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="regression-discontinuity-diagnostics-lab.html">Lab: RDD design diagnostics and sensitivity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="regression-discontinuity-fuzzy-lab.html">Lab: Fuzzy RD and local IV with veteran home ownership</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Synthetic Control</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Lab: Synthetic Control Mechanics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-proposition-99-lab.html">Lab: Proposition 99 With tidysynth</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-augmentation-lab.html">Lab: Augmented SCM With Kansas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-design-lab.html">Lab: Synthetic Control Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-donor-pool-lab.html">Lab: Synthetic Control Donor Pool Design</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Interrupted Time Series</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="interrupted-time-series-mechanics-lab.html">Lab: Interrupted Time Series Foundations With Seatbelts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interrupted-time-series-design-diagnostics-lab.html">Lab: Seatbelt Law Design and Robustness</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interrupted-time-series-counterfactual-validation-lab.html">Lab: Interrupted Time Series Counterfactual Validation</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/notebooks/synthetic-control-mechanics-lab.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm pst-navbar-icon" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Lab: Synthetic Control Mechanics</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-to-use-this-page">How To Use This Page</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#training-goal">Training Goal</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dataset-at-a-glance">Dataset At A Glance</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-to-hand-back">What To Hand Back</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-1-load-packages-and-inspect-the-toy-panel">Step 1: Load Packages And Inspect The Toy Panel</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-2-define-the-treated-unit-and-donor-pool">Step 2: Define The Treated Unit And Donor Pool</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-3-encode-the-design-with-dataprep">Step 3: Encode The Design With <code class="docutils literal notranslate"><span class="pre">dataprep()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-4-inspect-the-objects-that-dataprep-built">Step 4: Inspect The Objects That <code class="docutils literal notranslate"><span class="pre">dataprep()</span></code> Built</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-5-estimate-the-synthetic-control">Step 5: Estimate The Synthetic Control</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-6-read-donor-weights-w-and-predictor-weights-v">Step 6: Read Donor Weights <code class="docutils literal notranslate"><span class="pre">W</span></code> And Predictor Weights <code class="docutils literal notranslate"><span class="pre">V</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-7-build-the-standard-summary-tables">Step 7: Build The Standard Summary Tables</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-8-plot-the-treated-and-synthetic-paths">Step 8: Plot The Treated And Synthetic Paths</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-9-calculate-the-gap-series-directly">Step 9: Calculate The Gap Series Directly</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#final-prompt">Final Prompt</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#next-step">Next Step</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="lab-synthetic-control-mechanics">
+<h1>Lab: Synthetic Control Mechanics<a class="headerlink" href="#lab-synthetic-control-mechanics" title="Link to this heading">#</a></h1>
+<p><a class="reference internal" href="../index.html"><span class="std std-doc">Book home</span></a></p>
+<p>Use the R kernel. Keep the supplied <code class="docutils literal notranslate"><span class="pre">data/</span></code> folder beside this notebook. Run cells in order after installing the documented R environment. Data loading is entirely local.</p>
+<section id="how-to-use-this-page">
+<h2>How To Use This Page<a class="headerlink" href="#how-to-use-this-page" title="Link to this heading">#</a></h2>
+<p>Use this page as the first hands-on SCM lab.</p>
+<ul class="simple">
+<li><p>Keep the <a class="reference external" href="https://defenceeconomist.github.io/qedlabs/notes/scm/synthetic-control.html">Synthetic Control</a> overview open in another tab.</p></li>
+<li><p>Use this lab to understand the grammar of classical SCM before you move to real case studies.</p></li>
+<li><p>Read <code class="docutils literal notranslate"><span class="pre">dataprep()</span></code> as part of the design, not as data wrangling boilerplate.</p></li>
+<li><p>End by explaining what the optimizer did and whether the fit looks credible enough to learn from.</p></li>
+</ul>
+<p>The code is shown but not executed when the site is rendered. That keeps the page readable while preserving a runnable workflow for teaching and self-study.</p>
+</section>
+<section id="training-goal">
+<h2>Training Goal<a class="headerlink" href="#training-goal" title="Link to this heading">#</a></h2>
+<p>Use <code class="docutils literal notranslate"><span class="pre">Synth::synth.data</span></code> to make the mechanics of classical SCM visible:</p>
+<ol class="arabic simple">
+<li><p>define the treated unit and donor pool explicitly</p></li>
+<li><p>encode the design with <code class="docutils literal notranslate"><span class="pre">dataprep()</span></code></p></li>
+<li><p>estimate the synthetic control with <code class="docutils literal notranslate"><span class="pre">synth()</span></code></p></li>
+<li><p>inspect donor weights <code class="docutils literal notranslate"><span class="pre">W</span></code> and predictor weights <code class="docutils literal notranslate"><span class="pre">V</span></code></p></li>
+<li><p>interpret the path plot and gap plot without pretending the toy data prove a substantive claim</p></li>
+</ol>
+</section>
+<section id="dataset-at-a-glance">
+<h2>Dataset At A Glance<a class="headerlink" href="#dataset-at-a-glance" title="Link to this heading">#</a></h2>
+<p>This lab uses <code class="docutils literal notranslate"><span class="pre">Synth::synth.data</span></code>, the package’s toy panel for teaching the original workflow.</p>
+<ul class="simple">
+<li><p>Purpose: mechanics first, not substantive interpretation</p></li>
+<li><p>Data shape: a small panel with one treated unit and a compact donor pool</p></li>
+<li><p>Main value: it isolates the optimizer, the matrices, and the output objects without the extra complexity of a real policy application</p></li>
+<li><p>Main limit: the dataset is too artificial to teach donor contamination, spillovers, or serious placebo logic</p></li>
+</ul>
+</section>
+<section id="what-to-hand-back">
+<h2>What To Hand Back<a class="headerlink" href="#what-to-hand-back" title="Link to this heading">#</a></h2>
+<p>By the end of the lab, you should be able to report:</p>
+<ul class="simple">
+<li><p>which unit is treated and which units enter the donor pool</p></li>
+<li><p>what <code class="docutils literal notranslate"><span class="pre">dataprep()</span></code> is doing to produce <code class="docutils literal notranslate"><span class="pre">X1</span></code>, <code class="docutils literal notranslate"><span class="pre">X0</span></code>, <code class="docutils literal notranslate"><span class="pre">Z1</span></code>, and <code class="docutils literal notranslate"><span class="pre">Z0</span></code></p></li>
+<li><p>which donors receive positive weight in <code class="docutils literal notranslate"><span class="pre">solution.w</span></code></p></li>
+<li><p>which predictors or lagged outcomes receive the most weight in <code class="docutils literal notranslate"><span class="pre">solution.v</span></code></p></li>
+<li><p>whether the pre-treatment fit looks good enough to trust the toy example as a demonstration of mechanics</p></li>
+</ul>
+</section>
+<section id="step-1-load-packages-and-inspect-the-toy-panel">
+<h2>Step 1: Load Packages And Inspect The Toy Panel<a class="headerlink" href="#step-1-load-packages-and-inspect-the-toy-panel" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">data_helpers</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">"data/load-data.R"</span><span class="p">,</span><span class="w"> </span><span class="s">"../data/load-data.R"</span><span class="p">,</span><span class="w"> </span><span class="s">"docs/labs/data/load-data.R"</span><span class="p">)</span>
+<span class="n">data_helpers</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">data_helpers</span><span class="p">[</span><span class="nf">file.exists</span><span class="p">(</span><span class="n">data_helpers</span><span class="p">)]</span>
+<span class="kr">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nf">length</span><span class="p">(</span><span class="n">data_helpers</span><span class="p">))</span><span class="w"> </span><span class="nf">stop</span><span class="p">(</span><span class="s">"Extract the complete lab ZIP, including its data folder, before running."</span><span class="p">)</span>
+<span class="nf">source</span><span class="p">(</span><span class="n">data_helpers</span><span class="p">[[</span><span class="m">1</span><span class="p">]])</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">required_packages</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span>
+<span class="w">  </span><span class="s">"Synth"</span><span class="p">,</span>
+<span class="w">  </span><span class="s">"dplyr"</span><span class="p">,</span>
+<span class="w">  </span><span class="s">"tibble"</span>
+<span class="p">)</span>
+
+<span class="n">missing_packages</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">required_packages</span><span class="p">[</span><span class="o">!</span><span class="nf">vapply</span><span class="p">(</span>
+<span class="w">  </span><span class="n">required_packages</span><span class="p">,</span>
+<span class="w">  </span><span class="n">requireNamespace</span><span class="p">,</span>
+<span class="w">  </span><span class="nf">logical</span><span class="p">(</span><span class="m">1</span><span class="p">),</span>
+<span class="w">  </span><span class="n">quietly</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span>
+<span class="p">)]</span>
+
+<span class="kr">if</span><span class="w"> </span><span class="p">(</span><span class="nf">length</span><span class="p">(</span><span class="n">missing_packages</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nf">stop</span><span class="p">(</span><span class="s">"Install the documented R environment first; missing: "</span><span class="p">,</span><span class="w"> </span><span class="nf">paste</span><span class="p">(</span><span class="n">missing_packages</span><span class="p">,</span><span class="w"> </span><span class="n">collapse</span><span class="o">=</span><span class="s">", "</span><span class="p">),</span><span class="w"> </span><span class="n">call.</span><span class="o">=</span><span class="kc">FALSE</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="nf">invisible</span><span class="p">(</span><span class="nf">lapply</span><span class="p">(</span><span class="n">required_packages</span><span class="p">,</span><span class="w"> </span><span class="n">library</span><span class="p">,</span><span class="w"> </span><span class="n">character.only</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">))</span>
+
+<span class="n">synth.data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">qed_data</span><span class="p">(</span><span class="s">"synth.data"</span><span class="p">)</span>
+
+<span class="n">synth.data</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="n">tibble</span><span class="o">::</span><span class="nf">as_tibble</span><span class="p">()</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">glimpse</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>##
+## Synth Package: Implements Synthetic Control Methods.
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>## See https://web.stanford.edu/~jhain/synthpage.html for additional information.
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Attaching package: ‘dplyr’
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>The following objects are masked from ‘package:stats’:
+
+    filter, lag
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Rows: 168
+Columns: 7
+$ unit.num &lt;dbl&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2…
+$ year     &lt;dbl&gt; 1980, 1981, 1982, 1983, 1984, 1985, 1986, 1987, 1988, 1989, 1…
+$ name     &lt;chr&gt; "control.region.northeast", "control.region.northeast", "cont…
+$ Y        &lt;dbl&gt; 131.8, 128.7, 127.4, 128.0, 123.1, 125.8, 126.0, 122.3, 121.5…
+$ X1       &lt;dbl&gt; <span class=" -Color -Color-Red">NA</span>, 0.2534060, 0.2512521, 0.2489048, 0.2462865, 0.2434099, 0.…
+$ X2       &lt;dbl&gt; 21.5, 24.1, 23.8, 21.6, 23.9, 22.9, 21.3, 21.8, 21.6, 18.3, 1…
+$ X3       &lt;dbl&gt; <span class=" -Color -Color-Red">NA</span>, <span class=" -Color -Color-Red">NA</span>, <span class=" -Color -Color-Red">NA</span>, <span class=" -Color -Color-Red">NA</span>, 17.9, 18.1, 18.7, 19.0, 18.9, 19.0, 19.9, 19.…
+</pre></div>
+</div>
+</div>
+</div>
+<p>Checkpoint:</p>
+<ul class="simple">
+<li><p>Can you see the unit identifier, time variable, predictors, and outcome?</p></li>
+<li><p>Which columns are design inputs and which columns are only labels?</p></li>
+</ul>
+</section>
+<section id="step-2-define-the-treated-unit-and-donor-pool">
+<h2>Step 2: Define The Treated Unit And Donor Pool<a class="headerlink" href="#step-2-define-the-treated-unit-and-donor-pool" title="Link to this heading">#</a></h2>
+<p>The point of this step is not software convenience. It is to make the comparison explicit before any optimization happens.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">treated_unit</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">7</span>
+
+<span class="n">donor_units</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">29</span><span class="p">,</span><span class="w"> </span><span class="m">2</span><span class="p">,</span><span class="w"> </span><span class="m">13</span><span class="p">,</span><span class="w"> </span><span class="m">17</span><span class="p">,</span><span class="w"> </span><span class="m">32</span><span class="p">,</span><span class="w"> </span><span class="m">38</span><span class="p">)</span>
+
+<span class="n">unit_lookup</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">synth.data</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">distinct</span><span class="p">(</span><span class="n">unit.num</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">arrange</span><span class="p">(</span><span class="n">unit.num</span><span class="p">)</span>
+
+<span class="n">treated_name</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">unit_lookup</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">filter</span><span class="p">(</span><span class="n">unit.num</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">treated_unit</span><span class="p">)</span>
+
+<span class="n">donor_lookup</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">unit_lookup</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">filter</span><span class="p">(</span><span class="n">unit.num</span><span class="w"> </span><span class="o">%in%</span><span class="w"> </span><span class="n">donor_units</span><span class="p">)</span>
+
+<span class="n">treated_name</span>
+<span class="n">donor_lookup</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><table class="dataframe">
+<caption>A data.frame: 1 × 2</caption>
+<thead>
+	<tr><th></th><th scope=col>unit.num</th><th scope=col>name</th></tr>
+	<tr><th></th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;chr&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><th scope=row>22</th><td>7</td><td>treated.region</td></tr>
+</tbody>
+</table>
+</div><div class="output text_html"><table class="dataframe">
+<caption>A data.frame: 6 × 2</caption>
+<thead>
+	<tr><th></th><th scope=col>unit.num</th><th scope=col>name</th></tr>
+	<tr><th></th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;chr&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><th scope=row>1</th><td> 2</td><td>control.region.northeast   </td></tr>
+	<tr><th scope=row>43</th><td>13</td><td>control.region.southcentral</td></tr>
+	<tr><th scope=row>64</th><td>17</td><td>control.region.west        </td></tr>
+	<tr><th scope=row>85</th><td>29</td><td>control.region.southeast   </td></tr>
+	<tr><th scope=row>106</th><td>32</td><td>control.region.central     </td></tr>
+	<tr><th scope=row>148</th><td>38</td><td>control.region.east        </td></tr>
+</tbody>
+</table>
+</div></div>
+</div>
+<p>What to discuss:</p>
+<ul class="simple">
+<li><p>SCM does not remove design judgment; it makes it legible.</p></li>
+<li><p>Even in a toy example, you should know who is eligible to act as a donor before you estimate weights.</p></li>
+</ul>
+</section>
+<section id="step-3-encode-the-design-with-dataprep">
+<h2>Step 3: Encode The Design With <code class="docutils literal notranslate"><span class="pre">dataprep()</span></code><a class="headerlink" href="#step-3-encode-the-design-with-dataprep" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">dataprep()</span></code> is the design object in the original <code class="docutils literal notranslate"><span class="pre">Synth</span></code> workflow. It decides which predictors matter, which pre-treatment periods define fit, and which periods will be plotted later.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">dataprep.out</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">dataprep</span><span class="p">(</span>
+<span class="w">  </span><span class="n">foo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">synth.data</span><span class="p">,</span>
+<span class="w">  </span><span class="n">predictors</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">"X1"</span><span class="p">,</span><span class="w"> </span><span class="s">"X2"</span><span class="p">,</span><span class="w"> </span><span class="s">"X3"</span><span class="p">),</span>
+<span class="w">  </span><span class="n">predictors.op</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"mean"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">dependent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Y"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">unit.variable</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"unit.num"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">time.variable</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"year"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">special.predictors</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span>
+<span class="w">    </span><span class="nf">list</span><span class="p">(</span><span class="s">"Y"</span><span class="p">,</span><span class="w"> </span><span class="m">1991</span><span class="p">,</span><span class="w"> </span><span class="s">"mean"</span><span class="p">),</span>
+<span class="w">    </span><span class="nf">list</span><span class="p">(</span><span class="s">"Y"</span><span class="p">,</span><span class="w"> </span><span class="m">1985</span><span class="p">,</span><span class="w"> </span><span class="s">"mean"</span><span class="p">),</span>
+<span class="w">    </span><span class="nf">list</span><span class="p">(</span><span class="s">"Y"</span><span class="p">,</span><span class="w"> </span><span class="m">1980</span><span class="p">,</span><span class="w"> </span><span class="s">"mean"</span><span class="p">)</span>
+<span class="w">  </span><span class="p">),</span>
+<span class="w">  </span><span class="n">treatment.identifier</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">treated_unit</span><span class="p">,</span>
+<span class="w">  </span><span class="n">controls.identifier</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">donor_units</span><span class="p">,</span>
+<span class="w">  </span><span class="n">time.predictors.prior</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1984</span><span class="o">:</span><span class="m">1989</span><span class="p">,</span>
+<span class="w">  </span><span class="n">time.optimize.ssr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1984</span><span class="o">:</span><span class="m">1990</span><span class="p">,</span>
+<span class="w">  </span><span class="n">unit.names.variable</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"name"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">time.plot</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1984</span><span class="o">:</span><span class="m">1996</span>
+<span class="p">)</span>
+
+<span class="nf">names</span><span class="p">(</span><span class="n">dataprep.out</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><style>
+.list-inline {list-style: none; margin:0; padding: 0}
+.list-inline>li {display: inline-block}
+.list-inline>li:not(:last-child)::after {content: "\00b7"; padding: 0 .5ex}
+</style>
+<ol class=list-inline><li>'X0'</li><li>'X1'</li><li>'Z0'</li><li>'Z1'</li><li>'Y0plot'</li><li>'Y1plot'</li><li>'names.and.numbers'</li><li>'tag'</li></ol>
+</div></div>
+</div>
+</section>
+<section id="step-4-inspect-the-objects-that-dataprep-built">
+<h2>Step 4: Inspect The Objects That <code class="docutils literal notranslate"><span class="pre">dataprep()</span></code> Built<a class="headerlink" href="#step-4-inspect-the-objects-that-dataprep-built" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="nf">dim</span><span class="p">(</span><span class="n">dataprep.out</span><span class="o">$</span><span class="n">X1</span><span class="p">)</span>
+<span class="nf">dim</span><span class="p">(</span><span class="n">dataprep.out</span><span class="o">$</span><span class="n">X0</span><span class="p">)</span>
+<span class="nf">dim</span><span class="p">(</span><span class="n">dataprep.out</span><span class="o">$</span><span class="n">Z1</span><span class="p">)</span>
+<span class="nf">dim</span><span class="p">(</span><span class="n">dataprep.out</span><span class="o">$</span><span class="n">Z0</span><span class="p">)</span>
+
+<span class="n">dataprep.out</span><span class="o">$</span><span class="n">X1</span>
+<span class="n">dataprep.out</span><span class="o">$</span><span class="n">X0</span>
+
+<span class="n">dataprep.out</span><span class="o">$</span><span class="n">tag</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><style>
+.list-inline {list-style: none; margin:0; padding: 0}
+.list-inline>li {display: inline-block}
+.list-inline>li:not(:last-child)::after {content: "\00b7"; padding: 0 .5ex}
+</style>
+<ol class=list-inline><li>6</li><li>1</li></ol>
+</div><div class="output text_html"><style>
+.list-inline {list-style: none; margin:0; padding: 0}
+.list-inline>li {display: inline-block}
+.list-inline>li:not(:last-child)::after {content: "\00b7"; padding: 0 .5ex}
+</style>
+<ol class=list-inline><li>6</li><li>6</li></ol>
+</div><div class="output text_html"><style>
+.list-inline {list-style: none; margin:0; padding: 0}
+.list-inline>li {display: inline-block}
+.list-inline>li:not(:last-child)::after {content: "\00b7"; padding: 0 .5ex}
+</style>
+<ol class=list-inline><li>7</li><li>1</li></ol>
+</div><div class="output text_html"><style>
+.list-inline {list-style: none; margin:0; padding: 0}
+.list-inline>li {display: inline-block}
+.list-inline>li:not(:last-child)::after {content: "\00b7"; padding: 0 .5ex}
+</style>
+<ol class=list-inline><li>7</li><li>6</li></ol>
+</div><div class="output text_html"><table class="dataframe">
+<caption>A matrix: 6 × 1 of type dbl</caption>
+<thead>
+	<tr><th></th><th scope=col>7</th></tr>
+</thead>
+<tbody>
+	<tr><th scope=row>X1</th><td>  0.2629297</td></tr>
+	<tr><th scope=row>X2</th><td> 15.4666669</td></tr>
+	<tr><th scope=row>X3</th><td> 21.7166665</td></tr>
+	<tr><th scope=row>special.Y.1991</th><td>115.0000000</td></tr>
+	<tr><th scope=row>special.Y.1985</th><td>128.8000031</td></tr>
+	<tr><th scope=row>special.Y.1980</th><td>134.0000000</td></tr>
+</tbody>
+</table>
+</div><div class="output text_html"><table class="dataframe">
+<caption>A matrix: 6 × 6 of type dbl</caption>
+<thead>
+	<tr><th></th><th scope=col>2</th><th scope=col>13</th><th scope=col>17</th><th scope=col>29</th><th scope=col>32</th><th scope=col>38</th></tr>
+</thead>
+<tbody>
+	<tr><th scope=row>X1</th><td>  0.2374992</td><td>  0.2519905</td><td>  0.256849</td><td>  0.2623127</td><td>  0.2500197</td><td>  0.2511835</td></tr>
+	<tr><th scope=row>X2</th><td> 21.6333329</td><td> 17.8666668</td><td> 25.166667</td><td>  9.2500002</td><td> 17.8499997</td><td> 10.5000000</td></tr>
+	<tr><th scope=row>X3</th><td> 18.6000001</td><td> 18.8333333</td><td> 21.216667</td><td> 25.4166667</td><td> 20.6666667</td><td> 31.7333336</td></tr>
+	<tr><th scope=row>special.Y.1991</th><td>116.8000031</td><td>170.3999939</td><td>105.599998</td><td>103.5999985</td><td>120.5999985</td><td> 95.5000000</td></tr>
+	<tr><th scope=row>special.Y.1985</th><td>125.8000031</td><td>182.3999939</td><td>115.300003</td><td>133.3999939</td><td>128.6999969</td><td>107.0000000</td></tr>
+	<tr><th scope=row>special.Y.1980</th><td>131.8000031</td><td>215.3000031</td><td>127.000000</td><td>149.3000031</td><td>130.3999939</td><td>117.5999985</td></tr>
+</tbody>
+</table>
+</div><div class="output text_html"><dl>
+	<dt>$foo</dt>
+		<dd><style>
+.list-inline {list-style: none; margin:0; padding: 0}
+.list-inline>li {display: inline-block}
+.list-inline>li:not(:last-child)::after {content: "\00b7"; padding: 0 .5ex}
+</style>
+<ol class=list-inline><li>'c(2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, \n36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38)'</li><li>'c(1980, 1981, 1982, 1983, 1984, 1985, 1986, 1987, 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 1980, 1981, 1982, 1983, 1984, 1985, 1986, 1987, 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 1980, 1981, 1982, 1983, 1984, 1985, 1986, 1987, 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 1980, 1981, 1982, 1983, 1984, 1985, 1986, 1987, 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, \n1980, 1981, 1982, 1983, 1984, 1985, 1986, 1987, 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 1980, 1981, 1982, 1983, 1984, 1985, 1986, 1987, 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 1980, 1981, 1982, 1983, 1984, 1985, 1986, 1987, 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 1980, 1981, 1982, 1983, 1984, 1985, 1986, 1987, 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000\n)'</li><li>'c("control.region.northeast", "control.region.northeast", "control.region.northeast", "control.region.northeast", "control.region.northeast", "control.region.northeast", "control.region.northeast", "control.region.northeast", "control.region.northeast", "control.region.northeast", "control.region.northeast", "control.region.northeast", "control.region.northeast", "control.region.northeast", "control.region.northeast", "control.region.northeast", "control.region.northeast", "control.region.northeast", \n"control.region.northeast", "control.region.northeast", "control.region.northeast", "treated.region", "treated.region", "treated.region", "treated.region", "treated.region", "treated.region", "treated.region", "treated.region", "treated.region", "treated.region", "treated.region", "treated.region", "treated.region", "treated.region", "treated.region", "treated.region", "treated.region", "treated.region", "treated.region", "treated.region", "treated.region", "control.region.southcentral", "control.region.southcentral", \n"control.region.southcentral", "control.region.southcentral", "control.region.southcentral", "control.region.southcentral", "control.region.southcentral", "control.region.southcentral", "control.region.southcentral", "control.region.southcentral", "control.region.southcentral", "control.region.southcentral", "control.region.southcentral", "control.region.southcentral", "control.region.southcentral", "control.region.southcentral", "control.region.southcentral", "control.region.southcentral", "control.region.southcentral", \n"control.region.southcentral", "control.region.southcentral", "control.region.west", "control.region.west", "control.region.west", "control.region.west", "control.region.west", "control.region.west", "control.region.west", "control.region.west", "control.region.west", "control.region.west", "control.region.west", "control.region.west", "control.region.west", "control.region.west", "control.region.west", "control.region.west", "control.region.west", "control.region.west", "control.region.west", "control.region.west", \n"control.region.west", "control.region.southeast", "control.region.southeast", "control.region.southeast", "control.region.southeast", "control.region.southeast", "control.region.southeast", "control.region.southeast", "control.region.southeast", "control.region.southeast", "control.region.southeast", "control.region.southeast", "control.region.southeast", "control.region.southeast", "control.region.southeast", "control.region.southeast", "control.region.southeast", "control.region.southeast", "control.region.southeast", \n"control.region.southeast", "control.region.southeast", "control.region.southeast", "control.region.central", "control.region.central", "control.region.central", "control.region.central", "control.region.central", "control.region.central", "control.region.central", "control.region.central", "control.region.central", "control.region.central", "control.region.central", "control.region.central", "control.region.central", "control.region.central", "control.region.central", "control.region.central", "control.region.central", \n"control.region.central", "control.region.central", "control.region.central", "control.region.central", "control.region.south", "control.region.south", "control.region.south", "control.region.south", "control.region.south", "control.region.south", "control.region.south", "control.region.south", "control.region.south", "control.region.south", "control.region.south", "control.region.south", "control.region.south", "control.region.south", "control.region.south", "control.region.south", "control.region.south", \n"control.region.south", "control.region.south", "control.region.south", "control.region.south", "control.region.east", "control.region.east", "control.region.east", "control.region.east", "control.region.east", "control.region.east", "control.region.east", "control.region.east", "control.region.east", "control.region.east", "control.region.east", "control.region.east", "control.region.east", "control.region.east", "control.region.east", "control.region.east", "control.region.east", "control.region.east", \n"control.region.east", "control.region.east", "control.region.east")'</li><li>'c(131.800003051758, 128.699996948242, 127.400001525879, 128, 123.099998474121, 125.800003051758, 126, 122.300003051758, 121.5, 118.300003051758, 113.099998474121, 116.800003051758, 126, 113.800003051758, 108.800003051758, 113, 110.699996948242, 108.699996948242, 109.5, 104.800003051758, 99.400001525879, 134, 131.699996948242, 131.199996948242, 128.600006103516, 126.300003051758, 128.800003051758, 129, 129.300003051758, 124.099998474121, 117.099998474121, 113.800003051758, 115, 121.9, 125.5, 127, \n132, 133.5, 100.599998474121, 100.5, 97.099998474121, 88.4000015258789, 215.300003051758, 209.699996948242, 210.600006103516, 201.100006103516, 183.199996948242, 182.399993896484, 179.800003051758, 171.199996948242, 173.199996948242, 171.600006103516, 182.5, 170.399993896484, 167.600006103516, 167.600006103516, 170.100006103516, 175.300003051758, 179, 186.800003051758, 171.300003051758, 165.300003051758, 156.199996948242, 127, 125.300003051758, 125.800003051758, 122.300003051758, 116.400001525879, \n115.300003051758, 113.199996948242, 110, 109, 108.300003051758, 101.800003051758, 105.599998474121, 103.900001525879, 105.400001525879, 106, 107.5, 106.900001525879, 106.300003051758, 107, 103.900001525879, 97.1999969482422, 149.300003051758, 151.199996948242, 146.300003051758, 135.800003051758, 136.899993896484, 133.399993896484, 136.300003051758, 124.400001525879, 138, 120.800003051758, 101.400001525879, 103.599998474121, 100.099998474121, 94.099998474121, 91.9000015258789, 90.8000030517578, 87.5, \n90, 88.6999969482422, 86.9000015258789, 83.0999984741211, 130.399993896484, 129.100006103516, 131.399993896484, 129, 125.099998474121, 128.699996948242, 129, 130.600006103516, 125.300003051758, 124.699996948242, 121.800003051758, 120.599998474121, 121, 120.800003051758, 118.800003051758, 125.400001525879, 119.199996948242, 118.900001525879, 119.699996948242, 115.599998474121, 108.699996948242, 148.899993896484, 149.899993896484, 147.399993896484, 144.699996948242, 136.800003051758, 134.600006103516, \n135.800003051758, 133, 129.5, 122.5, 118.900001525879, 109.099998474121, 108.199996948242, 105.400001525879, 106.199996948242, 106.699996948242, 104.599998474121, 108, 105.599998474121, 102.099998474121, 96.6999969482422, 117.599998474121, 119.900001525879, 115.599998474121, 106.300003051758, 105.599998474121, 107, 105.400001525879, 106, 102.599998474121, 100.300003051758, 94, 95.5, 96.1999969482422, 91.1999969482422, 91.8000030517578, 93.5, 92.0999984741211, 91.9000015258789, 88.6999969482422, 84.4000015258789, \n80.0999984741211)'</li><li>'c(NA, 0.253406047821045, 0.251252144575119, 0.248904809355736, 0.246286511421204, 0.243409931659698, 0.24090214073658, 0.236825346946716, 0.231578692793846, 0.225992813706398, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 0.27767089009285, 0.275563985109329, 0.272897392511368, 0.270468980073929, 0.268077492713928, 0.266121983528137, 0.262238562107086, 0.257899671792984, 0.25277179479599, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 0.272990584373474, 0.26984778046608, 0.266494452953339, 0.262247234582901, \n0.258707344532013, 0.255476593971252, 0.250877052545547, 0.245451658964157, 0.239182963967323, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 0.27293673157692, 0.270998179912567, 0.268360942602158, 0.265690863132477, 0.262517631053925, 0.260282844305038, 0.256220370531082, 0.251167178153992, 0.245215371251106, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 0.272726327180862, 0.272734314203262, 0.272006839513779, 0.271018087863922, 0.269567638635635, 0.267039179801941, 0.262333661317825, 0.255909651517868, \n0.248007848858833, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 0.268439650535584, 0.265627324581146, 0.262396633625031, 0.259075999259949, 0.256338834762573, 0.253436982631683, 0.249350354075432, 0.243903890252113, 0.238012373447418, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 0.283101856708527, 0.280194848775864, 0.277485758066177, 0.274872690439224, 0.271423608064651, 0.269063502550125, 0.264776796102524, 0.258712708950043, 0.25249046087265, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, \n0.277973622083664, 0.274430215358734, 0.270292073488235, 0.265795916318893, 0.261140644550323, 0.256240695714951, 0.249126777052879, 0.241624072194099, 0.233173057436943, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA)'</li><li>'c(21.5, 24.1000003814697, 23.7999992370605, 21.6000003814697, 23.8999996185303, 22.8999996185303, 21.2999992370605, 21.7999992370605, 21.6000003814697, 18.2999992370605, 19.6000003814697, 17.2999992370605, 17.3999996185303, 20, 15.3000001907349, 14.8999996185303, 17.2000007629395, 19.7000007629395, NA, NA, NA, 13.8999996185303, 16.2999992370605, 19.6000003814697, 18.7999992370605, 16.8999996185303, 17.7000007629395, 14.6000003814697, 14.6000003814697, 14, 15, 15.8000001907349, 17.2000007629395, 17.7999992370605, \n13.5, 14, 12.1000003814697, 14.8000001907349, 14.5, NA, NA, NA, 19.2999992370605, 19.2999992370605, 16.2000007629395, 18, 19.1000003814697, 19.3999996185303, 17.7000007629395, 17.2999992370605, 17.6000003814697, 16.1000003814697, 17.2999992370605, 18.7999992370605, 19.7000007629395, 20.3999996185303, 18.5, 14.6999998092651, 17, 15.8999996185303, NA, NA, NA, 24.2999992370605, 25.7000007629395, 22.8999996185303, 26.8999996185303, 25.1000003814697, 25.1000003814697, 26.6000003814697, 25, 27.2000007629395, \n22, 25.7000007629395, 23.7000007629395, 24.5, 24.7000007629395, 19.8999996185303, 23.5, 20.6000003814697, 16.7000007629395, NA, NA, NA, 10.6999998092651, 11.6999998092651, 13.3000001907349, 14.8000001907349, 12.8000001907349, 9, 9.10000038146973, 8.10000038146973, 9.80000019073486, 6.69999980926514, 7.5, 10.3999996185303, 12, 11.1999998092651, 10.3000001907349, 10.6000003814697, 11, 12.7000007629395, NA, NA, NA, 19.6000003814697, 20.8999996185303, 23.6000003814697, 20.1000003814697, 17.3999996185303, \n18.1000003814697, 18.2999992370605, 16.8999996185303, 18, 18.3999996185303, 16.8999996185303, 15.5, 17, 19.6000003814697, 14.6000003814697, 15.5, 15.8999996185303, 14.3000011444092, NA, NA, NA, 12.3999996185303, 12.6000003814697, 12.5, 11.3999996185303, 10, 10, 9.69999980926514, 9.89999961853027, 10.8000001907349, 10.8999996185303, 11.1000003814697, 9.89999961853027, 9.39999961853027, 9.69999980926514, 10.6999998092651, 10.1999998092651, 12.3000001907349, 12.7000007629395, NA, NA, NA, 8.5, 8.10000038146973, \n9.5, 10.6000003814697, 15.5, 11.6000003814697, 10.6999998092651, 9, 7.80000019073486, 8.39999961853027, 9.30000019073486, 9.89999961853027, 10.8000001907349, 12.6000003814697, 9, 8.5, 8.80000019073486, 8.19999980926514, NA, NA, NA)'</li><li>'c(NA, NA, NA, NA, 17.8999996185303, 18.1000003814697, 18.7000007629395, 19, 18.8999996185303, 19, 19.8999996185303, 19.8999996185303, 20, 19.7000007629395, 19.7000007629395, 19.5, 20.1000003814697, 19.7999992370605, NA, NA, NA, NA, NA, NA, NA, 21.2999992370605, 21.3999996185303, 22.1000003814697, 22.2999992370605, 21.7000007629395, 21.5, 22.2999992370605, 21.2000007629395, 21.6000003814697, 21.7000007629395, 21.3999996185303, 21.5, 22, 21.6000003814697, NA, NA, NA, NA, NA, NA, NA, 18.5, 18.8999996185303, \n19.2000007629395, 19, 19.1000003814697, 18.2999992370605, 20.1000003814697, 19.3999996185303, 19, 19.2999992370605, 19.6000003814697, 18.8999996185303, 19.1000003814697, 19.2999992370605, NA, NA, NA, NA, NA, NA, NA, 20.1000003814697, 20.6000003814697, 21.5, 21.6000003814697, 21.8999996185303, 21.6000003814697, 23.2999992370605, 22.8999996185303, 23.5, 23.8999996185303, 24.5, 24, 24.2999992370605, 24.3999996185303, NA, NA, NA, NA, NA, NA, NA, 25.1000003814697, 25.7000007629395, 26, 25.6000003814697, \n25.2999992370605, 24.7999992370605, 24, 24.2999992370605, 22.7999992370605, 22.2999992370605, 22.6000003814697, 22.2000007629395, 21.7000007629395, 22.8999996185303, NA, NA, NA, NA, NA, NA, NA, 19.7000007629395, 19.7999992370605, 20.8999996185303, 21, 21.5, 21.1000003814697, 21.8999996185303, 21.3999996185303, 21.7000007629395, 21.6000003814697, 21.5, 21.3999996185303, 21.5, 21.2999992370605, NA, NA, NA, NA, NA, NA, NA, 22.3999996185303, 22.3999996185303, 23.3999996185303, 23.5, 23.2999992370605, \n23.6000003814697, 24, 23, 22.5, 22.2000007629395, 21.7000007629395, 20.7000007629395, 20.6000003814697, 20.5, NA, NA, NA, NA, NA, NA, NA, 32.9000015258789, 32.0999984741211, 32.7000007629395, 31.5, 31, 30.2000007629395, 30.5, 29, 28.1000003814697, 28.2999992370605, 28.2999992370605, 28, 27.6000003814697, 28.6000003814697, NA, NA, NA)'</li></ol>
+</dd>
+	<dt>$predictors</dt>
+		<dd><style>
+.list-inline {list-style: none; margin:0; padding: 0}
+.list-inline>li {display: inline-block}
+.list-inline>li:not(:last-child)::after {content: "\00b7"; padding: 0 .5ex}
+</style>
+<ol class=list-inline><li>5</li><li>6</li><li>7</li></ol>
+</dd>
+	<dt>$predictors.op</dt>
+		<dd>'mean'</dd>
+	<dt>$special.predictors</dt>
+		<dd><ol>
+	<li><ol>
+	<li>'Y'</li>
+	<li>1991</li>
+	<li>'mean'</li>
+</ol>
+</li>
+	<li><ol>
+	<li>'Y'</li>
+	<li>1985</li>
+	<li>'mean'</li>
+</ol>
+</li>
+	<li><ol>
+	<li>'Y'</li>
+	<li>1980</li>
+	<li>'mean'</li>
+</ol>
+</li>
+</ol>
+</dd>
+	<dt>$dependent</dt>
+		<dd>4</dd>
+	<dt>$unit.variable</dt>
+		<dd>1</dd>
+	<dt>$time.variable</dt>
+		<dd>2</dd>
+	<dt>$treatment.identifier</dt>
+		<dd>7</dd>
+	<dt>$controls.identifier</dt>
+		<dd><style>
+.list-inline {list-style: none; margin:0; padding: 0}
+.list-inline>li {display: inline-block}
+.list-inline>li:not(:last-child)::after {content: "\00b7"; padding: 0 .5ex}
+</style>
+<ol class=list-inline><li>29</li><li>2</li><li>13</li><li>17</li><li>32</li><li>38</li></ol>
+</dd>
+	<dt>$time.predictors.prior</dt>
+		<dd><style>
+.list-inline {list-style: none; margin:0; padding: 0}
+.list-inline>li {display: inline-block}
+.list-inline>li:not(:last-child)::after {content: "\00b7"; padding: 0 .5ex}
+</style>
+<ol class=list-inline><li>1984</li><li>1985</li><li>1986</li><li>1987</li><li>1988</li><li>1989</li></ol>
+</dd>
+	<dt>$time.optimize.ssr</dt>
+		<dd><style>
+.list-inline {list-style: none; margin:0; padding: 0}
+.list-inline>li {display: inline-block}
+.list-inline>li:not(:last-child)::after {content: "\00b7"; padding: 0 .5ex}
+</style>
+<ol class=list-inline><li>1984</li><li>1985</li><li>1986</li><li>1987</li><li>1988</li><li>1989</li><li>1990</li></ol>
+</dd>
+	<dt>$time.plot</dt>
+		<dd><style>
+.list-inline {list-style: none; margin:0; padding: 0}
+.list-inline>li {display: inline-block}
+.list-inline>li:not(:last-child)::after {content: "\00b7"; padding: 0 .5ex}
+</style>
+<ol class=list-inline><li>1984</li><li>1985</li><li>1986</li><li>1987</li><li>1988</li><li>1989</li><li>1990</li><li>1991</li><li>1992</li><li>1993</li><li>1994</li><li>1995</li><li>1996</li></ol>
+</dd>
+	<dt>$unit.names.variable</dt>
+		<dd>3</dd>
+</dl>
+</div></div>
+</div>
+<p>Checkpoint:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">X1</span></code> and <code class="docutils literal notranslate"><span class="pre">X0</span></code> contain the predictor targets for the treated unit and donors.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Z1</span></code> and <code class="docutils literal notranslate"><span class="pre">Z0</span></code> contain the pre-treatment outcome history used to optimize fit.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tag</span></code> is worth reading because it records the design choices you just made.</p></li>
+</ul>
+</section>
+<section id="step-5-estimate-the-synthetic-control">
+<h2>Step 5: Estimate The Synthetic Control<a class="headerlink" href="#step-5-estimate-the-synthetic-control" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">synth.out</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">synth</span><span class="p">(</span><span class="n">dataprep.out</span><span class="p">)</span>
+
+<span class="nf">names</span><span class="p">(</span><span class="n">synth.out</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><style>
+.list-inline {list-style: none; margin:0; padding: 0}
+.list-inline>li {display: inline-block}
+.list-inline>li:not(:last-child)::after {content: "\00b7"; padding: 0 .5ex}
+</style>
+<ol class=list-inline><li>'solution.v'</li><li>'solution.w'</li><li>'loss.v'</li><li>'loss.w'</li><li>'custom.v'</li><li>'rgV.optim'</li></ol>
+</div></div>
+</div>
+<p>This is the estimator step. The constrained optimizer now chooses donor weights <code class="docutils literal notranslate"><span class="pre">W</span></code> and predictor weights <code class="docutils literal notranslate"><span class="pre">V</span></code> given the design encoded above.</p>
+</section>
+<section id="step-6-read-donor-weights-w-and-predictor-weights-v">
+<h2>Step 6: Read Donor Weights <code class="docutils literal notranslate"><span class="pre">W</span></code> And Predictor Weights <code class="docutils literal notranslate"><span class="pre">V</span></code><a class="headerlink" href="#step-6-read-donor-weights-w-and-predictor-weights-v" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">donor_weights</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">tibble</span><span class="p">(</span>
+<span class="w">  </span><span class="n">unit.num</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">donor_units</span><span class="p">,</span>
+<span class="w">  </span><span class="n">weight</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">as.numeric</span><span class="p">(</span><span class="n">synth.out</span><span class="o">$</span><span class="n">solution.w</span><span class="p">)</span>
+<span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">left_join</span><span class="p">(</span><span class="n">unit_lookup</span><span class="p">,</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"unit.num"</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">arrange</span><span class="p">(</span><span class="nf">desc</span><span class="p">(</span><span class="n">weight</span><span class="p">))</span>
+
+<span class="n">predictor_weights</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">tibble</span><span class="p">(</span>
+<span class="w">  </span><span class="n">predictor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">rownames</span><span class="p">(</span><span class="n">dataprep.out</span><span class="o">$</span><span class="n">X1</span><span class="p">),</span>
+<span class="w">  </span><span class="n">v_weight</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">as.numeric</span><span class="p">(</span><span class="n">synth.out</span><span class="o">$</span><span class="n">solution.v</span><span class="p">[,</span><span class="w"> </span><span class="m">1</span><span class="p">])</span>
+<span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">arrange</span><span class="p">(</span><span class="nf">desc</span><span class="p">(</span><span class="n">v_weight</span><span class="p">))</span>
+
+<span class="n">donor_weights</span>
+<span class="n">predictor_weights</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><table class="dataframe">
+<caption>A tibble: 6 × 3</caption>
+<thead>
+	<tr><th scope=col>unit.num</th><th scope=col>weight</th><th scope=col>name</th></tr>
+	<tr><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;chr&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>32</td><td>6.083732e-01</td><td>control.region.central     </td></tr>
+	<tr><td>17</td><td>2.275003e-01</td><td>control.region.west        </td></tr>
+	<tr><td>13</td><td>1.623545e-01</td><td>control.region.southcentral</td></tr>
+	<tr><td> 2</td><td>1.768674e-03</td><td>control.region.northeast   </td></tr>
+	<tr><td>38</td><td>2.661090e-06</td><td>control.region.east        </td></tr>
+	<tr><td>29</td><td>5.469840e-07</td><td>control.region.southeast   </td></tr>
+</tbody>
+</table>
+</div><div class="output text_html"><table class="dataframe">
+<caption>A tibble: 6 × 2</caption>
+<thead>
+	<tr><th scope=col>predictor</th><th scope=col>v_weight</th></tr>
+	<tr><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;dbl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>X1            </td><td>0.005209538</td></tr>
+	<tr><td>X2            </td><td>0.005209538</td></tr>
+	<tr><td>X3            </td><td>0.005209538</td></tr>
+	<tr><td>special.Y.1991</td><td>0.005209538</td></tr>
+	<tr><td>special.Y.1985</td><td>0.005209538</td></tr>
+	<tr><td>special.Y.1980</td><td>0.005209538</td></tr>
+</tbody>
+</table>
+</div></div>
+</div>
+<p>What to look for:</p>
+<ul class="simple">
+<li><p>sparse <code class="docutils literal notranslate"><span class="pre">W</span></code> weights mean only a few donors carry the synthetic comparison</p></li>
+<li><p>large <code class="docutils literal notranslate"><span class="pre">V</span></code> weights show which predictors or lagged outcomes mattered most for fit</p></li>
+<li><p>neither object is decorative; both are part of the causal argument</p></li>
+</ul>
+</section>
+<section id="step-7-build-the-standard-summary-tables">
+<h2>Step 7: Build The Standard Summary Tables<a class="headerlink" href="#step-7-build-the-standard-summary-tables" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">synth.tables</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">synth.tab</span><span class="p">(</span>
+<span class="w">  </span><span class="n">dataprep.res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dataprep.out</span><span class="p">,</span>
+<span class="w">  </span><span class="n">synth.res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">synth.out</span>
+<span class="p">)</span>
+
+<span class="n">synth.tables</span><span class="o">$</span><span class="n">tab.pred</span>
+<span class="n">synth.tables</span><span class="o">$</span><span class="n">tab.w</span>
+<span class="n">synth.tables</span><span class="o">$</span><span class="n">tab.v</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><table class="dataframe">
+<caption>A matrix: 6 × 3 of type dbl</caption>
+<thead>
+	<tr><th></th><th scope=col>Treated</th><th scope=col>Synthetic</th><th scope=col>Sample Mean</th></tr>
+</thead>
+<tbody>
+	<tr><th scope=row>X1</th><td>  0.263</td><td>  0.254</td><td>  0.252</td></tr>
+	<tr><th scope=row>X2</th><td> 15.467</td><td> 17.081</td><td> 17.044</td></tr>
+	<tr><th scope=row>X3</th><td> 21.717</td><td> 21.833</td><td> 22.744</td></tr>
+	<tr><th scope=row>special.Y.1991</th><td>115.000</td><td>114.385</td><td>118.750</td></tr>
+	<tr><th scope=row>special.Y.1985</th><td>128.800</td><td>127.689</td><td>132.100</td></tr>
+	<tr><th scope=row>special.Y.1980</th><td>134.000</td><td>134.298</td><td>145.233</td></tr>
+</tbody>
+</table>
+</div><div class="output text_html"><table class="dataframe">
+<caption>A data.frame: 6 × 3</caption>
+<thead>
+	<tr><th></th><th scope=col>w.weights</th><th scope=col>unit.names</th><th scope=col>unit.numbers</th></tr>
+	<tr><th></th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;dbl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><th scope=row>2</th><td>0.000</td><td>control.region.southeast   </td><td>29</td></tr>
+	<tr><th scope=row>13</th><td>0.002</td><td>control.region.northeast   </td><td> 2</td></tr>
+	<tr><th scope=row>17</th><td>0.162</td><td>control.region.southcentral</td><td>13</td></tr>
+	<tr><th scope=row>29</th><td>0.228</td><td>control.region.west        </td><td>17</td></tr>
+	<tr><th scope=row>32</th><td>0.608</td><td>control.region.central     </td><td>32</td></tr>
+	<tr><th scope=row>38</th><td>0.000</td><td>control.region.east        </td><td>38</td></tr>
+</tbody>
+</table>
+</div><div class="output text_html"><table class="dataframe">
+<caption>A matrix: 6 × 1</caption>
+<thead>
+	<tr><th></th><th scope=col>v.weights</th></tr>
+	<tr><th></th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><th scope=row>X1</th><td>0.005</td></tr>
+	<tr><th scope=row>X2</th><td>0.007</td></tr>
+	<tr><th scope=row>X3</th><td>0.224</td></tr>
+	<tr><th scope=row>special.Y.1991</th><td>0.089</td></tr>
+	<tr><th scope=row>special.Y.1985</th><td>0.008</td></tr>
+	<tr><th scope=row>special.Y.1980</th><td>0.667</td></tr>
+</tbody>
+</table>
+</div></div>
+</div>
+<p>Checkpoint:</p>
+<ul class="simple">
+<li><p>Does the synthetic unit improve predictor balance relative to a simple donor average?</p></li>
+<li><p>Are the non-zero donor weights substantively legible or completely opaque?</p></li>
+</ul>
+</section>
+<section id="step-8-plot-the-treated-and-synthetic-paths">
+<h2>Step 8: Plot The Treated And Synthetic Paths<a class="headerlink" href="#step-8-plot-the-treated-and-synthetic-paths" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">5.5</span><span class="p">)</span>
+<span class="nf">path.plot</span><span class="p">(</span>
+<span class="w">  </span><span class="n">synth.res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">synth.out</span><span class="p">,</span>
+<span class="w">  </span><span class="n">dataprep.res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dataprep.out</span><span class="p">,</span>
+<span class="w">  </span><span class="n">Ylab</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Outcome"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">Xlab</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Year"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">Legend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">"Treated unit"</span><span class="p">,</span><span class="w"> </span><span class="s">"Synthetic control"</span><span class="p">),</span>
+<span class="w">  </span><span class="n">Legend.position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"bottomright"</span>
+<span class="p">)</span>
+<span class="nf">abline</span><span class="p">(</span><span class="n">v</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1990</span><span class="p">,</span><span class="w"> </span><span class="n">lty</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2</span><span class="p">,</span><span class="w"> </span><span class="n">col</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"gray40"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<a class="reference internal image-reference" href="../_images/41c2906ccc3fdbd832026469529b91919e57bb88ef3124ec99216614e86c1802.png"><img alt="../_images/41c2906ccc3fdbd832026469529b91919e57bb88ef3124ec99216614e86c1802.png" src="../_images/41c2906ccc3fdbd832026469529b91919e57bb88ef3124ec99216614e86c1802.png" style="width: 480px; height: 330px;" />
+</a>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">5.5</span><span class="p">)</span>
+<span class="nf">gaps.plot</span><span class="p">(</span>
+<span class="w">  </span><span class="n">synth.res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">synth.out</span><span class="p">,</span>
+<span class="w">  </span><span class="n">dataprep.res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dataprep.out</span><span class="p">,</span>
+<span class="w">  </span><span class="n">Ylab</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Treated minus synthetic"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">Xlab</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Year"</span>
+<span class="p">)</span>
+<span class="nf">abline</span><span class="p">(</span><span class="n">v</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1990</span><span class="p">,</span><span class="w"> </span><span class="n">lty</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2</span><span class="p">,</span><span class="w"> </span><span class="n">col</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"gray40"</span><span class="p">)</span>
+<span class="nf">abline</span><span class="p">(</span><span class="n">h</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="n">lty</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">3</span><span class="p">,</span><span class="w"> </span><span class="n">col</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"gray50"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<a class="reference internal image-reference" href="../_images/c1a1ed18107557b80148c0f30c604f0538e6098ba658a897e2083e5f48d2f4fc.png"><img alt="../_images/c1a1ed18107557b80148c0f30c604f0538e6098ba658a897e2083e5f48d2f4fc.png" src="../_images/c1a1ed18107557b80148c0f30c604f0538e6098ba658a897e2083e5f48d2f4fc.png" style="width: 480px; height: 330px;" />
+</a>
+</div>
+</div>
+<p>What to discuss:</p>
+<ul class="simple">
+<li><p>the path plot asks whether the synthetic unit tracks the treated unit before treatment</p></li>
+<li><p>the gap plot turns that same information into a treatment-effect style display</p></li>
+<li><p>if the pre-treatment gap is wide, the right lesson is usually “design problem” rather than “interesting effect”</p></li>
+</ul>
+</section>
+<section id="step-9-calculate-the-gap-series-directly">
+<h2>Step 9: Calculate The Gap Series Directly<a class="headerlink" href="#step-9-calculate-the-gap-series-directly" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">gap_tbl</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">tibble</span><span class="p">(</span>
+<span class="w">  </span><span class="n">year</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dataprep.out</span><span class="o">$</span><span class="n">tag</span><span class="o">$</span><span class="n">time.plot</span><span class="p">,</span>
+<span class="w">  </span><span class="n">treated</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">as.numeric</span><span class="p">(</span><span class="n">dataprep.out</span><span class="o">$</span><span class="n">Y1plot</span><span class="p">),</span>
+<span class="w">  </span><span class="n">synthetic</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">as.numeric</span><span class="p">(</span><span class="n">dataprep.out</span><span class="o">$</span><span class="n">Y0plot</span><span class="w"> </span><span class="o">%*%</span><span class="w"> </span><span class="n">synth.out</span><span class="o">$</span><span class="n">solution.w</span><span class="p">)</span>
+<span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">mutate</span><span class="p">(</span><span class="n">gap</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">treated</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">synthetic</span><span class="p">)</span>
+
+<span class="n">gap_tbl</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><table class="dataframe">
+<caption>A tibble: 13 × 4</caption>
+<thead>
+	<tr><th scope=col>year</th><th scope=col>treated</th><th scope=col>synthetic</th><th scope=col>gap</th></tr>
+	<tr><th scope=col>&lt;int&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><td>1984</td><td>126.3</td><td>126.4747</td><td>-0.1747214</td></tr>
+	<tr><td>1985</td><td>128.8</td><td>127.6886</td><td> 1.1113865</td></tr>
+	<tr><td>1986</td><td>129.0</td><td>128.1853</td><td> 0.8146648</td></tr>
+	<tr><td>1987</td><td>129.3</td><td>125.9167</td><td> 3.3832664</td></tr>
+	<tr><td>1988</td><td>124.1</td><td>125.6275</td><td>-1.5275358</td></tr>
+	<tr><td>1989</td><td>117.1</td><td>121.2330</td><td>-4.1330175</td></tr>
+	<tr><td>1990</td><td>113.8</td><td>114.0192</td><td>-0.2191817</td></tr>
+	<tr><td>1991</td><td>115.0</td><td>114.3852</td><td> 0.6148144</td></tr>
+	<tr><td>1992</td><td>121.9</td><td>113.5513</td><td> 8.3486629</td></tr>
+	<tr><td>1993</td><td>125.5</td><td>112.3082</td><td>13.1918260</td></tr>
+	<tr><td>1994</td><td>127.0</td><td>110.6928</td><td>16.3072395</td></tr>
+	<tr><td>1995</td><td>132.0</td><td>114.7105</td><td>17.2894913</td></tr>
+	<tr><td>1996</td><td>133.5</td><td>110.0970</td><td>23.4030334</td></tr>
+</tbody>
+</table>
+</div></div>
+</div>
+<p>This step matters because it makes the plotted divergence inspectable as ordinary data rather than as an opaque graphics side effect.</p>
+</section>
+<section id="final-prompt">
+<h2>Final Prompt<a class="headerlink" href="#final-prompt" title="Link to this heading">#</a></h2>
+<p>Write a short answer to these questions:</p>
+<ol class="arabic simple">
+<li><p>What part of SCM became clearer once you saw <code class="docutils literal notranslate"><span class="pre">dataprep()</span></code> and <code class="docutils literal notranslate"><span class="pre">synth()</span></code> as separate steps?</p></li>
+<li><p>Which donors actually build the synthetic unit?</p></li>
+<li><p>Does this toy example teach you substantive causal inference, or mainly the structure of the estimator?</p></li>
+</ol>
+</section>
+<section id="next-step">
+<h2>Next Step<a class="headerlink" href="#next-step" title="Link to this heading">#</a></h2>
+<p>Move next to the <a class="reference internal" href="synthetic-control-proposition-99-lab.html"><span class="std std-doc">Proposition 99 lab</span></a>, where the same workflow becomes a real comparative case study with donor exclusions, placebo logic, and stronger design stakes.</p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "r"
+        },
+        kernelOptions: {
+            name: "ir",
+            path: "./notebooks"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'ir'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="regression-discontinuity-fuzzy-lab.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Lab: Fuzzy RD and local IV with veteran home ownership</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="synthetic-control-proposition-99-lab.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Lab: Proposition 99 With tidysynth</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item"><div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-to-use-this-page">How To Use This Page</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#training-goal">Training Goal</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dataset-at-a-glance">Dataset At A Glance</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-to-hand-back">What To Hand Back</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-1-load-packages-and-inspect-the-toy-panel">Step 1: Load Packages And Inspect The Toy Panel</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-2-define-the-treated-unit-and-donor-pool">Step 2: Define The Treated Unit And Donor Pool</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-3-encode-the-design-with-dataprep">Step 3: Encode The Design With <code class="docutils literal notranslate"><span class="pre">dataprep()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-4-inspect-the-objects-that-dataprep-built">Step 4: Inspect The Objects That <code class="docutils literal notranslate"><span class="pre">dataprep()</span></code> Built</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-5-estimate-the-synthetic-control">Step 5: Estimate The Synthetic Control</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-6-read-donor-weights-w-and-predictor-weights-v">Step 6: Read Donor Weights <code class="docutils literal notranslate"><span class="pre">W</span></code> And Predictor Weights <code class="docutils literal notranslate"><span class="pre">V</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-7-build-the-standard-summary-tables">Step 7: Build The Standard Summary Tables</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-8-plot-the-treated-and-synthetic-paths">Step 8: Plot The Treated And Synthetic Paths</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-9-calculate-the-gap-series-directly">Step 9: Calculate The Gap Series Directly</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#final-prompt">Final Prompt</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#next-step">Next Step</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By QED Labs
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2026.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+<div class="extra_footer">
+  Built for offline use. External reading links are optional.
+</div>
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
