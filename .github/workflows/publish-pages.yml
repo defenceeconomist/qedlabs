@@ -126,7 +126,9 @@ jobs:
           with open(sys.argv[1], "w", encoding="utf-8") as kernel_file:
               json.dump(kernel_spec, kernel_file)
           PY
-          jupyter kernelspec install --user --replace --name ir "$kernel_dir"
+          sudo install -d -m 0755 /usr/local/share/jupyter/kernels/ir
+          sudo install -m 0644 "$kernel_dir/kernel.json" /usr/local/share/jupyter/kernels/ir/kernel.json
+          sudo -H --preserve-env=PATH jupyter kernelspec list
 
       - name: Execute offline lab bundles
         shell: bash
