@@ -3,14 +3,21 @@
 from pathlib import Path
 import tempfile
 import unittest
+from unittest.mock import patch
 
 from validate_bibliography import (
-    bibliography_errors, document_errors, parse_with_pandoc, validate,
+    bibliography_errors, document_errors, pandoc_command, parse_with_pandoc, validate,
 )
 from extract_link_graph import build_payload
 
 
 class BibliographyTests(unittest.TestCase):
+    def test_quarto_pandoc_is_preferred_over_system_pandoc(self):
+        executables = {"quarto": "/opt/quarto/bin/quarto", "pandoc": "/usr/bin/pandoc"}
+        with patch.dict("validate_bibliography.os.environ", {}, clear=True), \
+             patch("validate_bibliography.shutil.which", side_effect=executables.get):
+            self.assertEqual(pandoc_command(), ["/opt/quarto/bin/quarto", "pandoc"])
+
     def test_duplicate_keys_are_not_silently_overwritten(self):
         entries = parse_with_pandoc(
             "@book{same, title={First}}\n@book{same, title={Second}}", "biblatex", "csljson"

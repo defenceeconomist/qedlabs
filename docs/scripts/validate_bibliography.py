@@ -31,8 +31,13 @@ CROSSREF_PREFIXES = (
 
 
 def pandoc_command() -> list[str]:
-    executable = os.environ.get("PANDOC") or shutil.which("pandoc")
-    return [executable] if executable else ["quarto", "pandoc"]
+    if executable := os.environ.get("PANDOC"):
+        return [executable]
+    if quarto := shutil.which("quarto"):
+        return [quarto, "pandoc"]
+    if executable := shutil.which("pandoc"):
+        return [executable]
+    return ["quarto", "pandoc"]
 
 
 def parse_with_pandoc(text: str, source_format: str, target_format: str) -> object:
