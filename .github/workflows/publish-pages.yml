@@ -97,7 +97,27 @@ jobs:
             'jupyter-core==5.7.2'
           python -m pip check
           jupyter kernelspec --version
-          Rscript -e 'IRkernel::installspec(user=TRUE)'
+          kernel_dir="$(mktemp -d)"
+          python - "$kernel_dir/kernel.json" "$(command -v R)" <<'PY'
+          import json
+          import sys
+
+          kernel_spec = {
+              "argv": [
+                  sys.argv[2],
+                  "--slave",
+                  "-e",
+                  "IRkernel::main()",
+                  "--args",
+                  "{connection_file}",
+              ],
+              "display_name": "R",
+              "language": "R",
+          }
+          with open(sys.argv[1], "w", encoding="utf-8") as kernel_file:
+              json.dump(kernel_spec, kernel_file)
+          PY
+          jupyter kernelspec install --user --replace --name ir "$kernel_dir"
 
       - name: Check generated notebooks
         run: |
