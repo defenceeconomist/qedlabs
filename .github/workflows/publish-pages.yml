@@ -128,7 +128,7 @@ jobs:
           PY
           sudo install -d -m 0755 /usr/local/share/jupyter/kernels/ir
           sudo install -m 0644 "$kernel_dir/kernel.json" /usr/local/share/jupyter/kernels/ir/kernel.json
-          sudo -H --preserve-env=PATH jupyter kernelspec list
+          sudo -H "$(command -v jupyter)" kernelspec list
 
       - name: Execute offline lab bundles
         shell: bash
