@@ -131,7 +131,7 @@ jobs:
       - name: Execute offline lab bundles
         shell: bash
         run: |
-          sudo --preserve-env=PATH,R_LIBS_USER,R_LIBS_SITE,R_HOME,HOME unshare --net bash -euc '
+          sudo -H --preserve-env=PATH,R_LIBS_USER,R_LIBS_SITE,R_HOME unshare --net bash -euc '
             ip link set lo up
             python docs/scripts/validate_offline_labs.py --execute --render
             python docs/scripts/validate_did_labs.py
