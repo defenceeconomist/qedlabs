@@ -46,6 +46,30 @@ LAB_DATA = {
     "synthetic-control-proposition-99-lab": ["smoking"],
 }
 LAB_STEMS = tuple(LAB_DATA)
+REPORT_STEMS = (
+    "matching-methods-report",
+    "difference-in-differences-methods-report",
+    "regression-discontinuity-methods-report",
+    "synthetic-control-methods-report",
+    "interrupted-time-series-methods-report",
+)
+NOTEBOOK_STEMS = LAB_STEMS + REPORT_STEMS
+INLINE_R_VALUES = {
+    "matching-methods-report": {
+        "benchmark_effect$estimate[1]": "1794.342",
+        "benchmark_effect$std_error[1]": "632.853",
+        'pre_match_summary$mean_re74[pre_match_summary$group == "Control"]': "5619.237",
+        'benchmark_summary$mean_re74[benchmark_summary$group == "NSW controls"]': "2107.027",
+        'pre_match_summary$mean_re75[pre_match_summary$group == "Control"]': "2466.484",
+        'benchmark_summary$mean_re75[benchmark_summary$group == "NSW controls"]': "1266.909",
+        'treatment_effect_summary$estimate[treatment_effect_summary$method == "Experimental benchmark (NSW RCT)"]': "1794.342",
+        'treatment_effect_summary$gap_vs_benchmark[treatment_effect_summary$method == "Exact matching"]': "-1076.902",
+        'treatment_effect_summary$gap_vs_benchmark[treatment_effect_summary$method == "Coarsened exact matching"]': "-617.63",
+        'treatment_effect_summary$gap_vs_benchmark[treatment_effect_summary$method == "Entropy balancing"]': "-521.099",
+        'treatment_effect_summary$treated_units_used[treatment_effect_summary$method == "Coarsened exact matching"]': "81",
+        'round(ebal_summary$effective.sample.size["Weighted", "Control"], 3)': "98.458",
+    }
+}
 CHUNK_START_RE = re.compile(r"^(`{3,})\{(r|python)([^}]*)\}\s*$")
 
 
@@ -78,6 +102,27 @@ def clean_body(body: str) -> str:
     return body.strip()
 
 
+def resolve_inline_r(body: str, source_path: Path) -> str:
+    values = INLINE_R_VALUES.get(source_path.stem, {})
+
+    def replace(match: re.Match[str]) -> str:
+        expression = match.group(1).strip()
+        if expression not in values:
+            raise ValueError(f"{source_path}: unresolved inline R expression: {expression}")
+        return values[expression]
+
+    return re.sub(r"`r\s+([^`]+)`", replace, body)
+
+
+def namespace_footnotes(markdown: str, cell_index: int) -> str:
+    """Keep Pandoc's per-cell footnote labels unique across one notebook."""
+    return re.sub(
+        r"\[\^([^\]]+)\]",
+        lambda match: f"[^cell-{cell_index}-{match.group(1)}]",
+        markdown,
+    )
+
+
 def split_cells(body: str, source_path: Path) -> list[tuple[str, str]]:
     cells, buffer = [], []
     fence = None
@@ -90,11 +135,10 @@ def split_cells(body: str, source_path: Path) -> list[tuple[str, str]]:
         if value.strip():
             if kind == "code":
                 found = dict(re.findall(r"(fig\.(?:width|height))\s*=\s*([0-9.]+)", options))
-                rest = re.sub(r"fig\.(?:width|height)\s*=\s*[0-9.]+", "", options).strip(" ,")
+                rest = re.sub(r"fig\.cap\s*=\s*(?:\"[^\"]*\"|'[^']*')", "", options)
+                rest = re.sub(r"fig\.(?:width|height)\s*=\s*[0-9.]+", "", rest).strip(" ,")
                 if rest:
                     raise ValueError(f"{source_path}: unsupported chunk options: {rest}")
-                if re.search(r"(?m)^#\|", value):
-                    raise ValueError(f"{source_path}: translate new Quarto chunk options explicitly")
                 value = (f'options(repr.plot.width = {found.get("fig.width", "8")}, '
                          f'repr.plot.height = {found.get("fig.height", "4.8")})\n' + value)
             cells.append((kind, value))
@@ -160,7 +204,7 @@ def build_notebook(source_path: Path) -> dict:
     metadata, body = split_front_matter(source_path.read_text(), source_path)
     if metadata.get("notebook-language", "r") != "r":
         raise ValueError("Only R notebooks are supported")
-    chunks = split_cells(clean_body(body), source_path)
+    chunks = split_cells(resolve_inline_r(clean_body(body), source_path), source_path)
     # Parse and cite-process the whole document once so reference numbering and
     # the bibliography remain consistent across Markdown cells.
     fragments, code = [], []
@@ -201,6 +245,8 @@ def build_notebook(source_path: Path) -> dict:
     flush()
     cells = []
     for i, (kind, value) in enumerate(raw_cells):
+        if kind == "markdown":
+            value = namespace_footnotes(value, i)
         cell = {"cell_type": kind, "id": hashlib.sha256(f"{source_path.stem}\0{i}\0{kind}\0{value}".encode()).hexdigest()[:12],
                 "metadata": {}, "source": value.splitlines(keepends=True)}
         if kind == "code":
@@ -237,7 +283,8 @@ def validate_notebook(notebook: dict, source_path: Path) -> None:
     nbformat.validate(nbformat.from_dict(notebook))
     if notebook["metadata"]["kernelspec"]["name"] != "ir":
         raise ValueError("Only R kernels are allowed")
-    expected = sum(k == "code" for k, _ in split_cells(split_front_matter(source_path.read_text(), source_path)[1], source_path))
+    body = split_front_matter(source_path.read_text(), source_path)[1]
+    expected = sum(k == "code" for k, _ in split_cells(resolve_inline_r(body, source_path), source_path))
     if expected != sum(c["cell_type"] == "code" for c in notebook["cells"]):
         raise ValueError(f"{source_path}: code-cell count changed")
 
@@ -281,6 +328,11 @@ def generate(check: bool) -> int:
         files.update({stem + ".ipynb": notebook, stem + ".qmd": quarto,
                       "README.md": (LABS_DIR / "offline-setup.md").read_bytes()})
         expected[DOWNLOADS_DIR / (stem + ".zip")] = archive(files)
+    for stem in REPORT_STEMS:
+        source = LABS_DIR / (stem + ".qmd")
+        nb = build_notebook(source)
+        validate_notebook(nb, source)
+        expected[NOTEBOOKS_DIR / (stem + ".ipynb")] = serialize_notebook(nb).encode()
     names = list(json.loads((DATA_DIR / "manifest.json").read_text()))
     expected[DOWNLOADS_DIR / "all-lab-data.zip"] = archive(data_files(names))
     failures = []
@@ -298,7 +350,10 @@ def generate(check: bool) -> int:
     if failures:
         print("\n".join(failures), file=sys.stderr)
         return 1
-    print(f'{"Checked" if check else "Generated"} {len(LAB_STEMS)} R notebooks, Quarto documents and lab bundles, plus all-data ZIP.')
+    print(
+        f'{"Checked" if check else "Generated"} {len(LAB_STEMS)} lab notebooks and bundles, '
+        f'{len(REPORT_STEMS)} report notebooks, plus all-data ZIP.'
+    )
     return 0
 
 

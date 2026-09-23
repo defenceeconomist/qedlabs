@@ -198,7 +198,7 @@ Map castle-law adoption cohorts, reconstruct TWFE with the Goodman-Bacon decompo
 
 ::: {.resource-body}
 
-Estimate and aggregate group-time effects with `did`, compare control groups and Sun–Abraham, then optionally probe parallel-trends sensitivity with `HonestDiD`.
+Estimate and aggregate group-time effects with `did`, compare control groups and Sun–Abraham, then probe parallel-trends sensitivity with a transparent calibrated-bias screen.
 
 [Quarto](downloads/difference-in-differences-modern-estimators-lab.qmd){download="difference-in-differences-modern-estimators-lab.qmd"} · [R notebook](notebooks/difference-in-differences-modern-estimators-lab.ipynb){download="difference-in-differences-modern-estimators-lab.ipynb"} · [Complete ZIP](downloads/difference-in-differences-modern-estimators-lab.zip){download="difference-in-differences-modern-estimators-lab.zip"} · [Data](data.qmd#difference-in-differences-modern-estimators-lab)
 
@@ -361,7 +361,7 @@ Best first practical exercise for learning `dataprep()`, `synth()`, donor weight
 ::: {.resource-summary}
 <span class="resource-meta">Intermediate</span>
 
-### [Proposition 99 With tidysynth](synthetic-control-proposition-99-lab.qmd)
+### [Proposition 99 With Transparent SCM](synthetic-control-proposition-99-lab.qmd)
 :::
 
 ::: {.resource-body}

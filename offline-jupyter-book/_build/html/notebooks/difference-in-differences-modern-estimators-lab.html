@@ -34,7 +34,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=9c3e77be" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css?v=8cd3d715" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
   
@@ -61,12 +61,12 @@
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-    <script defer="defer" src="../_static/mathjax/tex-chtml.js"></script>
+    <script defer="defer" src="../_static/mathjax/tex-chtml.js?v=20daa33d"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/difference-in-differences-modern-estimators-lab';</script>
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Lab: Sharp RD foundations with government transfers" href="regression-discontinuity-foundations-lab.html" />
+    <link rel="next" title="Synthetic control guide" href="../guides/synthetic-control.html" />
     <link rel="prev" title="Lab: Staggered Adoption and TWFE Diagnostics" href="difference-in-differences-staggered-diagnostics-lab.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -215,43 +215,62 @@
                 </a>
             </li>
         </ul>
-        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Start here</span></p>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Start Here</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../offline-setup.html">Offline setup</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../data.html">Bundled data and provenance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../academy-extension.html">From Module 6 to Applied Practice</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../study-guide.html">How to Study This Book</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../offline-setup.html">Offline Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data.html">Data and Provenance</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Matching and Weighting</span></p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Choose a Design</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="lalonde-matching-lab.html">Lab: LaLonde Matching</a></li>
-<li class="toctree-l1"><a class="reference internal" href="black-politicians-lab.html">Lab: Black Politicians</a></li>
-<li class="toctree-l1"><a class="reference internal" href="nsw-cps-benchmark-lab.html">Lab: NSW and CPS Benchmark</a></li>
-<li class="toctree-l1"><a class="reference internal" href="hisp-ie-practice-lab.html">Lab: HISP IE in Practice</a></li>
-</ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Difference-in-Differences</span></p>
-<ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="difference-in-differences-foundations-lab.html">Lab: Difference-in-Differences Foundations With Kentucky Workers’ Compensation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="difference-in-differences-staggered-diagnostics-lab.html">Lab: Staggered Adoption and TWFE Diagnostics</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Lab: Modern Multi-Period Difference-in-Differences</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../choosing-a-design.html">Design Decision Guide</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Regression Discontinuity</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="regression-discontinuity-foundations-lab.html">Lab: Sharp RD foundations with government transfers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="regression-discontinuity-diagnostics-lab.html">Lab: RDD design diagnostics and sensitivity</a></li>
-<li class="toctree-l1"><a class="reference internal" href="regression-discontinuity-fuzzy-lab.html">Lab: Fuzzy RD and local IV with veteran home ownership</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/regression-discontinuity.html">Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="regression-discontinuity-methods-report.html">Methods Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="regression-discontinuity-foundations-lab.html">Foundations — Sharp RD</a></li>
+<li class="toctree-l1"><a class="reference internal" href="regression-discontinuity-diagnostics-lab.html">Diagnostics and Sensitivity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="regression-discontinuity-fuzzy-lab.html">Extension — Fuzzy RD</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Difference-in-Differences</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../guides/difference-in-differences.html">Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="difference-in-differences-methods-report.html">Methods Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="difference-in-differences-foundations-lab.html">Foundations — Two Groups, Two Periods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="difference-in-differences-staggered-diagnostics-lab.html">Diagnostics — Staggered Adoption</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Extension — Modern Estimators</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Synthetic Control</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="synthetic-control-mechanics-lab.html">Lab: Synthetic Control Mechanics</a></li>
-<li class="toctree-l1"><a class="reference internal" href="synthetic-control-proposition-99-lab.html">Lab: Proposition 99 With tidysynth</a></li>
-<li class="toctree-l1"><a class="reference internal" href="synthetic-control-augmentation-lab.html">Lab: Augmented SCM With Kansas</a></li>
-<li class="toctree-l1"><a class="reference internal" href="synthetic-control-design-lab.html">Lab: Synthetic Control Design</a></li>
-<li class="toctree-l1"><a class="reference internal" href="synthetic-control-donor-pool-lab.html">Lab: Synthetic Control Donor Pool Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/synthetic-control.html">Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-methods-report.html">Methods Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-mechanics-lab.html">Foundations — Mechanics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-proposition-99-lab.html">Application — Proposition 99</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-augmentation-lab.html">Extension — Augmented SCM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-design-lab.html">Worksheet — Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-donor-pool-lab.html">Worksheet — Donor Pool</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Interrupted Time Series</span></p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Matching and Weighting</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="interrupted-time-series-mechanics-lab.html">Lab: Interrupted Time Series Foundations With Seatbelts</a></li>
-<li class="toctree-l1"><a class="reference internal" href="interrupted-time-series-design-diagnostics-lab.html">Lab: Seatbelt Law Design and Robustness</a></li>
-<li class="toctree-l1"><a class="reference internal" href="interrupted-time-series-counterfactual-validation-lab.html">Lab: Interrupted Time Series Counterfactual Validation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/matching-weighting.html">Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="matching-methods-report.html">Methods Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lalonde-matching-lab.html">Foundations — LaLonde</a></li>
+<li class="toctree-l1"><a class="reference internal" href="black-politicians-lab.html">Application — Black Politicians</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nsw-cps-benchmark-lab.html">Benchmark — NSW and CPS</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Beyond Pre-Post</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../guides/interrupted-time-series.html">Interrupted Time Series Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interrupted-time-series-methods-report.html">Methods Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interrupted-time-series-mechanics-lab.html">Foundations — Seatbelts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interrupted-time-series-design-diagnostics-lab.html">Design and Robustness</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interrupted-time-series-counterfactual-validation-lab.html">Counterfactual Validation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Cross-Method Capstone</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="hisp-ie-practice-lab.html">HISP Impact Evaluation in Practice</a></li>
 </ul>
 
     </div>
@@ -408,7 +427,7 @@
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-7-change-the-comparison-group">Step 7: Change The Comparison Group</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-8-condition-on-population">Step 8: Condition On Population</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-9-compare-with-sunabraham">Step 9: Compare With Sun–Abraham</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optional-extension-sensitivity-to-parallel-trends-violations">Optional Extension: Sensitivity To Parallel-Trends Violations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optional-extension-a-calibrated-bias-stress-test">Optional Extension: A Calibrated-Bias Stress Test</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#practical-implications">Practical Implications</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#worked-answers">Worked answers</a></li>
 </ul>
@@ -428,14 +447,14 @@
 <p>Use the R kernel. Keep the supplied <code class="docutils literal notranslate"><span class="pre">data/</span></code> folder beside this notebook. Run cells in order after installing the documented R environment. Data loading is entirely local.</p>
 <section id="how-to-use-this-page">
 <h2>How To Use This Page<a class="headerlink" href="#how-to-use-this-page" title="Link to this heading">#</a></h2>
-<p>This is the third difference-in-differences lab. The guided core takes about 45–60 minutes; the <code class="docutils literal notranslate"><span class="pre">HonestDiD</span></code> sensitivity analysis is an optional extension.</p>
+<p>This is the third difference-in-differences lab. The guided core takes about 45–60 minutes; a lightweight calibrated-bias stress test is an optional extension.</p>
 <ul class="simple">
 <li><p>Estimate group-time effects before choosing an aggregation.</p></li>
 <li><p>Make the comparison group and parallel-trends assumption explicit.</p></li>
 <li><p>Use simultaneous confidence bands for a dynamic effect path.</p></li>
 <li><p>Compare estimators by target and support, not only by numerical proximity.</p></li>
 </ul>
-<p>The main workflow implements Callaway and Sant’Anna with the <a class="reference external" href="https://bcallaway11.github.io/did/"><code class="docutils literal notranslate"><span class="pre">did</span></code> package</a> and compares it with Sun–Abraham in <code class="docutils literal notranslate"><span class="pre">fixest</span></code> (Callaway and Sant’Anna 2021; Sun and Abraham 2021). The extension implements Rambachan and Roth with <a class="reference external" href="https://cran.r-project.org/web/packages/HonestDiD/HonestDiD.pdf"><code class="docutils literal notranslate"><span class="pre">HonestDiD</span></code></a> (Rambachan and Roth 2023). See the <a class="reference external" href="https://defenceeconomist.github.io/qedlabs/notes/did/callaway-santanna-multiple-periods-notes.html">Callaway–Sant’Anna notes</a> and <a class="reference external" href="https://defenceeconomist.github.io/qedlabs/notes/did/roth-et-al-did-synthesis-notes.html">modern DiD synthesis</a>.</p>
+<p>The main workflow implements Callaway and Sant’Anna with the <a class="reference external" href="https://bcallaway11.github.io/did/"><code class="docutils literal notranslate"><span class="pre">did</span></code> package</a> and compares it with Sun–Abraham in <code class="docutils literal notranslate"><span class="pre">fixest</span></code> (Callaway and Sant’Anna 2021; Sun and Abraham 2021). The extension demonstrates the logic of calibrating possible post-treatment bias to observed pre-treatment discrepancies without introducing a conic-optimisation dependency. It is a teaching stress test, not an implementation of the formal Rambachan–Roth procedure (Rambachan and Roth 2023). See the <a class="reference external" href="https://defenceeconomist.github.io/qedlabs/notes/did/callaway-santanna-multiple-periods-notes.html">Callaway–Sant’Anna notes</a> and <a class="reference external" href="https://defenceeconomist.github.io/qedlabs/notes/did/roth-et-al-did-synthesis-notes.html">modern DiD synthesis</a>.</p>
 <p><a class="reference external" href="https://defenceeconomist.github.io/qedlabs/labs/difference-in-differences-reproducibility.html">Tested environment and reproduction record</a></p>
 </section>
 <section id="training-goal">
@@ -1067,16 +1086,12 @@ Estimation Method:  Doubly Robust
 </div>
 <p>Differences can arise from cohort weights, available comparisons, nuisance estimation, and support. Numerical agreement is reassuring but is not the criterion that defines a valid estimator.</p>
 </section>
-<section id="optional-extension-sensitivity-to-parallel-trends-violations">
-<h2>Optional Extension: Sensitivity To Parallel-Trends Violations<a class="headerlink" href="#optional-extension-sensitivity-to-parallel-trends-violations" title="Link to this heading">#</a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">HonestDiD</span></code> requires an ordered event-study coefficient vector and its full covariance matrix. To keep the exercise transparent, restrict the data to the 2006 cohort and never-treated counties. This creates a non-staggered design with two estimated pre-treatment coefficients, an omitted 2005 reference period, and two post-treatment coefficients.</p>
+<section id="optional-extension-a-calibrated-bias-stress-test">
+<h2>Optional Extension: A Calibrated-Bias Stress Test<a class="headerlink" href="#optional-extension-a-calibrated-bias-stress-test" title="Link to this heading">#</a></h2>
+<p>To keep the exercise transparent, restrict the data to the 2006 cohort and never-treated counties. This creates a non-staggered design with two estimated pre-treatment coefficients, an omitted 2005 reference period, and two post-treatment coefficients.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
-<span class="kr">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nf">requireNamespace</span><span class="p">(</span><span class="s">"HonestDiD"</span><span class="p">,</span><span class="w"> </span><span class="n">quietly</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="nf">stop</span><span class="p">(</span><span class="s">"Install HonestDiD before running this optional extension."</span><span class="p">,</span><span class="w"> </span><span class="n">call.</span><span class="o">=</span><span class="kc">FALSE</span><span class="p">)</span>
-<span class="p">}</span>
-
 <span class="n">sensitivity_sample</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">mpdta</span><span class="w"> </span><span class="o">|&gt;</span>
 <span class="w">  </span><span class="nf">filter</span><span class="p">(</span><span class="n">first.treat</span><span class="w"> </span><span class="o">%in%</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="m">2006</span><span class="p">))</span><span class="w"> </span><span class="o">|&gt;</span>
 <span class="w">  </span><span class="nf">mutate</span><span class="p">(</span><span class="n">treated_2006</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">as.integer</span><span class="p">(</span><span class="n">first.treat</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">2006</span><span class="p">))</span>
@@ -1132,71 +1147,68 @@ Estimation Method:  Doubly Robust
 </table>
 </div></div>
 </div>
-<p>The relative-magnitudes restriction indexes how large post-treatment deviations from parallel trends may be relative to the largest pre-treatment change in the untreated group gap. The procedure accounts for sampling uncertainty in the pre-treatment coefficients; it does not treat the observed maximum as known.</p>
+<p>The following screen asks how the first post-treatment confidence interval changes if an unknown bias may be as large as a multiple of the largest observed pre-treatment discrepancy. It deliberately uses only arithmetic and the fitted covariance matrix. Unlike formal Rambachan–Roth sensitivity intervals, it treats the observed pre-period scale as fixed and should therefore be reported as a teaching diagnostic rather than a confidence set with uniform coverage.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
-<span class="n">sensitivity_results</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">HonestDiD</span><span class="o">::</span><span class="nf">createSensitivityResults_relativeMagnitudes</span><span class="p">(</span>
-<span class="w">  </span><span class="n">betahat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">event_coefficients</span><span class="p">,</span>
-<span class="w">  </span><span class="n">sigma</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">event_covariance</span><span class="p">,</span>
-<span class="w">  </span><span class="n">numPrePeriods</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2</span><span class="p">,</span>
-<span class="w">  </span><span class="n">numPostPeriods</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2</span><span class="p">,</span>
-<span class="w">  </span><span class="n">Mbarvec</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">seq</span><span class="p">(</span><span class="m">0.5</span><span class="p">,</span><span class="w"> </span><span class="m">2</span><span class="p">,</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.5</span><span class="p">),</span>
-<span class="w">  </span><span class="n">gridPoints</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">100</span><span class="p">,</span>
-<span class="w">  </span><span class="n">seed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">20260809</span>
-<span class="p">)</span>
+<span class="n">pre_index</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">term_year</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="m">2005</span>
+<span class="n">first_post_index</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">which</span><span class="p">(</span><span class="n">term_year</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">2006</span><span class="p">)</span>
+<span class="n">pre_scale</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">max</span><span class="p">(</span><span class="nf">abs</span><span class="p">(</span><span class="n">event_coefficients</span><span class="p">[</span><span class="n">pre_index</span><span class="p">]))</span>
+<span class="n">post_estimate</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">unname</span><span class="p">(</span><span class="n">event_coefficients</span><span class="p">[</span><span class="n">first_post_index</span><span class="p">])</span>
+<span class="n">post_standard_error</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">sqrt</span><span class="p">(</span><span class="n">event_covariance</span><span class="p">[</span><span class="n">first_post_index</span><span class="p">,</span><span class="w"> </span><span class="n">first_post_index</span><span class="p">])</span>
 
-<span class="n">original_interval</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">HonestDiD</span><span class="o">::</span><span class="nf">constructOriginalCS</span><span class="p">(</span>
-<span class="w">  </span><span class="n">betahat</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">event_coefficients</span><span class="p">,</span>
-<span class="w">  </span><span class="n">sigma</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">event_covariance</span><span class="p">,</span>
-<span class="w">  </span><span class="n">numPrePeriods</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2</span><span class="p">,</span>
-<span class="w">  </span><span class="n">numPostPeriods</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2</span>
+<span class="n">sensitivity_results</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">tibble</span><span class="p">(</span>
+<span class="w">  </span><span class="n">bias_multiple</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">seq</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="m">2</span><span class="p">,</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.5</span><span class="p">),</span>
+<span class="w">  </span><span class="n">estimate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">post_estimate</span><span class="p">,</span>
+<span class="w">  </span><span class="n">bias_allowance</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bias_multiple</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">pre_scale</span><span class="p">,</span>
+<span class="w">  </span><span class="n">lower</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">post_estimate</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="m">1.96</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">post_standard_error</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">bias_allowance</span><span class="p">,</span>
+<span class="w">  </span><span class="n">upper</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">post_estimate</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="m">1.96</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">post_standard_error</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">bias_allowance</span>
 <span class="p">)</span>
 
 <span class="n">zero_included</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">with</span><span class="p">(</span>
 <span class="w">  </span><span class="n">sensitivity_results</span><span class="p">,</span>
-<span class="w">  </span><span class="n">lb</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">ub</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="m">0</span>
+<span class="w">  </span><span class="n">lower</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">upper</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="m">0</span>
 <span class="p">)</span>
-<span class="n">first_zero_including_mbar</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="kr">if</span><span class="w"> </span><span class="p">(</span><span class="nf">any</span><span class="p">(</span><span class="n">zero_included</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="nf">min</span><span class="p">(</span><span class="n">sensitivity_results</span><span class="o">$</span><span class="n">Mbar</span><span class="p">[</span><span class="n">zero_included</span><span class="p">])</span>
+<span class="n">first_zero_including_multiple</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="kr">if</span><span class="w"> </span><span class="p">(</span><span class="nf">any</span><span class="p">(</span><span class="n">zero_included</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nf">min</span><span class="p">(</span><span class="n">sensitivity_results</span><span class="o">$</span><span class="n">bias_multiple</span><span class="p">[</span><span class="n">zero_included</span><span class="p">])</span>
 <span class="p">}</span><span class="w"> </span><span class="kr">else</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="kc">NA_real_</span>
 <span class="p">}</span>
 
 <span class="n">sensitivity_results</span>
-<span class="nf">data.frame</span><span class="p">(</span><span class="n">first_Mbar_including_zero</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">first_zero_including_mbar</span><span class="p">)</span>
+<span class="nf">data.frame</span><span class="p">(</span><span class="n">first_bias_multiple_including_zero</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">first_zero_including_multiple</span><span class="p">)</span>
 
 <span class="nf">stopifnot</span><span class="p">(</span>
-<span class="w">  </span><span class="nf">nrow</span><span class="p">(</span><span class="n">sensitivity_results</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">4L</span><span class="p">,</span>
-<span class="w">  </span><span class="nf">all</span><span class="p">(</span><span class="n">sensitivity_results</span><span class="o">$</span><span class="n">lb</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">sensitivity_results</span><span class="o">$</span><span class="n">ub</span><span class="p">),</span>
-<span class="w">  </span><span class="nf">all</span><span class="p">(</span><span class="nf">is.finite</span><span class="p">(</span><span class="n">sensitivity_results</span><span class="o">$</span><span class="n">Mbar</span><span class="p">)),</span>
-<span class="w">  </span><span class="nf">nrow</span><span class="p">(</span><span class="n">original_interval</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1L</span>
+<span class="w">  </span><span class="nf">nrow</span><span class="p">(</span><span class="n">sensitivity_results</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">5L</span><span class="p">,</span>
+<span class="w">  </span><span class="nf">all</span><span class="p">(</span><span class="n">sensitivity_results</span><span class="o">$</span><span class="n">lower</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">sensitivity_results</span><span class="o">$</span><span class="n">upper</span><span class="p">),</span>
+<span class="w">  </span><span class="nf">all</span><span class="p">(</span><span class="nf">is.finite</span><span class="p">(</span><span class="n">sensitivity_results</span><span class="o">$</span><span class="n">bias_multiple</span><span class="p">))</span>
 <span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <div class="output text_html"><table class="dataframe">
-<caption>A tibble: 4 × 5</caption>
+<caption>A tibble: 5 × 5</caption>
 <thead>
-	<tr><th scope=col>lb</th><th scope=col>ub</th><th scope=col>method</th><th scope=col>Delta</th><th scope=col>Mbar</th></tr>
-	<tr><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;dbl&gt;</th></tr>
+	<tr><th scope=col>bias_multiple</th><th scope=col>estimate</th><th scope=col>bias_allowance</th><th scope=col>lower</th><th scope=col>upper</th></tr>
+	<tr><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th></tr>
 </thead>
 <tbody>
-	<tr><td>-0.03960358</td><td>0.03240293</td><td>C-LF</td><td>DeltaRM</td><td>0.5</td></tr>
-	<tr><td>-0.05400488</td><td>0.04680423</td><td>C-LF</td><td>DeltaRM</td><td>1.0</td></tr>
-	<tr><td>-0.07560683</td><td>0.06840618</td><td>C-LF</td><td>DeltaRM</td><td>1.5</td></tr>
-	<tr><td>-0.09720879</td><td>0.09000814</td><td>C-LF</td><td>DeltaRM</td><td>2.0</td></tr>
+	<tr><td>0.0</td><td>-0.004594607</td><td>0.000000000</td><td>-0.03952496</td><td>0.03033575</td></tr>
+	<tr><td>0.5</td><td>-0.004594607</td><td>0.001884647</td><td>-0.04140961</td><td>0.03222040</td></tr>
+	<tr><td>1.0</td><td>-0.004594607</td><td>0.003769294</td><td>-0.04329426</td><td>0.03410504</td></tr>
+	<tr><td>1.5</td><td>-0.004594607</td><td>0.005653941</td><td>-0.04517890</td><td>0.03598969</td></tr>
+	<tr><td>2.0</td><td>-0.004594607</td><td>0.007538587</td><td>-0.04706355</td><td>0.03787434</td></tr>
 </tbody>
 </table>
 </div><div class="output text_html"><table class="dataframe">
 <caption>A data.frame: 1 × 1</caption>
 <thead>
-	<tr><th scope=col>first_Mbar_including_zero</th></tr>
+	<tr><th scope=col>first_bias_multiple_including_zero</th></tr>
 	<tr><th scope=col>&lt;dbl&gt;</th></tr>
 </thead>
 <tbody>
-	<tr><td>0.5</td></tr>
+	<tr><td>0</td></tr>
 </tbody>
 </table>
 </div></div>
@@ -1204,19 +1216,26 @@ Estimation Method:  Doubly Robust
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">9</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">5.2</span><span class="p">)</span>
-<span class="n">HonestDiD</span><span class="o">::</span><span class="nf">createSensitivityPlot_relativeMagnitudes</span><span class="p">(</span>
-<span class="w">  </span><span class="n">sensitivity_results</span><span class="p">,</span>
-<span class="w">  </span><span class="n">original_interval</span>
-<span class="p">)</span>
+<span class="nf">ggplot</span><span class="p">(</span><span class="n">sensitivity_results</span><span class="p">,</span><span class="w"> </span><span class="nf">aes</span><span class="p">(</span><span class="n">bias_multiple</span><span class="p">,</span><span class="w"> </span><span class="n">estimate</span><span class="p">))</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_hline</span><span class="p">(</span><span class="n">yintercept</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="n">colour</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"gray55"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_ribbon</span><span class="p">(</span><span class="nf">aes</span><span class="p">(</span><span class="n">ymin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lower</span><span class="p">,</span><span class="w"> </span><span class="n">ymax</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">upper</span><span class="p">),</span><span class="w"> </span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.2</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_line</span><span class="p">(</span><span class="n">linewidth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.8</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_point</span><span class="p">(</span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">labs</span><span class="p">(</span>
+<span class="w">    </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Allowed bias as a multiple of the largest observed pre-period discrepancy"</span><span class="p">,</span>
+<span class="w">    </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"First post-treatment estimate and expanded interval"</span><span class="p">,</span>
+<span class="w">    </span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"A transparent sensitivity screen"</span>
+<span class="w">  </span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">theme_minimal</span><span class="p">(</span><span class="n">base_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">12</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<a class="reference internal image-reference" href="../_images/77e50c69ec9e6a0f68be113467567ff160bf262b5b48328e775cf94d21796e97.png"><img alt="../_images/77e50c69ec9e6a0f68be113467567ff160bf262b5b48328e775cf94d21796e97.png" src="../_images/77e50c69ec9e6a0f68be113467567ff160bf262b5b48328e775cf94d21796e97.png" style="width: 540px; height: 312px;" />
+<a class="reference internal image-reference" href="../_images/d44901b8c39f26ecd9797495979ac81a412f760775776c6731ca99e886ece6fc.png"><img alt="../_images/d44901b8c39f26ecd9797495979ac81a412f760775776c6731ca99e886ece6fc.png" src="../_images/d44901b8c39f26ecd9797495979ac81a412f760775776c6731ca99e886ece6fc.png" style="width: 540px; height: 312px;" />
 </a>
 </div>
 </div>
-<p>The default target is the first post-treatment effect (2006), not the average of both post-treatment periods. The sensitivity interval for this cohort already includes zero at the first reported restriction value. The exercise is still informative: sensitivity analysis should report how conclusions change under stated violations, not manufacture a decisive result.</p>
+<p>The target is the first post-treatment effect (2006), not the average of both post-treatment periods. The exercise is informative only when the calibration and its limitations are stated: it shows how quickly a conclusion changes under a simple bias allowance, not a formal robustness guarantee.</p>
 <p>Most importantly, this is a <strong>2006-cohort-versus-never-treated</strong> estimand. It is not a sensitivity analysis for the full staggered-adoption aggregate estimated earlier.</p>
 </section>
 <section id="practical-implications">
@@ -1236,7 +1255,7 @@ Estimation Method:  Doubly Robust
 <li><p>A simple aggregate gives early cohorts more post-treatment cells; cohort, calendar, and event averages answer different questions.</p></li>
 <li><p>Not-yet-treated counties add support only while untreated; they add a substantive comparison assumption.</p></li>
 <li><p>A universal baseline compares each lead to the last untreated period, whereas a varying baseline uses adjacent pre-period changes.</p></li>
-<li><p>The sensitivity exercise concerns the 2006 cohort and first post-period only. Report the tested grid rather than claiming an exact breakdown threshold.</p></li>
+<li><p>The sensitivity exercise concerns the 2006 cohort and first post-period only. Report it as a calibrated-bias screen, not as a formal Rambachan–Roth confidence set.</p></li>
 </ul>
 <p>Callaway, Brantly, and Pedro H. C. Sant’Anna. 2021. “Difference-in-Differences with Multiple Time Periods.” <em>Journal of Econometrics</em> 225 (2): 200–230. <a class="reference external" href="https://doi.org/10.1016/j.jeconom.2020.12.001">https://doi.org/10.1016/j.jeconom.2020.12.001</a>.</p>
 <p>Rambachan, Ashesh, and Jonathan Roth. 2023. “A More Credible Approach to Parallel Trends.” <em>Review of Economic Studies</em> 90 (5): 2555–91. <a class="reference external" href="https://doi.org/10.1093/restud/rdad018">https://doi.org/10.1093/restud/rdad018</a>.</p>
@@ -1284,11 +1303,11 @@ Estimation Method:  Doubly Robust
       </div>
     </a>
     <a class="right-next"
-       href="regression-discontinuity-foundations-lab.html"
+       href="../guides/synthetic-control.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Lab: Sharp RD foundations with government transfers</p>
+        <p class="prev-next-title">Synthetic control guide</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -1321,7 +1340,7 @@ Estimation Method:  Doubly Robust
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-7-change-the-comparison-group">Step 7: Change The Comparison Group</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-8-condition-on-population">Step 8: Condition On Population</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-9-compare-with-sunabraham">Step 9: Compare With Sun–Abraham</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optional-extension-sensitivity-to-parallel-trends-violations">Optional Extension: Sensitivity To Parallel-Trends Violations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optional-extension-a-calibrated-bias-stress-test">Optional Extension: A Calibrated-Bias Stress Test</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#practical-implications">Practical Implications</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#worked-answers">Worked answers</a></li>
 </ul>

@@ -13,9 +13,32 @@ import sys
 from urllib.parse import urlsplit
 
 
-EXPECTED_NOTEBOOKS = 18
-EXPECTED_EXECUTABLE = 16
+EXPECTED_NOTEBOOKS = 23
+EXPECTED_EXECUTABLE = 20
+EXPECTED_NARRATIVE = (
+    "index.md",
+    "academy-extension.md",
+    "study-guide.md",
+    "offline-setup.md",
+    "data.md",
+    "choosing-a-design.md",
+    "guides/regression-discontinuity.md",
+    "guides/difference-in-differences.md",
+    "guides/synthetic-control.md",
+    "guides/matching-weighting.md",
+    "guides/interrupted-time-series.md",
+)
 REMOTE = ("http://", "https://", "//")
+PROHIBITED_R_PACKAGES = {
+    "CVXR",
+    "HonestDiD",
+    "Synth",
+    "clarabel",
+    "highs",
+    "nloptr",
+    "tidysynth",
+}
+PROHIBITED_BUILD_TOOLS = ("cmake", "cargo", "rust")
 
 
 class ResourceParser(HTMLParser):
@@ -75,6 +98,21 @@ def verify_dataset_manifest(book: Path) -> None:
             raise AssertionError(f"Dataset manifest mismatch: {name}")
 
 
+def verify_build_dependencies(book: Path) -> None:
+    lock = json.loads((book / "renv.lock").read_text(encoding="utf-8"))
+    packages = lock.get("Packages", {})
+    present = sorted(PROHIBITED_R_PACKAGES.intersection(packages))
+    if present:
+        raise AssertionError("Prohibited R packages remain in renv.lock: " + ", ".join(present))
+    for name, metadata in packages.items():
+        requirements = str(metadata.get("SystemRequirements", "")).lower()
+        tools = [tool for tool in PROHIBITED_BUILD_TOOLS if tool in requirements]
+        if tools:
+            raise AssertionError(
+                f"{name} requires a prohibited build tool: {', '.join(tools)}"
+            )
+
+
 def verify_notebooks(book: Path) -> None:
     notebooks = sorted((book / "notebooks").glob("*.ipynb"))
     included_pages = {path.stem for path in notebooks} | {"data"}
@@ -116,7 +154,14 @@ def verify_html(book: Path) -> None:
     root = book / "_build" / "html"
     if not (root / "index.html").is_file():
         raise AssertionError("Prebuilt HTML is missing")
-    expected_pages = [book / "index.md", book / "offline-setup.md", book / "data.md"]
+    error_logs = sorted((root / "reports").rglob("*.err.log"))
+    if error_logs:
+        names = ", ".join(path.relative_to(root).as_posix() for path in error_logs)
+        raise AssertionError("Notebook execution error logs are present: " + names)
+    expected_pages = [book / relative for relative in EXPECTED_NARRATIVE]
+    missing_sources = [path.relative_to(book).as_posix() for path in expected_pages if not path.is_file()]
+    if missing_sources:
+        raise AssertionError("Missing narrative source pages: " + ", ".join(missing_sources))
     expected_pages.extend(sorted((book / "notebooks").glob("*.ipynb")))
     for source in expected_pages:
         relative = source.relative_to(book).with_suffix(".html")
@@ -132,7 +177,12 @@ def verify_html(book: Path) -> None:
         rendered = page.read_text(encoding="utf-8", errors="replace")
         if "cell_output" not in rendered:
             raise AssertionError(f"Rendered computational notebook has no outputs: {page.name}")
-        if "An error occurred while executing" in rendered or "Traceback (most recent call last)" in rendered:
+        if (
+            "An error occurred while executing" in rendered
+            or "Traceback (most recent call last)" in rendered
+            or 'class="output traceback"' in rendered
+            or "CellExecutionError" in rendered
+        ):
             raise AssertionError(f"Rendered computational notebook contains an execution error: {page.name}")
     if not any((root / "_images").glob("*")):
         raise AssertionError("Rendered figures are missing from _build/html/_images")
@@ -226,10 +276,14 @@ def main() -> None:
     book = Path(sys.argv[1] if len(sys.argv) > 1 else ".").resolve()
     verify_checksums(book)
     verify_dataset_manifest(book)
+    verify_build_dependencies(book)
     verify_notebooks(book)
     verify_html(book)
     verify_versions(book)
-    print("Verified checksums, 18 notebooks, 16 executable labs, HTML links, and offline assets")
+    print(
+        "Verified 11 narrative pages, 23 notebooks, 20 executable pages, "
+        "checksums, HTML links, and offline assets"
+    )
 
 
 if __name__ == "__main__":

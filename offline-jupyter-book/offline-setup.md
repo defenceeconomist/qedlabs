@@ -1,37 +1,64 @@
-# Offline setup
+# Running the offline book
 
-## Supported system
+## Read without installing packages
+
+The archive includes the complete rendered book. From the extracted folder, run:
+
+```bash
+./serve.sh
+```
+
+Open the address printed in the terminal. This does not install R, Python
+packages, or any notebook dependencies. If a web server is unavailable, open
+`_build/html/index.html` directly.
+
+## Run the exercises
+
+Run one command:
+
+```bash
+./lab.sh
+```
+
+The first run starts `setup.sh` automatically. It checks the system, creates
+`.venv/` and `.r-library/` inside the book folder, installs the locked
+dependencies, registers the R kernel, and then opens JupyterLab. Later runs
+start JupyterLab immediately.
+
+Setup needs:
 
 - Linux x86_64
 - Python 3.12
 - R 4.5.1
-- C, C++, Fortran, and Rust/Cargo 1.78 or newer compilers, GNU Make, and common
-  development libraries; Rust is required by CRAN's `clarabel`/`HonestDiD` stack
-- Network access to PyPI and CRAN during `setup.sh` only
+- C, C++, and Fortran compilers and GNU Make
+- Network access to PyPI and CRAN during the first setup only
 
-Quarto, Node, npm, conda, GitHub access, and external data downloads are not
-required.
-
-## Install the isolated environments
-
-Run once after extracting or moving the folder:
+On Ubuntu or Debian, install the remaining system libraries once with:
 
 ```bash
-./setup.sh
+sudo apt-get install build-essential curl gfortran libcurl4-openssl-dev \
+  libfontconfig1-dev libfreetype-dev libnode-dev libx11-dev \
+  libzmq3-dev pandoc
 ```
 
-This creates `.venv/` and `.r-library/` inside the book folder. It installs the
-hash-locked Python environment from PyPI, restores the R lock from CRAN, installs
-the vendored `augsynth` source locally, and writes a relocatable R kernelspec into
-the Python environment. Its launcher resolves `.r-library/` relative to its own
-location, so the completed folder can move without embedding its old path.
+`setup.sh` reports all missing tools or Debian packages together and prints the
+corresponding install command.
 
-## Read, run, and rebuild
+Quarto, Node, npm, conda, CMake, Rust/Cargo, GitHub access, and external data
+downloads are not required. Classical synthetic-control exercises use explicit
+base-R simplex optimisation, and the DiD sensitivity extension uses a transparent
+calibrated-bias screen rather than a conic-optimisation stack.
+
+The book contains 23 notebook pages: 20 executable R notebooks and three
+writing-only synthetic-control pages. Narrative guides provide the learning
+route; the five methods reports appear before the labs in their respective
+sections, and the HISP exercise closes the book as a cross-method capstone.
+
+## Other commands
 
 ```bash
-./serve.sh       # read the prebuilt HTML book
-./lab.sh         # run or edit notebooks in JupyterLab
-./build.sh       # execute changed notebooks and rebuild HTML
+./setup.sh       # prepare the environments without opening JupyterLab
+./build.sh       # set up if needed, execute notebooks, and rebuild HTML
 ./verify.sh      # audit checksums, pages, links, and remote assets
 ```
 

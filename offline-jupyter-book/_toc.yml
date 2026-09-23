@@ -1,36 +1,85 @@
 format: jb-book
 root: index
 parts:
-  - caption: Start here
+  - caption: Start Here
     chapters:
+      - file: academy-extension
+        title: From Module 6 to Applied Practice
+      - file: study-guide
+        title: How to Study This Book
       - file: offline-setup
+        title: Offline Setup
       - file: data
-  - caption: Matching and Weighting
+        title: Data and Provenance
+  - caption: Choose a Design
     chapters:
-      - file: notebooks/lalonde-matching-lab
-      - file: notebooks/black-politicians-lab
-      - file: notebooks/nsw-cps-benchmark-lab
-      - file: notebooks/hisp-ie-practice-lab
-  - caption: Difference-in-Differences
-    chapters:
-      - file: notebooks/difference-in-differences-foundations-lab
-      - file: notebooks/difference-in-differences-staggered-diagnostics-lab
-      - file: notebooks/difference-in-differences-modern-estimators-lab
+      - file: choosing-a-design
+        title: Design Decision Guide
   - caption: Regression Discontinuity
     chapters:
+      - file: guides/regression-discontinuity
+        title: Guide
+      - file: notebooks/regression-discontinuity-methods-report
+        title: Methods Report
       - file: notebooks/regression-discontinuity-foundations-lab
+        title: Foundations — Sharp RD
       - file: notebooks/regression-discontinuity-diagnostics-lab
+        title: Diagnostics and Sensitivity
       - file: notebooks/regression-discontinuity-fuzzy-lab
+        title: Extension — Fuzzy RD
+  - caption: Difference-in-Differences
+    chapters:
+      - file: guides/difference-in-differences
+        title: Guide
+      - file: notebooks/difference-in-differences-methods-report
+        title: Methods Report
+      - file: notebooks/difference-in-differences-foundations-lab
+        title: Foundations — Two Groups, Two Periods
+      - file: notebooks/difference-in-differences-staggered-diagnostics-lab
+        title: Diagnostics — Staggered Adoption
+      - file: notebooks/difference-in-differences-modern-estimators-lab
+        title: Extension — Modern Estimators
   - caption: Synthetic Control
     chapters:
+      - file: guides/synthetic-control
+        title: Guide
+      - file: notebooks/synthetic-control-methods-report
+        title: Methods Report
       - file: notebooks/synthetic-control-mechanics-lab
+        title: Foundations — Mechanics
       - file: notebooks/synthetic-control-proposition-99-lab
+        title: Application — Proposition 99
       - file: notebooks/synthetic-control-augmentation-lab
+        title: Extension — Augmented SCM
       - file: notebooks/synthetic-control-design-lab
+        title: Worksheet — Design
       - file: notebooks/synthetic-control-donor-pool-lab
-  - caption: Interrupted Time Series
+        title: Worksheet — Donor Pool
+  - caption: Matching and Weighting
     chapters:
+      - file: guides/matching-weighting
+        title: Guide
+      - file: notebooks/matching-methods-report
+        title: Methods Report
+      - file: notebooks/lalonde-matching-lab
+        title: Foundations — LaLonde
+      - file: notebooks/black-politicians-lab
+        title: Application — Black Politicians
+      - file: notebooks/nsw-cps-benchmark-lab
+        title: Benchmark — NSW and CPS
+  - caption: Beyond Pre-Post
+    chapters:
+      - file: guides/interrupted-time-series
+        title: Interrupted Time Series Guide
+      - file: notebooks/interrupted-time-series-methods-report
+        title: Methods Report
       - file: notebooks/interrupted-time-series-mechanics-lab
+        title: Foundations — Seatbelts
       - file: notebooks/interrupted-time-series-design-diagnostics-lab
+        title: Design and Robustness
       - file: notebooks/interrupted-time-series-counterfactual-validation-lab
-
+        title: Counterfactual Validation
+  - caption: Cross-Method Capstone
+    chapters:
+      - file: notebooks/hisp-ie-practice-lab
+        title: HISP Impact Evaluation in Practice

@@ -263,7 +263,7 @@ Design worksheet; no supplied dataset is required.
 
 [Complete lab ZIP](downloads/synthetic-control-mechanics-lab.zip){download="synthetic-control-mechanics-lab.zip"} · [Lab page](synthetic-control-mechanics-lab.qmd)
 
-### Lab: Proposition 99 With tidysynth {#synthetic-control-proposition-99-lab}
+### Lab: Proposition 99 With Transparent SCM {#synthetic-control-proposition-99-lab}
 
 [smoking](#smoking)
 

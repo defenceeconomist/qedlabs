@@ -66,7 +66,7 @@ references:
 
 ## How To Use This Page
 
-This is the third difference-in-differences lab. The guided core takes about 45–60 minutes; the `HonestDiD` sensitivity analysis is an optional extension.
+This is the third difference-in-differences lab. The guided core takes about 45–60 minutes; a lightweight calibrated-bias stress test is an optional extension.
 
 
 
@@ -75,7 +75,7 @@ This is the third difference-in-differences lab. The guided core takes about 45�
 - Use simultaneous confidence bands for a dynamic effect path.
 - Compare estimators by target and support, not only by numerical proximity.
 
-The main workflow implements Callaway and Sant'Anna with the [`did` package](https://bcallaway11.github.io/did/) and compares it with Sun–Abraham in `fixest` [@callaway2021multipletime; @sunabraham2021dynamic]. The extension implements Rambachan and Roth with [`HonestDiD`](https://cran.r-project.org/web/packages/HonestDiD/HonestDiD.pdf) [@rambachanroth2023parallel]. See the [Callaway–Sant'Anna notes](https://defenceeconomist.github.io/qedlabs/notes/did/callaway-santanna-multiple-periods-notes.html) and [modern DiD synthesis](https://defenceeconomist.github.io/qedlabs/notes/did/roth-et-al-did-synthesis-notes.html).
+The main workflow implements Callaway and Sant'Anna with the [`did` package](https://bcallaway11.github.io/did/) and compares it with Sun–Abraham in `fixest` [@callaway2021multipletime; @sunabraham2021dynamic]. The extension demonstrates the logic of calibrating possible post-treatment bias to observed pre-treatment discrepancies without introducing a conic-optimisation dependency. It is a teaching stress test, not an implementation of the formal Rambachan–Roth procedure [@rambachanroth2023parallel]. See the [Callaway–Sant'Anna notes](https://defenceeconomist.github.io/qedlabs/notes/did/callaway-santanna-multiple-periods-notes.html) and [modern DiD synthesis](https://defenceeconomist.github.io/qedlabs/notes/did/roth-et-al-did-synthesis-notes.html).
 
 [Tested environment and reproduction record](https://defenceeconomist.github.io/qedlabs/labs/difference-in-differences-reproducibility.html)
 
@@ -498,15 +498,11 @@ ggplot(
 
 Differences can arise from cohort weights, available comparisons, nuisance estimation, and support. Numerical agreement is reassuring but is not the criterion that defines a valid estimator.
 
-## Optional Extension: Sensitivity To Parallel-Trends Violations
+## Optional Extension: A Calibrated-Bias Stress Test
 
-`HonestDiD` requires an ordered event-study coefficient vector and its full covariance matrix. To keep the exercise transparent, restrict the data to the 2006 cohort and never-treated counties. This creates a non-staggered design with two estimated pre-treatment coefficients, an omitted 2005 reference period, and two post-treatment coefficients.
+To keep the exercise transparent, restrict the data to the 2006 cohort and never-treated counties. This creates a non-staggered design with two estimated pre-treatment coefficients, an omitted 2005 reference period, and two post-treatment coefficients.
 
 ```{r}
-if (!requireNamespace("HonestDiD", quietly = TRUE)) {
-  stop("Install HonestDiD before running this optional extension.", call.=FALSE)
-}
-
 sensitivity_sample <- mpdta |>
   filter(first.treat %in% c(0, 2006)) |>
   mutate(treated_2006 = as.integer(first.treat == 2006))
@@ -545,55 +541,58 @@ stopifnot(
 )
 ```
 
-The relative-magnitudes restriction indexes how large post-treatment deviations from parallel trends may be relative to the largest pre-treatment change in the untreated group gap. The procedure accounts for sampling uncertainty in the pre-treatment coefficients; it does not treat the observed maximum as known.
+The following screen asks how the first post-treatment confidence interval changes if an unknown bias may be as large as a multiple of the largest observed pre-treatment discrepancy. It deliberately uses only arithmetic and the fitted covariance matrix. Unlike formal Rambachan–Roth sensitivity intervals, it treats the observed pre-period scale as fixed and should therefore be reported as a teaching diagnostic rather than a confidence set with uniform coverage.
 
 ```{r}
-sensitivity_results <- HonestDiD::createSensitivityResults_relativeMagnitudes(
-  betahat = event_coefficients,
-  sigma = event_covariance,
-  numPrePeriods = 2,
-  numPostPeriods = 2,
-  Mbarvec = seq(0.5, 2, by = 0.5),
-  gridPoints = 100,
-  seed = 20260809
-)
+pre_index <- term_year < 2005
+first_post_index <- which(term_year == 2006)
+pre_scale <- max(abs(event_coefficients[pre_index]))
+post_estimate <- unname(event_coefficients[first_post_index])
+post_standard_error <- sqrt(event_covariance[first_post_index, first_post_index])
 
-original_interval <- HonestDiD::constructOriginalCS(
-  betahat = event_coefficients,
-  sigma = event_covariance,
-  numPrePeriods = 2,
-  numPostPeriods = 2
+sensitivity_results <- tibble(
+  bias_multiple = seq(0, 2, by = 0.5),
+  estimate = post_estimate,
+  bias_allowance = bias_multiple * pre_scale,
+  lower = post_estimate - 1.96 * post_standard_error - bias_allowance,
+  upper = post_estimate + 1.96 * post_standard_error + bias_allowance
 )
 
 zero_included <- with(
   sensitivity_results,
-  lb <= 0 & ub >= 0
+  lower <= 0 & upper >= 0
 )
-first_zero_including_mbar <- if (any(zero_included)) {
-  min(sensitivity_results$Mbar[zero_included])
+first_zero_including_multiple <- if (any(zero_included)) {
+  min(sensitivity_results$bias_multiple[zero_included])
 } else {
   NA_real_
 }
 
 sensitivity_results
-data.frame(first_Mbar_including_zero = first_zero_including_mbar)
+data.frame(first_bias_multiple_including_zero = first_zero_including_multiple)
 
 stopifnot(
-  nrow(sensitivity_results) == 4L,
-  all(sensitivity_results$lb <= sensitivity_results$ub),
-  all(is.finite(sensitivity_results$Mbar)),
-  nrow(original_interval) == 1L
+  nrow(sensitivity_results) == 5L,
+  all(sensitivity_results$lower <= sensitivity_results$upper),
+  all(is.finite(sensitivity_results$bias_multiple))
 )
 ```
 
 ```{r, fig.height=5.2, fig.width=9}
-HonestDiD::createSensitivityPlot_relativeMagnitudes(
-  sensitivity_results,
-  original_interval
-)
+ggplot(sensitivity_results, aes(bias_multiple, estimate)) +
+  geom_hline(yintercept = 0, colour = "gray55") +
+  geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.2) +
+  geom_line(linewidth = 0.8) +
+  geom_point(size = 2) +
+  labs(
+    x = "Allowed bias as a multiple of the largest observed pre-period discrepancy",
+    y = "First post-treatment estimate and expanded interval",
+    title = "A transparent sensitivity screen"
+  ) +
+  theme_minimal(base_size = 12)
 ```
 
-The default target is the first post-treatment effect (2006), not the average of both post-treatment periods. The sensitivity interval for this cohort already includes zero at the first reported restriction value. The exercise is still informative: sensitivity analysis should report how conclusions change under stated violations, not manufacture a decisive result.
+The target is the first post-treatment effect (2006), not the average of both post-treatment periods. The exercise is informative only when the calibration and its limitations are stated: it shows how quickly a conclusion changes under a simple bias allowance, not a formal robustness guarantee.
 
 Most importantly, this is a **2006-cohort-versus-never-treated** estimand. It is not a sensitivity analysis for the full staggered-adoption aggregate estimated earlier.
 
@@ -611,4 +610,4 @@ Most importantly, this is a **2006-cohort-versus-never-treated** estimand. It is
 - A simple aggregate gives early cohorts more post-treatment cells; cohort, calendar, and event averages answer different questions.
 - Not-yet-treated counties add support only while untreated; they add a substantive comparison assumption.
 - A universal baseline compares each lead to the last untreated period, whereas a varying baseline uses adjacent pre-period changes.
-- The sensitivity exercise concerns the 2006 cohort and first post-period only. Report the tested grid rather than claiming an exact breakdown threshold.
+- The sensitivity exercise concerns the 2006 cohort and first post-period only. Report it as a calibrated-bias screen, not as a formal Rambachan–Roth confidence set.

@@ -1,0 +1,845 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Interrupted Time Series for Causal Inference &#8212; Quasi-Experimental Design Labs</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css?v=8cd3d715" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../_static/scripts/fontawesome.js?digest=55c26ed414f5f8a31ebb"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=b8b12719"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="../_static/mathjax/tex-chtml.js?v=20daa33d"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/interrupted-time-series-methods-report';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Lab: Interrupted Time Series Foundations With Seatbelts" href="interrupted-time-series-mechanics-lab.html" />
+    <link rel="prev" title="Interrupted time series guide" href="../guides/interrupted-time-series.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">Quasi-Experimental Design Labs</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../index.html">
+                    Quasi-Experimental Design Labs
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Start Here</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../academy-extension.html">From Module 6 to Applied Practice</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../study-guide.html">How to Study This Book</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../offline-setup.html">Offline Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data.html">Data and Provenance</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Choose a Design</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../choosing-a-design.html">Design Decision Guide</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Regression Discontinuity</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../guides/regression-discontinuity.html">Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="regression-discontinuity-methods-report.html">Methods Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="regression-discontinuity-foundations-lab.html">Foundations — Sharp RD</a></li>
+<li class="toctree-l1"><a class="reference internal" href="regression-discontinuity-diagnostics-lab.html">Diagnostics and Sensitivity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="regression-discontinuity-fuzzy-lab.html">Extension — Fuzzy RD</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Difference-in-Differences</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../guides/difference-in-differences.html">Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="difference-in-differences-methods-report.html">Methods Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="difference-in-differences-foundations-lab.html">Foundations — Two Groups, Two Periods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="difference-in-differences-staggered-diagnostics-lab.html">Diagnostics — Staggered Adoption</a></li>
+<li class="toctree-l1"><a class="reference internal" href="difference-in-differences-modern-estimators-lab.html">Extension — Modern Estimators</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Synthetic Control</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../guides/synthetic-control.html">Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-methods-report.html">Methods Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-mechanics-lab.html">Foundations — Mechanics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-proposition-99-lab.html">Application — Proposition 99</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-augmentation-lab.html">Extension — Augmented SCM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-design-lab.html">Worksheet — Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-donor-pool-lab.html">Worksheet — Donor Pool</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Matching and Weighting</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../guides/matching-weighting.html">Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="matching-methods-report.html">Methods Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lalonde-matching-lab.html">Foundations — LaLonde</a></li>
+<li class="toctree-l1"><a class="reference internal" href="black-politicians-lab.html">Application — Black Politicians</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nsw-cps-benchmark-lab.html">Benchmark — NSW and CPS</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Beyond Pre-Post</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../guides/interrupted-time-series.html">Interrupted Time Series Guide</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Methods Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interrupted-time-series-mechanics-lab.html">Foundations — Seatbelts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interrupted-time-series-design-diagnostics-lab.html">Design and Robustness</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interrupted-time-series-counterfactual-validation-lab.html">Counterfactual Validation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Cross-Method Capstone</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="hisp-ie-practice-lab.html">HISP Impact Evaluation in Practice</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/notebooks/interrupted-time-series-methods-report.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm pst-navbar-icon" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Interrupted Time Series for Causal Inference</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#executive-summary">Executive summary</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#design-and-estimand">Design and estimand</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#define-the-intervention-and-outcome">Define the intervention and outcome</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#state-the-missing-comparison">State the missing comparison</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#a-reproducible-seatbelts-analysis">A reproducible Seatbelts analysis</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#encode-the-intervention">Encode the intervention</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#report-contrasts-at-named-horizons">Report contrasts at named horizons</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#show-the-counterfactual">Show the counterfactual</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sensitivity-and-extensions">Sensitivity and extensions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#interpretation-and-reporting">Interpretation and reporting</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#teaching-route">Teaching route</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#references">References</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="interrupted-time-series-for-causal-inference">
+<h1>Interrupted Time Series for Causal Inference<a class="headerlink" href="#interrupted-time-series-for-causal-inference" title="Link to this heading">#</a></h1>
+<p><a class="reference internal" href="../index.html"><span class="std std-doc">Book home</span></a></p>
+<p>Use the R kernel. Keep the supplied <code class="docutils literal notranslate"><span class="pre">data/</span></code> folder beside this notebook. Run cells in order after installing the documented R environment. Data loading is entirely local.</p>
+<section id="executive-summary">
+<h2>Executive summary<a class="headerlink" href="#executive-summary" title="Link to this heading">#</a></h2>
+<p>Interrupted time series (ITS) evaluates a change in an outcome’s trajectory at a known intervention date. Its counterfactual comes from a model of how the outcome would have evolved without intervention. Repeated observations make trend and seasonality visible, but they do not create an untreated population. A concurrent shock can produce precisely the same break as the policy being evaluated.</p>
+<p>This report develops the design before the regression. It uses monthly British road-casualty data to connect intervention coding, a segmented log model, serial dependence, and effects at decision-relevant horizons. The worked example is reproducible with repository data and is deliberately cautious about attributing the observed change solely to seatbelt legislation (Lopez Bernal, Cummins, and Gasparrini 2017; Harvey and Durbin 1986).</p>
+</section>
+<section id="design-and-estimand">
+<h2>Design and estimand<a class="headerlink" href="#design-and-estimand" title="Link to this heading">#</a></h2>
+<section id="define-the-intervention-and-outcome">
+<h3>Define the intervention and outcome<a class="headerlink" href="#define-the-intervention-and-outcome" title="Link to this heading">#</a></h3>
+<p>Write down the announcement, implementation, enforcement, and expected behavioral response dates. Distinguish an abrupt policy from a rollout. Specify the population, measurement interval, outcome scale, and the horizon over which an effect matters. A change in counts, a change in rates, and a change in log counts are different estimands. The denominator must be chosen on substantive grounds.</p>
+<p>The front-seat belt requirement took effect on 31 January 1983. With monthly data, February is the first treated observation. The outcome here is front-seat passengers killed or seriously injured, not deaths alone and not a rate per mile. There are 169 pre-policy and 23 post-policy months. The long baseline helps study seasonality, while the short post-period limits information about a new trend (R Core Team 2026; UK Parliament 1986).</p>
+</section>
+<section id="state-the-missing-comparison">
+<h3>State the missing comparison<a class="headerlink" href="#state-the-missing-comparison" title="Link to this heading">#</a></h3>
+<p>For time <span class="math notranslate nohighlight">\(`t`\)</span> after intervention, the causal contrast is <span class="math notranslate nohighlight">\(`E[Y_t(1)-Y_t(0)]`\)</span>. Only <span class="math notranslate nohighlight">\(`Y_t(1)`\)</span> is observed. Identification requires that the model for the untreated path remains appropriate after implementation. Relevant threats include concurrent interventions, changing exposure, altered recording, anticipation, and an unstable pre-policy process.</p>
+<p>Unlike DiD, a single-series ITS does not borrow a contemporaneous untreated trend. Unlike SCM, it does not construct a weighted donor comparison. This makes ITS useful when no credible untreated population exists, but also places more weight on the time-series counterfactual. More frequent observations improve temporal resolution; they do not remove confounding at the intervention date.</p>
+</section>
+</section>
+<section id="a-reproducible-seatbelts-analysis">
+<h2>A reproducible Seatbelts analysis<a class="headerlink" href="#a-reproducible-seatbelts-analysis" title="Link to this heading">#</a></h2>
+<p>The <a class="reference internal" href="../data.html"><span class="std std-doc">data catalogue</span></a> records the bundled snapshot. Packages must already be installed; this report performs no installation or data download.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">data_helpers</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">"data/load-data.R"</span><span class="p">,</span><span class="w"> </span><span class="s">"../data/load-data.R"</span><span class="p">,</span><span class="w"> </span><span class="s">"docs/labs/data/load-data.R"</span><span class="p">)</span>
+<span class="n">data_helpers</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">data_helpers</span><span class="p">[</span><span class="nf">file.exists</span><span class="p">(</span><span class="n">data_helpers</span><span class="p">)]</span>
+<span class="kr">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nf">length</span><span class="p">(</span><span class="n">data_helpers</span><span class="p">))</span><span class="w"> </span><span class="nf">stop</span><span class="p">(</span><span class="s">"Keep the bundled data folder beside the notebook."</span><span class="p">)</span>
+<span class="nf">source</span><span class="p">(</span><span class="n">data_helpers</span><span class="p">[[</span><span class="m">1</span><span class="p">]])</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">ggplot2</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">nlme</span><span class="p">)</span>
+<span class="n">d</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">as.data.frame</span><span class="p">(</span><span class="nf">qed_data</span><span class="p">(</span><span class="s">"Seatbelts"</span><span class="p">))</span>
+<span class="n">d</span><span class="o">$</span><span class="n">date</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">seq</span><span class="p">(</span><span class="nf">as.Date</span><span class="p">(</span><span class="s">"1969-01-01"</span><span class="p">),</span><span class="w"> </span><span class="n">by</span><span class="o">=</span><span class="s">"month"</span><span class="p">,</span><span class="w"> </span><span class="n">length.out</span><span class="o">=</span><span class="nf">nrow</span><span class="p">(</span><span class="n">d</span><span class="p">))</span>
+<span class="n">d</span><span class="o">$</span><span class="n">index</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">seq_len</span><span class="p">(</span><span class="nf">nrow</span><span class="p">(</span><span class="n">d</span><span class="p">))</span>
+<span class="n">first</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">which</span><span class="p">(</span><span class="n">d</span><span class="o">$</span><span class="n">law</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1</span><span class="p">)[</span><span class="m">1</span><span class="p">]</span>
+<span class="n">d</span><span class="o">$</span><span class="n">time</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">d</span><span class="o">$</span><span class="n">index</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">first</span>
+<span class="n">d</span><span class="o">$</span><span class="n">post_time</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">pmax</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="n">d</span><span class="o">$</span><span class="n">time</span><span class="p">)</span>
+<span class="n">d</span><span class="o">$</span><span class="n">season_sin</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">sin</span><span class="p">(</span><span class="m">2</span><span class="o">*</span><span class="kc">pi</span><span class="o">*</span><span class="n">d</span><span class="o">$</span><span class="n">index</span><span class="o">/</span><span class="m">12</span><span class="p">)</span>
+<span class="n">d</span><span class="o">$</span><span class="n">season_cos</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">cos</span><span class="p">(</span><span class="m">2</span><span class="o">*</span><span class="kc">pi</span><span class="o">*</span><span class="n">d</span><span class="o">$</span><span class="n">index</span><span class="o">/</span><span class="m">12</span><span class="p">)</span>
+<span class="n">d</span><span class="o">$</span><span class="n">log_front</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">log</span><span class="p">(</span><span class="n">d</span><span class="o">$</span><span class="n">front</span><span class="p">)</span>
+<span class="nf">stopifnot</span><span class="p">(</span><span class="nf">nrow</span><span class="p">(</span><span class="n">d</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">192</span><span class="p">,</span><span class="w"> </span><span class="nf">all</span><span class="p">(</span><span class="n">d</span><span class="o">$</span><span class="n">front</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">0</span><span class="p">),</span>
+<span class="w">          </span><span class="n">d</span><span class="o">$</span><span class="n">date</span><span class="p">[</span><span class="n">first</span><span class="p">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nf">as.Date</span><span class="p">(</span><span class="s">"1983-02-01"</span><span class="p">),</span>
+<span class="w">          </span><span class="nf">sum</span><span class="p">(</span><span class="n">d</span><span class="o">$</span><span class="n">law</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">0</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">169</span><span class="p">,</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">d</span><span class="o">$</span><span class="n">law</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">23</span><span class="p">)</span>
+<span class="n">knitr</span><span class="o">::</span><span class="nf">kable</span><span class="p">(</span><span class="n">d</span><span class="p">[(</span><span class="n">first</span><span class="m">-2</span><span class="p">)</span><span class="o">:</span><span class="p">(</span><span class="n">first</span><span class="m">+2</span><span class="p">),</span>
+<span class="w">               </span><span class="nf">c</span><span class="p">(</span><span class="s">"date"</span><span class="p">,</span><span class="w"> </span><span class="s">"time"</span><span class="p">,</span><span class="w"> </span><span class="s">"law"</span><span class="p">,</span><span class="w"> </span><span class="s">"post_time"</span><span class="p">)])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>|    |date       | time| law| post_time|
+|:---|:----------|----:|---:|---------:|
+|168 |1982-12-01 |   -2|   0|         0|
+|169 |1983-01-01 |   -1|   0|         0|
+|170 |1983-02-01 |    0|   1|         0|
+|171 |1983-03-01 |    1|   1|         1|
+|172 |1983-04-01 |    2|   1|         2|
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="c1">#| fig-cap: "Monthly front-seat casualties, with the first treated month marked."</span>
+<span class="c1">#| fig-alt: "Monthly casualty counts from 1969 to 1984, with February 1983 marked by a vertical line."</span>
+<span class="nf">ggplot</span><span class="p">(</span><span class="n">d</span><span class="p">,</span><span class="w"> </span><span class="nf">aes</span><span class="p">(</span><span class="n">date</span><span class="p">,</span><span class="w"> </span><span class="n">front</span><span class="p">))</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_line</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s">"#245ca4"</span><span class="p">,</span><span class="w"> </span><span class="n">linewidth</span><span class="o">=</span><span class="m">0.5</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_vline</span><span class="p">(</span><span class="n">xintercept</span><span class="o">=</span><span class="nf">as.Date</span><span class="p">(</span><span class="s">"1983-02-01"</span><span class="p">),</span><span class="w"> </span><span class="n">linetype</span><span class="o">=</span><span class="m">2</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">labs</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="kc">NULL</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="o">=</span><span class="s">"Front-seat passengers killed or seriously injured"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">theme_minimal</span><span class="p">(</span><span class="n">base_size</span><span class="o">=</span><span class="m">11</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<a class="reference internal image-reference" href="../_images/0bb0693ce6939eb55f21b665a0acd1bc60ca345b94a0a95efe02233c40eb72ef.png"><img alt="../_images/0bb0693ce6939eb55f21b665a0acd1bc60ca345b94a0a95efe02233c40eb72ef.png" src="../_images/0bb0693ce6939eb55f21b665a0acd1bc60ca345b94a0a95efe02233c40eb72ef.png" style="width: 480px; height: 288px;" />
+</a>
+</div>
+</div>
+<p>Inspect missing periods, outliers, seasonality, and recording breaks before fitting the intervention model. Changes in driving exposure can change casualties without changing risk. Contemporaneous kilometres might be a confounder, a mediator, or part of the effect of interest; including them is not automatically an improvement.</p>
+<section id="encode-the-intervention">
+<h3>Encode the intervention<a class="headerlink" href="#encode-the-intervention" title="Link to this heading">#</a></h3>
+<p>Let <span class="math notranslate nohighlight">\(`t=0`\)</span> identify the first treated month, <span class="math notranslate nohighlight">\(`D_t`\)</span> indicate treatment, and <span class="math notranslate nohighlight">\(`P_t=\max(0,t)`\)</span>. A segmented model is</p>
+<div class="math notranslate nohighlight">
+\[
+\log Y_t=\beta_0+\beta_1t+\beta_2D_t+\beta_3P_t
+ +\gamma_1\sin(2\pi m_t/12)+\gamma_2\cos(2\pi m_t/12)+\epsilon_t.
+\]</div>
+<p>The immediate log-level contrast is <span class="math notranslate nohighlight">\(`\beta_2`\)</span>; the change in monthly log slope is <span class="math notranslate nohighlight">\(`\beta_3`\)</span>; the post-policy slope is <span class="math notranslate nohighlight">\(`\beta_1+\beta_3`\)</span>. Starting post-time at one instead of zero changes the interpretation of the level coefficient. Check the actual rows around implementation (Wagner et al. 2002; Xiao, Augusto, and Wagenaar 2021).</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">spec</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">log_front</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">time</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">law</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">post_time</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">season_sin</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">season_cos</span>
+<span class="n">ols</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">lm</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="o">=</span><span class="n">d</span><span class="p">)</span>
+<span class="n">fit</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">gls</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="o">=</span><span class="n">d</span><span class="p">,</span><span class="w"> </span><span class="n">correlation</span><span class="o">=</span><span class="nf">corAR1</span><span class="p">(</span><span class="n">form</span><span class="o">=~</span><span class="n">index</span><span class="p">),</span><span class="w"> </span><span class="n">method</span><span class="o">=</span><span class="s">"REML"</span><span class="p">)</span>
+<span class="n">knitr</span><span class="o">::</span><span class="nf">kable</span><span class="p">(</span><span class="nf">summary</span><span class="p">(</span><span class="n">fit</span><span class="p">)</span><span class="o">$</span><span class="n">tTable</span><span class="p">,</span><span class="w"> </span><span class="n">digits</span><span class="o">=</span><span class="m">4</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>|            |   Value| Std.Error|  t-value| p-value|
+|:-----------|-------:|---------:|--------:|-------:|
+|(Intercept) |  6.5950|    0.0275| 239.6908|  0.0000|
+|time        | -0.0019|    0.0003|  -6.8084|  0.0000|
+|law         | -0.3493|    0.0714|  -4.8920|  0.0000|
+|post_time   |  0.0104|    0.0052|   1.9983|  0.0471|
+|season_sin  | -0.1202|    0.0165|  -7.2700|  0.0000|
+|season_cos  |  0.0035|    0.0164|   0.2152|  0.8299|
+</pre></div>
+</div>
+</div>
+</div>
+<p>The annual harmonic models a smooth seasonal cycle. AR(1) models residual dependence that decays geometrically with elapsed months. They solve different problems. GLS changes estimation and uncertainty, not the causal identification assumption. A misspecified trend can also appear as autocorrelated noise.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="c1">#| fig-cap: "Residual dependence before and after the working AR(1) model."</span>
+<span class="c1">#| fig-alt: "Two residual autocorrelation plots compare OLS with normalized GLS residuals."</span>
+<span class="nf">par</span><span class="p">(</span><span class="n">mfrow</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="m">2</span><span class="p">))</span>
+<span class="nf">acf</span><span class="p">(</span><span class="nf">residuals</span><span class="p">(</span><span class="n">ols</span><span class="p">),</span><span class="w"> </span><span class="n">main</span><span class="o">=</span><span class="s">"OLS residuals"</span><span class="p">)</span>
+<span class="nf">acf</span><span class="p">(</span><span class="nf">residuals</span><span class="p">(</span><span class="n">fit</span><span class="p">,</span><span class="w"> </span><span class="n">type</span><span class="o">=</span><span class="s">"normalized"</span><span class="p">),</span><span class="w"> </span><span class="n">main</span><span class="o">=</span><span class="s">"Normalized GLS residuals"</span><span class="p">)</span>
+<span class="nf">par</span><span class="p">(</span><span class="n">mfrow</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<a class="reference internal image-reference" href="../_images/6ff622e7a18e52a40d121988e3e1336b189bc45c9ac732e413d472be28db9964.png"><img alt="../_images/6ff622e7a18e52a40d121988e3e1336b189bc45c9ac732e413d472be28db9964.png" src="../_images/6ff622e7a18e52a40d121988e3e1336b189bc45c9ac732e413d472be28db9964.png" style="width: 480px; height: 288px;" />
+</a>
+</div>
+</div>
+</section>
+<section id="report-contrasts-at-named-horizons">
+<h3>Report contrasts at named horizons<a class="headerlink" href="#report-contrasts-at-named-horizons" title="Link to this heading">#</a></h3>
+<p>At horizon <span class="math notranslate nohighlight">\(`h`\)</span>, the contrast is <span class="math notranslate nohighlight">\(`\delta_h=\beta_2+h\beta_3`\)</span>. Its variance is <span class="math notranslate nohighlight">\(`V_{22}+2hV_{23}+h^2V_{33}`\)</span>. Omitting the covariance term can materially misstate uncertainty. The horizons below are within the observed post-policy period.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">contrast</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="n">model</span><span class="p">,</span><span class="w"> </span><span class="n">h</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">b</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">coef</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+<span class="w">  </span><span class="n">L</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">setNames</span><span class="p">(</span><span class="nf">rep</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="nf">length</span><span class="p">(</span><span class="n">b</span><span class="p">)),</span><span class="w"> </span><span class="nf">names</span><span class="p">(</span><span class="n">b</span><span class="p">))</span>
+<span class="w">  </span><span class="n">L</span><span class="p">[</span><span class="s">"law"</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">1</span>
+<span class="w">  </span><span class="kr">if</span><span class="w"> </span><span class="p">(</span><span class="s">"post_time"</span><span class="w"> </span><span class="o">%in%</span><span class="w"> </span><span class="nf">names</span><span class="p">(</span><span class="n">b</span><span class="p">))</span><span class="w"> </span><span class="n">L</span><span class="p">[</span><span class="s">"post_time"</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">h</span>
+<span class="w">  </span><span class="n">delta</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">L</span><span class="o">*</span><span class="n">b</span><span class="p">)</span>
+<span class="w">  </span><span class="n">se</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">sqrt</span><span class="p">(</span><span class="nf">drop</span><span class="p">(</span><span class="nf">t</span><span class="p">(</span><span class="n">L</span><span class="p">)</span><span class="w"> </span><span class="o">%*%</span><span class="w"> </span><span class="nf">vcov</span><span class="p">(</span><span class="n">model</span><span class="p">)</span><span class="w"> </span><span class="o">%*%</span><span class="w"> </span><span class="n">L</span><span class="p">))</span>
+<span class="w">  </span><span class="nf">data.frame</span><span class="p">(</span><span class="n">month</span><span class="o">=</span><span class="n">h</span><span class="p">,</span><span class="w"> </span><span class="n">log_effect</span><span class="o">=</span><span class="n">delta</span><span class="p">,</span><span class="w"> </span><span class="n">percent</span><span class="o">=</span><span class="m">100</span><span class="o">*</span><span class="nf">expm1</span><span class="p">(</span><span class="n">delta</span><span class="p">),</span>
+<span class="w">             </span><span class="n">lower</span><span class="o">=</span><span class="m">100</span><span class="o">*</span><span class="nf">expm1</span><span class="p">(</span><span class="n">delta</span><span class="m">-1.96</span><span class="o">*</span><span class="n">se</span><span class="p">),</span>
+<span class="w">             </span><span class="n">upper</span><span class="o">=</span><span class="m">100</span><span class="o">*</span><span class="nf">expm1</span><span class="p">(</span><span class="n">delta</span><span class="m">+1.96</span><span class="o">*</span><span class="n">se</span><span class="p">))</span>
+<span class="p">}</span>
+<span class="n">effects</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">do.call</span><span class="p">(</span><span class="n">rbind</span><span class="p">,</span><span class="w"> </span><span class="nf">lapply</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="m">6</span><span class="p">,</span><span class="w"> </span><span class="m">12</span><span class="p">),</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="n">h</span><span class="p">)</span><span class="w"> </span><span class="nf">contrast</span><span class="p">(</span><span class="n">fit</span><span class="p">,</span><span class="w"> </span><span class="n">h</span><span class="p">)))</span>
+<span class="n">knitr</span><span class="o">::</span><span class="nf">kable</span><span class="p">(</span><span class="n">effects</span><span class="p">,</span><span class="w"> </span><span class="n">digits</span><span class="o">=</span><span class="m">3</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>| month| log_effect| percent|   lower|   upper|
+|-----:|----------:|-------:|-------:|-------:|
+|     0|     -0.349| -29.484| -38.694| -18.890|
+|     6|     -0.287| -24.922| -32.171| -16.899|
+|    12|     -0.224| -20.066| -27.141| -12.305|
+</pre></div>
+</div>
+</div>
+</div>
+<p>These are approximate model-based 95% intervals. The transformation describes a percentage contrast on the exponentiated expected-log scale, not automatically a percentage effect on arithmetic mean casualties. An injuries-prevented total requires an explicit retransformation and aggregation argument.</p>
+</section>
+<section id="show-the-counterfactual">
+<h3>Show the counterfactual<a class="headerlink" href="#show-the-counterfactual" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="c1">#| fig-cap: "The jointly fitted intervention path and the same fit with intervention terms switched off."</span>
+<span class="c1">#| fig-alt: "Observed log casualties and fitted paths with and without the intervention terms."</span>
+<span class="n">untreated</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">d</span>
+<span class="n">untreated</span><span class="o">$</span><span class="n">law</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">0</span>
+<span class="n">untreated</span><span class="o">$</span><span class="n">post_time</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">0</span>
+<span class="n">d</span><span class="o">$</span><span class="n">fitted</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">as.numeric</span><span class="p">(</span><span class="nf">predict</span><span class="p">(</span><span class="n">fit</span><span class="p">))</span>
+<span class="n">d</span><span class="o">$</span><span class="n">counterfactual</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">as.numeric</span><span class="p">(</span><span class="nf">predict</span><span class="p">(</span><span class="n">fit</span><span class="p">,</span><span class="w"> </span><span class="n">newdata</span><span class="o">=</span><span class="n">untreated</span><span class="p">))</span>
+<span class="nf">ggplot</span><span class="p">(</span><span class="n">d</span><span class="p">,</span><span class="w"> </span><span class="nf">aes</span><span class="p">(</span><span class="n">date</span><span class="p">,</span><span class="w"> </span><span class="n">log_front</span><span class="p">))</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_line</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s">"grey65"</span><span class="p">,</span><span class="w"> </span><span class="n">linewidth</span><span class="o">=</span><span class="m">0.4</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_line</span><span class="p">(</span><span class="nf">aes</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">fitted</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="o">=</span><span class="s">"Segmented fit"</span><span class="p">),</span><span class="w"> </span><span class="n">linewidth</span><span class="o">=</span><span class="m">0.7</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_line</span><span class="p">(</span><span class="nf">aes</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">counterfactual</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="o">=</span><span class="s">"No intervention terms"</span><span class="p">),</span>
+<span class="w">            </span><span class="n">linewidth</span><span class="o">=</span><span class="m">0.7</span><span class="p">,</span><span class="w"> </span><span class="n">linetype</span><span class="o">=</span><span class="m">2</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">scale_color_manual</span><span class="p">(</span><span class="n">values</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="s">"No intervention terms"</span><span class="o">=</span><span class="s">"#177b72"</span><span class="p">,</span>
+<span class="w">                             </span><span class="s">"Segmented fit"</span><span class="o">=</span><span class="s">"#245ca4"</span><span class="p">))</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">labs</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="kc">NULL</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="o">=</span><span class="s">"Log front-seat casualties"</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="o">=</span><span class="kc">NULL</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">theme_minimal</span><span class="p">(</span><span class="n">base_size</span><span class="o">=</span><span class="m">11</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nf">theme</span><span class="p">(</span><span class="n">legend.position</span><span class="o">=</span><span class="s">"bottom"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<a class="reference internal image-reference" href="../_images/104b54715fabcd3c2b22b43910c8906056fe2a115a3b26fe85ddfab029334c73.png"><img alt="../_images/104b54715fabcd3c2b22b43910c8906056fe2a115a3b26fe85ddfab029334c73.png" src="../_images/104b54715fabcd3c2b22b43910c8906056fe2a115a3b26fe85ddfab029334c73.png" style="width: 480px; height: 288px;" />
+</a>
+</div>
+</div>
+<p>This is a model fitted to the whole series, with intervention terms removed for prediction. It is not a forecast estimated only before the policy. For forecasting, reserve untreated validation windows, compare models at common rolling origins, and avoid using treated outcomes to select the untreated model. Good historical forecast accuracy still cannot rule out a new concurrent cause after implementation.</p>
+</section>
+</section>
+<section id="sensitivity-and-extensions">
+<h2>Sensitivity and extensions<a class="headerlink" href="#sensitivity-and-extensions" title="Link to this heading">#</a></h2>
+<p>Compare effect shapes and seasonal specifications because they express competing scientific assumptions. Use ML, not REML likelihoods, when comparing different fixed-effect formulas. Keep the outcome, sample, and horizon fixed where possible.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">d</span><span class="o">$</span><span class="n">month</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">factor</span><span class="p">(</span><span class="nf">format</span><span class="p">(</span><span class="n">d</span><span class="o">$</span><span class="n">date</span><span class="p">,</span><span class="w"> </span><span class="s">"%m"</span><span class="p">))</span>
+<span class="n">models</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span>
+<span class="w">  </span><span class="s">"Level only"</span><span class="o">=</span><span class="nf">gls</span><span class="p">(</span><span class="n">log_front</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">time</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">law</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">season_sin</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">season_cos</span><span class="p">,</span>
+<span class="w">    </span><span class="n">data</span><span class="o">=</span><span class="n">d</span><span class="p">,</span><span class="w"> </span><span class="n">correlation</span><span class="o">=</span><span class="nf">corAR1</span><span class="p">(</span><span class="n">form</span><span class="o">=~</span><span class="n">index</span><span class="p">),</span><span class="w"> </span><span class="n">method</span><span class="o">=</span><span class="s">"ML"</span><span class="p">),</span>
+<span class="w">  </span><span class="s">"Level and slope"</span><span class="o">=</span><span class="nf">update</span><span class="p">(</span><span class="n">fit</span><span class="p">,</span><span class="w"> </span><span class="n">method</span><span class="o">=</span><span class="s">"ML"</span><span class="p">),</span>
+<span class="w">  </span><span class="s">"Month indicators"</span><span class="o">=</span><span class="nf">gls</span><span class="p">(</span><span class="n">log_front</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">time</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">law</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">post_time</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">month</span><span class="p">,</span>
+<span class="w">    </span><span class="n">data</span><span class="o">=</span><span class="n">d</span><span class="p">,</span><span class="w"> </span><span class="n">correlation</span><span class="o">=</span><span class="nf">corAR1</span><span class="p">(</span><span class="n">form</span><span class="o">=~</span><span class="n">index</span><span class="p">),</span><span class="w"> </span><span class="n">method</span><span class="o">=</span><span class="s">"ML"</span><span class="p">))</span>
+<span class="n">sensitivity</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">do.call</span><span class="p">(</span><span class="n">rbind</span><span class="p">,</span><span class="w"> </span><span class="nf">lapply</span><span class="p">(</span><span class="nf">names</span><span class="p">(</span><span class="n">models</span><span class="p">),</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nf">cbind</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="nf">contrast</span><span class="p">(</span><span class="n">models</span><span class="p">[[</span><span class="n">name</span><span class="p">]],</span><span class="w"> </span><span class="m">12</span><span class="p">))</span>
+<span class="p">}))</span>
+<span class="n">knitr</span><span class="o">::</span><span class="nf">kable</span><span class="p">(</span><span class="n">sensitivity</span><span class="p">[</span><span class="nf">c</span><span class="p">(</span><span class="s">"model"</span><span class="p">,</span><span class="w"> </span><span class="s">"percent"</span><span class="p">,</span><span class="w"> </span><span class="s">"lower"</span><span class="p">,</span><span class="w"> </span><span class="s">"upper"</span><span class="p">)],</span><span class="w"> </span><span class="n">digits</span><span class="o">=</span><span class="m">2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>|model            | percent|  lower|  upper|
+|:----------------|-------:|------:|------:|
+|Level only       |  -21.40| -28.12| -14.06|
+|Level and slope  |  -20.13| -26.86| -12.79|
+|Month indicators |  -20.21| -26.84| -12.97|
+</pre></div>
+</div>
+</div>
+</div>
+<p>Also examine defensible pre-period lengths, implementation lags, exposure-adjusted outcomes, and influential months. Report changes in the estimate rather than selecting only the most reassuring specification. A placebo interruption tests whether similar apparent breaks arise without the policy; searching many dates and reporting only favorable results defeats that purpose.</p>
+<p>A controlled ITS adds a contemporaneous series to help account for common shocks. The comparison needs a credible untreated relationship with the target outcome and must not itself be affected by the intervention. Rear-seat passengers and van drivers are not automatically valid controls for a seatbelt policy. Spillovers, different exposure trends, and concurrent road-safety measures require substantive assessment (Lopez Bernal, Cummins, and Gasparrini 2018). Count models, offsets, richer seasonal structure, and dynamic intervention models can be useful when their estimands and assumptions fit the question; extra flexibility does not replace a control.</p>
+</section>
+<section id="interpretation-and-reporting">
+<h2>Interpretation and reporting<a class="headerlink" href="#interpretation-and-reporting" title="Link to this heading">#</a></h2>
+<p>The analysis estimates a trajectory change conditional on the specified time process. Concurrent drink-driving enforcement and other road-safety changes limit attribution to the belt requirement alone. Do not convert a significant model contrast into a uniquely identified policy effect, or an imprecise slope change into proof of no effect.</p>
+<p>Report the intervention timeline, outcome and exposure, 169/23 observation split, effect shape, seasonal and error specifications, horizon contrasts and intervals, residual checks, sensitivity, and strongest remaining alternative explanation. Separate sampling/model uncertainty from uncertainty about the counterfactual. When the latter is decisive, recommend a more credible comparison or a bounded descriptive conclusion rather than another estimator.</p>
+</section>
+<section id="teaching-route">
+<h2>Teaching route<a class="headerlink" href="#teaching-route" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://defenceeconomist.github.io/qedlabs/slides/its.html">Teaching deck</a> and <a class="reference external" href="https://defenceeconomist.github.io/qedlabs/slides/its_script.html">presenter notes</a>.</p></li>
+<li><p><a class="reference external" href="https://defenceeconomist.github.io/qedlabs/notes/other-methods/how-to-do-interrupted-time-series.html">Practical R guide</a> for a shorter procedural walkthrough.</p></li>
+<li><p><a class="reference internal" href="interrupted-time-series-mechanics-lab.html"><span class="std std-doc">Foundations lab</span></a> for coding and contrasts.</p></li>
+<li><p><a class="reference internal" href="interrupted-time-series-design-diagnostics-lab.html"><span class="std std-doc">Design and robustness lab</span></a> for outcomes, controls, and attribution.</p></li>
+<li><p><a class="reference internal" href="interrupted-time-series-counterfactual-validation-lab.html"><span class="std std-doc">Counterfactual validation lab</span></a> for untreated rolling-origin forecasts.</p></li>
+</ul>
+<p>Each lab supplies Quarto, an R Jupyter notebook, and an offline bundle through the <a class="reference external" href="https://defenceeconomist.github.io/qedlabs/labs/index.html#interrupted-time-series-labs">Labs directory</a>.</p>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading">#</a></h2>
+<p>Harvey, Andrew C., and James Durbin. 1986. “The Effects of Seat Belt Legislation on British Road Casualties: A Case Study in Structural Time Series Modelling.” <em>Journal of the Royal Statistical Society: Series A (General)</em> 149 (3): 187–227. <a class="reference external" href="https://doi.org/10.2307/2981553">https://doi.org/10.2307/2981553</a>.</p>
+<p>Lopez Bernal, James, Steven Cummins, and Antonio Gasparrini. 2017. “Interrupted Time Series Regression for the Evaluation of Public Health Interventions: A Tutorial.” <em>International Journal of Epidemiology</em> 46 (1): 348–55. <a class="reference external" href="https://doi.org/10.1093/ije/dyw098">https://doi.org/10.1093/ije/dyw098</a>.</p>
+<p>———. 2018. “The Use of Controls in Interrupted Time Series Studies of Public Health Interventions.” <em>International Journal of Epidemiology</em> 47 (6): 2082–93. <a class="reference external" href="https://doi.org/10.1093/ije/dyy135">https://doi.org/10.1093/ije/dyy135</a>.</p>
+<p>R Core Team. 2026. “Road Casualties in Great Britain 1969–84.” R datasets package documentation. <a class="reference external" href="https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/UKDriverDeaths.html">https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/UKDriverDeaths.html</a>.</p>
+<p>UK Parliament. 1986. “Motor Vehicles (Wearing of Seat Belts) Regulations 1982.” House of Lords Hansard, 20 January 1986, volume 470. <a class="reference external" href="https://api.parliament.uk/historic-hansard/lords/1986/jan/20/motor-vehicles-wearing-of-seat-belts">https://api.parliament.uk/historic-hansard/lords/1986/jan/20/motor-vehicles-wearing-of-seat-belts</a>.</p>
+<p>Wagner, Anita K., Stephen B. Soumerai, Fang Zhang, and Dennis Ross-Degnan. 2002. “Segmented Regression Analysis of Interrupted Time Series Studies in Medication Use Research.” <em>Journal of Clinical Pharmacy and Therapeutics</em> 27 (4): 299–309. <a class="reference external" href="https://doi.org/10.1046/j.1365-2710.2002.00430.x">https://doi.org/10.1046/j.1365-2710.2002.00430.x</a>.</p>
+<p>Xiao, Hong, Orvalho Augusto, and Bradley H. Wagenaar. 2021. “Reflection on Modern Methods: A Common Error in the Segmented Regression Parameterization of Interrupted Time-Series Analyses.” <em>International Journal of Epidemiology</em> 50 (3): 1011–15. <a class="reference external" href="https://doi.org/10.1093/ije/dyaa148">https://doi.org/10.1093/ije/dyaa148</a>.</p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "r"
+        },
+        kernelOptions: {
+            name: "ir",
+            path: "./notebooks"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'ir'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../guides/interrupted-time-series.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Interrupted time series guide</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="interrupted-time-series-mechanics-lab.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Lab: Interrupted Time Series Foundations With Seatbelts</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item"><div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#executive-summary">Executive summary</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#design-and-estimand">Design and estimand</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#define-the-intervention-and-outcome">Define the intervention and outcome</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#state-the-missing-comparison">State the missing comparison</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#a-reproducible-seatbelts-analysis">A reproducible Seatbelts analysis</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#encode-the-intervention">Encode the intervention</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#report-contrasts-at-named-horizons">Report contrasts at named horizons</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#show-the-counterfactual">Show the counterfactual</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sensitivity-and-extensions">Sensitivity and extensions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#interpretation-and-reporting">Interpretation and reporting</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#teaching-route">Teaching route</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#references">References</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By QED Labs
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2026.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+<div class="extra_footer">
+  Built for offline use. External reading links are optional.
+</div>
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

@@ -96,8 +96,8 @@ def main() -> None:
     known = {path.stem for path in notebooks}
     for path in notebooks:
         localize_notebook(path, known)
-    if len(notebooks) != 18:
-        raise SystemExit(f"Expected 18 notebooks, found {len(notebooks)}")
+    if len(notebooks) != 23:
+        raise SystemExit(f"Expected 23 notebooks, found {len(notebooks)}")
     write_data_page()
     print(f"Copied and localized {len(notebooks)} notebooks and bundled data")
 

@@ -17,6 +17,7 @@ The DiD and RDD setup pages on the website link the tested R lockfiles. For the
 Kansas lab, use `augsynth` at commit `7a90ea48877fae7925a72cb50bc03a315bc7c042`.
 The repository's `docs/scripts/setup_lab_environment.R` prepares the combined
 teaching environment; it is a setup tool, not part of notebook execution.
+The teaching environment avoids packages that require Rust or CMake builds.
 
 ## Run
 

@@ -16,11 +16,13 @@ exclude_patterns:
 execute:
   execute_notebooks: cache
   allow_errors: false
+  raise_on_error: true
   timeout: 900
   run_in_temp: false
   exclude_patterns:
     - "notebooks/synthetic-control-design-lab.ipynb"
     - "notebooks/synthetic-control-donor-pool-lab.ipynb"
+    - "notebooks/synthetic-control-methods-report.ipynb"
 
 parse:
   myst_enable_extensions:

@@ -3,6 +3,7 @@
 import io
 import json
 from pathlib import Path
+import re
 import tempfile
 import unittest
 import zipfile
@@ -68,11 +69,43 @@ class NotebookTests(unittest.TestCase):
 
     def test_worksheets_and_inventory(self):
         self.assertEqual(len(gen.LAB_STEMS), 18)
+        self.assertEqual(len(gen.REPORT_STEMS), 5)
+        self.assertEqual(len(gen.NOTEBOOK_STEMS), 23)
         for stem in ("synthetic-control-design-lab", "synthetic-control-donor-pool-lab"):
             path = gen.LABS_DIR / (stem+".qmd")
             nb = gen.build_notebook(path)
             gen.validate_notebook(nb, path)
             self.assertFalse(any(c["cell_type"] == "code" for c in nb["cells"]))
+
+    def test_method_reports(self):
+        expected_code_cells = {
+            "matching-methods-report": 38,
+            "difference-in-differences-methods-report": 5,
+            "regression-discontinuity-methods-report": 7,
+            "synthetic-control-methods-report": 0,
+            "interrupted-time-series-methods-report": 7,
+        }
+        for stem, expected in expected_code_cells.items():
+            path = gen.LABS_DIR / (stem + ".qmd")
+            notebook = gen.build_notebook(path)
+            gen.validate_notebook(notebook, path)
+            code = [cell for cell in notebook["cells"] if cell["cell_type"] == "code"]
+            self.assertEqual(len(code), expected)
+            text = "".join("".join(cell["source"]) for cell in notebook["cells"])
+            self.assertNotIn("`r ", text)
+            self.assertNotIn("[@", text)
+
+        matching = gen.build_notebook(gen.LABS_DIR / "matching-methods-report.qmd")
+        matching_markdown = "\n".join(
+            "".join(cell["source"]) for cell in matching["cells"] if cell["cell_type"] == "markdown"
+        )
+        definitions = re.findall(r"^\[\^([^]]+)\]:", matching_markdown, flags=re.M)
+        self.assertEqual(len(definitions), 32)
+        self.assertEqual(len(definitions), len(set(definitions)))
+        matching_code = "\n".join(
+            "".join(cell["source"]) for cell in matching["cells"] if cell["cell_type"] == "code"
+        )
+        self.assertIn("repr.plot.width = 8.5", matching_code)
 
 
 if __name__ == "__main__":

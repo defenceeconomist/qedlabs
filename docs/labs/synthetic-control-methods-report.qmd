@@ -19,7 +19,7 @@ format:
 - This report positions synthetic control methods (SCM) as design-first tools for comparative case studies with one treated unit, or a very small number of treated units, observed over time.
 - The core SCM question is not whether untreated units share the same average trend as the treated unit. It is whether a transparent weighted combination of untreated donors can reproduce the treated unit's pre-treatment outcome path closely enough to act as a credible counterfactual [@abadie2003economic; @abadie2010synthetic].
 - For evaluator practice, donor-pool design, intervention timing, and pre-treatment fit matter more than the choice of R package. A persuasive SCM study is built before it is estimated.
-- The strongest beginner workflow on this site is: understand the original mechanics in the [Synthetic Control Mechanics Lab](synthetic-control-mechanics-lab.qmd), work through the canonical California case in [Proposition 99 With tidysynth](synthetic-control-proposition-99-lab.qmd), and then study weak-fit repair in [Augmented SCM With Kansas](synthetic-control-augmentation-lab.qmd).
+- The strongest beginner workflow on this site is: understand the transparent matrix-and-weight mechanics in the [Synthetic Control Mechanics Lab](synthetic-control-mechanics-lab.qmd), work through the canonical California case in [Proposition 99 With Transparent SCM](synthetic-control-proposition-99-lab.qmd), and then study weak-fit repair in [Augmented SCM With Kansas](synthetic-control-augmentation-lab.qmd).
 - Classical SCM should remain the default starting point because its convex-combination logic makes support limits and donor dependence visible. But weak fit, disaggregated data, or likely spillovers may require augmented, penalized, or spillover-aware variants rather than pretending the baseline design succeeded [@abadie2021using; @benmichael2021augmented; @Abadie_LHour_2021_PenalizedSCM; @DiStefano_Mellace_2024_InclusiveSCM_arxiv].
 - Within a wider quasi-experimental toolkit, SCM is strongest when treatment happens to one place at a known date, the pre-treatment series is long, the donor pool is plausibly untreated, and a simple difference-in-differences comparison feels too coarse for the treated case [@govuk_evaluation_academy_resources; @govuk_qed_slides].
 
@@ -45,8 +45,8 @@ Use this page as the conceptual anchor for the site's SCM materials:
 - Use [Synthetic Control](../notes/scm/synthetic-control.qmd) for the shorter method overview.
 - Use [Synthetic Control Teaching Data](../notes/scm/synthetic-control-teaching-data.qmd) when you need dataset choices for teaching or build-out.
 - Use [California Proposition 99](../notes/scm/california-tobacco-synthetic-control-notes.qmd) for the canonical paper-level application logic.
-- Use [Synthetic Control Mechanics Lab](synthetic-control-mechanics-lab.qmd) before you want to read `dataprep()` and `synth()` output comfortably.
-- Use [Proposition 99 With tidysynth](synthetic-control-proposition-99-lab.qmd) for the first end-to-end applied workflow.
+- Use [Synthetic Control Mechanics Lab](synthetic-control-mechanics-lab.qmd) to see the treated and donor matrices and simplex weights directly.
+- Use [Proposition 99 With Transparent SCM](synthetic-control-proposition-99-lab.qmd) for the first end-to-end applied workflow.
 - Use [Augmented SCM With Kansas](synthetic-control-augmentation-lab.qmd) once the main question becomes what to do when classical SCM fit is visibly weak.
 :::
 
@@ -152,12 +152,12 @@ The main failure mode is using SCM because it produces an attractive figure even
 
 ### Primary Teaching Case
 
-For this site, the canonical first real application should remain California Proposition 99 using `tidysynth::smoking`. It is the cleanest beginner case because it keeps the substantive story intuitive while preserving the full SCM workflow: donor exclusions, predictors, lagged outcomes, donor weights, path fit, gap plots, and placebo logic. It also connects directly to the original JASA application rather than to a detached package demo [@abadie2010synthetic].
+For this site, the canonical first real application should remain California Proposition 99 using the bundled `smoking` panel and an explicit base-R simplex optimiser. It is the cleanest beginner case because it keeps the substantive story intuitive while preserving the full SCM workflow: donor exclusions, predictors, lagged outcomes, donor weights, path fit, gap plots, and placebo logic. It also connects directly to the original JASA application rather than to a detached package demo [@abadie2010synthetic].
 
 That makes the site's most defensible learning route:
 
-1. [Synthetic Control Mechanics Lab](synthetic-control-mechanics-lab.qmd) for the original `Synth` grammar.
-2. [Proposition 99 With tidysynth](synthetic-control-proposition-99-lab.qmd) for the first full applied SCM workflow.
+1. [Synthetic Control Mechanics Lab](synthetic-control-mechanics-lab.qmd) for explicit matrix construction and constrained donor weights.
+2. [Proposition 99 With Transparent SCM](synthetic-control-proposition-99-lab.qmd) for the first full applied SCM workflow.
 3. [Augmented SCM With Kansas](synthetic-control-augmentation-lab.qmd) for weak-fit diagnosis and principled extension.
 
 ### Companion Reading Path

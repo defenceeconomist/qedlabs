@@ -76,7 +76,10 @@ The treatment is a programme package, not an isolated cash transfer
 [@manacorda2011transfers].
 
 ```{r}
-source("data/load-data.R")
+data_helpers <- c("data/load-data.R", "../data/load-data.R", "docs/labs/data/load-data.R")
+data_helpers <- data_helpers[file.exists(data_helpers)]
+if (!length(data_helpers)) stop("Keep the bundled data folder beside the notebook.")
+source(data_helpers[[1]])
 library(rdrobust)
 library(rddensity)
 library(ggplot2)

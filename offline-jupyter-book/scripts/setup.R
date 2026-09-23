@@ -55,9 +55,10 @@ if (!augsynth_in_local_library ||
 
 required <- c(
   "IRkernel", "digest", "jsonlite", "MatchIt", "WeightIt", "cobalt",
-  "dplyr", "ggplot2", "fixest", "did", "bacondecomp", "HonestDiD",
+  "causaldata", "dplyr", "ggplot2", "fixest", "did", "bacondecomp",
   "haven", "readr", "broom", "sandwich", "boot", "nlme", "tibble",
-  "Synth", "tidysynth", "rdrobust", "rddensity", "purrr", "augsynth"
+  "tidyr", "rdrobust", "rddensity", "purrr", "augsynth",
+  "dagitty", "ggdag", "knitr"
 )
 missing <- required[!vapply(required, requireNamespace, logical(1), quietly = TRUE)]
 if (length(missing)) stop("Missing R packages after restore: ", paste(missing, collapse = ", "))

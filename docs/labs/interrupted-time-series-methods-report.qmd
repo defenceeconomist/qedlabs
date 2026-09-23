@@ -71,7 +71,10 @@ The [data catalogue](data.qmd#seatbelts) records the bundled snapshot. Packages 
 already be installed; this report performs no installation or data download.
 
 ```{r}
-source("data/load-data.R")
+data_helpers <- c("data/load-data.R", "../data/load-data.R", "docs/labs/data/load-data.R")
+data_helpers <- data_helpers[file.exists(data_helpers)]
+if (!length(data_helpers)) stop("Keep the bundled data folder beside the notebook.")
+source(data_helpers[[1]])
 library(ggplot2)
 library(nlme)
 d <- as.data.frame(qed_data("Seatbelts"))

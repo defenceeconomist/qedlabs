@@ -230,9 +230,11 @@ required_packages <- c(
   "WeightIt",
   "cobalt",
   "causaldata",
+  "dagitty",
   "dplyr",
+  "ggdag",
   "ggplot2",
-  "pander"
+  "knitr"
 )
 
 # Identify packages that are not yet available in the current R library.
@@ -245,22 +247,32 @@ missing_packages <- required_packages[!vapply(
 
 # Install only the missing packages to keep setup idempotent.
 if (length(missing_packages) > 0) {
-  install.packages(missing_packages, repos = "https://cloud.r-project.org")
+  stop(
+    "Install the documented R environment first; missing: ",
+    paste(missing_packages, collapse = ", "),
+    call. = FALSE
+  )
 }
 
 # Attach packages for use in the remainder of the report.
 invisible(lapply(required_packages, library, character.only = TRUE))
+
+data_helpers <- c("data/load-data.R", "../data/load-data.R", "docs/labs/data/load-data.R")
+data_helpers <- data_helpers[file.exists(data_helpers)]
+if (!length(data_helpers)) stop("Keep the bundled data folder beside the notebook.")
+source(data_helpers[[1]])
 
 ```
 
 ### Data Preparation
 
 ```{r}
-# Load the NSW experimental benchmark and the observational MatchIt sample.
-data("lalonde", package = "MatchIt")
+# Load the checksummed local copies of the NSW benchmark and observational sample.
+lalonde <- qed_data("lalonde")
+nsw_mixtape <- qed_data("nsw_mixtape")
 
 # Standardize the NSW experiment while retaining its original package columns.
-benchmark_dat <- causaldata::nsw_mixtape |>
+benchmark_dat <- nsw_mixtape |>
   mutate(
     treat = as.integer(treat),
     outcome = re78,
@@ -442,7 +454,7 @@ render_matchit_component <- function(component, caption, row_label = "Covariate"
   as.data.frame(component) |>
     tibble::rownames_to_column(row_label) |>
     mutate(across(where(is.numeric), ~ round(.x, digits))) |>
-    pander::pander(caption = caption, split.table = Inf)
+    knitr::kable(caption = caption)
 }
 
 m_out0_summary <- summary(m_out0, un = TRUE)

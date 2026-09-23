@@ -19,8 +19,8 @@ Use this page as the first hands-on SCM lab.
 
 
 - Keep the [Synthetic Control](https://defenceeconomist.github.io/qedlabs/notes/scm/synthetic-control.html) overview open in another tab.
-- Use this lab to understand the grammar of classical SCM before you move to real case studies.
-- Read `dataprep()` as part of the design, not as data wrangling boilerplate.
+- Use this lab to understand the mechanics of classical SCM before you move to real case studies.
+- Read the construction of the design matrices as part of the design, not as data-wrangling boilerplate.
 - End by explaining what the optimizer did and whether the fit looks credible enough to learn from.
 
 ::: {.callout-note}
@@ -29,17 +29,17 @@ The code is shown but not executed when the site is rendered. That keeps the pag
 
 ## Training Goal
 
-Use `Synth::synth.data` to make the mechanics of classical SCM visible:
+Use the bundled `synth.data` snapshot to make the mechanics of classical SCM visible without requiring its original distribution package:
 
 1. define the treated unit and donor pool explicitly
-2. encode the design with `dataprep()`
-3. estimate the synthetic control with `synth()`
-4. inspect donor weights `W` and predictor weights `V`
+2. construct the treated and donor design matrices explicitly
+3. estimate non-negative donor weights that sum to one with base R
+4. inspect donor weights and predictor balance
 5. interpret the path plot and gap plot without pretending the toy data prove a substantive claim
 
 ## Dataset At A Glance
 
-This lab uses `Synth::synth.data`, the package's toy panel for teaching the original workflow.
+This lab uses a checksummed snapshot of the `synth.data` toy panel. The data are bundled, so the package that originally distributed them is not required at runtime.
 
 - Purpose: mechanics first, not substantive interpretation
 - Data shape: a small panel with one treated unit and a compact donor pool
@@ -51,9 +51,9 @@ This lab uses `Synth::synth.data`, the package's toy panel for teaching the orig
 By the end of the lab, you should be able to report:
 
 - which unit is treated and which units enter the donor pool
-- what `dataprep()` is doing to produce `X1`, `X0`, `Z1`, and `Z0`
-- which donors receive positive weight in `solution.w`
-- which predictors or lagged outcomes receive the most weight in `solution.v`
+- how the code produces treated and donor predictor matrices and pre-treatment outcome matrices
+- which donors receive meaningful weight
+- how closely the weighted donors reproduce the treated unit's predictors and pre-treatment outcomes
 - whether the pre-treatment fit looks good enough to trust the toy example as a demonstration of mechanics
 
 ## Step 1: Load Packages And Inspect The Toy Panel
@@ -67,9 +67,10 @@ source(data_helpers[[1]])
 
 ```{r}
 required_packages <- c(
-  "Synth",
   "dplyr",
-  "tibble"
+  "ggplot2",
+  "tibble",
+  "tidyr"
 )
 
 missing_packages <- required_packages[!vapply(
@@ -125,101 +126,159 @@ What to discuss:
 - SCM does not remove design judgment; it makes it legible.
 - Even in a toy example, you should know who is eligible to act as a donor before you estimate weights.
 
-## Step 3: Encode The Design With `dataprep()`
+## Step 3: Build The Design Matrices Explicitly
 
-`dataprep()` is the design object in the original `Synth` workflow. It decides which predictors matter, which pre-treatment periods define fit, and which periods will be plotted later.
+The design object should make every choice visible: which predictors matter, which pre-treatment periods define fit, and which periods will be plotted later. The code below constructs the same kinds of matrices directly from the panel.
 
 ```{r}
-dataprep.out <- dataprep(
-  foo = synth.data,
-  predictors = c("X1", "X2", "X3"),
-  predictors.op = "mean",
-  dependent = "Y",
-  unit.variable = "unit.num",
-  time.variable = "year",
-  special.predictors = list(
-    list("Y", 1991, "mean"),
-    list("Y", 1985, "mean"),
-    list("Y", 1980, "mean")
-  ),
-  treatment.identifier = treated_unit,
-  controls.identifier = donor_units,
-  time.predictors.prior = 1984:1989,
-  time.optimize.ssr = 1984:1990,
-  unit.names.variable = "name",
-  time.plot = 1984:1996
+predictor_years <- 1984:1989
+fit_years <- 1984:1990
+plot_years <- 1984:1996
+
+unit_predictors <- function(unit_id) {
+  unit_data <- synth.data |>
+    filter(unit.num == unit_id)
+
+  c(
+    X1 = mean(unit_data$X1[unit_data$year %in% predictor_years]),
+    X2 = mean(unit_data$X2[unit_data$year %in% predictor_years]),
+    X3 = mean(unit_data$X3[unit_data$year %in% predictor_years]),
+    Y_1985 = unit_data$Y[match(1985, unit_data$year)],
+    Y_1990 = unit_data$Y[match(1990, unit_data$year)]
+  )
+}
+
+unit_outcomes <- function(unit_id, years) {
+  unit_data <- synth.data |>
+    filter(unit.num == unit_id)
+  unit_data$Y[match(years, unit_data$year)]
+}
+
+X1 <- matrix(unit_predictors(treated_unit), ncol = 1)
+X0 <- vapply(donor_units, unit_predictors, numeric(nrow(X1)))
+Z1 <- matrix(unit_outcomes(treated_unit, fit_years), ncol = 1)
+Z0 <- vapply(
+  donor_units,
+  unit_outcomes,
+  numeric(length(fit_years)),
+  years = fit_years
 )
 
-names(dataprep.out)
+rownames(X1) <- rownames(X0) <- names(unit_predictors(treated_unit))
+rownames(Z1) <- rownames(Z0) <- paste0("Y_", fit_years)
+colnames(X0) <- colnames(Z0) <- donor_units
 ```
 
-## Step 4: Inspect The Objects That `dataprep()` Built
+## Step 4: Inspect The Design Objects
 
 ```{r}
-dim(dataprep.out$X1)
-dim(dataprep.out$X0)
-dim(dataprep.out$Z1)
-dim(dataprep.out$Z0)
+dim(X1)
+dim(X0)
+dim(Z1)
+dim(Z0)
 
-dataprep.out$X1
-dataprep.out$X0
-
-dataprep.out$tag
+X1
+X0
 ```
 
 Checkpoint:
 
 - `X1` and `X0` contain the predictor targets for the treated unit and donors.
 - `Z1` and `Z0` contain the pre-treatment outcome history used to optimize fit.
-- `tag` is worth reading because it records the design choices you just made.
+- The named year vectors record the design choices that a package would otherwise hide inside an object.
 
 ## Step 5: Estimate The Synthetic Control
 
 ```{r}
-synth.out <- synth(dataprep.out)
+simplex_weights <- function(theta) c(theta, 1 - sum(theta))
 
-names(synth.out)
+design_target <- rbind(X1, Z1)
+design_donors <- rbind(X0, Z0)
+row_scale <- apply(cbind(design_target, design_donors), 1, sd)
+row_scale[!is.finite(row_scale) | row_scale == 0] <- 1
+
+scaled_target <- design_target[, 1] / row_scale
+scaled_donors <- design_donors / row_scale
+
+loss <- function(theta) {
+  weights <- simplex_weights(theta)
+  mean((scaled_target - as.numeric(scaled_donors %*% weights))^2)
+}
+
+gradient <- function(theta) {
+  weights <- simplex_weights(theta)
+  residual <- scaled_target - as.numeric(scaled_donors %*% weights)
+  donor_differences <- scaled_donors[, -ncol(scaled_donors), drop = FALSE] -
+    scaled_donors[, ncol(scaled_donors)]
+  -2 * colMeans(donor_differences * residual)
+}
+
+constraint_matrix <- rbind(
+  diag(length(donor_units) - 1),
+  rep(-1, length(donor_units) - 1)
+)
+constraint_boundary <- c(rep(0, length(donor_units) - 1), -1)
+
+scm_fit <- constrOptim(
+  theta = rep(1 / length(donor_units), length(donor_units) - 1),
+  f = loss,
+  grad = gradient,
+  ui = constraint_matrix,
+  ci = constraint_boundary,
+  method = "BFGS",
+  control = list(maxit = 5000, reltol = 1e-12)
+)
+
+scm_weights <- simplex_weights(scm_fit$par)
+
+stopifnot(
+  scm_fit$convergence == 0,
+  all(scm_weights >= 0),
+  abs(sum(scm_weights) - 1) < 1e-10
+)
 ```
 
-This is the estimator step. The constrained optimizer now chooses donor weights `W` and predictor weights `V` given the design encoded above.
+This is the estimator step. Base R's `constrOptim()` enforces non-negative donor weights that sum to one while minimizing standardized pre-treatment mismatch. The final donor weight is one minus the sum of the remaining weights, which removes the equality constraint from the optimiser's parameter vector.
 
-## Step 6: Read Donor Weights `W` And Predictor Weights `V`
+## Step 6: Read Donor Weights And Predictor Balance
 
 ```{r}
 donor_weights <- tibble(
   unit.num = donor_units,
-  weight = as.numeric(synth.out$solution.w)
+  weight = scm_weights
 ) |>
   left_join(unit_lookup, by = "unit.num") |>
   arrange(desc(weight))
 
-predictor_weights <- tibble(
-  predictor = rownames(dataprep.out$X1),
-  v_weight = as.numeric(synth.out$solution.v[, 1])
-) |>
-  arrange(desc(v_weight))
+predictor_balance <- tibble(
+  predictor = rownames(design_target),
+  treated = design_target[, 1],
+  synthetic = as.numeric(design_donors %*% scm_weights),
+  donor_average = rowMeans(design_donors)
+)
 
 donor_weights
-predictor_weights
+predictor_balance
 ```
 
 What to look for:
 
-- sparse `W` weights mean only a few donors carry the synthetic comparison
-- large `V` weights show which predictors or lagged outcomes mattered most for fit
-- neither object is decorative; both are part of the causal argument
+- concentrated weights mean only a few donors carry the synthetic comparison
+- the balance table shows where the weighted comparison improves on a simple donor average
+- both outputs are part of the causal argument
 
-## Step 7: Build The Standard Summary Tables
+## Step 7: Summarise Fit Quality
 
 ```{r}
-synth.tables <- synth.tab(
-  dataprep.res = dataprep.out,
-  synth.res = synth.out
+fit_summary <- tibble(
+  comparison = c("Synthetic control", "Unweighted donor average"),
+  standardized_mse = c(
+    mean((scaled_target - as.numeric(scaled_donors %*% scm_weights))^2),
+    mean((scaled_target - rowMeans(scaled_donors))^2)
+  )
 )
 
-synth.tables$tab.pred
-synth.tables$tab.w
-synth.tables$tab.v
+fit_summary
 ```
 
 Checkpoint:
@@ -230,26 +289,33 @@ Checkpoint:
 ## Step 8: Plot The Treated And Synthetic Paths
 
 ```{r fig.height=5.5}
-path.plot(
-  synth.res = synth.out,
-  dataprep.res = dataprep.out,
-  Ylab = "Outcome",
-  Xlab = "Year",
-  Legend = c("Treated unit", "Synthetic control"),
-  Legend.position = "bottomright"
-)
-abline(v = 1990, lty = 2, col = "gray40")
+Y1plot <- unit_outcomes(treated_unit, plot_years)
+Y0plot <- vapply(donor_units, unit_outcomes, numeric(length(plot_years)), years = plot_years)
+
+gap_tbl <- tibble(
+  year = plot_years,
+  treated = Y1plot,
+  synthetic = as.numeric(Y0plot %*% scm_weights)
+) |>
+  mutate(gap = treated - synthetic)
+
+gap_tbl |>
+  select(year, treated, synthetic) |>
+  tidyr::pivot_longer(-year, names_to = "series", values_to = "outcome") |>
+  ggplot(aes(year, outcome, colour = series)) +
+  geom_line(linewidth = 1) +
+  geom_vline(xintercept = 1990, linetype = 2, colour = "gray40") +
+  labs(x = "Year", y = "Outcome", colour = NULL) +
+  theme_minimal(base_size = 12)
 ```
 
 ```{r fig.height=5.5}
-gaps.plot(
-  synth.res = synth.out,
-  dataprep.res = dataprep.out,
-  Ylab = "Treated minus synthetic",
-  Xlab = "Year"
-)
-abline(v = 1990, lty = 2, col = "gray40")
-abline(h = 0, lty = 3, col = "gray50")
+ggplot(gap_tbl, aes(year, gap)) +
+  geom_hline(yintercept = 0, linetype = 3, colour = "gray50") +
+  geom_vline(xintercept = 1990, linetype = 2, colour = "gray40") +
+  geom_line(linewidth = 1) +
+  labs(x = "Year", y = "Treated minus synthetic") +
+  theme_minimal(base_size = 12)
 ```
 
 What to discuss:
@@ -261,13 +327,6 @@ What to discuss:
 ## Step 9: Calculate The Gap Series Directly
 
 ```{r}
-gap_tbl <- tibble(
-  year = dataprep.out$tag$time.plot,
-  treated = as.numeric(dataprep.out$Y1plot),
-  synthetic = as.numeric(dataprep.out$Y0plot %*% synth.out$solution.w)
-) |>
-  mutate(gap = treated - synthetic)
-
 gap_tbl
 ```
 
@@ -277,7 +336,7 @@ This step matters because it makes the plotted divergence inspectable as ordinar
 
 Write a short answer to these questions:
 
-1. What part of SCM became clearer once you saw `dataprep()` and `synth()` as separate steps?
+1. What part of SCM became clearer once you saw matrix construction and weight estimation as separate steps?
 2. Which donors actually build the synthetic unit?
 3. Does this toy example teach you substantive causal inference, or mainly the structure of the estimator?
 

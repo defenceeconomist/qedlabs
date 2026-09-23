@@ -1,5 +1,5 @@
 ---
-title: 'Lab: Proposition 99 With tidysynth'
+title: 'Lab: Proposition 99 With Transparent SCM'
 format:
   html:
     toc: true
@@ -29,7 +29,7 @@ The code is shown but not executed when the site is rendered. That keeps the pag
 
 ## Training Goal
 
-Turn the canonical Proposition 99 application into a repeatable `tidysynth` workflow:
+Turn the canonical Proposition 99 application into a repeatable SCM workflow using explicit matrices and base-R optimisation:
 
 1. define the treated unit and intervention date
 2. build a donor pool that tries to stay plausibly untreated
@@ -39,13 +39,13 @@ Turn the canonical Proposition 99 application into a repeatable `tidysynth` work
 
 ## Dataset At A Glance
 
-This lab uses `tidysynth::smoking`, the bundled state-year panel tied to California's tobacco-control program.
+This lab uses a checksummed snapshot of the `smoking` state-year panel tied to California's tobacco-control program. The data are bundled, so the package that originally distributed them is not required at runtime.
 
 - Treated unit: California
 - Intervention anchor: `1988` in the teaching implementation, so `1989` onward is interpreted as the post-treatment period
 - Outcome: per-capita cigarette sales (`cigsale`)
 - Core predictors: income, cigarette price, beer consumption, age structure, and lagged smoking outcomes
-- Main value: this is the cleanest benchmark case for teaching a full end-to-end SCM workflow in a tidy grammar
+- Main value: this is the cleanest benchmark case for teaching a full end-to-end SCM workflow while keeping the optimisation visible
 
 ## What To Hand Back
 
@@ -68,11 +68,10 @@ source(data_helpers[[1]])
 
 ```{r}
 required_packages <- c(
-  "tidysynth",
   "dplyr",
   "ggplot2",
   "tibble",
-  "purrr"
+  "tidyr"
 )
 
 missing_packages <- required_packages[!vapply(
@@ -97,7 +96,7 @@ smoking |>
 Checkpoint:
 
 - The data are already in tidy long format.
-- Every row is a state-year observation, which makes the `tidysynth` pipeline easier to read than the original matrix workflow.
+- Every row is a state-year observation, which makes the construction of predictor and outcome matrices easy to audit.
 
 ## Step 2: Define The Intervention And Donor Exclusions
 
@@ -156,56 +155,110 @@ Checkpoint:
 - A simple donor-pool average is not the SCM counterfactual.
 - This first plot is only a benchmark for why a weighted synthetic comparison is needed.
 
-## Step 4: Build The Synthetic-Control Object
+## Step 4: Build The Synthetic-Control Design
 
 ```{r}
-smoking_out <- analysis_data |>
-  synthetic_control(
-    outcome = cigsale,
-    unit = state,
-    time = year,
-    i_unit = treated_state,
-    i_time = intervention_year,
-    generate_placebos = TRUE
-  ) |>
-  generate_predictor(
-    time_window = 1980:1988,
-    lnincome = mean(lnincome, na.rm = TRUE),
-    retprice = mean(retprice, na.rm = TRUE),
-    age15to24 = mean(age15to24, na.rm = TRUE)
-  ) |>
-  generate_predictor(
-    time_window = 1984:1988,
-    beer = mean(beer, na.rm = TRUE)
-  ) |>
-  generate_predictor(
-    time_window = 1975,
-    cigsale_1975 = cigsale
-  ) |>
-  generate_predictor(
-    time_window = 1980,
-    cigsale_1980 = cigsale
-  ) |>
-  generate_predictor(
-    time_window = 1988,
-    cigsale_1988 = cigsale
-  ) |>
-  generate_weights(
-    optimization_window = 1970:1988,
-    Margin.ipop = 0.02,
-    Sigf.ipop = 7,
-    Bound.ipop = 6
-  ) |>
-  generate_control()
+pre_years <- 1970:1988
+plot_years <- 1970:2000
+donor_states <- setdiff(unique(analysis_data$state), treated_state)
+
+unit_predictors <- function(state_name, data = analysis_data) {
+  unit_data <- data |>
+    filter(state == state_name)
+
+  c(
+    lnincome = mean(unit_data$lnincome[unit_data$year %in% 1980:1988], na.rm = TRUE),
+    retprice = mean(unit_data$retprice[unit_data$year %in% 1980:1988], na.rm = TRUE),
+    age15to24 = mean(unit_data$age15to24[unit_data$year %in% 1980:1988], na.rm = TRUE),
+    beer = mean(unit_data$beer[unit_data$year %in% 1984:1988], na.rm = TRUE),
+    cigsale_1975 = unit_data$cigsale[match(1975, unit_data$year)],
+    cigsale_1980 = unit_data$cigsale[match(1980, unit_data$year)],
+    cigsale_1988 = unit_data$cigsale[match(1988, unit_data$year)]
+  )
+}
+
+unit_outcomes <- function(state_name, years, data = analysis_data) {
+  unit_data <- data |>
+    filter(state == state_name)
+  unit_data$cigsale[match(years, unit_data$year)]
+}
+
+simplex_weights <- function(theta) c(theta, 1 - sum(theta))
+
+fit_scm <- function(target_state, comparison_states, data = analysis_data) {
+  X1 <- unit_predictors(target_state, data)
+  X0 <- vapply(comparison_states, unit_predictors, numeric(length(X1)), data = data)
+  Z1 <- unit_outcomes(target_state, pre_years, data)
+  Z0 <- vapply(
+    comparison_states,
+    unit_outcomes,
+    numeric(length(pre_years)),
+    years = pre_years,
+    data = data
+  )
+
+  design_target <- c(X1, Z1)
+  design_donors <- rbind(X0, Z0)
+  row_scale <- apply(cbind(design_target, design_donors), 1, sd)
+  row_scale[!is.finite(row_scale) | row_scale == 0] <- 1
+  scaled_target <- design_target / row_scale
+  scaled_donors <- design_donors / row_scale
+
+  loss <- function(theta) {
+    weights <- simplex_weights(theta)
+    mean((scaled_target - as.numeric(scaled_donors %*% weights))^2)
+  }
+
+  gradient <- function(theta) {
+    weights <- simplex_weights(theta)
+    residual <- scaled_target - as.numeric(scaled_donors %*% weights)
+    donor_differences <- scaled_donors[, -ncol(scaled_donors), drop = FALSE] -
+      scaled_donors[, ncol(scaled_donors)]
+    -2 * colMeans(donor_differences * residual)
+  }
+
+  constraint_matrix <- rbind(
+    diag(length(comparison_states) - 1),
+    rep(-1, length(comparison_states) - 1)
+  )
+  constraint_boundary <- c(rep(0, length(comparison_states) - 1), -1)
+
+  fit <- constrOptim(
+    theta = rep(1 / length(comparison_states), length(comparison_states) - 1),
+    f = loss,
+    grad = gradient,
+    ui = constraint_matrix,
+    ci = constraint_boundary,
+    method = "BFGS",
+    control = list(maxit = 5000, reltol = 1e-11)
+  )
+  weights <- simplex_weights(fit$par)
+
+  stopifnot(all(weights >= 0), abs(sum(weights) - 1) < 1e-10)
+  list(
+    weights = weights,
+    comparison_states = comparison_states,
+    predictors = X1,
+    donor_predictors = X0,
+    convergence = fit$convergence,
+    objective = fit$value
+  )
+}
+
+california_fit <- fit_scm(treated_state, donor_states)
 ```
 
-This pipeline does the same design work as the classical `Synth` setup, but in a grammar that is easier to teach line by line.
+The helper keeps the design work visible. Base R's `constrOptim()` constrains donor weights to be non-negative and sum to one while minimizing standardized predictor and pre-treatment outcome mismatch.
 
 ## Step 5: Inspect Balance Before You Look At Effects
 
 ```{r}
-balance_tbl <- smoking_out |>
-  grab_balance_table()
+balance_tbl <- tibble(
+  predictor = names(california_fit$predictors),
+  California = california_fit$predictors,
+  synthetic = as.numeric(california_fit$donor_predictors %*% california_fit$weights),
+  donor_average = rowMeans(california_fit$donor_predictors)
+)
 
 balance_tbl
 ```
@@ -219,8 +272,10 @@ What to look for:
 ## Step 6: Inspect Donor Weights
 
 ```{r}
-weights_tbl <- smoking_out |>
-  grab_unit_weights() |>
+weights_tbl <- tibble(
+  state = california_fit$comparison_states,
+  weight = california_fit$weights
+) |>
   arrange(desc(weight))
 
 weights_tbl
@@ -234,13 +289,38 @@ Checkpoint:
 ## Step 7: Plot Observed And Synthetic California
 
 ```{r fig.height=5.7}
-smoking_out |>
-  plot_trends()
+treated_path <- unit_outcomes(treated_state, plot_years)
+donor_paths <- vapply(
+  donor_states,
+  unit_outcomes,
+  numeric(length(plot_years)),
+  years = plot_years
+)
+
+gap_tbl <- tibble(
+  year = plot_years,
+  observed = treated_path,
+  synthetic = as.numeric(donor_paths %*% california_fit$weights)
+) |>
+  mutate(gap = observed - synthetic)
+
+gap_tbl |>
+  select(year, observed, synthetic) |>
+  pivot_longer(-year, names_to = "series", values_to = "cigsale") |>
+  ggplot(aes(year, cigsale, colour = series)) +
+  geom_line(linewidth = 1) +
+  geom_vline(xintercept = intervention_year, linetype = 2, colour = "gray40") +
+  labs(x = NULL, y = "Per-capita cigarette sales", colour = NULL) +
+  theme_minimal(base_size = 12)
 ```
 
 ```{r fig.height=5.7}
-smoking_out |>
-  plot_differences()
+ggplot(gap_tbl, aes(year, gap)) +
+  geom_hline(yintercept = 0, linetype = 3, colour = "gray50") +
+  geom_vline(xintercept = intervention_year, linetype = 2, colour = "gray40") +
+  geom_line(linewidth = 1) +
+  labs(x = NULL, y = "California minus synthetic California") +
+  theme_minimal(base_size = 12)
 ```
 
 What to discuss:
@@ -252,15 +332,6 @@ What to discuss:
 ## Step 8: Make The Gap Series Inspectable
 
 ```{r}
-gap_tbl <- smoking_out |>
-  grab_synthetic_control() |>
-  transmute(
-    year = time_unit,
-    observed = real_y,
-    synthetic = synth_y,
-    gap = observed - synthetic
-  )
-
 gap_tbl
 ```
 
@@ -269,13 +340,54 @@ This is a useful discipline step. Never rely only on the plot when you can inspe
 ## Step 9: Add Placebo-By-Unit Diagnostics
 
 ```{r fig.height=6}
-smoking_out |>
-  plot_placebos()
+placebo_paths <- lapply(donor_states, function(placebo_state) {
+  placebo_donors <- setdiff(donor_states, placebo_state)
+  placebo_fit <- fit_scm(placebo_state, placebo_donors)
+  observed <- unit_outcomes(placebo_state, plot_years)
+  donors <- vapply(
+    placebo_donors,
+    unit_outcomes,
+    numeric(length(plot_years)),
+    years = plot_years
+  )
+  tibble(
+    state = placebo_state,
+    year = plot_years,
+    gap = observed - as.numeric(donors %*% placebo_fit$weights)
+  )
+})
+
+placebo_gap_tbl <- bind_rows(placebo_paths)
+
+ggplot(placebo_gap_tbl, aes(year, gap, group = state)) +
+  geom_line(colour = "gray75", linewidth = 0.35) +
+  geom_line(
+    data = gap_tbl,
+    aes(year, gap),
+    inherit.aes = FALSE,
+    colour = "firebrick",
+    linewidth = 1.1
+  ) +
+  geom_hline(yintercept = 0, colour = "gray50") +
+  geom_vline(xintercept = intervention_year, linetype = 2, colour = "gray40") +
+  labs(x = NULL, y = "Treated minus synthetic") +
+  theme_minimal(base_size = 12)
 ```
 
 ```{r}
-mspe_tbl <- smoking_out |>
-  grab_significance()
+mspe_tbl <- bind_rows(
+  placebo_gap_tbl,
+  gap_tbl |>
+    transmute(state = treated_state, year, gap)
+) |>
+  group_by(state) |>
+  summarise(
+    pre_mspe = mean(gap[year <= intervention_year]^2),
+    post_mspe = mean(gap[year > intervention_year]^2),
+    mspe_ratio = post_mspe / pre_mspe,
+    .groups = "drop"
+  ) |>
+  arrange(desc(mspe_ratio))
 
 mspe_tbl
 ```

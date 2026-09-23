@@ -1,8 +1,8 @@
 # Optional online software setup. Lab execution never invokes this script.
 packages <- c("IRkernel", "knitr", "rmarkdown", "digest", "jsonlite", "MatchIt",
   "WeightIt", "cobalt", "dplyr", "ggplot2", "fixest", "did", "bacondecomp",
-  "HonestDiD", "haven", "readr", "broom", "sandwich", "boot", "nlme",
-  "tibble", "Synth", "tidysynth", "rdrobust", "rddensity", "remotes")
+  "haven", "readr", "broom", "sandwich", "boot", "nlme", "tibble", "tidyr",
+  "rdrobust", "rddensity", "remotes")
 missing <- packages[!vapply(packages, requireNamespace, logical(1), quietly=TRUE)]
 if (length(missing)) install.packages(missing, repos="https://cloud.r-project.org")
 if (!requireNamespace("augsynth", quietly=TRUE))

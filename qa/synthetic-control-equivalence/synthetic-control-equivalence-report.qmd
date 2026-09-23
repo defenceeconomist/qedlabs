@@ -1,0 +1,250 @@
+---
+title: "Synthetic Control Solver Equivalence"
+subtitle: "Quality-assurance report for the CMake-free implementation"
+date: "2026-09-23"
+format:
+  html:
+    toc: true
+    embed-resources: true
+    code-fold: true
+    code-summary: "Show analysis code"
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+```{r}
+results <- read.csv("results/acceptance.csv", check.names = FALSE)
+weights <- read.csv("results/weights.csv", check.names = FALSE)
+paths <- read.csv("results/paths.csv", check.names = FALSE)
+inputs <- read.csv("results/inputs.csv", check.names = FALSE)
+build_tools <- read.csv("results/build-tools.csv", check.names = FALSE)
+
+fmt <- function(x, digits = 6) formatC(x, digits = digits, format = "fg", flag = "#")
+overall_pass <- all(results$overall_pass)
+```
+
+## QA conclusion
+
+::: {.callout-tip}
+## `r if (overall_pass) "PASS" else "FAIL"`: numerical equivalence demonstrated
+
+For the two benchmark designs, the base-R implementation and `Synth` produce
+the same synthetic-control result within the stated tolerances. Both
+implementations satisfy the simplex constraints, the base-R result is exactly
+repeatable, and every acceptance check passes.
+:::
+
+The strongest applied test is Proposition 99. Its largest difference between
+the two synthetic paths is only
+`r fmt(results$max_abs_path_difference[results$scenario == "Proposition 99"])`
+cigarette-sales units. The mean post-treatment gap differs by
+`r fmt(results$abs_mean_post_gap_difference[results$scenario == "Proposition 99"])`,
+and pre-treatment MSPE differs by
+`r fmt(100 * results$relative_pre_mspe_difference[results$scenario == "Proposition 99"], 4)`%.
+These differences are numerical solver tolerances, not a change in the
+estimated counterfactual or substantive conclusion.
+
+## What was compared
+
+The comparison holds the statistical specification fixed and changes only the
+solver:
+
+1. The treated and donor design matrices are identical.
+2. Each predictor and pre-treatment outcome row is divided by its standard
+   deviation across the treated unit and donors.
+3. Every standardized row receives equal importance.
+4. Donor weights must be non-negative and sum to one.
+5. The base-R implementation uses `stats::constrOptim()`; the reference uses
+   `Synth::synth()` with the same fixed predictor-importance vector.
+
+This is the exact objective implemented in the book. The comparison does not
+mix it with `Synth`'s optional nested search for a different predictor-importance
+vector. That would be a different estimator specification, not a solver test.
+
+The reference solve used `Synth` 1.1-10 with `Margin.ipop = 1e-6`,
+`Sigf.ipop = 8`, and `Bound.ipop = 100`. Raising the reference solver's accuracy
+above its defaults makes the comparison commensurate with the tight convergence
+tolerance used by `constrOptim()`.
+
+## Acceptance criteria
+
+The automated runner fails unless every scenario meets all of these conditions:
+
+| Check | Acceptance threshold |
+|---|---:|
+| Base-R optimizer convergence | code `0` |
+| Donor-weight sum error | less than `1e-10` |
+| Minimum donor weight | greater than `-1e-10` |
+| Exact-repeat maximum weight difference | less than `1e-12` |
+| Relative pre-treatment MSPE difference | less than 1% |
+| Maximum synthetic-path difference | less than 0.25 outcome units |
+| Mean post-treatment gap difference | less than 0.05 outcome units |
+
+## Results
+
+```{r}
+display <- data.frame(
+  Scenario = results$scenario,
+  Donors = results$donor_count,
+  `Maximum weight difference` = fmt(results$max_abs_weight_difference),
+  `Relative pre-MSPE difference` = paste0(fmt(100 * results$relative_pre_mspe_difference, 4), "%"),
+  `Maximum path difference` = fmt(results$max_abs_path_difference),
+  `Mean post-gap difference` = fmt(results$abs_mean_post_gap_difference),
+  `All checks` = ifelse(results$overall_pass, "PASS", "FAIL"),
+  check.names = FALSE
+)
+knitr::kable(display, align = c("l", "r", "r", "r", "r", "r", "c"))
+```
+
+The Proposition 99 test includes 38 donors and therefore exercises a materially
+larger simplex than the six-donor teaching example. The largest donor-weight
+difference in that test is
+`r fmt(results$max_abs_weight_difference[results$scenario == "Proposition 99"])`;
+the weight RMSE is
+`r fmt(results$weight_rmse[results$scenario == "Proposition 99"])`.
+
+### Synthetic paths
+
+```{r, fig.width=9, fig.height=4.6}
+old_par <- par(mfrow = c(1, 2), mar = c(4, 4, 3, 1))
+for (scenario_name in unique(paths$scenario)) {
+  scenario <- paths[paths$scenario == scenario_name, ]
+  y_range <- range(
+    scenario$treated,
+    scenario$reference_synthetic,
+    scenario$package_free_synthetic
+  )
+  plot(
+    scenario$time,
+    scenario$treated,
+    type = "l",
+    lwd = 1.5,
+    col = "grey35",
+    ylim = y_range,
+    xlab = "Time",
+    ylab = "Outcome",
+    main = scenario_name
+  )
+  lines(scenario$time, scenario$reference_synthetic, col = "#2468A2", lwd = 2, lty = 2)
+  lines(scenario$time, scenario$package_free_synthetic, col = "#C43C39", lwd = 1.5, lty = 3)
+  legend(
+    "topright",
+    legend = c("Treated", "Synth reference", "Base R"),
+    col = c("grey35", "#2468A2", "#C43C39"),
+    lty = c(1, 2, 3),
+    lwd = c(1.5, 2, 1.5),
+    bty = "n",
+    cex = 0.8
+  )
+}
+par(old_par)
+```
+
+The reference and package-free paths overlap visually. The numerical table is
+the primary evidence; the plot is a reasonableness check rather than the basis
+for the verdict.
+
+### Pointwise numerical differences
+
+```{r, fig.width=9, fig.height=4.6}
+old_par <- par(mfrow = c(1, 2), mar = c(4, 4, 3, 1))
+for (scenario_name in unique(paths$scenario)) {
+  scenario <- paths[paths$scenario == scenario_name, ]
+  plot(
+    scenario$time,
+    scenario$absolute_path_difference,
+    type = "h",
+    lwd = 2,
+    col = "#5B4B8A",
+    xlab = "Time",
+    ylab = "Absolute difference",
+    main = scenario_name
+  )
+  abline(h = 0.25, col = "#C43C39", lty = 2)
+}
+par(old_par)
+```
+
+All pointwise differences remain far below the 0.25-unit acceptance threshold.
+
+## Constraint and repeatability checks
+
+```{r}
+constraint_display <- data.frame(
+  Scenario = results$scenario,
+  `Weight-sum error` = fmt(results$package_free_weight_sum_error),
+  `Minimum weight` = fmt(results$package_free_min_weight),
+  `Repeat-run maximum difference` = fmt(results$repeatability_max_abs_weight_difference),
+  `Optimizer code` = results$package_free_convergence,
+  `Constraint check` = ifelse(results$pass_constraints, "PASS", "FAIL"),
+  `Repeatability check` = ifelse(results$pass_repeatability, "PASS", "FAIL"),
+  check.names = FALSE
+)
+knitr::kable(constraint_display, align = c("l", "r", "r", "r", "r", "c", "c"))
+```
+
+Both base-R fits converged, their weights are non-negative and sum to one, and
+an immediate repeat produces bit-for-bit identical weights.
+
+## Dependency boundary
+
+The book implementation uses only base R's `stats` package for optimization.
+It does not import `Synth`, `optimx`, or `nloptr`. `Synth` and its dependencies
+exist only in the isolated QA environment used to establish the reference
+result.
+
+```{r}
+tool_display <- data.frame(
+  Tool = build_tools$tool,
+  `Available during QA run` = ifelse(build_tools$available, "Yes", "No"),
+  check.names = FALSE
+)
+knitr::kable(tool_display, align = c("l", "c"))
+```
+
+The reference QA run itself completed with CMake, Cargo, and Rust absent. The
+reference package was installed against the system NLopt library; none of these
+reference dependencies are included in the book.
+
+## Data integrity and environment
+
+```{r}
+knitr::kable(inputs, align = c("l", "l"), col.names = c("Input", "SHA-256"))
+```
+
+The test ran under R 4.5.1 on Linux x86_64. Full package and platform details
+are retained in [`results/session-info.txt`](results/session-info.txt).
+
+## Reproduction
+
+The complete test is implemented in
+[`run-equivalence.R`](run-equivalence.R). It writes the machine-readable
+acceptance results, donor weights, synthetic paths, input hashes, build-tool
+inventory, serialized comparison objects, and session information to
+[`results/`](results/).
+
+Run it from the repository root in an isolated reference environment containing
+`Synth`:
+
+```bash
+Rscript qa/synthetic-control-equivalence/run-equivalence.R .
+```
+
+The command exits with a non-zero status if any acceptance condition fails.
+
+## Scope and limitations
+
+- The tests cover the toy mechanics example and the full Proposition 99 design.
+- They validate the estimator specification used in this book: equal importance
+  across standardized predictor and pre-treatment outcome rows.
+- They do not claim equivalence for every possible synthetic-control dataset,
+  alternative constraint, or `Synth` optimizer option.
+- They do not claim that equal row importance is universally preferable to a
+  nested predictor-importance search. That is a design choice separate from the
+  dependency and solver question tested here.
+
+Within this stated scope, the CMake-free implementation reproduces the reference
+synthetic controls to substantially tighter tolerances than the acceptance
+limits and is suitable for the book.

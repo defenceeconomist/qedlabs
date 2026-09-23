@@ -34,7 +34,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=9c3e77be" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css?v=8cd3d715" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
   
@@ -61,13 +61,13 @@
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-    <script defer="defer" src="../_static/mathjax/tex-chtml.js"></script>
+    <script defer="defer" src="../_static/mathjax/tex-chtml.js?v=20daa33d"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/synthetic-control-mechanics-lab';</script>
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Lab: Proposition 99 With tidysynth" href="synthetic-control-proposition-99-lab.html" />
-    <link rel="prev" title="Lab: Fuzzy RD and local IV with veteran home ownership" href="regression-discontinuity-fuzzy-lab.html" />
+    <link rel="next" title="Lab: Proposition 99 With Transparent SCM" href="synthetic-control-proposition-99-lab.html" />
+    <link rel="prev" title="Synthetic Control for Causal Inference" href="synthetic-control-methods-report.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -215,43 +215,62 @@
                 </a>
             </li>
         </ul>
-        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Start here</span></p>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Start Here</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../offline-setup.html">Offline setup</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../data.html">Bundled data and provenance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../academy-extension.html">From Module 6 to Applied Practice</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../study-guide.html">How to Study This Book</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../offline-setup.html">Offline Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data.html">Data and Provenance</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Matching and Weighting</span></p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Choose a Design</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="lalonde-matching-lab.html">Lab: LaLonde Matching</a></li>
-<li class="toctree-l1"><a class="reference internal" href="black-politicians-lab.html">Lab: Black Politicians</a></li>
-<li class="toctree-l1"><a class="reference internal" href="nsw-cps-benchmark-lab.html">Lab: NSW and CPS Benchmark</a></li>
-<li class="toctree-l1"><a class="reference internal" href="hisp-ie-practice-lab.html">Lab: HISP IE in Practice</a></li>
-</ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Difference-in-Differences</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="difference-in-differences-foundations-lab.html">Lab: Difference-in-Differences Foundations With Kentucky Workers’ Compensation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="difference-in-differences-staggered-diagnostics-lab.html">Lab: Staggered Adoption and TWFE Diagnostics</a></li>
-<li class="toctree-l1"><a class="reference internal" href="difference-in-differences-modern-estimators-lab.html">Lab: Modern Multi-Period Difference-in-Differences</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../choosing-a-design.html">Design Decision Guide</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Regression Discontinuity</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="regression-discontinuity-foundations-lab.html">Lab: Sharp RD foundations with government transfers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="regression-discontinuity-diagnostics-lab.html">Lab: RDD design diagnostics and sensitivity</a></li>
-<li class="toctree-l1"><a class="reference internal" href="regression-discontinuity-fuzzy-lab.html">Lab: Fuzzy RD and local IV with veteran home ownership</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/regression-discontinuity.html">Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="regression-discontinuity-methods-report.html">Methods Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="regression-discontinuity-foundations-lab.html">Foundations — Sharp RD</a></li>
+<li class="toctree-l1"><a class="reference internal" href="regression-discontinuity-diagnostics-lab.html">Diagnostics and Sensitivity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="regression-discontinuity-fuzzy-lab.html">Extension — Fuzzy RD</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Difference-in-Differences</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../guides/difference-in-differences.html">Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="difference-in-differences-methods-report.html">Methods Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="difference-in-differences-foundations-lab.html">Foundations — Two Groups, Two Periods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="difference-in-differences-staggered-diagnostics-lab.html">Diagnostics — Staggered Adoption</a></li>
+<li class="toctree-l1"><a class="reference internal" href="difference-in-differences-modern-estimators-lab.html">Extension — Modern Estimators</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Synthetic Control</span></p>
 <ul class="current nav bd-sidenav">
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Lab: Synthetic Control Mechanics</a></li>
-<li class="toctree-l1"><a class="reference internal" href="synthetic-control-proposition-99-lab.html">Lab: Proposition 99 With tidysynth</a></li>
-<li class="toctree-l1"><a class="reference internal" href="synthetic-control-augmentation-lab.html">Lab: Augmented SCM With Kansas</a></li>
-<li class="toctree-l1"><a class="reference internal" href="synthetic-control-design-lab.html">Lab: Synthetic Control Design</a></li>
-<li class="toctree-l1"><a class="reference internal" href="synthetic-control-donor-pool-lab.html">Lab: Synthetic Control Donor Pool Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/synthetic-control.html">Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-methods-report.html">Methods Report</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Foundations — Mechanics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-proposition-99-lab.html">Application — Proposition 99</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-augmentation-lab.html">Extension — Augmented SCM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-design-lab.html">Worksheet — Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-donor-pool-lab.html">Worksheet — Donor Pool</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Interrupted Time Series</span></p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Matching and Weighting</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="interrupted-time-series-mechanics-lab.html">Lab: Interrupted Time Series Foundations With Seatbelts</a></li>
-<li class="toctree-l1"><a class="reference internal" href="interrupted-time-series-design-diagnostics-lab.html">Lab: Seatbelt Law Design and Robustness</a></li>
-<li class="toctree-l1"><a class="reference internal" href="interrupted-time-series-counterfactual-validation-lab.html">Lab: Interrupted Time Series Counterfactual Validation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/matching-weighting.html">Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="matching-methods-report.html">Methods Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lalonde-matching-lab.html">Foundations — LaLonde</a></li>
+<li class="toctree-l1"><a class="reference internal" href="black-politicians-lab.html">Application — Black Politicians</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nsw-cps-benchmark-lab.html">Benchmark — NSW and CPS</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Beyond Pre-Post</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../guides/interrupted-time-series.html">Interrupted Time Series Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interrupted-time-series-methods-report.html">Methods Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interrupted-time-series-mechanics-lab.html">Foundations — Seatbelts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interrupted-time-series-design-diagnostics-lab.html">Design and Robustness</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interrupted-time-series-counterfactual-validation-lab.html">Counterfactual Validation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Cross-Method Capstone</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="hisp-ie-practice-lab.html">HISP Impact Evaluation in Practice</a></li>
 </ul>
 
     </div>
@@ -403,11 +422,11 @@
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-to-hand-back">What To Hand Back</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-1-load-packages-and-inspect-the-toy-panel">Step 1: Load Packages And Inspect The Toy Panel</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-2-define-the-treated-unit-and-donor-pool">Step 2: Define The Treated Unit And Donor Pool</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-3-encode-the-design-with-dataprep">Step 3: Encode The Design With <code class="docutils literal notranslate"><span class="pre">dataprep()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-4-inspect-the-objects-that-dataprep-built">Step 4: Inspect The Objects That <code class="docutils literal notranslate"><span class="pre">dataprep()</span></code> Built</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-3-build-the-design-matrices-explicitly">Step 3: Build The Design Matrices Explicitly</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-4-inspect-the-design-objects">Step 4: Inspect The Design Objects</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-5-estimate-the-synthetic-control">Step 5: Estimate The Synthetic Control</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-6-read-donor-weights-w-and-predictor-weights-v">Step 6: Read Donor Weights <code class="docutils literal notranslate"><span class="pre">W</span></code> And Predictor Weights <code class="docutils literal notranslate"><span class="pre">V</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-7-build-the-standard-summary-tables">Step 7: Build The Standard Summary Tables</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-6-read-donor-weights-and-predictor-balance">Step 6: Read Donor Weights And Predictor Balance</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-7-summarise-fit-quality">Step 7: Summarise Fit Quality</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-8-plot-the-treated-and-synthetic-paths">Step 8: Plot The Treated And Synthetic Paths</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-9-calculate-the-gap-series-directly">Step 9: Calculate The Gap Series Directly</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#final-prompt">Final Prompt</a></li>
@@ -432,26 +451,26 @@
 <p>Use this page as the first hands-on SCM lab.</p>
 <ul class="simple">
 <li><p>Keep the <a class="reference external" href="https://defenceeconomist.github.io/qedlabs/notes/scm/synthetic-control.html">Synthetic Control</a> overview open in another tab.</p></li>
-<li><p>Use this lab to understand the grammar of classical SCM before you move to real case studies.</p></li>
-<li><p>Read <code class="docutils literal notranslate"><span class="pre">dataprep()</span></code> as part of the design, not as data wrangling boilerplate.</p></li>
+<li><p>Use this lab to understand the mechanics of classical SCM before you move to real case studies.</p></li>
+<li><p>Read the construction of the design matrices as part of the design, not as data-wrangling boilerplate.</p></li>
 <li><p>End by explaining what the optimizer did and whether the fit looks credible enough to learn from.</p></li>
 </ul>
 <p>The code is shown but not executed when the site is rendered. That keeps the page readable while preserving a runnable workflow for teaching and self-study.</p>
 </section>
 <section id="training-goal">
 <h2>Training Goal<a class="headerlink" href="#training-goal" title="Link to this heading">#</a></h2>
-<p>Use <code class="docutils literal notranslate"><span class="pre">Synth::synth.data</span></code> to make the mechanics of classical SCM visible:</p>
+<p>Use the bundled <code class="docutils literal notranslate"><span class="pre">synth.data</span></code> snapshot to make the mechanics of classical SCM visible without requiring its original distribution package:</p>
 <ol class="arabic simple">
 <li><p>define the treated unit and donor pool explicitly</p></li>
-<li><p>encode the design with <code class="docutils literal notranslate"><span class="pre">dataprep()</span></code></p></li>
-<li><p>estimate the synthetic control with <code class="docutils literal notranslate"><span class="pre">synth()</span></code></p></li>
-<li><p>inspect donor weights <code class="docutils literal notranslate"><span class="pre">W</span></code> and predictor weights <code class="docutils literal notranslate"><span class="pre">V</span></code></p></li>
+<li><p>construct the treated and donor design matrices explicitly</p></li>
+<li><p>estimate non-negative donor weights that sum to one with base R</p></li>
+<li><p>inspect donor weights and predictor balance</p></li>
 <li><p>interpret the path plot and gap plot without pretending the toy data prove a substantive claim</p></li>
 </ol>
 </section>
 <section id="dataset-at-a-glance">
 <h2>Dataset At A Glance<a class="headerlink" href="#dataset-at-a-glance" title="Link to this heading">#</a></h2>
-<p>This lab uses <code class="docutils literal notranslate"><span class="pre">Synth::synth.data</span></code>, the package’s toy panel for teaching the original workflow.</p>
+<p>This lab uses a checksummed snapshot of the <code class="docutils literal notranslate"><span class="pre">synth.data</span></code> toy panel. The data are bundled, so the package that originally distributed them is not required at runtime.</p>
 <ul class="simple">
 <li><p>Purpose: mechanics first, not substantive interpretation</p></li>
 <li><p>Data shape: a small panel with one treated unit and a compact donor pool</p></li>
@@ -464,9 +483,9 @@
 <p>By the end of the lab, you should be able to report:</p>
 <ul class="simple">
 <li><p>which unit is treated and which units enter the donor pool</p></li>
-<li><p>what <code class="docutils literal notranslate"><span class="pre">dataprep()</span></code> is doing to produce <code class="docutils literal notranslate"><span class="pre">X1</span></code>, <code class="docutils literal notranslate"><span class="pre">X0</span></code>, <code class="docutils literal notranslate"><span class="pre">Z1</span></code>, and <code class="docutils literal notranslate"><span class="pre">Z0</span></code></p></li>
-<li><p>which donors receive positive weight in <code class="docutils literal notranslate"><span class="pre">solution.w</span></code></p></li>
-<li><p>which predictors or lagged outcomes receive the most weight in <code class="docutils literal notranslate"><span class="pre">solution.v</span></code></p></li>
+<li><p>how the code produces treated and donor predictor matrices and pre-treatment outcome matrices</p></li>
+<li><p>which donors receive meaningful weight</p></li>
+<li><p>how closely the weighted donors reproduce the treated unit’s predictors and pre-treatment outcomes</p></li>
 <li><p>whether the pre-treatment fit looks good enough to trust the toy example as a demonstration of mechanics</p></li>
 </ul>
 </section>
@@ -487,9 +506,10 @@
 <div class="cell_input docutils container">
 <div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
 <span class="n">required_packages</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span>
-<span class="w">  </span><span class="s">"Synth"</span><span class="p">,</span>
 <span class="w">  </span><span class="s">"dplyr"</span><span class="p">,</span>
-<span class="w">  </span><span class="s">"tibble"</span>
+<span class="w">  </span><span class="s">"ggplot2"</span><span class="p">,</span>
+<span class="w">  </span><span class="s">"tibble"</span><span class="p">,</span>
+<span class="w">  </span><span class="s">"tidyr"</span>
 <span class="p">)</span>
 
 <span class="n">missing_packages</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">required_packages</span><span class="p">[</span><span class="o">!</span><span class="nf">vapply</span><span class="p">(</span>
@@ -514,13 +534,6 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>##
-## Synth Package: Implements Synthetic Control Methods.
-</pre></div>
-</div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>## See https://web.stanford.edu/~jhain/synthpage.html for additional information.
-</pre></div>
-</div>
 <div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Attaching package: ‘dplyr’
 </pre></div>
 </div>
@@ -612,60 +625,65 @@ $ X3       &lt;dbl&gt; <span class=" -Color -Color-Red">NA</span>, <span class="
 <li><p>Even in a toy example, you should know who is eligible to act as a donor before you estimate weights.</p></li>
 </ul>
 </section>
-<section id="step-3-encode-the-design-with-dataprep">
-<h2>Step 3: Encode The Design With <code class="docutils literal notranslate"><span class="pre">dataprep()</span></code><a class="headerlink" href="#step-3-encode-the-design-with-dataprep" title="Link to this heading">#</a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">dataprep()</span></code> is the design object in the original <code class="docutils literal notranslate"><span class="pre">Synth</span></code> workflow. It decides which predictors matter, which pre-treatment periods define fit, and which periods will be plotted later.</p>
+<section id="step-3-build-the-design-matrices-explicitly">
+<h2>Step 3: Build The Design Matrices Explicitly<a class="headerlink" href="#step-3-build-the-design-matrices-explicitly" title="Link to this heading">#</a></h2>
+<p>The design object should make every choice visible: which predictors matter, which pre-treatment periods define fit, and which periods will be plotted later. The code below constructs the same kinds of matrices directly from the panel.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
-<span class="n">dataprep.out</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">dataprep</span><span class="p">(</span>
-<span class="w">  </span><span class="n">foo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">synth.data</span><span class="p">,</span>
-<span class="w">  </span><span class="n">predictors</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">"X1"</span><span class="p">,</span><span class="w"> </span><span class="s">"X2"</span><span class="p">,</span><span class="w"> </span><span class="s">"X3"</span><span class="p">),</span>
-<span class="w">  </span><span class="n">predictors.op</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"mean"</span><span class="p">,</span>
-<span class="w">  </span><span class="n">dependent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Y"</span><span class="p">,</span>
-<span class="w">  </span><span class="n">unit.variable</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"unit.num"</span><span class="p">,</span>
-<span class="w">  </span><span class="n">time.variable</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"year"</span><span class="p">,</span>
-<span class="w">  </span><span class="n">special.predictors</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span>
-<span class="w">    </span><span class="nf">list</span><span class="p">(</span><span class="s">"Y"</span><span class="p">,</span><span class="w"> </span><span class="m">1991</span><span class="p">,</span><span class="w"> </span><span class="s">"mean"</span><span class="p">),</span>
-<span class="w">    </span><span class="nf">list</span><span class="p">(</span><span class="s">"Y"</span><span class="p">,</span><span class="w"> </span><span class="m">1985</span><span class="p">,</span><span class="w"> </span><span class="s">"mean"</span><span class="p">),</span>
-<span class="w">    </span><span class="nf">list</span><span class="p">(</span><span class="s">"Y"</span><span class="p">,</span><span class="w"> </span><span class="m">1980</span><span class="p">,</span><span class="w"> </span><span class="s">"mean"</span><span class="p">)</span>
-<span class="w">  </span><span class="p">),</span>
-<span class="w">  </span><span class="n">treatment.identifier</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">treated_unit</span><span class="p">,</span>
-<span class="w">  </span><span class="n">controls.identifier</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">donor_units</span><span class="p">,</span>
-<span class="w">  </span><span class="n">time.predictors.prior</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1984</span><span class="o">:</span><span class="m">1989</span><span class="p">,</span>
-<span class="w">  </span><span class="n">time.optimize.ssr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1984</span><span class="o">:</span><span class="m">1990</span><span class="p">,</span>
-<span class="w">  </span><span class="n">unit.names.variable</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"name"</span><span class="p">,</span>
-<span class="w">  </span><span class="n">time.plot</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1984</span><span class="o">:</span><span class="m">1996</span>
+<span class="n">predictor_years</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">1984</span><span class="o">:</span><span class="m">1989</span>
+<span class="n">fit_years</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">1984</span><span class="o">:</span><span class="m">1990</span>
+<span class="n">plot_years</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">1984</span><span class="o">:</span><span class="m">1996</span>
+
+<span class="n">unit_predictors</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="n">unit_id</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">unit_data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">synth.data</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">    </span><span class="nf">filter</span><span class="p">(</span><span class="n">unit.num</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">unit_id</span><span class="p">)</span>
+
+<span class="w">  </span><span class="nf">c</span><span class="p">(</span>
+<span class="w">    </span><span class="n">X1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">unit_data</span><span class="o">$</span><span class="n">X1</span><span class="p">[</span><span class="n">unit_data</span><span class="o">$</span><span class="n">year</span><span class="w"> </span><span class="o">%in%</span><span class="w"> </span><span class="n">predictor_years</span><span class="p">]),</span>
+<span class="w">    </span><span class="n">X2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">unit_data</span><span class="o">$</span><span class="n">X2</span><span class="p">[</span><span class="n">unit_data</span><span class="o">$</span><span class="n">year</span><span class="w"> </span><span class="o">%in%</span><span class="w"> </span><span class="n">predictor_years</span><span class="p">]),</span>
+<span class="w">    </span><span class="n">X3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">unit_data</span><span class="o">$</span><span class="n">X3</span><span class="p">[</span><span class="n">unit_data</span><span class="o">$</span><span class="n">year</span><span class="w"> </span><span class="o">%in%</span><span class="w"> </span><span class="n">predictor_years</span><span class="p">]),</span>
+<span class="w">    </span><span class="n">Y_1985</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">unit_data</span><span class="o">$</span><span class="n">Y</span><span class="p">[</span><span class="nf">match</span><span class="p">(</span><span class="m">1985</span><span class="p">,</span><span class="w"> </span><span class="n">unit_data</span><span class="o">$</span><span class="n">year</span><span class="p">)],</span>
+<span class="w">    </span><span class="n">Y_1990</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">unit_data</span><span class="o">$</span><span class="n">Y</span><span class="p">[</span><span class="nf">match</span><span class="p">(</span><span class="m">1990</span><span class="p">,</span><span class="w"> </span><span class="n">unit_data</span><span class="o">$</span><span class="n">year</span><span class="p">)]</span>
+<span class="w">  </span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="n">unit_outcomes</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="n">unit_id</span><span class="p">,</span><span class="w"> </span><span class="n">years</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">unit_data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">synth.data</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">    </span><span class="nf">filter</span><span class="p">(</span><span class="n">unit.num</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">unit_id</span><span class="p">)</span>
+<span class="w">  </span><span class="n">unit_data</span><span class="o">$</span><span class="n">Y</span><span class="p">[</span><span class="nf">match</span><span class="p">(</span><span class="n">years</span><span class="p">,</span><span class="w"> </span><span class="n">unit_data</span><span class="o">$</span><span class="n">year</span><span class="p">)]</span>
+<span class="p">}</span>
+
+<span class="n">X1</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">matrix</span><span class="p">(</span><span class="nf">unit_predictors</span><span class="p">(</span><span class="n">treated_unit</span><span class="p">),</span><span class="w"> </span><span class="n">ncol</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">)</span>
+<span class="n">X0</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">vapply</span><span class="p">(</span><span class="n">donor_units</span><span class="p">,</span><span class="w"> </span><span class="n">unit_predictors</span><span class="p">,</span><span class="w"> </span><span class="nf">numeric</span><span class="p">(</span><span class="nf">nrow</span><span class="p">(</span><span class="n">X1</span><span class="p">)))</span>
+<span class="n">Z1</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">matrix</span><span class="p">(</span><span class="nf">unit_outcomes</span><span class="p">(</span><span class="n">treated_unit</span><span class="p">,</span><span class="w"> </span><span class="n">fit_years</span><span class="p">),</span><span class="w"> </span><span class="n">ncol</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">)</span>
+<span class="n">Z0</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">vapply</span><span class="p">(</span>
+<span class="w">  </span><span class="n">donor_units</span><span class="p">,</span>
+<span class="w">  </span><span class="n">unit_outcomes</span><span class="p">,</span>
+<span class="w">  </span><span class="nf">numeric</span><span class="p">(</span><span class="nf">length</span><span class="p">(</span><span class="n">fit_years</span><span class="p">)),</span>
+<span class="w">  </span><span class="n">years</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fit_years</span>
 <span class="p">)</span>
 
-<span class="nf">names</span><span class="p">(</span><span class="n">dataprep.out</span><span class="p">)</span>
+<span class="nf">rownames</span><span class="p">(</span><span class="n">X1</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">rownames</span><span class="p">(</span><span class="n">X0</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">names</span><span class="p">(</span><span class="nf">unit_predictors</span><span class="p">(</span><span class="n">treated_unit</span><span class="p">))</span>
+<span class="nf">rownames</span><span class="p">(</span><span class="n">Z1</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">rownames</span><span class="p">(</span><span class="n">Z0</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">paste0</span><span class="p">(</span><span class="s">"Y_"</span><span class="p">,</span><span class="w"> </span><span class="n">fit_years</span><span class="p">)</span>
+<span class="nf">colnames</span><span class="p">(</span><span class="n">X0</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">colnames</span><span class="p">(</span><span class="n">Z0</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">donor_units</span>
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output text_html"><style>
-.list-inline {list-style: none; margin:0; padding: 0}
-.list-inline>li {display: inline-block}
-.list-inline>li:not(:last-child)::after {content: "\00b7"; padding: 0 .5ex}
-</style>
-<ol class=list-inline><li>'X0'</li><li>'X1'</li><li>'Z0'</li><li>'Z1'</li><li>'Y0plot'</li><li>'Y1plot'</li><li>'names.and.numbers'</li><li>'tag'</li></ol>
-</div></div>
 </div>
 </section>
-<section id="step-4-inspect-the-objects-that-dataprep-built">
-<h2>Step 4: Inspect The Objects That <code class="docutils literal notranslate"><span class="pre">dataprep()</span></code> Built<a class="headerlink" href="#step-4-inspect-the-objects-that-dataprep-built" title="Link to this heading">#</a></h2>
+<section id="step-4-inspect-the-design-objects">
+<h2>Step 4: Inspect The Design Objects<a class="headerlink" href="#step-4-inspect-the-design-objects" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
-<span class="nf">dim</span><span class="p">(</span><span class="n">dataprep.out</span><span class="o">$</span><span class="n">X1</span><span class="p">)</span>
-<span class="nf">dim</span><span class="p">(</span><span class="n">dataprep.out</span><span class="o">$</span><span class="n">X0</span><span class="p">)</span>
-<span class="nf">dim</span><span class="p">(</span><span class="n">dataprep.out</span><span class="o">$</span><span class="n">Z1</span><span class="p">)</span>
-<span class="nf">dim</span><span class="p">(</span><span class="n">dataprep.out</span><span class="o">$</span><span class="n">Z0</span><span class="p">)</span>
+<span class="nf">dim</span><span class="p">(</span><span class="n">X1</span><span class="p">)</span>
+<span class="nf">dim</span><span class="p">(</span><span class="n">X0</span><span class="p">)</span>
+<span class="nf">dim</span><span class="p">(</span><span class="n">Z1</span><span class="p">)</span>
+<span class="nf">dim</span><span class="p">(</span><span class="n">Z0</span><span class="p">)</span>
 
-<span class="n">dataprep.out</span><span class="o">$</span><span class="n">X1</span>
-<span class="n">dataprep.out</span><span class="o">$</span><span class="n">X0</span>
-
-<span class="n">dataprep.out</span><span class="o">$</span><span class="n">tag</span>
+<span class="n">X1</span>
+<span class="n">X0</span>
 </pre></div>
 </div>
 </div>
@@ -675,13 +693,13 @@ $ X3       &lt;dbl&gt; <span class=" -Color -Color-Red">NA</span>, <span class="
 .list-inline>li {display: inline-block}
 .list-inline>li:not(:last-child)::after {content: "\00b7"; padding: 0 .5ex}
 </style>
-<ol class=list-inline><li>6</li><li>1</li></ol>
+<ol class=list-inline><li>5</li><li>1</li></ol>
 </div><div class="output text_html"><style>
 .list-inline {list-style: none; margin:0; padding: 0}
 .list-inline>li {display: inline-block}
 .list-inline>li:not(:last-child)::after {content: "\00b7"; padding: 0 .5ex}
 </style>
-<ol class=list-inline><li>6</li><li>6</li></ol>
+<ol class=list-inline><li>5</li><li>6</li></ol>
 </div><div class="output text_html"><style>
 .list-inline {list-style: none; margin:0; padding: 0}
 .list-inline>li {display: inline-block}
@@ -695,124 +713,35 @@ $ X3       &lt;dbl&gt; <span class=" -Color -Color-Red">NA</span>, <span class="
 </style>
 <ol class=list-inline><li>7</li><li>6</li></ol>
 </div><div class="output text_html"><table class="dataframe">
-<caption>A matrix: 6 × 1 of type dbl</caption>
-<thead>
-	<tr><th></th><th scope=col>7</th></tr>
-</thead>
+<caption>A matrix: 5 × 1 of type dbl</caption>
 <tbody>
 	<tr><th scope=row>X1</th><td>  0.2629297</td></tr>
 	<tr><th scope=row>X2</th><td> 15.4666669</td></tr>
 	<tr><th scope=row>X3</th><td> 21.7166665</td></tr>
-	<tr><th scope=row>special.Y.1991</th><td>115.0000000</td></tr>
-	<tr><th scope=row>special.Y.1985</th><td>128.8000031</td></tr>
-	<tr><th scope=row>special.Y.1980</th><td>134.0000000</td></tr>
+	<tr><th scope=row>Y_1985</th><td>128.8000031</td></tr>
+	<tr><th scope=row>Y_1990</th><td>113.8000031</td></tr>
 </tbody>
 </table>
 </div><div class="output text_html"><table class="dataframe">
-<caption>A matrix: 6 × 6 of type dbl</caption>
+<caption>A matrix: 5 × 6 of type dbl</caption>
 <thead>
-	<tr><th></th><th scope=col>2</th><th scope=col>13</th><th scope=col>17</th><th scope=col>29</th><th scope=col>32</th><th scope=col>38</th></tr>
+	<tr><th></th><th scope=col>29</th><th scope=col>2</th><th scope=col>13</th><th scope=col>17</th><th scope=col>32</th><th scope=col>38</th></tr>
 </thead>
 <tbody>
-	<tr><th scope=row>X1</th><td>  0.2374992</td><td>  0.2519905</td><td>  0.256849</td><td>  0.2623127</td><td>  0.2500197</td><td>  0.2511835</td></tr>
-	<tr><th scope=row>X2</th><td> 21.6333329</td><td> 17.8666668</td><td> 25.166667</td><td>  9.2500002</td><td> 17.8499997</td><td> 10.5000000</td></tr>
-	<tr><th scope=row>X3</th><td> 18.6000001</td><td> 18.8333333</td><td> 21.216667</td><td> 25.4166667</td><td> 20.6666667</td><td> 31.7333336</td></tr>
-	<tr><th scope=row>special.Y.1991</th><td>116.8000031</td><td>170.3999939</td><td>105.599998</td><td>103.5999985</td><td>120.5999985</td><td> 95.5000000</td></tr>
-	<tr><th scope=row>special.Y.1985</th><td>125.8000031</td><td>182.3999939</td><td>115.300003</td><td>133.3999939</td><td>128.6999969</td><td>107.0000000</td></tr>
-	<tr><th scope=row>special.Y.1980</th><td>131.8000031</td><td>215.3000031</td><td>127.000000</td><td>149.3000031</td><td>130.3999939</td><td>117.5999985</td></tr>
+	<tr><th scope=row>X1</th><td>  0.2623127</td><td>  0.2374992</td><td>  0.2519905</td><td>  0.256849</td><td>  0.2500197</td><td>  0.2511835</td></tr>
+	<tr><th scope=row>X2</th><td>  9.2500002</td><td> 21.6333329</td><td> 17.8666668</td><td> 25.166667</td><td> 17.8499997</td><td> 10.5000000</td></tr>
+	<tr><th scope=row>X3</th><td> 25.4166667</td><td> 18.6000001</td><td> 18.8333333</td><td> 21.216667</td><td> 20.6666667</td><td> 31.7333336</td></tr>
+	<tr><th scope=row>Y_1985</th><td>133.3999939</td><td>125.8000031</td><td>182.3999939</td><td>115.300003</td><td>128.6999969</td><td>107.0000000</td></tr>
+	<tr><th scope=row>Y_1990</th><td>101.4000015</td><td>113.0999985</td><td>182.5000000</td><td>101.800003</td><td>121.8000031</td><td> 94.0000000</td></tr>
 </tbody>
 </table>
-</div><div class="output text_html"><dl>
-	<dt>$foo</dt>
-		<dd><style>
-.list-inline {list-style: none; margin:0; padding: 0}
-.list-inline>li {display: inline-block}
-.list-inline>li:not(:last-child)::after {content: "\00b7"; padding: 0 .5ex}
-</style>
-<ol class=list-inline><li>'c(2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, \n36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 36, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38, 38)'</li><li>'c(1980, 1981, 1982, 1983, 1984, 1985, 1986, 1987, 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 1980, 1981, 1982, 1983, 1984, 1985, 1986, 1987, 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 1980, 1981, 1982, 1983, 1984, 1985, 1986, 1987, 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 1980, 1981, 1982, 1983, 1984, 1985, 1986, 1987, 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, \n1980, 1981, 1982, 1983, 1984, 1985, 1986, 1987, 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 1980, 1981, 1982, 1983, 1984, 1985, 1986, 1987, 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 1980, 1981, 1982, 1983, 1984, 1985, 1986, 1987, 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 1980, 1981, 1982, 1983, 1984, 1985, 1986, 1987, 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000\n)'</li><li>'c("control.region.northeast", "control.region.northeast", "control.region.northeast", "control.region.northeast", "control.region.northeast", "control.region.northeast", "control.region.northeast", "control.region.northeast", "control.region.northeast", "control.region.northeast", "control.region.northeast", "control.region.northeast", "control.region.northeast", "control.region.northeast", "control.region.northeast", "control.region.northeast", "control.region.northeast", "control.region.northeast", \n"control.region.northeast", "control.region.northeast", "control.region.northeast", "treated.region", "treated.region", "treated.region", "treated.region", "treated.region", "treated.region", "treated.region", "treated.region", "treated.region", "treated.region", "treated.region", "treated.region", "treated.region", "treated.region", "treated.region", "treated.region", "treated.region", "treated.region", "treated.region", "treated.region", "treated.region", "control.region.southcentral", "control.region.southcentral", \n"control.region.southcentral", "control.region.southcentral", "control.region.southcentral", "control.region.southcentral", "control.region.southcentral", "control.region.southcentral", "control.region.southcentral", "control.region.southcentral", "control.region.southcentral", "control.region.southcentral", "control.region.southcentral", "control.region.southcentral", "control.region.southcentral", "control.region.southcentral", "control.region.southcentral", "control.region.southcentral", "control.region.southcentral", \n"control.region.southcentral", "control.region.southcentral", "control.region.west", "control.region.west", "control.region.west", "control.region.west", "control.region.west", "control.region.west", "control.region.west", "control.region.west", "control.region.west", "control.region.west", "control.region.west", "control.region.west", "control.region.west", "control.region.west", "control.region.west", "control.region.west", "control.region.west", "control.region.west", "control.region.west", "control.region.west", \n"control.region.west", "control.region.southeast", "control.region.southeast", "control.region.southeast", "control.region.southeast", "control.region.southeast", "control.region.southeast", "control.region.southeast", "control.region.southeast", "control.region.southeast", "control.region.southeast", "control.region.southeast", "control.region.southeast", "control.region.southeast", "control.region.southeast", "control.region.southeast", "control.region.southeast", "control.region.southeast", "control.region.southeast", \n"control.region.southeast", "control.region.southeast", "control.region.southeast", "control.region.central", "control.region.central", "control.region.central", "control.region.central", "control.region.central", "control.region.central", "control.region.central", "control.region.central", "control.region.central", "control.region.central", "control.region.central", "control.region.central", "control.region.central", "control.region.central", "control.region.central", "control.region.central", "control.region.central", \n"control.region.central", "control.region.central", "control.region.central", "control.region.central", "control.region.south", "control.region.south", "control.region.south", "control.region.south", "control.region.south", "control.region.south", "control.region.south", "control.region.south", "control.region.south", "control.region.south", "control.region.south", "control.region.south", "control.region.south", "control.region.south", "control.region.south", "control.region.south", "control.region.south", \n"control.region.south", "control.region.south", "control.region.south", "control.region.south", "control.region.east", "control.region.east", "control.region.east", "control.region.east", "control.region.east", "control.region.east", "control.region.east", "control.region.east", "control.region.east", "control.region.east", "control.region.east", "control.region.east", "control.region.east", "control.region.east", "control.region.east", "control.region.east", "control.region.east", "control.region.east", \n"control.region.east", "control.region.east", "control.region.east")'</li><li>'c(131.800003051758, 128.699996948242, 127.400001525879, 128, 123.099998474121, 125.800003051758, 126, 122.300003051758, 121.5, 118.300003051758, 113.099998474121, 116.800003051758, 126, 113.800003051758, 108.800003051758, 113, 110.699996948242, 108.699996948242, 109.5, 104.800003051758, 99.400001525879, 134, 131.699996948242, 131.199996948242, 128.600006103516, 126.300003051758, 128.800003051758, 129, 129.300003051758, 124.099998474121, 117.099998474121, 113.800003051758, 115, 121.9, 125.5, 127, \n132, 133.5, 100.599998474121, 100.5, 97.099998474121, 88.4000015258789, 215.300003051758, 209.699996948242, 210.600006103516, 201.100006103516, 183.199996948242, 182.399993896484, 179.800003051758, 171.199996948242, 173.199996948242, 171.600006103516, 182.5, 170.399993896484, 167.600006103516, 167.600006103516, 170.100006103516, 175.300003051758, 179, 186.800003051758, 171.300003051758, 165.300003051758, 156.199996948242, 127, 125.300003051758, 125.800003051758, 122.300003051758, 116.400001525879, \n115.300003051758, 113.199996948242, 110, 109, 108.300003051758, 101.800003051758, 105.599998474121, 103.900001525879, 105.400001525879, 106, 107.5, 106.900001525879, 106.300003051758, 107, 103.900001525879, 97.1999969482422, 149.300003051758, 151.199996948242, 146.300003051758, 135.800003051758, 136.899993896484, 133.399993896484, 136.300003051758, 124.400001525879, 138, 120.800003051758, 101.400001525879, 103.599998474121, 100.099998474121, 94.099998474121, 91.9000015258789, 90.8000030517578, 87.5, \n90, 88.6999969482422, 86.9000015258789, 83.0999984741211, 130.399993896484, 129.100006103516, 131.399993896484, 129, 125.099998474121, 128.699996948242, 129, 130.600006103516, 125.300003051758, 124.699996948242, 121.800003051758, 120.599998474121, 121, 120.800003051758, 118.800003051758, 125.400001525879, 119.199996948242, 118.900001525879, 119.699996948242, 115.599998474121, 108.699996948242, 148.899993896484, 149.899993896484, 147.399993896484, 144.699996948242, 136.800003051758, 134.600006103516, \n135.800003051758, 133, 129.5, 122.5, 118.900001525879, 109.099998474121, 108.199996948242, 105.400001525879, 106.199996948242, 106.699996948242, 104.599998474121, 108, 105.599998474121, 102.099998474121, 96.6999969482422, 117.599998474121, 119.900001525879, 115.599998474121, 106.300003051758, 105.599998474121, 107, 105.400001525879, 106, 102.599998474121, 100.300003051758, 94, 95.5, 96.1999969482422, 91.1999969482422, 91.8000030517578, 93.5, 92.0999984741211, 91.9000015258789, 88.6999969482422, 84.4000015258789, \n80.0999984741211)'</li><li>'c(NA, 0.253406047821045, 0.251252144575119, 0.248904809355736, 0.246286511421204, 0.243409931659698, 0.24090214073658, 0.236825346946716, 0.231578692793846, 0.225992813706398, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 0.27767089009285, 0.275563985109329, 0.272897392511368, 0.270468980073929, 0.268077492713928, 0.266121983528137, 0.262238562107086, 0.257899671792984, 0.25277179479599, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 0.272990584373474, 0.26984778046608, 0.266494452953339, 0.262247234582901, \n0.258707344532013, 0.255476593971252, 0.250877052545547, 0.245451658964157, 0.239182963967323, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 0.27293673157692, 0.270998179912567, 0.268360942602158, 0.265690863132477, 0.262517631053925, 0.260282844305038, 0.256220370531082, 0.251167178153992, 0.245215371251106, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 0.272726327180862, 0.272734314203262, 0.272006839513779, 0.271018087863922, 0.269567638635635, 0.267039179801941, 0.262333661317825, 0.255909651517868, \n0.248007848858833, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 0.268439650535584, 0.265627324581146, 0.262396633625031, 0.259075999259949, 0.256338834762573, 0.253436982631683, 0.249350354075432, 0.243903890252113, 0.238012373447418, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 0.283101856708527, 0.280194848775864, 0.277485758066177, 0.274872690439224, 0.271423608064651, 0.269063502550125, 0.264776796102524, 0.258712708950043, 0.25249046087265, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, \n0.277973622083664, 0.274430215358734, 0.270292073488235, 0.265795916318893, 0.261140644550323, 0.256240695714951, 0.249126777052879, 0.241624072194099, 0.233173057436943, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA)'</li><li>'c(21.5, 24.1000003814697, 23.7999992370605, 21.6000003814697, 23.8999996185303, 22.8999996185303, 21.2999992370605, 21.7999992370605, 21.6000003814697, 18.2999992370605, 19.6000003814697, 17.2999992370605, 17.3999996185303, 20, 15.3000001907349, 14.8999996185303, 17.2000007629395, 19.7000007629395, NA, NA, NA, 13.8999996185303, 16.2999992370605, 19.6000003814697, 18.7999992370605, 16.8999996185303, 17.7000007629395, 14.6000003814697, 14.6000003814697, 14, 15, 15.8000001907349, 17.2000007629395, 17.7999992370605, \n13.5, 14, 12.1000003814697, 14.8000001907349, 14.5, NA, NA, NA, 19.2999992370605, 19.2999992370605, 16.2000007629395, 18, 19.1000003814697, 19.3999996185303, 17.7000007629395, 17.2999992370605, 17.6000003814697, 16.1000003814697, 17.2999992370605, 18.7999992370605, 19.7000007629395, 20.3999996185303, 18.5, 14.6999998092651, 17, 15.8999996185303, NA, NA, NA, 24.2999992370605, 25.7000007629395, 22.8999996185303, 26.8999996185303, 25.1000003814697, 25.1000003814697, 26.6000003814697, 25, 27.2000007629395, \n22, 25.7000007629395, 23.7000007629395, 24.5, 24.7000007629395, 19.8999996185303, 23.5, 20.6000003814697, 16.7000007629395, NA, NA, NA, 10.6999998092651, 11.6999998092651, 13.3000001907349, 14.8000001907349, 12.8000001907349, 9, 9.10000038146973, 8.10000038146973, 9.80000019073486, 6.69999980926514, 7.5, 10.3999996185303, 12, 11.1999998092651, 10.3000001907349, 10.6000003814697, 11, 12.7000007629395, NA, NA, NA, 19.6000003814697, 20.8999996185303, 23.6000003814697, 20.1000003814697, 17.3999996185303, \n18.1000003814697, 18.2999992370605, 16.8999996185303, 18, 18.3999996185303, 16.8999996185303, 15.5, 17, 19.6000003814697, 14.6000003814697, 15.5, 15.8999996185303, 14.3000011444092, NA, NA, NA, 12.3999996185303, 12.6000003814697, 12.5, 11.3999996185303, 10, 10, 9.69999980926514, 9.89999961853027, 10.8000001907349, 10.8999996185303, 11.1000003814697, 9.89999961853027, 9.39999961853027, 9.69999980926514, 10.6999998092651, 10.1999998092651, 12.3000001907349, 12.7000007629395, NA, NA, NA, 8.5, 8.10000038146973, \n9.5, 10.6000003814697, 15.5, 11.6000003814697, 10.6999998092651, 9, 7.80000019073486, 8.39999961853027, 9.30000019073486, 9.89999961853027, 10.8000001907349, 12.6000003814697, 9, 8.5, 8.80000019073486, 8.19999980926514, NA, NA, NA)'</li><li>'c(NA, NA, NA, NA, 17.8999996185303, 18.1000003814697, 18.7000007629395, 19, 18.8999996185303, 19, 19.8999996185303, 19.8999996185303, 20, 19.7000007629395, 19.7000007629395, 19.5, 20.1000003814697, 19.7999992370605, NA, NA, NA, NA, NA, NA, NA, 21.2999992370605, 21.3999996185303, 22.1000003814697, 22.2999992370605, 21.7000007629395, 21.5, 22.2999992370605, 21.2000007629395, 21.6000003814697, 21.7000007629395, 21.3999996185303, 21.5, 22, 21.6000003814697, NA, NA, NA, NA, NA, NA, NA, 18.5, 18.8999996185303, \n19.2000007629395, 19, 19.1000003814697, 18.2999992370605, 20.1000003814697, 19.3999996185303, 19, 19.2999992370605, 19.6000003814697, 18.8999996185303, 19.1000003814697, 19.2999992370605, NA, NA, NA, NA, NA, NA, NA, 20.1000003814697, 20.6000003814697, 21.5, 21.6000003814697, 21.8999996185303, 21.6000003814697, 23.2999992370605, 22.8999996185303, 23.5, 23.8999996185303, 24.5, 24, 24.2999992370605, 24.3999996185303, NA, NA, NA, NA, NA, NA, NA, 25.1000003814697, 25.7000007629395, 26, 25.6000003814697, \n25.2999992370605, 24.7999992370605, 24, 24.2999992370605, 22.7999992370605, 22.2999992370605, 22.6000003814697, 22.2000007629395, 21.7000007629395, 22.8999996185303, NA, NA, NA, NA, NA, NA, NA, 19.7000007629395, 19.7999992370605, 20.8999996185303, 21, 21.5, 21.1000003814697, 21.8999996185303, 21.3999996185303, 21.7000007629395, 21.6000003814697, 21.5, 21.3999996185303, 21.5, 21.2999992370605, NA, NA, NA, NA, NA, NA, NA, 22.3999996185303, 22.3999996185303, 23.3999996185303, 23.5, 23.2999992370605, \n23.6000003814697, 24, 23, 22.5, 22.2000007629395, 21.7000007629395, 20.7000007629395, 20.6000003814697, 20.5, NA, NA, NA, NA, NA, NA, NA, 32.9000015258789, 32.0999984741211, 32.7000007629395, 31.5, 31, 30.2000007629395, 30.5, 29, 28.1000003814697, 28.2999992370605, 28.2999992370605, 28, 27.6000003814697, 28.6000003814697, NA, NA, NA)'</li></ol>
-</dd>
-	<dt>$predictors</dt>
-		<dd><style>
-.list-inline {list-style: none; margin:0; padding: 0}
-.list-inline>li {display: inline-block}
-.list-inline>li:not(:last-child)::after {content: "\00b7"; padding: 0 .5ex}
-</style>
-<ol class=list-inline><li>5</li><li>6</li><li>7</li></ol>
-</dd>
-	<dt>$predictors.op</dt>
-		<dd>'mean'</dd>
-	<dt>$special.predictors</dt>
-		<dd><ol>
-	<li><ol>
-	<li>'Y'</li>
-	<li>1991</li>
-	<li>'mean'</li>
-</ol>
-</li>
-	<li><ol>
-	<li>'Y'</li>
-	<li>1985</li>
-	<li>'mean'</li>
-</ol>
-</li>
-	<li><ol>
-	<li>'Y'</li>
-	<li>1980</li>
-	<li>'mean'</li>
-</ol>
-</li>
-</ol>
-</dd>
-	<dt>$dependent</dt>
-		<dd>4</dd>
-	<dt>$unit.variable</dt>
-		<dd>1</dd>
-	<dt>$time.variable</dt>
-		<dd>2</dd>
-	<dt>$treatment.identifier</dt>
-		<dd>7</dd>
-	<dt>$controls.identifier</dt>
-		<dd><style>
-.list-inline {list-style: none; margin:0; padding: 0}
-.list-inline>li {display: inline-block}
-.list-inline>li:not(:last-child)::after {content: "\00b7"; padding: 0 .5ex}
-</style>
-<ol class=list-inline><li>29</li><li>2</li><li>13</li><li>17</li><li>32</li><li>38</li></ol>
-</dd>
-	<dt>$time.predictors.prior</dt>
-		<dd><style>
-.list-inline {list-style: none; margin:0; padding: 0}
-.list-inline>li {display: inline-block}
-.list-inline>li:not(:last-child)::after {content: "\00b7"; padding: 0 .5ex}
-</style>
-<ol class=list-inline><li>1984</li><li>1985</li><li>1986</li><li>1987</li><li>1988</li><li>1989</li></ol>
-</dd>
-	<dt>$time.optimize.ssr</dt>
-		<dd><style>
-.list-inline {list-style: none; margin:0; padding: 0}
-.list-inline>li {display: inline-block}
-.list-inline>li:not(:last-child)::after {content: "\00b7"; padding: 0 .5ex}
-</style>
-<ol class=list-inline><li>1984</li><li>1985</li><li>1986</li><li>1987</li><li>1988</li><li>1989</li><li>1990</li></ol>
-</dd>
-	<dt>$time.plot</dt>
-		<dd><style>
-.list-inline {list-style: none; margin:0; padding: 0}
-.list-inline>li {display: inline-block}
-.list-inline>li:not(:last-child)::after {content: "\00b7"; padding: 0 .5ex}
-</style>
-<ol class=list-inline><li>1984</li><li>1985</li><li>1986</li><li>1987</li><li>1988</li><li>1989</li><li>1990</li><li>1991</li><li>1992</li><li>1993</li><li>1994</li><li>1995</li><li>1996</li></ol>
-</dd>
-	<dt>$unit.names.variable</dt>
-		<dd>3</dd>
-</dl>
 </div></div>
 </div>
 <p>Checkpoint:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">X1</span></code> and <code class="docutils literal notranslate"><span class="pre">X0</span></code> contain the predictor targets for the treated unit and donors.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">Z1</span></code> and <code class="docutils literal notranslate"><span class="pre">Z0</span></code> contain the pre-treatment outcome history used to optimize fit.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">tag</span></code> is worth reading because it records the design choices you just made.</p></li>
+<li><p>The named year vectors record the design choices that a package would otherwise hide inside an object.</p></li>
 </ul>
 </section>
 <section id="step-5-estimate-the-synthetic-control">
@@ -820,43 +749,79 @@ $ X3       &lt;dbl&gt; <span class=" -Color -Color-Red">NA</span>, <span class="
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
-<span class="n">synth.out</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">synth</span><span class="p">(</span><span class="n">dataprep.out</span><span class="p">)</span>
+<span class="n">simplex_weights</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">theta</span><span class="p">))</span>
 
-<span class="nf">names</span><span class="p">(</span><span class="n">synth.out</span><span class="p">)</span>
+<span class="n">design_target</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">rbind</span><span class="p">(</span><span class="n">X1</span><span class="p">,</span><span class="w"> </span><span class="n">Z1</span><span class="p">)</span>
+<span class="n">design_donors</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">rbind</span><span class="p">(</span><span class="n">X0</span><span class="p">,</span><span class="w"> </span><span class="n">Z0</span><span class="p">)</span>
+<span class="n">row_scale</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">apply</span><span class="p">(</span><span class="nf">cbind</span><span class="p">(</span><span class="n">design_target</span><span class="p">,</span><span class="w"> </span><span class="n">design_donors</span><span class="p">),</span><span class="w"> </span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="n">sd</span><span class="p">)</span>
+<span class="n">row_scale</span><span class="p">[</span><span class="o">!</span><span class="nf">is.finite</span><span class="p">(</span><span class="n">row_scale</span><span class="p">)</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">row_scale</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">0</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">1</span>
+
+<span class="n">scaled_target</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">design_target</span><span class="p">[,</span><span class="w"> </span><span class="m">1</span><span class="p">]</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">row_scale</span>
+<span class="n">scaled_donors</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">design_donors</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">row_scale</span>
+
+<span class="n">loss</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">weights</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">simplex_weights</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+<span class="w">  </span><span class="nf">mean</span><span class="p">((</span><span class="n">scaled_target</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nf">as.numeric</span><span class="p">(</span><span class="n">scaled_donors</span><span class="w"> </span><span class="o">%*%</span><span class="w"> </span><span class="n">weights</span><span class="p">))</span><span class="o">^</span><span class="m">2</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="n">gradient</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="kr">function</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">weights</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">simplex_weights</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
+<span class="w">  </span><span class="n">residual</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">scaled_target</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nf">as.numeric</span><span class="p">(</span><span class="n">scaled_donors</span><span class="w"> </span><span class="o">%*%</span><span class="w"> </span><span class="n">weights</span><span class="p">)</span>
+<span class="w">  </span><span class="n">donor_differences</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">scaled_donors</span><span class="p">[,</span><span class="w"> </span><span class="o">-</span><span class="nf">ncol</span><span class="p">(</span><span class="n">scaled_donors</span><span class="p">),</span><span class="w"> </span><span class="n">drop</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">]</span><span class="w"> </span><span class="o">-</span>
+<span class="w">    </span><span class="n">scaled_donors</span><span class="p">[,</span><span class="w"> </span><span class="nf">ncol</span><span class="p">(</span><span class="n">scaled_donors</span><span class="p">)]</span>
+<span class="w">  </span><span class="m">-2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nf">colMeans</span><span class="p">(</span><span class="n">donor_differences</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">residual</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="n">constraint_matrix</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">rbind</span><span class="p">(</span>
+<span class="w">  </span><span class="nf">diag</span><span class="p">(</span><span class="nf">length</span><span class="p">(</span><span class="n">donor_units</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="m">1</span><span class="p">),</span>
+<span class="w">  </span><span class="nf">rep</span><span class="p">(</span><span class="m">-1</span><span class="p">,</span><span class="w"> </span><span class="nf">length</span><span class="p">(</span><span class="n">donor_units</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="m">1</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="n">constraint_boundary</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="nf">rep</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="nf">length</span><span class="p">(</span><span class="n">donor_units</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="m">1</span><span class="p">),</span><span class="w"> </span><span class="m">-1</span><span class="p">)</span>
+
+<span class="n">scm_fit</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">constrOptim</span><span class="p">(</span>
+<span class="w">  </span><span class="n">theta</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">rep</span><span class="p">(</span><span class="m">1</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="nf">length</span><span class="p">(</span><span class="n">donor_units</span><span class="p">),</span><span class="w"> </span><span class="nf">length</span><span class="p">(</span><span class="n">donor_units</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="m">1</span><span class="p">),</span>
+<span class="w">  </span><span class="n">f</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">loss</span><span class="p">,</span>
+<span class="w">  </span><span class="n">grad</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">gradient</span><span class="p">,</span>
+<span class="w">  </span><span class="n">ui</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">constraint_matrix</span><span class="p">,</span>
+<span class="w">  </span><span class="n">ci</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">constraint_boundary</span><span class="p">,</span>
+<span class="w">  </span><span class="n">method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"BFGS"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">control</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="n">maxit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">5000</span><span class="p">,</span><span class="w"> </span><span class="n">reltol</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1e-12</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">scm_weights</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">simplex_weights</span><span class="p">(</span><span class="n">scm_fit</span><span class="o">$</span><span class="n">par</span><span class="p">)</span>
+
+<span class="nf">stopifnot</span><span class="p">(</span>
+<span class="w">  </span><span class="n">scm_fit</span><span class="o">$</span><span class="n">convergence</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">0</span><span class="p">,</span>
+<span class="w">  </span><span class="nf">all</span><span class="p">(</span><span class="n">scm_weights</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="m">0</span><span class="p">),</span>
+<span class="w">  </span><span class="nf">abs</span><span class="p">(</span><span class="nf">sum</span><span class="p">(</span><span class="n">scm_weights</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="m">1</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="m">1e-10</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output text_html"><style>
-.list-inline {list-style: none; margin:0; padding: 0}
-.list-inline>li {display: inline-block}
-.list-inline>li:not(:last-child)::after {content: "\00b7"; padding: 0 .5ex}
-</style>
-<ol class=list-inline><li>'solution.v'</li><li>'solution.w'</li><li>'loss.v'</li><li>'loss.w'</li><li>'custom.v'</li><li>'rgV.optim'</li></ol>
-</div></div>
 </div>
-<p>This is the estimator step. The constrained optimizer now chooses donor weights <code class="docutils literal notranslate"><span class="pre">W</span></code> and predictor weights <code class="docutils literal notranslate"><span class="pre">V</span></code> given the design encoded above.</p>
+<p>This is the estimator step. Base R’s <code class="docutils literal notranslate"><span class="pre">constrOptim()</span></code> enforces non-negative donor weights that sum to one while minimizing standardized pre-treatment mismatch. The final donor weight is one minus the sum of the remaining weights, which removes the equality constraint from the optimiser’s parameter vector.</p>
 </section>
-<section id="step-6-read-donor-weights-w-and-predictor-weights-v">
-<h2>Step 6: Read Donor Weights <code class="docutils literal notranslate"><span class="pre">W</span></code> And Predictor Weights <code class="docutils literal notranslate"><span class="pre">V</span></code><a class="headerlink" href="#step-6-read-donor-weights-w-and-predictor-weights-v" title="Link to this heading">#</a></h2>
+<section id="step-6-read-donor-weights-and-predictor-balance">
+<h2>Step 6: Read Donor Weights And Predictor Balance<a class="headerlink" href="#step-6-read-donor-weights-and-predictor-balance" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
 <span class="n">donor_weights</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">tibble</span><span class="p">(</span>
 <span class="w">  </span><span class="n">unit.num</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">donor_units</span><span class="p">,</span>
-<span class="w">  </span><span class="n">weight</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">as.numeric</span><span class="p">(</span><span class="n">synth.out</span><span class="o">$</span><span class="n">solution.w</span><span class="p">)</span>
+<span class="w">  </span><span class="n">weight</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">scm_weights</span>
 <span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
 <span class="w">  </span><span class="nf">left_join</span><span class="p">(</span><span class="n">unit_lookup</span><span class="p">,</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"unit.num"</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
 <span class="w">  </span><span class="nf">arrange</span><span class="p">(</span><span class="nf">desc</span><span class="p">(</span><span class="n">weight</span><span class="p">))</span>
 
-<span class="n">predictor_weights</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">tibble</span><span class="p">(</span>
-<span class="w">  </span><span class="n">predictor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">rownames</span><span class="p">(</span><span class="n">dataprep.out</span><span class="o">$</span><span class="n">X1</span><span class="p">),</span>
-<span class="w">  </span><span class="n">v_weight</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">as.numeric</span><span class="p">(</span><span class="n">synth.out</span><span class="o">$</span><span class="n">solution.v</span><span class="p">[,</span><span class="w"> </span><span class="m">1</span><span class="p">])</span>
-<span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
-<span class="w">  </span><span class="nf">arrange</span><span class="p">(</span><span class="nf">desc</span><span class="p">(</span><span class="n">v_weight</span><span class="p">))</span>
+<span class="n">predictor_balance</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">tibble</span><span class="p">(</span>
+<span class="w">  </span><span class="n">predictor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">rownames</span><span class="p">(</span><span class="n">design_target</span><span class="p">),</span>
+<span class="w">  </span><span class="n">treated</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">design_target</span><span class="p">[,</span><span class="w"> </span><span class="m">1</span><span class="p">],</span>
+<span class="w">  </span><span class="n">synthetic</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">as.numeric</span><span class="p">(</span><span class="n">design_donors</span><span class="w"> </span><span class="o">%*%</span><span class="w"> </span><span class="n">scm_weights</span><span class="p">),</span>
+<span class="w">  </span><span class="n">donor_average</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">rowMeans</span><span class="p">(</span><span class="n">design_donors</span><span class="p">)</span>
+<span class="p">)</span>
 
 <span class="n">donor_weights</span>
-<span class="n">predictor_weights</span>
+<span class="n">predictor_balance</span>
 </pre></div>
 </div>
 </div>
@@ -868,97 +833,71 @@ $ X3       &lt;dbl&gt; <span class=" -Color -Color-Red">NA</span>, <span class="
 	<tr><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;chr&gt;</th></tr>
 </thead>
 <tbody>
-	<tr><td>32</td><td>6.083732e-01</td><td>control.region.central     </td></tr>
-	<tr><td>17</td><td>2.275003e-01</td><td>control.region.west        </td></tr>
-	<tr><td>13</td><td>1.623545e-01</td><td>control.region.southcentral</td></tr>
-	<tr><td> 2</td><td>1.768674e-03</td><td>control.region.northeast   </td></tr>
-	<tr><td>38</td><td>2.661090e-06</td><td>control.region.east        </td></tr>
-	<tr><td>29</td><td>5.469840e-07</td><td>control.region.southeast   </td></tr>
+	<tr><td>29</td><td>4.999668e-01</td><td>control.region.southeast   </td></tr>
+	<tr><td>17</td><td>3.788638e-01</td><td>control.region.west        </td></tr>
+	<tr><td>13</td><td>7.320240e-02</td><td>control.region.southcentral</td></tr>
+	<tr><td>32</td><td>4.796705e-02</td><td>control.region.central     </td></tr>
+	<tr><td>38</td><td>4.711787e-13</td><td>control.region.east        </td></tr>
+	<tr><td> 2</td><td>1.152999e-13</td><td>control.region.northeast   </td></tr>
 </tbody>
 </table>
 </div><div class="output text_html"><table class="dataframe">
-<caption>A tibble: 6 × 2</caption>
+<caption>A tibble: 12 × 4</caption>
 <thead>
-	<tr><th scope=col>predictor</th><th scope=col>v_weight</th></tr>
-	<tr><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;dbl&gt;</th></tr>
+	<tr><th scope=col>predictor</th><th scope=col>treated</th><th scope=col>synthetic</th><th scope=col>donor_average</th></tr>
+	<tr><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th></tr>
 </thead>
 <tbody>
-	<tr><td>X1            </td><td>0.005209538</td></tr>
-	<tr><td>X2            </td><td>0.005209538</td></tr>
-	<tr><td>X3            </td><td>0.005209538</td></tr>
-	<tr><td>special.Y.1991</td><td>0.005209538</td></tr>
-	<tr><td>special.Y.1985</td><td>0.005209538</td></tr>
-	<tr><td>special.Y.1980</td><td>0.005209538</td></tr>
+	<tr><td>X1    </td><td>  0.2629297</td><td>  0.2588974</td><td>  0.2516425</td></tr>
+	<tr><td>X2    </td><td> 15.4666669</td><td> 16.3235261</td><td> 17.0444444</td></tr>
+	<tr><td>X3    </td><td> 21.7166665</td><td> 23.1156795</td><td> 22.7444445</td></tr>
+	<tr><td>Y_1985</td><td>128.8000031</td><td>129.9040355</td><td>132.0999985</td></tr>
+	<tr><td>Y_1990</td><td>113.8000031</td><td>108.4667902</td><td>119.1000010</td></tr>
+	<tr><td>Y_1984</td><td>126.3000031</td><td>131.9565496</td><td>131.7166646</td></tr>
+	<tr><td>Y_1985</td><td>128.8000031</td><td>129.9040355</td><td>132.0999985</td></tr>
+	<tr><td>Y_1986</td><td>129.0000000</td><td>130.3823921</td><td>131.6166674</td></tr>
+	<tr><td>Y_1987</td><td>129.3000031</td><td>122.6676304</td><td>127.4166679</td></tr>
+	<tr><td>Y_1988</td><td>124.0999985</td><td>128.9804931</td><td>128.2666664</td></tr>
+	<tr><td>Y_1989</td><td>117.0999985</td><td>119.9699591</td><td>124.0000025</td></tr>
+	<tr><td>Y_1990</td><td>113.8000031</td><td>108.4667902</td><td>119.1000010</td></tr>
 </tbody>
 </table>
 </div></div>
 </div>
 <p>What to look for:</p>
 <ul class="simple">
-<li><p>sparse <code class="docutils literal notranslate"><span class="pre">W</span></code> weights mean only a few donors carry the synthetic comparison</p></li>
-<li><p>large <code class="docutils literal notranslate"><span class="pre">V</span></code> weights show which predictors or lagged outcomes mattered most for fit</p></li>
-<li><p>neither object is decorative; both are part of the causal argument</p></li>
+<li><p>concentrated weights mean only a few donors carry the synthetic comparison</p></li>
+<li><p>the balance table shows where the weighted comparison improves on a simple donor average</p></li>
+<li><p>both outputs are part of the causal argument</p></li>
 </ul>
 </section>
-<section id="step-7-build-the-standard-summary-tables">
-<h2>Step 7: Build The Standard Summary Tables<a class="headerlink" href="#step-7-build-the-standard-summary-tables" title="Link to this heading">#</a></h2>
+<section id="step-7-summarise-fit-quality">
+<h2>Step 7: Summarise Fit Quality<a class="headerlink" href="#step-7-summarise-fit-quality" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
-<span class="n">synth.tables</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">synth.tab</span><span class="p">(</span>
-<span class="w">  </span><span class="n">dataprep.res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dataprep.out</span><span class="p">,</span>
-<span class="w">  </span><span class="n">synth.res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">synth.out</span>
+<span class="n">fit_summary</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">tibble</span><span class="p">(</span>
+<span class="w">  </span><span class="n">comparison</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">"Synthetic control"</span><span class="p">,</span><span class="w"> </span><span class="s">"Unweighted donor average"</span><span class="p">),</span>
+<span class="w">  </span><span class="n">standardized_mse</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span>
+<span class="w">    </span><span class="nf">mean</span><span class="p">((</span><span class="n">scaled_target</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nf">as.numeric</span><span class="p">(</span><span class="n">scaled_donors</span><span class="w"> </span><span class="o">%*%</span><span class="w"> </span><span class="n">scm_weights</span><span class="p">))</span><span class="o">^</span><span class="m">2</span><span class="p">),</span>
+<span class="w">    </span><span class="nf">mean</span><span class="p">((</span><span class="n">scaled_target</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nf">rowMeans</span><span class="p">(</span><span class="n">scaled_donors</span><span class="p">))</span><span class="o">^</span><span class="m">2</span><span class="p">)</span>
+<span class="w">  </span><span class="p">)</span>
 <span class="p">)</span>
 
-<span class="n">synth.tables</span><span class="o">$</span><span class="n">tab.pred</span>
-<span class="n">synth.tables</span><span class="o">$</span><span class="n">tab.w</span>
-<span class="n">synth.tables</span><span class="o">$</span><span class="n">tab.v</span>
+<span class="n">fit_summary</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <div class="output text_html"><table class="dataframe">
-<caption>A matrix: 6 × 3 of type dbl</caption>
+<caption>A tibble: 2 × 2</caption>
 <thead>
-	<tr><th></th><th scope=col>Treated</th><th scope=col>Synthetic</th><th scope=col>Sample Mean</th></tr>
+	<tr><th scope=col>comparison</th><th scope=col>standardized_mse</th></tr>
+	<tr><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;dbl&gt;</th></tr>
 </thead>
 <tbody>
-	<tr><th scope=row>X1</th><td>  0.263</td><td>  0.254</td><td>  0.252</td></tr>
-	<tr><th scope=row>X2</th><td> 15.467</td><td> 17.081</td><td> 17.044</td></tr>
-	<tr><th scope=row>X3</th><td> 21.717</td><td> 21.833</td><td> 22.744</td></tr>
-	<tr><th scope=row>special.Y.1991</th><td>115.000</td><td>114.385</td><td>118.750</td></tr>
-	<tr><th scope=row>special.Y.1985</th><td>128.800</td><td>127.689</td><td>132.100</td></tr>
-	<tr><th scope=row>special.Y.1980</th><td>134.000</td><td>134.298</td><td>145.233</td></tr>
-</tbody>
-</table>
-</div><div class="output text_html"><table class="dataframe">
-<caption>A data.frame: 6 × 3</caption>
-<thead>
-	<tr><th></th><th scope=col>w.weights</th><th scope=col>unit.names</th><th scope=col>unit.numbers</th></tr>
-	<tr><th></th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;dbl&gt;</th></tr>
-</thead>
-<tbody>
-	<tr><th scope=row>2</th><td>0.000</td><td>control.region.southeast   </td><td>29</td></tr>
-	<tr><th scope=row>13</th><td>0.002</td><td>control.region.northeast   </td><td> 2</td></tr>
-	<tr><th scope=row>17</th><td>0.162</td><td>control.region.southcentral</td><td>13</td></tr>
-	<tr><th scope=row>29</th><td>0.228</td><td>control.region.west        </td><td>17</td></tr>
-	<tr><th scope=row>32</th><td>0.608</td><td>control.region.central     </td><td>32</td></tr>
-	<tr><th scope=row>38</th><td>0.000</td><td>control.region.east        </td><td>38</td></tr>
-</tbody>
-</table>
-</div><div class="output text_html"><table class="dataframe">
-<caption>A matrix: 6 × 1</caption>
-<thead>
-	<tr><th></th><th scope=col>v.weights</th></tr>
-	<tr><th></th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th></tr>
-</thead>
-<tbody>
-	<tr><th scope=row>X1</th><td>0.005</td></tr>
-	<tr><th scope=row>X2</th><td>0.007</td></tr>
-	<tr><th scope=row>X3</th><td>0.224</td></tr>
-	<tr><th scope=row>special.Y.1991</th><td>0.089</td></tr>
-	<tr><th scope=row>special.Y.1985</th><td>0.008</td></tr>
-	<tr><th scope=row>special.Y.1980</th><td>0.667</td></tr>
+	<tr><td>Synthetic control       </td><td>0.05079885</td></tr>
+	<tr><td>Unweighted donor average</td><td>0.17530844</td></tr>
 </tbody>
 </table>
 </div></div>
@@ -974,39 +913,46 @@ $ X3       &lt;dbl&gt; <span class=" -Color -Color-Red">NA</span>, <span class="
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">5.5</span><span class="p">)</span>
-<span class="nf">path.plot</span><span class="p">(</span>
-<span class="w">  </span><span class="n">synth.res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">synth.out</span><span class="p">,</span>
-<span class="w">  </span><span class="n">dataprep.res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dataprep.out</span><span class="p">,</span>
-<span class="w">  </span><span class="n">Ylab</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Outcome"</span><span class="p">,</span>
-<span class="w">  </span><span class="n">Xlab</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Year"</span><span class="p">,</span>
-<span class="w">  </span><span class="n">Legend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">"Treated unit"</span><span class="p">,</span><span class="w"> </span><span class="s">"Synthetic control"</span><span class="p">),</span>
-<span class="w">  </span><span class="n">Legend.position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"bottomright"</span>
-<span class="p">)</span>
-<span class="nf">abline</span><span class="p">(</span><span class="n">v</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1990</span><span class="p">,</span><span class="w"> </span><span class="n">lty</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2</span><span class="p">,</span><span class="w"> </span><span class="n">col</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"gray40"</span><span class="p">)</span>
+<span class="n">Y1plot</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">unit_outcomes</span><span class="p">(</span><span class="n">treated_unit</span><span class="p">,</span><span class="w"> </span><span class="n">plot_years</span><span class="p">)</span>
+<span class="n">Y0plot</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">vapply</span><span class="p">(</span><span class="n">donor_units</span><span class="p">,</span><span class="w"> </span><span class="n">unit_outcomes</span><span class="p">,</span><span class="w"> </span><span class="nf">numeric</span><span class="p">(</span><span class="nf">length</span><span class="p">(</span><span class="n">plot_years</span><span class="p">)),</span><span class="w"> </span><span class="n">years</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">plot_years</span><span class="p">)</span>
+
+<span class="n">gap_tbl</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">tibble</span><span class="p">(</span>
+<span class="w">  </span><span class="n">year</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">plot_years</span><span class="p">,</span>
+<span class="w">  </span><span class="n">treated</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Y1plot</span><span class="p">,</span>
+<span class="w">  </span><span class="n">synthetic</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">as.numeric</span><span class="p">(</span><span class="n">Y0plot</span><span class="w"> </span><span class="o">%*%</span><span class="w"> </span><span class="n">scm_weights</span><span class="p">)</span>
+<span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">mutate</span><span class="p">(</span><span class="n">gap</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">treated</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">synthetic</span><span class="p">)</span>
+
+<span class="n">gap_tbl</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">select</span><span class="p">(</span><span class="n">year</span><span class="p">,</span><span class="w"> </span><span class="n">treated</span><span class="p">,</span><span class="w"> </span><span class="n">synthetic</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="n">tidyr</span><span class="o">::</span><span class="nf">pivot_longer</span><span class="p">(</span><span class="o">-</span><span class="n">year</span><span class="p">,</span><span class="w"> </span><span class="n">names_to</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"series"</span><span class="p">,</span><span class="w"> </span><span class="n">values_to</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"outcome"</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
+<span class="w">  </span><span class="nf">ggplot</span><span class="p">(</span><span class="nf">aes</span><span class="p">(</span><span class="n">year</span><span class="p">,</span><span class="w"> </span><span class="n">outcome</span><span class="p">,</span><span class="w"> </span><span class="n">colour</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">series</span><span class="p">))</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_line</span><span class="p">(</span><span class="n">linewidth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_vline</span><span class="p">(</span><span class="n">xintercept</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1990</span><span class="p">,</span><span class="w"> </span><span class="n">linetype</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2</span><span class="p">,</span><span class="w"> </span><span class="n">colour</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"gray40"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">labs</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Year"</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Outcome"</span><span class="p">,</span><span class="w"> </span><span class="n">colour</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">NULL</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">theme_minimal</span><span class="p">(</span><span class="n">base_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">12</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<a class="reference internal image-reference" href="../_images/41c2906ccc3fdbd832026469529b91919e57bb88ef3124ec99216614e86c1802.png"><img alt="../_images/41c2906ccc3fdbd832026469529b91919e57bb88ef3124ec99216614e86c1802.png" src="../_images/41c2906ccc3fdbd832026469529b91919e57bb88ef3124ec99216614e86c1802.png" style="width: 480px; height: 330px;" />
+<a class="reference internal image-reference" href="../_images/c1d60516b226b3d3e228e0ecf6aa3eb654ebb3dd515a10c5e73a11140ffb89cc.png"><img alt="../_images/c1d60516b226b3d3e228e0ecf6aa3eb654ebb3dd515a10c5e73a11140ffb89cc.png" src="../_images/c1d60516b226b3d3e228e0ecf6aa3eb654ebb3dd515a10c5e73a11140ffb89cc.png" style="width: 480px; height: 330px;" />
 </a>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">5.5</span><span class="p">)</span>
-<span class="nf">gaps.plot</span><span class="p">(</span>
-<span class="w">  </span><span class="n">synth.res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">synth.out</span><span class="p">,</span>
-<span class="w">  </span><span class="n">dataprep.res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dataprep.out</span><span class="p">,</span>
-<span class="w">  </span><span class="n">Ylab</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Treated minus synthetic"</span><span class="p">,</span>
-<span class="w">  </span><span class="n">Xlab</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Year"</span>
-<span class="p">)</span>
-<span class="nf">abline</span><span class="p">(</span><span class="n">v</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1990</span><span class="p">,</span><span class="w"> </span><span class="n">lty</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2</span><span class="p">,</span><span class="w"> </span><span class="n">col</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"gray40"</span><span class="p">)</span>
-<span class="nf">abline</span><span class="p">(</span><span class="n">h</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="n">lty</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">3</span><span class="p">,</span><span class="w"> </span><span class="n">col</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"gray50"</span><span class="p">)</span>
+<span class="nf">ggplot</span><span class="p">(</span><span class="n">gap_tbl</span><span class="p">,</span><span class="w"> </span><span class="nf">aes</span><span class="p">(</span><span class="n">year</span><span class="p">,</span><span class="w"> </span><span class="n">gap</span><span class="p">))</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_hline</span><span class="p">(</span><span class="n">yintercept</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="n">linetype</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">3</span><span class="p">,</span><span class="w"> </span><span class="n">colour</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"gray50"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_vline</span><span class="p">(</span><span class="n">xintercept</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1990</span><span class="p">,</span><span class="w"> </span><span class="n">linetype</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2</span><span class="p">,</span><span class="w"> </span><span class="n">colour</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"gray40"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_line</span><span class="p">(</span><span class="n">linewidth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">labs</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Year"</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Treated minus synthetic"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">theme_minimal</span><span class="p">(</span><span class="n">base_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">12</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<a class="reference internal image-reference" href="../_images/c1a1ed18107557b80148c0f30c604f0538e6098ba658a897e2083e5f48d2f4fc.png"><img alt="../_images/c1a1ed18107557b80148c0f30c604f0538e6098ba658a897e2083e5f48d2f4fc.png" src="../_images/c1a1ed18107557b80148c0f30c604f0538e6098ba658a897e2083e5f48d2f4fc.png" style="width: 480px; height: 330px;" />
+<a class="reference internal image-reference" href="../_images/2e9249cadb9665eccf81a06f70c36d0fe7bde443d85dda4b00db217ee19bda68.png"><img alt="../_images/2e9249cadb9665eccf81a06f70c36d0fe7bde443d85dda4b00db217ee19bda68.png" src="../_images/2e9249cadb9665eccf81a06f70c36d0fe7bde443d85dda4b00db217ee19bda68.png" style="width: 480px; height: 330px;" />
 </a>
 </div>
 </div>
@@ -1022,13 +968,6 @@ $ X3       &lt;dbl&gt; <span class=" -Color -Color-Red">NA</span>, <span class="
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
-<span class="n">gap_tbl</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">tibble</span><span class="p">(</span>
-<span class="w">  </span><span class="n">year</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dataprep.out</span><span class="o">$</span><span class="n">tag</span><span class="o">$</span><span class="n">time.plot</span><span class="p">,</span>
-<span class="w">  </span><span class="n">treated</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">as.numeric</span><span class="p">(</span><span class="n">dataprep.out</span><span class="o">$</span><span class="n">Y1plot</span><span class="p">),</span>
-<span class="w">  </span><span class="n">synthetic</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">as.numeric</span><span class="p">(</span><span class="n">dataprep.out</span><span class="o">$</span><span class="n">Y0plot</span><span class="w"> </span><span class="o">%*%</span><span class="w"> </span><span class="n">synth.out</span><span class="o">$</span><span class="n">solution.w</span><span class="p">)</span>
-<span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span>
-<span class="w">  </span><span class="nf">mutate</span><span class="p">(</span><span class="n">gap</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">treated</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">synthetic</span><span class="p">)</span>
-
 <span class="n">gap_tbl</span>
 </pre></div>
 </div>
@@ -1041,19 +980,19 @@ $ X3       &lt;dbl&gt; <span class=" -Color -Color-Red">NA</span>, <span class="
 	<tr><th scope=col>&lt;int&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th></tr>
 </thead>
 <tbody>
-	<tr><td>1984</td><td>126.3</td><td>126.4747</td><td>-0.1747214</td></tr>
-	<tr><td>1985</td><td>128.8</td><td>127.6886</td><td> 1.1113865</td></tr>
-	<tr><td>1986</td><td>129.0</td><td>128.1853</td><td> 0.8146648</td></tr>
-	<tr><td>1987</td><td>129.3</td><td>125.9167</td><td> 3.3832664</td></tr>
-	<tr><td>1988</td><td>124.1</td><td>125.6275</td><td>-1.5275358</td></tr>
-	<tr><td>1989</td><td>117.1</td><td>121.2330</td><td>-4.1330175</td></tr>
-	<tr><td>1990</td><td>113.8</td><td>114.0192</td><td>-0.2191817</td></tr>
-	<tr><td>1991</td><td>115.0</td><td>114.3852</td><td> 0.6148144</td></tr>
-	<tr><td>1992</td><td>121.9</td><td>113.5513</td><td> 8.3486629</td></tr>
-	<tr><td>1993</td><td>125.5</td><td>112.3082</td><td>13.1918260</td></tr>
-	<tr><td>1994</td><td>127.0</td><td>110.6928</td><td>16.3072395</td></tr>
-	<tr><td>1995</td><td>132.0</td><td>114.7105</td><td>17.2894913</td></tr>
-	<tr><td>1996</td><td>133.5</td><td>110.0970</td><td>23.4030334</td></tr>
+	<tr><td>1984</td><td>126.3</td><td>131.9565</td><td>-5.656547</td></tr>
+	<tr><td>1985</td><td>128.8</td><td>129.9040</td><td>-1.104032</td></tr>
+	<tr><td>1986</td><td>129.0</td><td>130.3824</td><td>-1.382392</td></tr>
+	<tr><td>1987</td><td>129.3</td><td>122.6676</td><td> 6.632373</td></tr>
+	<tr><td>1988</td><td>124.1</td><td>128.9805</td><td>-4.880495</td></tr>
+	<tr><td>1989</td><td>117.1</td><td>119.9700</td><td>-2.869961</td></tr>
+	<tr><td>1990</td><td>113.8</td><td>108.4668</td><td> 5.333213</td></tr>
+	<tr><td>1991</td><td>115.0</td><td>110.0631</td><td> 4.936914</td></tr>
+	<tr><td>1992</td><td>121.9</td><td>107.4834</td><td>14.416644</td></tr>
+	<tr><td>1993</td><td>125.5</td><td>105.0423</td><td>20.457742</td></tr>
+	<tr><td>1994</td><td>127.0</td><td>104.2567</td><td>22.743278</td></tr>
+	<tr><td>1995</td><td>132.0</td><td>104.9723</td><td>27.027710</td></tr>
+	<tr><td>1996</td><td>133.5</td><td>103.0685</td><td>30.431467</td></tr>
 </tbody>
 </table>
 </div></div>
@@ -1064,7 +1003,7 @@ $ X3       &lt;dbl&gt; <span class=" -Color -Color-Red">NA</span>, <span class="
 <h2>Final Prompt<a class="headerlink" href="#final-prompt" title="Link to this heading">#</a></h2>
 <p>Write a short answer to these questions:</p>
 <ol class="arabic simple">
-<li><p>What part of SCM became clearer once you saw <code class="docutils literal notranslate"><span class="pre">dataprep()</span></code> and <code class="docutils literal notranslate"><span class="pre">synth()</span></code> as separate steps?</p></li>
+<li><p>What part of SCM became clearer once you saw matrix construction and weight estimation as separate steps?</p></li>
 <li><p>Which donors actually build the synthetic unit?</p></li>
 <li><p>Does this toy example teach you substantive causal inference, or mainly the structure of the estimator?</p></li>
 </ol>
@@ -1106,12 +1045,12 @@ $ X3       &lt;dbl&gt; <span class=" -Color -Color-Red">NA</span>, <span class="
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="regression-discontinuity-fuzzy-lab.html"
+       href="synthetic-control-methods-report.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Lab: Fuzzy RD and local IV with veteran home ownership</p>
+        <p class="prev-next-title">Synthetic Control for Causal Inference</p>
       </div>
     </a>
     <a class="right-next"
@@ -1119,7 +1058,7 @@ $ X3       &lt;dbl&gt; <span class=" -Color -Color-Red">NA</span>, <span class="
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Lab: Proposition 99 With tidysynth</p>
+        <p class="prev-next-title">Lab: Proposition 99 With Transparent SCM</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -1147,11 +1086,11 @@ $ X3       &lt;dbl&gt; <span class=" -Color -Color-Red">NA</span>, <span class="
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-to-hand-back">What To Hand Back</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-1-load-packages-and-inspect-the-toy-panel">Step 1: Load Packages And Inspect The Toy Panel</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-2-define-the-treated-unit-and-donor-pool">Step 2: Define The Treated Unit And Donor Pool</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-3-encode-the-design-with-dataprep">Step 3: Encode The Design With <code class="docutils literal notranslate"><span class="pre">dataprep()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-4-inspect-the-objects-that-dataprep-built">Step 4: Inspect The Objects That <code class="docutils literal notranslate"><span class="pre">dataprep()</span></code> Built</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-3-build-the-design-matrices-explicitly">Step 3: Build The Design Matrices Explicitly</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-4-inspect-the-design-objects">Step 4: Inspect The Design Objects</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-5-estimate-the-synthetic-control">Step 5: Estimate The Synthetic Control</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-6-read-donor-weights-w-and-predictor-weights-v">Step 6: Read Donor Weights <code class="docutils literal notranslate"><span class="pre">W</span></code> And Predictor Weights <code class="docutils literal notranslate"><span class="pre">V</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-7-build-the-standard-summary-tables">Step 7: Build The Standard Summary Tables</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-6-read-donor-weights-and-predictor-balance">Step 6: Read Donor Weights And Predictor Balance</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-7-summarise-fit-quality">Step 7: Summarise Fit Quality</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-8-plot-the-treated-and-synthetic-paths">Step 8: Plot The Treated And Synthetic Paths</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-9-calculate-the-gap-series-directly">Step 9: Calculate The Gap Series Directly</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#final-prompt">Final Prompt</a></li>

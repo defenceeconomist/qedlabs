@@ -1,0 +1,831 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Difference-in-Differences for Causal Inference &#8212; Quasi-Experimental Design Labs</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css?v=8cd3d715" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../_static/scripts/fontawesome.js?digest=55c26ed414f5f8a31ebb"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=b8b12719"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="../_static/mathjax/tex-chtml.js?v=20daa33d"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/difference-in-differences-methods-report';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Lab: Difference-in-Differences Foundations With Kentucky Workers’ Compensation" href="difference-in-differences-foundations-lab.html" />
+    <link rel="prev" title="Difference-in-differences guide" href="../guides/difference-in-differences.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">Quasi-Experimental Design Labs</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../index.html">
+                    Quasi-Experimental Design Labs
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Start Here</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../academy-extension.html">From Module 6 to Applied Practice</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../study-guide.html">How to Study This Book</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../offline-setup.html">Offline Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data.html">Data and Provenance</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Choose a Design</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../choosing-a-design.html">Design Decision Guide</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Regression Discontinuity</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../guides/regression-discontinuity.html">Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="regression-discontinuity-methods-report.html">Methods Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="regression-discontinuity-foundations-lab.html">Foundations — Sharp RD</a></li>
+<li class="toctree-l1"><a class="reference internal" href="regression-discontinuity-diagnostics-lab.html">Diagnostics and Sensitivity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="regression-discontinuity-fuzzy-lab.html">Extension — Fuzzy RD</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Difference-in-Differences</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../guides/difference-in-differences.html">Guide</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Methods Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="difference-in-differences-foundations-lab.html">Foundations — Two Groups, Two Periods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="difference-in-differences-staggered-diagnostics-lab.html">Diagnostics — Staggered Adoption</a></li>
+<li class="toctree-l1"><a class="reference internal" href="difference-in-differences-modern-estimators-lab.html">Extension — Modern Estimators</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Synthetic Control</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../guides/synthetic-control.html">Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-methods-report.html">Methods Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-mechanics-lab.html">Foundations — Mechanics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-proposition-99-lab.html">Application — Proposition 99</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-augmentation-lab.html">Extension — Augmented SCM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-design-lab.html">Worksheet — Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synthetic-control-donor-pool-lab.html">Worksheet — Donor Pool</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Matching and Weighting</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../guides/matching-weighting.html">Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="matching-methods-report.html">Methods Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lalonde-matching-lab.html">Foundations — LaLonde</a></li>
+<li class="toctree-l1"><a class="reference internal" href="black-politicians-lab.html">Application — Black Politicians</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nsw-cps-benchmark-lab.html">Benchmark — NSW and CPS</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Beyond Pre-Post</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../guides/interrupted-time-series.html">Interrupted Time Series Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interrupted-time-series-methods-report.html">Methods Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interrupted-time-series-mechanics-lab.html">Foundations — Seatbelts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interrupted-time-series-design-diagnostics-lab.html">Design and Robustness</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interrupted-time-series-counterfactual-validation-lab.html">Counterfactual Validation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Cross-Method Capstone</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="hisp-ie-practice-lab.html">HISP Impact Evaluation in Practice</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/notebooks/difference-in-differences-methods-report.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm pst-navbar-icon" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Difference-in-Differences for Causal Inference</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#executive-summary">Executive summary</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#design-and-target-effect">Design and target effect</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#specify-who-changes-treatment-and-when">Specify who changes treatment and when</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#identify-the-counterfactual-change">Identify the counterfactual change</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#kentucky-a-transparent-four-cell-analysis">Kentucky: a transparent four-cell analysis</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#calculate-and-recover-the-contrast">Calculate and recover the contrast</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#separate-estimation-from-inference">Separate estimation from inference</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#staggered-adoption-changes-the-comparison">Staggered adoption changes the comparison</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#estimate-group-time-effects">Estimate group-time effects</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#aggregation-is-part-of-the-estimand">Aggregation is part of the estimand</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#diagnostics-sensitivity-and-extensions">Diagnostics, sensitivity, and extensions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#reporting-and-limits">Reporting and limits</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#teaching-route">Teaching route</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#references">References</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="difference-in-differences-for-causal-inference">
+<h1>Difference-in-Differences for Causal Inference<a class="headerlink" href="#difference-in-differences-for-causal-inference" title="Link to this heading">#</a></h1>
+<p><a class="reference internal" href="../index.html"><span class="std std-doc">Book home</span></a></p>
+<p>Use the R kernel. Keep the supplied <code class="docutils literal notranslate"><span class="pre">data/</span></code> folder beside this notebook. Run cells in order after installing the documented R environment. Data loading is entirely local.</p>
+<section id="executive-summary">
+<h2>Executive summary<a class="headerlink" href="#executive-summary" title="Link to this heading">#</a></h2>
+<p>Difference-in-differences (DiD) compares an exposed group’s change with a credible unexposed group’s change. It allows baseline differences in outcome levels, but requires an argument about the exposed group’s unobserved untreated trend. A regression interaction implements the contrast; it cannot establish that argument.</p>
+<p>This report starts with Kentucky workers’ compensation, where the four cell means make the comparison transparent. It then uses a bundled minimum-wage teaching panel to show why staggered adoption requires explicit cohort-time effects and aggregation. The goal is a defensible comparison, not agreement among package outputs (Gertler et al. 2016; Roth et al. 2023).</p>
+</section>
+<section id="design-and-target-effect">
+<h2>Design and target effect<a class="headerlink" href="#design-and-target-effect" title="Link to this heading">#</a></h2>
+<section id="specify-who-changes-treatment-and-when">
+<h3>Specify who changes treatment and when<a class="headerlink" href="#specify-who-changes-treatment-and-when" title="Link to this heading">#</a></h3>
+<p>Define the policy, eligibility, exposure date, outcome scale, target population, and comparison group before looking at estimates. Distinguish policy adoption from announcement, implementation, and behavioral response. Audit anticipation, spillovers, repeated treatment, reversals, and policy co-adoption.</p>
+<p>In the Kentucky example, a 1980 increase in the benefit cap affected high earners differently from low earners. The outcome is log weeks receiving benefits. The observations are claims before and after the reform, not a panel of the same claimants. Changes in who claims, injury severity, or industry composition can therefore alter the comparison (Meyer, Viscusi, and Durbin 1995).</p>
+</section>
+<section id="identify-the-counterfactual-change">
+<h3>Identify the counterfactual change<a class="headerlink" href="#identify-the-counterfactual-change" title="Link to this heading">#</a></h3>
+<p>Let <span class="math notranslate nohighlight">\(`G=1`\)</span> denote the exposed group and <span class="math notranslate nohighlight">\(`t=1`\)</span> the post-period. The target is <span class="math notranslate nohighlight">\(`ATT=E[Y_1(1)-Y_1(0)\mid G=1]`\)</span>. With no anticipation, parallel untreated trends requires</p>
+<div class="math notranslate nohighlight">
+\[
+E[Y_1(0)-Y_0(0)\mid G=1]
+=E[Y_1(0)-Y_0(0)\mid G=0].
+\]</div>
+<p>Consistency, no relevant interference, and comparable population measurement are also needed. The assumption is about untreated potential outcomes, not equality of observed post-policy trends. Baseline levels may differ. Parallel trends in levels need not imply parallel trends in logs, so the outcome scale is part of the identifying claim.</p>
+<p>Relative to matching, DiD can accommodate time-invariant differences associated with outcome levels, but not arbitrary group-specific shocks. Relative to ITS, it borrows a contemporaneous comparison trend rather than projecting only the treated series. A poor comparison group is not repaired by adding fixed effects.</p>
+</section>
+</section>
+<section id="kentucky-a-transparent-four-cell-analysis">
+<h2>Kentucky: a transparent four-cell analysis<a class="headerlink" href="#kentucky-a-transparent-four-cell-analysis" title="Link to this heading">#</a></h2>
+<p>The <a class="reference internal" href="../data.html"><span class="std std-doc">data catalogue</span></a> documents the local snapshot. Execution assumes the R packages are installed and never downloads data or installs software.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">data_helpers</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">"data/load-data.R"</span><span class="p">,</span><span class="w"> </span><span class="s">"../data/load-data.R"</span><span class="p">,</span><span class="w"> </span><span class="s">"docs/labs/data/load-data.R"</span><span class="p">)</span>
+<span class="n">data_helpers</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">data_helpers</span><span class="p">[</span><span class="nf">file.exists</span><span class="p">(</span><span class="n">data_helpers</span><span class="p">)]</span>
+<span class="kr">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nf">length</span><span class="p">(</span><span class="n">data_helpers</span><span class="p">))</span><span class="w"> </span><span class="nf">stop</span><span class="p">(</span><span class="s">"Keep the bundled data folder beside the notebook."</span><span class="p">)</span>
+<span class="nf">source</span><span class="p">(</span><span class="n">data_helpers</span><span class="p">[[</span><span class="m">1</span><span class="p">]])</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">ggplot2</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">did</span><span class="p">)</span>
+<span class="n">ky</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">subset</span><span class="p">(</span><span class="nf">qed_data</span><span class="p">(</span><span class="s">"injury"</span><span class="p">),</span><span class="w"> </span><span class="n">ky</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1</span><span class="p">)</span>
+<span class="nf">stopifnot</span><span class="p">(</span><span class="nf">nrow</span><span class="p">(</span><span class="n">ky</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">5626</span><span class="p">,</span><span class="w"> </span><span class="nf">all</span><span class="p">(</span><span class="n">ky</span><span class="o">$</span><span class="n">durat</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">0</span><span class="p">),</span>
+<span class="w">          </span><span class="o">!</span><span class="nf">anyNA</span><span class="p">(</span><span class="n">ky</span><span class="p">[</span><span class="nf">c</span><span class="p">(</span><span class="s">"ldurat"</span><span class="p">,</span><span class="w"> </span><span class="s">"highearn"</span><span class="p">,</span><span class="w"> </span><span class="s">"afchnge"</span><span class="p">)]))</span>
+<span class="n">means</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">with</span><span class="p">(</span><span class="n">ky</span><span class="p">,</span><span class="w"> </span><span class="nf">tapply</span><span class="p">(</span><span class="n">ldurat</span><span class="p">,</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="n">high</span><span class="o">=</span><span class="n">highearn</span><span class="p">,</span><span class="w"> </span><span class="n">after</span><span class="o">=</span><span class="n">afchnge</span><span class="p">),</span><span class="w"> </span><span class="n">mean</span><span class="p">))</span>
+<span class="n">counts</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">with</span><span class="p">(</span><span class="n">ky</span><span class="p">,</span><span class="w"> </span><span class="nf">table</span><span class="p">(</span><span class="n">high</span><span class="o">=</span><span class="n">highearn</span><span class="p">,</span><span class="w"> </span><span class="n">after</span><span class="o">=</span><span class="n">afchnge</span><span class="p">))</span>
+<span class="n">knitr</span><span class="o">::</span><span class="nf">kable</span><span class="p">(</span><span class="n">means</span><span class="p">,</span><span class="w"> </span><span class="n">digits</span><span class="o">=</span><span class="m">4</span><span class="p">,</span><span class="w"> </span><span class="n">caption</span><span class="o">=</span><span class="s">"Mean log benefit duration"</span><span class="p">)</span>
+<span class="n">knitr</span><span class="o">::</span><span class="nf">kable</span><span class="p">(</span><span class="n">counts</span><span class="p">,</span><span class="w"> </span><span class="n">caption</span><span class="o">=</span><span class="s">"Claims in each group-period cell"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Table: Mean log benefit duration
+
+|   |      0|      1|
+|:--|------:|------:|
+|0  | 1.1256| 1.1333|
+|1  | 1.3821| 1.5804|
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Table: Claims in each group-period cell
+
+|   |    0|    1|
+|:--|----:|----:|
+|0  | 1705| 1527|
+|1  | 1233| 1161|
+</pre></div>
+</div>
+</div>
+</div>
+<p>Every cell must represent a substantively comparable population. Record exclusions and changes in composition rather than letting complete-case regression define the sample silently. Repeated cross-sections require stable population definitions; panel data instead introduce concerns about attrition and individual histories.</p>
+<section id="calculate-and-recover-the-contrast">
+<h3>Calculate and recover the contrast<a class="headerlink" href="#calculate-and-recover-the-contrast" title="Link to this heading">#</a></h3>
+<div class="math notranslate nohighlight">
+\[
+\widehat{ATT}=(\bar Y_{1,1}-\bar Y_{1,0})
+             -(\bar Y_{0,1}-\bar Y_{0,0}).
+\]</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">comparison_change</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">means</span><span class="p">[</span><span class="s">"0"</span><span class="p">,</span><span class="w"> </span><span class="s">"1"</span><span class="p">]</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">means</span><span class="p">[</span><span class="s">"0"</span><span class="p">,</span><span class="w"> </span><span class="s">"0"</span><span class="p">]</span>
+<span class="n">counterfactual</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">means</span><span class="p">[</span><span class="s">"1"</span><span class="p">,</span><span class="w"> </span><span class="s">"0"</span><span class="p">]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">comparison_change</span>
+<span class="n">manual</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">means</span><span class="p">[</span><span class="s">"1"</span><span class="p">,</span><span class="w"> </span><span class="s">"1"</span><span class="p">]</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">counterfactual</span>
+<span class="n">model</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">lm</span><span class="p">(</span><span class="n">ldurat</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">highearn</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">afchnge</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="o">=</span><span class="n">ky</span><span class="p">)</span>
+<span class="n">interaction</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">unname</span><span class="p">(</span><span class="nf">coef</span><span class="p">(</span><span class="n">model</span><span class="p">)[</span><span class="s">"highearn:afchnge"</span><span class="p">])</span>
+<span class="nf">stopifnot</span><span class="p">(</span><span class="nf">abs</span><span class="p">(</span><span class="n">manual</span><span class="o">-</span><span class="n">interaction</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="m">1e-10</span><span class="p">,</span>
+<span class="w">          </span><span class="nf">abs</span><span class="p">(</span><span class="n">manual</span><span class="m">-0.1906012007</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="m">1e-8</span><span class="p">)</span>
+<span class="n">knitr</span><span class="o">::</span><span class="nf">kable</span><span class="p">(</span><span class="nf">data.frame</span><span class="p">(</span><span class="n">manual</span><span class="p">,</span><span class="w"> </span><span class="n">interaction</span><span class="p">,</span>
+<span class="w">                        </span><span class="n">geometric_percent</span><span class="o">=</span><span class="m">100</span><span class="o">*</span><span class="nf">expm1</span><span class="p">(</span><span class="n">manual</span><span class="p">)),</span><span class="w"> </span><span class="n">digits</span><span class="o">=</span><span class="m">4</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>| manual| interaction| geometric_percent|
+|------:|-----------:|-----------------:|
+| 0.1906|      0.1906|           20.9977|
+</pre></div>
+</div>
+</div>
+</div>
+<p>The interaction in <span class="math notranslate nohighlight">\(`Y=\alpha+\gamma G+\lambda Post+\tau(G\times Post)+u`\)</span> reproduces the four-cell contrast. Algebraic equality checks coding; it does not validate parallel trends. The estimate is about 0.191 log points. Its exponential transformation is a contrast of geometric means, not automatically the percentage effect on arithmetic mean benefit duration.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="c1">#| fig-cap: "The exposed group's counterfactual adds the low-earner change to its own baseline."</span>
+<span class="c1">#| fig-alt: "High- and low-earner mean log durations before and after reform, with the high-earner counterfactual shown by a dashed line."</span>
+<span class="n">p</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">aggregate</span><span class="p">(</span><span class="n">ldurat</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">afchnge</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">highearn</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="o">=</span><span class="n">ky</span><span class="p">,</span><span class="w"> </span><span class="n">FUN</span><span class="o">=</span><span class="n">mean</span><span class="p">)</span>
+<span class="n">cf</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">data.frame</span><span class="p">(</span><span class="n">afchnge</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="m">1</span><span class="p">),</span><span class="w"> </span><span class="n">ldurat</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="n">means</span><span class="p">[</span><span class="s">"1"</span><span class="p">,</span><span class="s">"0"</span><span class="p">],</span><span class="w"> </span><span class="n">counterfactual</span><span class="p">))</span>
+<span class="nf">ggplot</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="w"> </span><span class="nf">aes</span><span class="p">(</span><span class="n">afchnge</span><span class="p">,</span><span class="w"> </span><span class="n">ldurat</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="o">=</span><span class="nf">factor</span><span class="p">(</span><span class="n">highearn</span><span class="p">)))</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_line</span><span class="p">(</span><span class="n">linewidth</span><span class="o">=</span><span class="m">0.8</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nf">geom_point</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="m">2</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">geom_line</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">cf</span><span class="p">,</span><span class="w"> </span><span class="nf">aes</span><span class="p">(</span><span class="n">afchnge</span><span class="p">,</span><span class="w"> </span><span class="n">ldurat</span><span class="p">),</span><span class="w"> </span><span class="n">inherit.aes</span><span class="o">=</span><span class="kc">FALSE</span><span class="p">,</span>
+<span class="w">            </span><span class="n">linetype</span><span class="o">=</span><span class="m">2</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="o">=</span><span class="s">"#177b72"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">scale_color_manual</span><span class="p">(</span><span class="n">values</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="s">"#245ca4"</span><span class="p">,</span><span class="w"> </span><span class="s">"#177b72"</span><span class="p">),</span>
+<span class="w">                     </span><span class="n">labels</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="s">"Low earners"</span><span class="p">,</span><span class="w"> </span><span class="s">"High earners"</span><span class="p">))</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">scale_x_continuous</span><span class="p">(</span><span class="n">breaks</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="m">1</span><span class="p">),</span><span class="w"> </span><span class="n">labels</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="s">"Before"</span><span class="p">,</span><span class="w"> </span><span class="s">"After"</span><span class="p">))</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">labs</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="kc">NULL</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="o">=</span><span class="s">"Mean log benefit duration"</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="o">=</span><span class="kc">NULL</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">  </span><span class="nf">theme_minimal</span><span class="p">(</span><span class="n">base_size</span><span class="o">=</span><span class="m">11</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nf">theme</span><span class="p">(</span><span class="n">legend.position</span><span class="o">=</span><span class="s">"bottom"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<a class="reference internal image-reference" href="../_images/42fd64cd41f7b93445be7ec88e39a8780f53f5787a65a54f73a3db05fd56d50b.png"><img alt="../_images/42fd64cd41f7b93445be7ec88e39a8780f53f5787a65a54f73a3db05fd56d50b.png" src="../_images/42fd64cd41f7b93445be7ec88e39a8780f53f5787a65a54f73a3db05fd56d50b.png" style="width: 480px; height: 288px;" />
+</a>
+</div>
+</div>
+</section>
+<section id="separate-estimation-from-inference">
+<h3>Separate estimation from inference<a class="headerlink" href="#separate-estimation-from-inference" title="Link to this heading">#</a></h3>
+<p>Thousands of claims do not imply thousands of independently assigned policy changes. An individual-level regression standard error cannot manufacture policy replication. In richer applications, cluster at a level consistent with assignment and dependence, examine the number of independent clusters, and use a defensible small-sample strategy when clusters are few (Bertrand, Duflo, and Mullainathan 2004).</p>
+<p>This four-cell sample contains no multi-period pre-trend evidence. An honest interpretation is a conditional contrast accompanied by institutional arguments and composition checks, not a fully diagnosed causal conclusion. Baseline covariates may support conditional parallel trends if they are unaffected by treatment and have adequate overlap. Post-treatment adjustment can remove a mechanism or introduce selection bias (Sant’Anna and Zhao 2020).</p>
+</section>
+</section>
+<section id="staggered-adoption-changes-the-comparison">
+<h2>Staggered adoption changes the comparison<a class="headerlink" href="#staggered-adoption-changes-the-comparison" title="Link to this heading">#</a></h2>
+<p>When cohorts adopt in different periods, a conventional two-way fixed-effects coefficient can compare newly treated units with already-treated units. If effects change with exposure duration or differ across cohorts, those comparisons can contaminate the intended policy average. Conventional event-study leads and lags can also mix heterogeneous effects (Goodman-Bacon 2021; Sun and Abraham 2021).</p>
+<p>Define <span class="math notranslate nohighlight">\(`ATT(g,t)=E[Y_t(g)-Y_t(0)\mid G=g]`\)</span> for cohort <span class="math notranslate nohighlight">\(`g`\)</span> and calendar time <span class="math notranslate nohighlight">\(`t`\)</span>. Specify never-treated or not-yet-treated controls, an anticipation window, and the periods with actual comparison support. Treatment reversals or repeated doses need a method appropriate to those histories; an absorbing-treatment estimator is not automatically applicable.</p>
+<section id="estimate-group-time-effects">
+<h3>Estimate group-time effects<a class="headerlink" href="#estimate-group-time-effects" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="n">mpdta</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">qed_data</span><span class="p">(</span><span class="s">"mpdta"</span><span class="p">)</span>
+<span class="nf">stopifnot</span><span class="p">(</span><span class="nf">nrow</span><span class="p">(</span><span class="n">mpdta</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">2500</span><span class="p">,</span>
+<span class="w">          </span><span class="nf">length</span><span class="p">(</span><span class="nf">unique</span><span class="p">(</span><span class="n">mpdta</span><span class="o">$</span><span class="n">countyreal</span><span class="p">))</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">500</span><span class="p">,</span>
+<span class="w">          </span><span class="o">!</span><span class="nf">anyDuplicated</span><span class="p">(</span><span class="n">mpdta</span><span class="p">[</span><span class="nf">c</span><span class="p">(</span><span class="s">"countyreal"</span><span class="p">,</span><span class="w"> </span><span class="s">"year"</span><span class="p">)]))</span>
+<span class="n">knitr</span><span class="o">::</span><span class="nf">kable</span><span class="p">(</span><span class="nf">with</span><span class="p">(</span><span class="n">mpdta</span><span class="p">,</span><span class="w"> </span><span class="nf">table</span><span class="p">(</span><span class="n">cohort</span><span class="o">=</span><span class="n">first.treat</span><span class="p">,</span><span class="w"> </span><span class="n">year</span><span class="o">=</span><span class="n">year</span><span class="p">)))</span>
+<span class="nf">set.seed</span><span class="p">(</span><span class="m">20260809</span><span class="p">)</span>
+<span class="n">att</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">att_gt</span><span class="p">(</span><span class="n">yname</span><span class="o">=</span><span class="s">"lemp"</span><span class="p">,</span><span class="w"> </span><span class="n">tname</span><span class="o">=</span><span class="s">"year"</span><span class="p">,</span><span class="w"> </span><span class="n">idname</span><span class="o">=</span><span class="s">"countyreal"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">gname</span><span class="o">=</span><span class="s">"first.treat"</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="o">=</span><span class="n">mpdta</span><span class="p">,</span><span class="w"> </span><span class="n">xformla</span><span class="o">=~</span><span class="m">1</span><span class="p">,</span>
+<span class="w">  </span><span class="n">control_group</span><span class="o">=</span><span class="s">"nevertreated"</span><span class="p">,</span><span class="w"> </span><span class="n">anticipation</span><span class="o">=</span><span class="m">0</span><span class="p">,</span>
+<span class="w">  </span><span class="n">base_period</span><span class="o">=</span><span class="s">"universal"</span><span class="p">,</span><span class="w"> </span><span class="n">est_method</span><span class="o">=</span><span class="s">"dr"</span><span class="p">,</span>
+<span class="w">  </span><span class="n">bstrap</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">,</span><span class="w"> </span><span class="n">biters</span><span class="o">=</span><span class="m">499</span><span class="p">,</span><span class="w"> </span><span class="n">cband</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">,</span><span class="w"> </span><span class="n">clustervars</span><span class="o">=</span><span class="s">"countyreal"</span><span class="p">)</span>
+<span class="n">overall</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">aggte</span><span class="p">(</span><span class="n">att</span><span class="p">,</span><span class="w"> </span><span class="n">type</span><span class="o">=</span><span class="s">"simple"</span><span class="p">)</span>
+<span class="n">dynamic</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">aggte</span><span class="p">(</span><span class="n">att</span><span class="p">,</span><span class="w"> </span><span class="n">type</span><span class="o">=</span><span class="s">"dynamic"</span><span class="p">)</span>
+<span class="nf">stopifnot</span><span class="p">(</span><span class="nf">abs</span><span class="p">(</span><span class="n">overall</span><span class="o">$</span><span class="n">overall.att</span><span class="o">-</span><span class="p">(</span><span class="m">-0.0399512752</span><span class="p">))</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="m">1e-8</span><span class="p">)</span>
+<span class="n">knitr</span><span class="o">::</span><span class="nf">kable</span><span class="p">(</span><span class="nf">data.frame</span><span class="p">(</span><span class="n">ATT</span><span class="o">=</span><span class="n">overall</span><span class="o">$</span><span class="n">overall.att</span><span class="p">,</span>
+<span class="w">                        </span><span class="n">SE</span><span class="o">=</span><span class="n">overall</span><span class="o">$</span><span class="n">overall.se</span><span class="p">),</span><span class="w"> </span><span class="n">digits</span><span class="o">=</span><span class="m">4</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>|     | 2003| 2004| 2005| 2006| 2007|
+|:----|----:|----:|----:|----:|----:|
+|0    |  309|  309|  309|  309|  309|
+|2004 |   20|   20|   20|   20|   20|
+|2006 |   40|   40|   40|   40|   40|
+|2007 |  131|  131|  131|  131|  131|
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>|   ATT|     SE|
+|-----:|------:|
+| -0.04| 0.0137|
+</pre></div>
+</div>
+</div>
+</div>
+<p>The panel contains 500 counties over five years. Zero in <code class="docutils literal notranslate"><span class="pre">first.treat</span></code> means never treated. The example uses log teen employment, never-treated controls, zero anticipation, and an unconditional specification. The universal base period normalizes contrasts to the final pre-treatment period. A doubly robust estimator name does not make the identifying assumptions true (Callaway and Sant’Anna 2021).</p>
+<p>The seed and 499 bootstrap draws make this a reproducible classroom exercise. Investigate simulation stability for a substantive analysis. County clustering here is a teaching implementation, not a defense of county-level inference for a state-level policy without the appropriate assignment identifiers.</p>
+</section>
+<section id="aggregation-is-part-of-the-estimand">
+<h3>Aggregation is part of the estimand<a class="headerlink" href="#aggregation-is-part-of-the-estimand" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">options</span><span class="p">(</span><span class="n">repr.plot.width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">repr.plot.height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4.8</span><span class="p">)</span>
+<span class="c1">#| fig-cap: "Dynamic aggregation with simultaneous bands from the stated teaching specification."</span>
+<span class="c1">#| fig-alt: "Event-time treatment effects on log employment with simultaneous confidence bands."</span>
+<span class="nf">ggdid</span><span class="p">(</span><span class="n">dynamic</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nf">labs</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s">"Years relative to treatment"</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="o">=</span><span class="s">"ATT on log employment"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<a class="reference internal image-reference" href="../_images/06f57acfc337390b570236a6710cf7742a5878b5fb8a0f2373ac109a20620b49.png"><img alt="../_images/06f57acfc337390b570236a6710cf7742a5878b5fb8a0f2373ac109a20620b49.png" src="../_images/06f57acfc337390b570236a6710cf7742a5878b5fb8a0f2373ac109a20620b49.png" style="width: 480px; height: 288px;" />
+</a>
+</div>
+</div>
+<p>The simple aggregate is approximately -0.040 log points. Earlier cohorts can contribute more post-treatment cells, so it is not automatically an equally weighted average across cohorts or exposure durations. Dynamic aggregation groups effects by <span class="math notranslate nohighlight">\(`e=t-g`\)</span>. At longer horizons, fewer cohorts may contribute. A changing event-time profile can therefore reflect both dynamics and changing composition. State the weights, supported horizons, and any balanced-exposure restriction.</p>
+</section>
+</section>
+<section id="diagnostics-sensitivity-and-extensions">
+<h2>Diagnostics, sensitivity, and extensions<a class="headerlink" href="#diagnostics-sensitivity-and-extensions" title="Link to this heading">#</a></h2>
+<p>Plot raw outcome paths and cohort sizes before adjusted event studies. Audit missingness, differential composition, anticipation, spillovers, and co-occurring policies. Compare eligible control definitions only when both are substantively defensible; a changed estimate can reflect a changed target or changed support.</p>
+<p>Pre-treatment coefficients can reveal some violations. Failure to reject does not establish parallel trends, especially with few pre-periods or low power. Choosing a model because it passes a pre-test also changes the inferential problem (Roth 2022). Simultaneous bands address a collection of estimates; pointwise intervals answer a different coverage question.</p>
+<p>The diagnostics lab implements the Goodman-Bacon decomposition and a Sun-Abraham event study. The modern-estimators lab adds comparison-group choices and a transparent calibrated-bias stress test for departures from parallel trends. Sensitivity restrictions must be explained in substantive units; they do not certify the design (Rambachan and Roth 2023). Imputation estimators make the untreated outcome model explicit and offer another approach when their assumptions and treatment histories fit (Borusyak, Jaravel, and Spiess 2024).</p>
+<p>Do not rank methods by the smallest p-value. Explain which comparisons each uses, which population it represents, and which heterogeneity it accommodates. Agreement is useful as a coding check but does not rule out a shared identifying failure.</p>
+</section>
+<section id="reporting-and-limits">
+<h2>Reporting and limits<a class="headerlink" href="#reporting-and-limits" title="Link to this heading">#</a></h2>
+<p>Report the exposure rule, dates, outcome scale, population, comparison group, sample exclusions, anticipation assumptions, estimator, aggregation weights, and dependence model. Include raw paths, effect estimates and intervals, support at each horizon, diagnostic evidence, and sensitivity. Name the strongest plausible differential shock that the design cannot exclude.</p>
+<p>For Kentucky, foreground repeated cross-sections and absent multi-period pre-trend evidence. For the minimum-wage panel, foreground the teaching sample and inference limitations. Neither example should be described as a new full replication of the original policy study.</p>
+</section>
+<section id="teaching-route">
+<h2>Teaching route<a class="headerlink" href="#teaching-route" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://defenceeconomist.github.io/qedlabs/slides/did.html">Teaching deck</a> and <a class="reference external" href="https://defenceeconomist.github.io/qedlabs/slides/did_script.html">presenter notes</a>.</p></li>
+<li><p><a class="reference external" href="https://defenceeconomist.github.io/qedlabs/notes/did/how-to-do-difference-in-differences.html">Practical R guide</a> for the shorter walkthrough.</p></li>
+<li><p><a class="reference internal" href="difference-in-differences-foundations-lab.html"><span class="std std-doc">Foundations lab</span></a> for the four-cell calculation and regression.</p></li>
+<li><p><a class="reference internal" href="difference-in-differences-staggered-diagnostics-lab.html"><span class="std std-doc">Staggered diagnostics lab</span></a> for comparison weights and event studies.</p></li>
+<li><p><a class="reference internal" href="difference-in-differences-modern-estimators-lab.html"><span class="std std-doc">Modern estimators lab</span></a> for group-time effects, aggregation, and sensitivity.</p></li>
+<li><p><a class="reference external" href="https://defenceeconomist.github.io/qedlabs/labs/difference-in-differences-reproducibility.html">Reproduction record</a> for the environment and verified outputs.</p></li>
+</ul>
+<p>All three exercises have Quarto, R Jupyter, and offline ZIP downloads in the <a class="reference external" href="https://defenceeconomist.github.io/qedlabs/labs/index.html#difference-in-differences-labs">Labs directory</a>.</p>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading">#</a></h2>
+<p>Bertrand, Marianne, Esther Duflo, and Sendhil Mullainathan. 2004. “How Much Should We Trust Differences-in-Differences Estimates?” <em>Quarterly Journal of Economics</em> 119 (1): 249–75. <a class="reference external" href="https://doi.org/10.1162/003355304772839588">https://doi.org/10.1162/003355304772839588</a>.</p>
+<p>Borusyak, Kirill, Xavier Jaravel, and Jann Spiess. 2024. “Revisiting Event-Study Designs: Robust and Efficient Estimation.” <em>Review of Economic Studies</em> 91 (6): 3253–85. <a class="reference external" href="https://doi.org/10.1093/restud/rdae007">https://doi.org/10.1093/restud/rdae007</a>.</p>
+<p>Callaway, Brantly, and Pedro H. C. Sant’Anna. 2021. “Difference-in-Differences with Multiple Time Periods.” <em>Journal of Econometrics</em> 225 (2): 200–230. <a class="reference external" href="https://doi.org/10.1016/j.jeconom.2020.12.001">https://doi.org/10.1016/j.jeconom.2020.12.001</a>.</p>
+<p>Gertler, Paul J., Sebastian Martinez, Patrick Premand, Laura B. Rawlings, and Christel M. J. Vermeersch. 2016. “Chapter 7: Difference-in-Differences.” In <em>Impact Evaluation in Practice</em>, 2nd ed. Washington, DC: Inter-American Development Bank; World Bank. <a class="reference external" href="https://doi.org/10.1596/978-1-4648-0779-4">https://doi.org/10.1596/978-1-4648-0779-4</a>.</p>
+<p>Goodman-Bacon, Andrew. 2021. “Difference-in-Differences with Variation in Treatment Timing.” <em>Journal of Econometrics</em> 225 (2): 254–77. <a class="reference external" href="https://doi.org/10.1016/j.jeconom.2021.03.014">https://doi.org/10.1016/j.jeconom.2021.03.014</a>.</p>
+<p>Meyer, Bruce D., W. Kip Viscusi, and David L. Durbin. 1995. “Workers’ Compensation and Injury Duration: Evidence from a Natural Experiment.” <em>American Economic Review</em> 85 (3): 322–40. <a class="reference external" href="https://www.jstor.org/stable/2118178">https://www.jstor.org/stable/2118178</a>.</p>
+<p>Rambachan, Ashesh, and Jonathan Roth. 2023. “A More Credible Approach to Parallel Trends.” <em>Review of Economic Studies</em> 90 (5): 2555–91. <a class="reference external" href="https://doi.org/10.1093/restud/rdad018">https://doi.org/10.1093/restud/rdad018</a>.</p>
+<p>Roth, Jonathan. 2022. “Pretest with Caution: Event-Study Estimates After Testing for Parallel Trends.” <em>American Economic Review: Insights</em> 4 (3): 305–22. <a class="reference external" href="https://doi.org/10.1257/aeri.20210236">https://doi.org/10.1257/aeri.20210236</a>.</p>
+<p>Roth, Jonathan, Pedro H. C. Sant’Anna, Alyssa Bilinski, and John Poe. 2023. “What’s Trending in Difference-in-Differences? A Synthesis of the Recent Econometrics Literature.” <em>Journal of Econometrics</em> 235 (2): 2218–44. <a class="reference external" href="https://doi.org/10.1016/j.jeconom.2023.03.008">https://doi.org/10.1016/j.jeconom.2023.03.008</a>.</p>
+<p>Sant’Anna, Pedro H. C., and Jun Zhao. 2020. “Doubly Robust Difference-in-Differences Estimators.” <em>Journal of Econometrics</em> 219 (1): 101–22. <a class="reference external" href="https://doi.org/10.1016/j.jeconom.2020.06.003">https://doi.org/10.1016/j.jeconom.2020.06.003</a>.</p>
+<p>Sun, Liyang, and Sarah Abraham. 2021. “Estimating Dynamic Treatment Effects in Event Studies with Heterogeneous Treatment Effects.” <em>Journal of Econometrics</em> 225 (2): 175–99. <a class="reference external" href="https://doi.org/10.1016/j.jeconom.2020.09.006">https://doi.org/10.1016/j.jeconom.2020.09.006</a>.</p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "r"
+        },
+        kernelOptions: {
+            name: "ir",
+            path: "./notebooks"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'ir'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../guides/difference-in-differences.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Difference-in-differences guide</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="difference-in-differences-foundations-lab.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Lab: Difference-in-Differences Foundations With Kentucky Workers’ Compensation</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item"><div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#executive-summary">Executive summary</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#design-and-target-effect">Design and target effect</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#specify-who-changes-treatment-and-when">Specify who changes treatment and when</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#identify-the-counterfactual-change">Identify the counterfactual change</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#kentucky-a-transparent-four-cell-analysis">Kentucky: a transparent four-cell analysis</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#calculate-and-recover-the-contrast">Calculate and recover the contrast</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#separate-estimation-from-inference">Separate estimation from inference</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#staggered-adoption-changes-the-comparison">Staggered adoption changes the comparison</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#estimate-group-time-effects">Estimate group-time effects</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#aggregation-is-part-of-the-estimand">Aggregation is part of the estimand</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#diagnostics-sensitivity-and-extensions">Diagnostics, sensitivity, and extensions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#reporting-and-limits">Reporting and limits</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#teaching-route">Teaching route</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#references">References</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By QED Labs
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2026.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+<div class="extra_footer">
+  Built for offline use. External reading links are optional.
+</div>
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

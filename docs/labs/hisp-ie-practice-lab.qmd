@@ -108,7 +108,12 @@ csv_export_manifest <- dplyr::bind_rows(lapply(dta_files, function(dta_path) {
   )
 }))
 
-dat <- readr::read_csv(evaluation_csv, show_col_types = FALSE)
+dat <- readr::read_csv(
+  evaluation_csv,
+  show_col_types = FALSE,
+  progress = FALSE,
+  num_threads = 1
+)
 
 controls <- c(
   "age_hh",

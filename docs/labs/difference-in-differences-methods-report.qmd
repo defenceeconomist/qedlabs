@@ -74,7 +74,10 @@ The [data catalogue](data.qmd#injury) documents the local snapshot. Execution as
 the R packages are installed and never downloads data or installs software.
 
 ```{r}
-source("data/load-data.R")
+data_helpers <- c("data/load-data.R", "../data/load-data.R", "docs/labs/data/load-data.R")
+data_helpers <- data_helpers[file.exists(data_helpers)]
+if (!length(data_helpers)) stop("Keep the bundled data folder beside the notebook.")
+source(data_helpers[[1]])
 library(ggplot2)
 library(did)
 ky <- subset(qed_data("injury"), ky == 1)
@@ -222,8 +225,8 @@ problem [@roth2022pretest]. Simultaneous bands address a collection of estimates
 pointwise intervals answer a different coverage question.
 
 The diagnostics lab implements the Goodman-Bacon decomposition and a Sun-Abraham
-event study. The modern-estimators lab adds comparison-group choices and
-`HonestDiD` sensitivity to departures from parallel trends. Sensitivity restrictions
+event study. The modern-estimators lab adds comparison-group choices and a
+transparent calibrated-bias stress test for departures from parallel trends. Sensitivity restrictions
 must be explained in substantive units; they do not certify the design
 [@rambachanroth2023parallel]. Imputation estimators make the untreated outcome
 model explicit and offer another approach when their assumptions and treatment
